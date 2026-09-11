@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prop Firm Tick Scalping & Compliance Auditor</title>
+<title>Prop Firm Compliance & Tick Scalping Auditor</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
@@ -18,7 +18,6 @@
   --text: #F1F5F9;
   --text-dim: #94A3B8;
   --text-faint: #64748B;
-  
   --gold: #FFC72C;
   --gold-glow: rgba(255, 199, 44, 0.15);
   --safe: #10B981;
@@ -29,145 +28,131 @@
   --danger-bg: rgba(239, 68, 68, 0.12);
   --cyan: #06B6D4;
   --cyan-bg: rgba(6, 182, 212, 0.12);
-  --accent: #3B82F6;
+  --info: #8B9BB4;
+  --info-bg: rgba(139, 155, 180, 0.12);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', -apple-system, sans-serif; line-height: 1.5; font-size: 14px; }
-
 .mono { font-family: 'IBM Plex Mono', monospace; }
 .headline { font-family: 'Space Grotesk', sans-serif; }
+.wrap { max-width: 1320px; margin: 0 auto; padding: 28px 24px 80px; }
 
-.wrap { max-width: 1280px; margin: 0 auto; padding: 28px 24px 80px; }
-
-/* Topbar & Header */
-.topbar {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 28px; flex-wrap: wrap; gap: 16px;
-  border-bottom: 1px solid var(--border); padding-bottom: 20px;
-}
+/* Topbar */
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
 .brand { display: flex; align-items: center; gap: 14px; }
-.brand-mark {
-  width: 44px; height: 44px; border-radius: 10px;
-  background: linear-gradient(135deg, #FFC72C, #D97706);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; color: #0B0F17;
-  box-shadow: 0 4px 18px rgba(255, 199, 44, 0.25); flex-shrink: 0;
-}
-.brand-text h1 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+.brand-mark { width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #FFC72C, #D97706); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; color: #0B0F17; box-shadow: 0 4px 18px rgba(255, 199, 44, 0.25); flex-shrink: 0; }
+.brand-text h1 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
 .brand-text p { font-size: 12.5px; color: var(--text-dim); margin-top: 1px; }
-
-.toolbar-group { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-
-.preset-selector { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--border); padding: 6px 12px; border-radius: 10px; }
-.preset-selector label { font-size: 12px; color: var(--text-dim); font-weight: 500; }
-.preset-selector select { background: var(--panel-2); border: 1px solid var(--border-light); color: var(--gold); font-weight: 600; padding: 6px 10px; border-radius: 6px; font-size: 13px; cursor: pointer; outline: none; max-width: 280px; }
-
-/* Toggle Switch IDR/USD */
-.currency-toggle { display: flex; align-items: center; gap: 8px; background: var(--panel); padding: 6px 12px; border-radius: 10px; border: 1px solid var(--border); font-weight: 600; font-size: 12px; }
-.switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--panel-2); transition: .3s; border-radius: 20px; border: 1px solid var(--border-light); }
-.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: var(--text-dim); transition: .3s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--gold-glow); border-color: var(--gold); }
-input:checked + .slider:before { transform: translateX(20px); background-color: var(--gold); }
+.topbar-right { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 
 .acc-chip { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; font-size: 12.5px; display: none; align-items: center; gap: 16px; }
 .acc-chip.show { display: flex; }
-.acc-chip b { color: var(--text); font-weight: 600; }
 .acc-item { display: flex; flex-direction: column; }
 .acc-item .lbl { font-size: 10.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
 .acc-item .val { font-size: 13px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-weight: 600; }
 
+/* Currency toggle */
+.cur-toggle { display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 5px; }
+.cur-btn { background: transparent; border: none; color: var(--text-dim); padding: 6px 12px; border-radius: 7px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: 'IBM Plex Mono', monospace; }
+.cur-btn.active { background: var(--gold); color: #0B0F17; }
+.kurs-input { width: 86px; background: var(--panel-2); border: 1px solid var(--border-light); border-radius: 7px; padding: 6px 8px; color: var(--text-dim); font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+
 /* Dropzone */
-.dropzone {
-  border: 2px dashed var(--border-light); border-radius: 20px;
-  background: radial-gradient(circle at 50% 0%, var(--panel-2), var(--panel));
-  padding: 64px 32px; text-align: center; transition: all 0.2s ease; cursor: pointer;
-  max-width: 820px; margin: 40px auto; position: relative; overflow: hidden;
-}
+.dropzone { border: 2px dashed var(--border-light); border-radius: 20px; background: radial-gradient(circle at 50% 0%, var(--panel-2), var(--panel)); padding: 64px 32px; text-align: center; transition: all 0.2s ease; cursor: pointer; max-width: 820px; margin: 40px auto; }
 .dropzone:hover, .dropzone.drag { border-color: var(--gold); background: var(--panel-2); box-shadow: 0 0 32px var(--gold-glow); }
-.dropzone h2 { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; margin: 18px 0 8px; color: var(--text); }
+.dropzone h2 { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; margin: 18px 0 8px; }
 .dropzone p { color: var(--text-dim); font-size: 14px; max-width: 500px; margin: 0 auto 24px; line-height: 1.6; }
 .dz-icon { width: 64px; height: 64px; margin: 0 auto; border-radius: 16px; background: var(--gold-glow); border: 1px solid rgba(255, 199, 44, 0.4); display: flex; align-items: center; justify-content: center; }
 .dz-icon svg { width: 32px; height: 32px; stroke: var(--gold); }
-.btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #FFC72C, #E0A100); color: #0B0F17; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; transition: all 0.15s ease; box-shadow: 0 4px 14px rgba(255, 199, 44, 0.3); }
+.btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #FFC72C, #E0A100); color: #0B0F17; border: none; padding: 12px 26px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 4px 14px rgba(255, 199, 44, 0.3); }
 .btn:hover { background: #FFD454; transform: translateY(-1px); }
-.btn-ghost { background: var(--panel-2); border: 1px solid var(--border-light); color: var(--text); padding: 8px 16px; border-radius: 8px; font-size: 12.5px; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px; }
+.btn-ghost { background: var(--panel-2); border: 1px solid var(--border-light); color: var(--text); padding: 8px 16px; border-radius: 8px; font-size: 12.5px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
 .btn-ghost:hover { border-color: var(--gold); color: var(--gold); background: var(--panel-hover); }
+.btn-ghost:disabled { opacity: .4; cursor: not-allowed; }
 .err-msg { color: var(--danger); background: var(--danger-bg); border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-top: 20px; display: none; text-align: left; }
 .err-msg.show { display: block; }
 
-/* Dashboard Layout */
 #dashboard { display: none; }
 #dashboard.show { display: block; }
 
-/* Verdict Banner */
+/* Verdict */
 .verdict-banner { border-radius: 16px; padding: 20px 24px; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 18px; border: 1px solid transparent; }
 .verdict-banner .v-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; font-weight: bold; }
 .verdict-banner .v-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-.verdict-banner .v-desc { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+.verdict-banner .v-desc { font-size: 13.5px; line-height: 1.5; }
 .verdict-banner .v-list { margin-top: 8px; font-size: 12.5px; padding-left: 18px; color: var(--text-dim); }
 
-/* KPI Grid */
+/* KPI */
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 28px; }
-.kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; position: relative; overflow: hidden; }
+.kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
 .kpi .label { font-size: 11.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 8px; }
-.kpi .value { font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
-.kpi .sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+.kpi .value { font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.kpi .sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
 .kpi .value.pos { color: var(--safe); }
 .kpi .value.neg { color: var(--danger); }
 
-/* Section Header */
 .section-head { display: flex; justify-content: space-between; align-items: center; margin: 32px 0 16px; flex-wrap: wrap; gap: 10px; }
-.section-title { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 10px; }
+.section-title { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 .section-title span.sub { font-family: 'IBM Plex Sans', sans-serif; font-weight: 400; font-size: 12.5px; color: var(--text-dim); }
 
-/* Expert Prop Firm Panel */
-.expert-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 28px; display: none; }
-.expert-panel.show { display: block; }
-.expert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-.expert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
-.rule-item { background: var(--panel-2); border: 1px solid var(--border-light); padding: 14px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-.rule-info h4 { font-family: 'Space Grotesk', sans-serif; font-size: 14px; margin-bottom: 4px; color: var(--text); }
-.rule-info p { font-size: 12px; color: var(--text-dim); }
-.rule-status { padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12px; font-family: 'IBM Plex Mono', monospace; }
-.rule-status.pass { background: var(--safe-bg); color: var(--safe); border: 1px solid rgba(16, 185, 129, 0.3); }
-.rule-status.fail { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
-
-/* Trigger Cards Grid */
-.trigger-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
-.trigger-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; }
-.trigger-card .t-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-.trigger-card .t-label { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
-.trigger-card .t-formula { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-faint); background: var(--panel-2); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
+/* Trigger cards */
+.trigger-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 10px; }
+.trigger-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+.trigger-card .t-label { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; }
+.trigger-card .t-formula { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-faint); background: var(--panel-2); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); display: inline-block; margin-top: 6px; }
 .trigger-card .t-value { font-family: 'IBM Plex Mono', monospace; font-size: 36px; font-weight: 700; margin: 12px 0 8px; }
 .trigger-card .t-value .pct { font-size: 20px; color: var(--text-faint); }
-.badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
 .badge.safe { background: var(--safe-bg); color: var(--safe); border: 1px solid rgba(16, 185, 129, 0.3); }
 .badge.warn { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(245, 158, 11, 0.3); }
 .badge.danger { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+.badge.info { background: var(--info-bg); color: var(--info); border: 1px solid rgba(139, 155, 180, 0.3); }
 .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-.bar-track { height: 8px; border-radius: 6px; background: var(--panel-2); margin: 16px 0 10px; overflow: hidden; position: relative; border: 1px solid var(--border); }
+.bar-track { height: 8px; border-radius: 6px; background: var(--panel-2); margin: 16px 0 10px; overflow: hidden; border: 1px solid var(--border); }
 .bar-fill { height: 100%; border-radius: 6px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
 
-/* Settings Form */
-.settings-box { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; margin-bottom: 32px; }
-.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; }
+/* Settings */
+.settings-box { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; }
+.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
 .field label { display: block; font-size: 11.5px; color: var(--text-dim); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
-.field input, .field select { width: 100%; background: var(--panel-2); border: 1px solid var(--border-light); border-radius: 8px; padding: 9px 12px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; transition: border-color 0.15s ease; }
+.field input, .field select { width: 100%; background: var(--panel-2); border: 1px solid var(--border-light); border-radius: 8px; padding: 9px 12px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; }
 .field select { font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; }
 .field input:focus, .field select:focus { outline: none; border-color: var(--gold); }
+.field .hint { font-size: 11px; color: var(--text-faint); margin-top: 5px; font-family: 'IBM Plex Sans', sans-serif; }
 
-/* Interactive Tabs */
+/* Expert mode toggle switch */
+.expert-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.switch-row { display: flex; align-items: center; gap: 12px; }
+.switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; inset: 0; background: var(--panel-2); border: 1px solid var(--border-light); border-radius: 26px; transition: .2s; }
+.slider:before { content: ""; position: absolute; height: 18px; width: 18px; left: 3px; top: 3px; background: var(--text-faint); border-radius: 50%; transition: .2s; }
+.switch input:checked + .slider { background: var(--gold-glow); border-color: var(--gold); }
+.switch input:checked + .slider:before { transform: translateX(20px); background: var(--gold); }
+.switch-label { font-size: 13.5px; font-weight: 600; }
+.switch-label .sub { display: block; font-size: 11.5px; color: var(--text-faint); font-weight: 400; margin-top: 1px; }
+
+#expertPanel { display: none; margin-top: 18px; }
+#expertPanel.show { display: block; }
+.expert-config { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+
+.rule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.rule-card { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+.rule-card .r-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.rule-card .r-label { font-size: 13px; font-weight: 600; line-height: 1.35; }
+.rule-card .r-desc { font-size: 12px; color: var(--text-dim); margin-top: 4px; line-height: 1.5; }
+.rule-card .r-val { font-family: 'IBM Plex Mono', monospace; font-size: 19px; font-weight: 700; margin-top: 10px; }
+.rule-card .r-formula { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text-faint); margin-top: 6px; }
+
+/* Tabs */
 .tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; padding-bottom: 2px; }
-.tab-btn { background: transparent; border: none; color: var(--text-dim); padding: 10px 18px; font-size: 13.5px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; font-family: 'IBM Plex Sans', sans-serif; white-space: nowrap; transition: all 0.15s ease; }
+.tab-btn { background: transparent; border: none; color: var(--text-dim); padding: 10px 18px; font-size: 13.5px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-/* Custom Tables */
 .filter-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .search-input { background: var(--panel-2); border: 1px solid var(--border-light); border-radius: 8px; padding: 8px 14px; color: var(--text); font-size: 13px; min-width: 240px; outline: none; }
 .search-input:focus { border-color: var(--gold); }
@@ -178,7 +163,7 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 .table-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
 .table-scroll { max-height: 520px; overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
-thead th { background: var(--panel-2); padding: 12px 16px; font-size: 11px; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 2; }
+thead th { background: var(--panel-2); padding: 12px 16px; font-size: 11px; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); position: sticky; top: 0; }
 tbody td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-dim); white-space: nowrap; }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover { background: var(--panel-hover); }
@@ -189,272 +174,268 @@ td.strong { color: var(--text); font-weight: 600; }
 .flag-tag { font-size: 11px; background: var(--danger-bg); color: var(--danger); padding: 3px 8px; border-radius: 6px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
 .safe-tag { font-size: 11px; background: var(--safe-bg); color: var(--safe); padding: 3px 8px; border-radius: 6px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
 
-/* Pagination */
 .pagination { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--panel-2); border-top: 1px solid var(--border); font-size: 12.5px; color: var(--text-dim); }
-.page-btns { display: flex; gap: 6px; }
+.page-btns { display: flex; gap: 6px; align-items: center; }
 
-/* Charts Box & Tooltip */
-.chart-container { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 24px; position: relative; }
-.chart-head { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text); display: flex; justify-content: space-between; }
-.svg-chart { width: 100%; height: 260px; display: block; overflow: visible; }
-.chart-tooltip { position: absolute; background: var(--panel-hover); border: 1px solid var(--border-light); color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 12px; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.5); white-space: nowrap; }
+.chart-container { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 24px; }
+.chart-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+.chart-head .chart-title { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; }
+.chart-head .chart-meta { font-size: 11.5px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
+.svg-chart { width: 100%; height: 220px; display: block; }
 
-/* Rules Guide Accordion */
 .rules-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 14px; }
 .rules-card h4 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; color: var(--gold); margin-bottom: 8px; }
 .rules-card p { color: var(--text-dim); font-size: 13px; line-height: 1.6; }
+.rules-card ul { margin: 8px 0 0 18px; color: var(--text-dim); font-size: 13px; line-height: 1.7; }
+.rules-card ul b { color: var(--text); }
 
 footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-size: 12px; border-top: 1px solid var(--border); padding-top: 24px; }
 
 @media(max-width: 860px) {
   .trigger-grid { grid-template-columns: 1fr; }
   .kpi-grid { grid-template-columns: 1fr 1fr; }
-  .expert-grid { grid-template-columns: 1fr; }
+  .topbar { flex-direction: column; align-items: flex-start; }
 }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- TOPBAR -->
   <div class="topbar">
     <div class="brand">
       <div class="brand-mark">FX</div>
       <div class="brand-text">
-        <h1>Prop Firm Compliance Auditor &amp; Expert Evaluation</h1>
-        <p>Audit Kepatuhan &amp; Evaluasi Aturan Berbagai Prop Firm (MT4/MT5)</p>
+        <h1>Prop Firm Compliance &amp; Tick Scalping Auditor</h1>
+        <p>Audit kepatuhan &amp; deteksi dini rule funded account dari Report History MT4/MT5</p>
       </div>
     </div>
-
-    <div class="toolbar-group">
-      <!-- Currency Switcher -->
-      <div class="currency-toggle">
-        <span>USD</span>
-        <label class="switch">
-          <input type="checkbox" id="currSwitch">
-          <span class="slider"></span>
-        </label>
-        <span>IDR</span>
+    <div class="topbar-right">
+      <div class="cur-toggle">
+        <button class="cur-btn active" id="curUsdBtn">USD</button>
+        <button class="cur-btn" id="curIdrBtn">IDR</button>
+        <input type="number" class="kurs-input" id="kursInput" value="17600" title="Kurs USD → IDR">
       </div>
-      <div class="preset-selector" id="rateDiv" style="display:none; padding:4px 8px;">
-        <label>Kurs:</label>
-        <input type="number" id="idrRate" value="16000" style="width:70px; background:var(--panel-2); border:none; color:var(--text); font-family:'IBM Plex Mono'; font-size:12px; outline:none; border-radius:4px; padding:2px;">
-      </div>
-
-      <!-- Expert Prop Firm Preset Selector -->
-      <div class="preset-selector">
-        <label for="firmPreset">Evaluasi Prop Firm:</label>
-        <select id="firmPreset">
-          <optgroup label="Funding Pips">
-            <option value="fundingpips_1">1-Step Flex (T:12%, DL:3%, ML:12%)</option>
-            <option value="fundingpips_2">2-Step Standard (T:8/5%, DL:5%, ML:10%)</option>
-            <option value="fundingpips_0">Zero Instant (DL:3%, ML:5%)</option>
-          </optgroup>
-          <optgroup label="FundedNext">
-            <option value="fundednext_1">Stellar 1-Step (T:10%, DL:3%, ML:6%)</option>
-            <option value="fundednext_2">Stellar 2-Step (T:8/5%, DL:5%, ML:10%)</option>
-          </optgroup>
-          <optgroup label="FTMO">
-            <option value="ftmo_1">1-Step Challenge (T:10%, DL:3%, ML:10%)</option>
-            <option value="ftmo_2">2-Step Challenge (T:10/5%, DL:5%, ML:10%)</option>
-          </optgroup>
-          <optgroup label="The 5ers">
-            <option value="the5ers_1">1-Step Hyper Growth (T:10%, DL:3%, ML:6%)</option>
-            <option value="the5ers_2">2-Step High Stakes (T:8%, DL:5%, ML:10%)</option>
-          </optgroup>
-          <optgroup label="WeMasterTrade">
-            <option value="wemastertrade" selected>Challenge 2-Step (T:8%, DL:5%, ML:10%)</option>
-          </optgroup>
-          <optgroup label="Goat Funded Trader">
-            <option value="goat_1">1-Step Classic (T:10%, DL:3%, ML:5%)</option>
-          </optgroup>
-          <optgroup label="Alpha Capital">
-            <option value="alpha_1">Alpha One 1-Step (DL:4%, ML:6%)</option>
-            <option value="alpha_2">Alpha Pro 2-Step (T:8/5%, DL:5%, ML:10%)</option>
-          </optgroup>
-          <optgroup label="Alpha Trader Firm">
-            <option value="alphatrader_2">2-Step Challenge (T:8/5%, DL:5%, ML:10%)</option>
-          </optgroup>
-          <optgroup label="Topstep">
-            <option value="topstep">Trading Combine (DL: 2%, ML: 3%)</option>
-          </optgroup>
-        </select>
-      </div>
-      
-      <button class="btn-ghost" id="toggleExpertBtn" style="border-color:var(--gold); color:var(--gold);">⚡ Panel Expert Rules</button>
+      <div class="acc-chip" id="accChip"></div>
     </div>
-
-    <div class="acc-chip" id="accChip"></div>
   </div>
 
-  <!-- DROPZONE -->
   <div id="dropzoneWrap">
     <div class="dropzone" id="dropzone">
       <div class="dz-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </div>
       <h2>Unggah Laporan History Trading (.xlsx)</h2>
-      <p>Tarik &amp; lepas file Report History dari MetaTrader 4 atau MetaTrader 5 di sini. Semua perhitungan dieksekusi aman di browser lokal Anda.</p>
+      <p>Tarik &amp; lepas file Report History dari MetaTrader 4 atau MetaTrader 5 di sini. Semua perhitungan dieksekusi di browser lokal — file tidak diunggah ke server manapun.</p>
       <button class="btn" id="pickBtn">Pilih File Excel</button>
       <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none;">
       <div class="err-msg" id="errMsg"></div>
     </div>
   </div>
 
-  <!-- DASHBOARD MAIN -->
   <div id="dashboard">
 
-    <!-- Executive Verdict Banner -->
     <div class="verdict-banner" id="verdictBanner"></div>
-    
-    <!-- EXPERT RULES PANEL -->
-    <div class="expert-panel" id="expertPanel">
-      <div class="expert-header">
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:18px; color:var(--gold);">Expert Evaluation: <span id="expertFirmName">WeMasterTrade</span></h3>
-        <div style="font-size:13px; color:var(--text-dim);">Evaluasi dinamis performa terhadap target dan limitasi Drawdown.</div>
-      </div>
-      <div class="expert-grid" id="expertGrid">
-        <!-- Injected via JS -->
-      </div>
-    </div>
-
-    <!-- KPI Summary Cards -->
     <div class="kpi-grid" id="kpiGrid"></div>
 
-    <!-- Trigger Scorecards -->
     <div class="section-head">
-      <div class="section-title">
-        Audit Status Trigger Tick Scalping Prop Firm
-        <span class="sub" id="periodLabel"></span>
-      </div>
+      <div class="section-title">Universal Scalp Check <span class="sub" id="periodLabel"></span></div>
     </div>
     <div class="trigger-grid" id="triggerGrid"></div>
 
-    <!-- Settings Box -->
     <div class="settings-box">
-      <div class="section-title" style="margin-top:0; margin-bottom:14px; font-size:14.5px;">
-        Pengaturan Parameter Drawdown &amp; Scalping
+      <div class="section-title" style="margin-bottom:14px; font-size:14.5px;">Parameter Universal Scalp Check</div>
+      <div class="settings-grid" id="settingsGrid"></div>
+    </div>
+
+    <div class="settings-box">
+      <div class="expert-head">
+        <div class="switch-row">
+          <label class="switch">
+            <input type="checkbox" id="expertToggle">
+            <span class="slider"></span>
+          </label>
+          <div class="switch-label">Mode Expert — Evaluasi Rule Prop Firm
+            <span class="sub">Nilai transaksi terhadap rule spesifik dari 9 prop firm populer</span>
+          </div>
+        </div>
       </div>
-      <div class="settings-grid" id="settingsGrid">
-        <div class="field">
-          <label>Starting Balance ($)</label>
-          <input type="number" id="inpBalance" value="100000" min="1000">
+
+      <div id="expertPanel">
+        <div class="expert-config">
+          <div class="field">
+            <label>Prop Firm</label>
+            <select id="firmSelect"></select>
+          </div>
+          <div class="field">
+            <label>Tipe Akun</label>
+            <select id="typeSelect"></select>
+          </div>
+          <div class="field">
+            <label>Ukuran Akun / Balance Awal (USD)</label>
+            <input type="number" id="balanceInput" value="10000" min="1">
+            <div class="hint">Dipakai untuk kalkulasi rule berbasis % (daily loss, max loss, target profit).</div>
+          </div>
         </div>
-        <div class="field">
-          <label>Ambang Durasi Scalp (Detik)</label>
-          <input type="number" id="inpScalpSec" value="120" min="1">
-        </div>
-        <div class="field">
-          <label>Limit Trigger 1 (%)</label>
-          <input type="number" id="inpT1" value="20" min="1" step="0.5">
-        </div>
-        <div class="field">
-          <label>Limit Trigger 2 (%)</label>
-          <input type="number" id="inpT2" value="10" min="1" step="0.5">
-        </div>
-        <div class="field">
-          <label>Basis Profit Trigger 2</label>
-          <select id="inpBasis">
-            <option value="gross">Total Gross Profit</option>
-            <option value="net">Total Net Profit</option>
-            <option value="winscalp">Win Scalp vs Total Win</option>
-          </select>
-        </div>
+        <div class="rule-grid" id="ruleGrid"></div>
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
     <div class="tabs">
-      <button class="tab-btn active" data-tab="tab-overview">📊 Ringkasan &amp; Kurva PnL</button>
-      <button class="tab-btn" data-tab="tab-scalp">⚡ Trade Terindikasi Scalp (<span id="tabScalpCount">0</span>)</button>
-      <button class="tab-btn" data-tab="tab-all">🔍 Seluruh Transaksi (100% History)</button>
-      <button class="tab-btn" data-tab="tab-daily">📅 Rekap Performa Harian</button>
-      <button class="tab-btn" data-tab="tab-rules">📘 Panduan Rule Funded</button>
+      <button class="tab-btn active" data-tab="tab-overview">Ringkasan &amp; Grafik</button>
+      <button class="tab-btn" data-tab="tab-scalp">Trade Terindikasi Scalp (<span id="tabScalpCount">0</span>)</button>
+      <button class="tab-btn" data-tab="tab-all">Seluruh Transaksi</button>
+      <button class="tab-btn" data-tab="tab-daily">Rekap Harian</button>
+      <button class="tab-btn" data-tab="tab-rules">Panduan Rule Funded</button>
     </div>
 
-    <!-- TAB 1: Visual Overview & Charts -->
     <div class="tab-content active" id="tab-overview">
-      <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap: 20px;">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div class="chart-container">
-          <div class="chart-head">Kurva Pertumbuhan Profit Cumulative <span id="chartCurrUnit" style="font-size:12px; font-weight:normal; color:var(--text-faint);"></span></div>
+          <div class="chart-head">
+            <div class="chart-title">Kurva Pertumbuhan Profit Kumulatif</div>
+            <div class="chart-meta" id="equityMeta"></div>
+          </div>
           <svg class="svg-chart" id="equityChart"></svg>
-          <div class="chart-tooltip" id="eqTooltip"></div>
         </div>
         <div class="chart-container">
-          <div class="chart-head">Distribusi Durasi Penutupan Posisi</div>
+          <div class="chart-head"><div class="chart-title">Distribusi Durasi Penutupan Posisi</div></div>
           <svg class="svg-chart" id="durationChart"></svg>
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: Flagged Scalp Trades -->
     <div class="tab-content" id="tab-scalp">
       <div class="filter-bar">
-        <div style="font-weight:600; color:var(--text); font-size:14px;">Daftar Transaksi Berdurasi &lt; Ambang Batas Scalping</div>
+        <div style="font-weight:600; font-size:14px;">Daftar transaksi berdurasi di bawah ambang scalping</div>
         <button class="btn-ghost" id="exportScalpBtn">Unduh CSV (Trade Scalp)</button>
       </div>
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table id="scalpTable"></table>
-        </div>
-      </div>
+      <div class="table-wrap"><div class="table-scroll"><table id="scalpTable"></table></div></div>
     </div>
 
-    <!-- TAB 3: All Transactions -->
     <div class="tab-content" id="tab-all">
       <div class="filter-bar">
-        <input type="text" class="search-input" id="searchAll" placeholder="Cari Ticket, Symbol, Type...">
+        <input type="text" class="search-input" id="searchAll" placeholder="Cari ticket, symbol, type...">
         <div class="filter-tags" id="filterTags">
           <button class="tag-btn active" data-filter="all">Semua Trade</button>
-          <button class="tag-btn" data-filter="scalp">⚡ Scalp Trades</button>
-          <button class="tag-btn" data-filter="winscalp">🟢 Win Scalps</button>
-          <button class="tag-btn" data-filter="nosl">⚠️ Tanpa SL</button>
-          <button class="tag-btn" data-filter="highlot">📊 Lot Besar (>2x Avg)</button>
+          <button class="tag-btn" data-filter="scalp">Scalp Trades</button>
+          <button class="tag-btn" data-filter="winscalp">Win Scalps</button>
+          <button class="tag-btn" data-filter="nosl">Tanpa SL</button>
+          <button class="tag-btn" data-filter="highlot">Lot Besar (&gt;2x Avg)</button>
+          <button class="tag-btn" data-filter="weekend">Hold Weekend</button>
         </div>
         <button class="btn-ghost" id="exportAllBtn">Unduh CSV (Semua Trade)</button>
       </div>
       <div class="table-wrap">
-        <div class="table-scroll">
-          <table id="allTable"></table>
-        </div>
+        <div class="table-scroll"><table id="allTable"></table></div>
         <div class="pagination" id="allPagination"></div>
       </div>
     </div>
 
-    <!-- TAB 4: Daily Breakdown -->
     <div class="tab-content" id="tab-daily">
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table id="dailyTable"></table>
-        </div>
-      </div>
+      <div class="table-wrap"><div class="table-scroll"><table id="dailyTable"></table></div></div>
     </div>
 
-    <!-- TAB 5: Prop Firm Rules Info -->
     <div class="tab-content" id="tab-rules">
       <div class="rules-card">
         <h4>Definisi Tick Scalping / Short Duration Trade</h4>
-        <p>Prop firm membatasi transaksi yang dibuka dan ditutup dalam waktu sangat singkat (di bawah 30, 60, atau 120 detik) karena tergolong arbitrage atau latency exploitation.</p>
+        <p>Banyak prop firm melarang atau membatasi transaksi yang dibuka dan ditutup dalam waktu sangat singkat karena tergolong <i>arbitrage</i>, <i>latency exploitation</i>, atau <i>high-frequency tick scalping</i>. Tool ini punya dua lapis pemeriksaan: <b>Universal Scalp Check</b> (formula umum jumlah &amp; profit trade cepat) dan <b>Mode Expert</b> (rule spesifik per prop firm di bawah).</p>
       </div>
-      <div class="rules-card">
-        <h4>Aturan Konsistensi / Profit Concentration</h4>
-        <p>Aturan ini (misal 50% FTMO, 60% Funding Pips) membatasi satu hari trading agar tidak menyumbang lebih dari persentase batas maksimal terhadap keseluruhan profit, demi mencegah gaya trading "all or nothing".</p>
-      </div>
+      <div class="rules-card"><h4>Trigger 1 — Rasio Frekuensi Transaksi Scalp</h4>
+        <p><b>Rumus:</b> <code>(Jumlah Trade &lt; Threshold / Total Trade) × 100%</code>. Mengukur seberapa sering pola close cepat terjadi dibanding seluruh posisi.</p></div>
+      <div class="rules-card"><h4>Trigger 2 — Rasio Kontribusi Profit Scalp</h4>
+        <p><b>Rumus:</b> <code>(Profit Win Scalp / Basis Profit) × 100%</code>. Mengukur seberapa dominan profit dari trade cepat terhadap total profit akun.</p></div>
+      <div id="firmRulesGuide"></div>
     </div>
 
-    <div style="margin-top:28px; display:flex; justify-content:space-between; align-items:center;">
-      <button class="btn-ghost" id="resetBtn">← Muat File Lain</button>
+    <div style="margin-top:28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <button class="btn-ghost" id="resetBtn">&larr; Muat File Lain</button>
       <div style="font-size:12px; color:var(--text-faint);">Dihitung otomatis di browser lokal. Tanpa server luar.</div>
     </div>
 
   </div>
 
-  <footer>Prop Firm Tick Scalping & Expert Rule Auditor &copy; 2026 — Solusi Lengkap Evaluasi Akun.</footer>
+  <footer>Prop Firm Tick Scalping Auditor — dibuat untuk keperluan pribadi, bukan afiliasi resmi dengan prop firm manapun. Selalu cek rulebook terbaru dari masing-masing firm.</footer>
 </div>
 
 <script>
 (function(){
-  // Elements
+  /* ============================ PROP FIRM RULE DATA ============================ */
+  const PROPFIRM_RULES = {
+    fundingpips: { name: 'Funding Pips', types: {
+      flex1: { label: '1-Step Flex', targetProfit: [12], dailyLoss: 3, maxLoss: 12, maxLossType: 'trailing_flex', minTradingDays: 0, profitSplit: 85,
+        extra: [ { id:'concentration', label:'Profit Concentration Policy', kind:'single_trade_vs_target', limit:60, desc:'Jika 1 trade melebihi 60% dari target profit, wajib trading minimal 4 hari profit sebelum payout.' } ] },
+      std2: { label: '2-Step Standard & Flex', targetProfit: [8,5], dailyLoss: [4,5], maxLoss: [10,12], maxLossType: 'static', minTradingDays: 3,
+        extra: [ { id:'news', label:'News Trading Window (Fase Master)', kind:'info', desc:'Trading berita dibolehkan dengan batasan jendela waktu 10 menit.' } ] },
+      zero: { label: 'Zero (Instant/Direct)', targetProfit: [], dailyLoss: 3, maxLoss: 5, maxLossType: 'trailing', minTradingDays: 0, profitSplit: 95,
+        extra: [ { id:'copy', label:'Copy Trading Antar Akun', kind:'info', desc:'Diperbolehkan copy trading antar akun.' } ] }
+    }},
+    fundednext: { name: 'FundedNext', types: {
+      stellar1: { label: 'Stellar 1-Step', targetProfit: [10], dailyLoss: 3, maxLoss: 6, maxLossType: 'static', minTradingDays: 0,
+        extra: [ { id:'newsweekend', label:'News &amp; Weekend Holding', kind:'info', desc:'Bebas trading berita dan menahan posisi saat weekend.' } ] },
+      stellar2: { label: 'Stellar 2-Step', targetProfit: [8,5], dailyLoss: 5, maxLoss: 10, maxLossType: 'static', minTradingDays: 0,
+        extra: [ { id:'consistency', label:'Consistency Rules CFD', kind:'info', desc:'Bebas consistency rules untuk CFD.' } ] },
+      instant: { label: 'Instant Funding', targetProfit: [], dailyLoss: null, maxLoss: null, minTradingDays: 0,
+        extra: [ { id:'newswindow', label:'Profit Split Turun Saat News Window', kind:'info', desc:'Profit split turun menjadi 40% selama jendela news trading (5 menit sebelum & sesudah berita high impact).' } ] }
+    }},
+    the5ers: { name: 'The 5%ers', types: {
+      hyper1: { label: '1-Step (Hyper/Pro Growth)', targetProfit: [10], dailyLoss: 3, maxLoss: 6, maxLossType: 'stop_out', minTradingDays: 0,
+        extra: [ { id:'scale', label:'Scaling Hingga $4.000.000', kind:'info', desc:'Akun dapat di-scale up hingga $4.000.000.' } ] },
+      highstakes2: { label: '2-Step (High Stakes)', targetProfit: [9,5], dailyLoss: 5, maxLoss: 10, maxLossType: 'static', minTradingDays: 3,
+        extra: [ { id:'newsrestrict', label:'Berita Dilarang', kind:'info', desc:'News trading restricted pada model High Stakes.' } ] },
+      bootcamp: { label: 'Bootcamp (3-Step Lite)', targetProfit: [6,6,6], dailyLoss: null, maxLoss: 5, maxLossType: 'static', minTradingDays: 0,
+        extra: [ { id:'leverage', label:'Leverage Rendah 1:30', kind:'info' } ] },
+      instant: { label: 'Instant Funding', targetProfit: [], dailyLoss: null, maxLoss: 6, maxLossType: 'static', minTradingDays: 0, extra: [] }
+    }},
+    wemastertrade: { name: 'WeMasterTrade', types: {
+      challenge2: { label: 'Challenge Package (2-Step)', targetProfit: [8,6], dailyLoss: 5, maxLoss: 10, maxLossType: 'static', minTradingDays: 0,
+        extra: [ { id:'leverage', label:'Leverage 1:100, Overnight & Weekend Boleh', kind:'info' } ] },
+      instant: { label: 'Instant Funding', targetProfit: [], dailyLoss: 5, maxLoss: 10, maxLossType: 'static', minTradingDays: 0,
+        extra: [ { id:'newsok', label:'News Trading Diperbolehkan, Opsi Free Swap', kind:'info' } ] }
+    }},
+    goatfunded: { name: 'Goat Funded Trader', types: {
+      classic: { label: '1-Step & 2-Step Classic', targetProfit: [], dailyLoss: 3, maxLoss: 5, maxLossType: 'cumulative', minTradingDays: 0,
+        extra: [ { id:'leverage', label:'Leverage 1:100, Bebas News & Weekend', kind:'info' } ] },
+      instant: { label: 'Instant Funding', targetProfit: [], dailyLoss: 5, maxLoss: 10, maxLossType: 'daily_max', minTradingDays: 3,
+        extra: [
+          { id:'consistency', label:'Consistency Limit', kind:'consistency_limit', limit:40, limitLow:15, desc:'Profit satu hari maksimal 15–40% dari total target agar distribusi profit merata.' },
+          { id:'sl', label:'Wajib Pasang Stop-Loss', kind:'sl_required' }
+        ] }
+    }},
+    ftmo: { name: 'FTMO', types: {
+      step1: { label: '1-Step Challenge', targetProfit: [10], dailyLoss: 3, maxLoss: 10, maxLossType: 'trailing_eod', minTradingDays: 0,
+        extra: [ { id:'bestday', label:'50% Best Day Rule', kind:'best_day', limit:50, desc:'Tidak boleh 1 hari trading menyumbang lebih dari 50% total profit.' } ] },
+      step2: { label: '2-Step Challenge', targetProfit: [10,5], dailyLoss: 5, maxLoss: 10, maxLossType: 'static', minTradingDays: 4, extra: [] },
+      live: { label: 'Funded Live (Standard)', targetProfit: [], dailyLoss: null, maxLoss: null, minTradingDays: 0,
+        extra: [ { id:'newsban', label:'Larangan Open/Close Dekat News', kind:'info', desc:'Dilarang membuka/menutup posisi 2 menit sebelum & sesudah berita high impact (tidak berlaku untuk tipe Swing).' } ] }
+    }},
+    alphacapital: { name: 'Alpha Capital Group', types: {
+      one1: { label: 'Alpha One (1-Step)', targetProfit: [], dailyLoss: 4, maxLoss: 6, maxLossType: 'trailing', minTradingDays: 1, extra: [] },
+      prowing2: { label: 'Alpha Pro / Swing (2-Step)', targetProfit: [8,5], dailyLoss: [3,5], maxLoss: [6,10], maxLossType: 'static', minTradingDays: 3,
+        extra: [ { id:'avgdur', label:'Durasi Rata-rata Trade &gt; 2 Menit', kind:'avg_duration', limit:120, desc:'Dilarang tick-scalping cepat; rata-rata durasi per trade harus di atas 2 menit.' } ] },
+      three3: { label: 'Alpha Three (3-Step Lite)', targetProfit: [], dailyLoss: 4, maxLoss: 6, maxLossType: 'static', minTradingDays: 0,
+        extra: [ { id:'leverage', label:'Leverage 1:50', kind:'info' } ] },
+      instant: { label: 'Instant Funding (Qualified)', targetProfit: [], dailyLoss: 3, maxLoss: 5, maxLossType: 'trailing', minTradingDays: 0,
+        extra: [
+          { id:'risk1', label:'Risiko Maksimal 1% per Posisi', kind:'info' },
+          { id:'noweekend', label:'Dilarang Hold Weekend & News Trading (jendela 10 menit)', kind:'weekend_hold', disallow:true }
+        ] }
+    }},
+    alphatrader: { name: 'Alpha Trader Firm', types: {
+      paylater: { label: 'Pay Later Program (1-Step)', targetProfit: [4], dailyLoss: 10, maxLoss: null, minTradingDays: 0, extra: [] },
+      step2: { label: '2-Step Challenge', targetProfit: [8,5], dailyLoss: 5, maxLoss: 10, maxLossType: 'static', minTradingDays: 0, extra: [] },
+      instant: { label: 'Instant Funding', targetProfit: [], dailyLoss: 5, maxLoss: 10, maxLossType: 'static', minTradingDays: 0,
+        extra: [ { id:'noconsist', label:'Zero Consistency Rules, Same-day Payout', kind:'info' } ] }
+    }},
+    topstep: { name: 'Topstep (Futures)', types: {
+      combine: { label: 'Trading Combine (1-Step)', targetProfit: [], dailyLoss: null, maxLoss: null, maxLossType: 'eod_trailing', minTradingDays: 0,
+        extra: [
+          { id:'hours', label:'Semua Posisi Ditutup Sebelum 15:10 CT', kind:'info', desc:'Dilarang hold posisi lewat jam permitted trading Chicago Time.' },
+          { id:'noweekend', label:'Dilarang Hold Posisi Lewat Hari/Weekend', kind:'weekend_hold', disallow:true }
+        ] }
+    }}
+  };
+
+  /* ============================ DOM refs ============================ */
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
   const pickBtn = document.getElementById('pickBtn');
@@ -463,86 +444,76 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
   const dashboard = document.getElementById('dashboard');
   const accChip = document.getElementById('accChip');
   const resetBtn = document.getElementById('resetBtn');
-  const firmPreset = document.getElementById('firmPreset');
-  const currSwitch = document.getElementById('currSwitch');
-  const idrRate = document.getElementById('idrRate');
-  const rateDiv = document.getElementById('rateDiv');
-  const toggleExpertBtn = document.getElementById('toggleExpertBtn');
+  const exportScalpBtn = document.getElementById('exportScalpBtn');
+  const exportAllBtn = document.getElementById('exportAllBtn');
+  const expertToggle = document.getElementById('expertToggle');
   const expertPanel = document.getElementById('expertPanel');
-  const startBalInput = document.getElementById('inpBalance');
+  const firmSelect = document.getElementById('firmSelect');
+  const typeSelect = document.getElementById('typeSelect');
+  const balanceInput = document.getElementById('balanceInput');
+  const curUsdBtn = document.getElementById('curUsdBtn');
+  const curIdrBtn = document.getElementById('curIdrBtn');
+  const kursInput = document.getElementById('kursInput');
 
-  // State
   let STATE = null;
+  let settings = { scalpSeconds: 120, t1Threshold: 20, t2Threshold: 10, t2Basis: 'gross', maxLotFactor: 2.0,
+    currency: 'usd', kurs: 17600, expertOn: false, firm: 'wemastertrade', type: 'challenge2', balance: 10000 };
+
   let allTablePage = 1;
   const pageSize = 25;
   let activeFilterTag = 'all';
   let searchQuery = '';
-  
-  let useIDR = false;
-  let rate = 16000;
-  let startBalance = 100000;
-  let showExpert = false;
 
-  // Prop Firm Definitions (Rules Mapping)
-  const PROP_FIRMS = {
-    fundingpips_1: { name: "Funding Pips (1-Step Flex)", target: 12, dailyLoss: 3, maxLoss: 12, minDays: 0, consistency: 60, scalp: 30, t1: 10, t2: 10, t2Basis: 'net' },
-    fundingpips_2: { name: "Funding Pips (2-Step)", target: 8, dailyLoss: 5, maxLoss: 10, minDays: 3, consistency: 100, scalp: 30, t1: 10, t2: 10, t2Basis: 'net' },
-    fundingpips_0: { name: "Funding Pips (Zero)", target: 999, dailyLoss: 3, maxLoss: 5, minDays: 0, consistency: 100, scalp: 30, t1: 10, t2: 10, t2Basis: 'net' },
-    
-    fundednext_1: { name: "FundedNext (Stellar 1-Step)", target: 10, dailyLoss: 3, maxLoss: 6, minDays: 0, consistency: 100, scalp: 120, t1: 20, t2: 10, t2Basis: 'gross' },
-    fundednext_2: { name: "FundedNext (Stellar 2-Step)", target: 8, dailyLoss: 5, maxLoss: 10, minDays: 0, consistency: 100, scalp: 120, t1: 20, t2: 10, t2Basis: 'gross' },
-    
-    ftmo_1: { name: "FTMO (1-Step Challenge)", target: 10, dailyLoss: 3, maxLoss: 10, minDays: 0, consistency: 50, scalp: 60, t1: 15, t2: 15, t2Basis: 'net' },
-    ftmo_2: { name: "FTMO (2-Step Challenge)", target: 10, dailyLoss: 5, maxLoss: 10, minDays: 4, consistency: 100, scalp: 60, t1: 15, t2: 15, t2Basis: 'net' },
-    
-    the5ers_1: { name: "The 5ers (1-Step Hyper)", target: 10, dailyLoss: 3, maxLoss: 6, minDays: 0, consistency: 100, scalp: 120, t1: 20, t2: 10, t2Basis: 'net' },
-    the5ers_2: { name: "The 5ers (High Stakes)", target: 8, dailyLoss: 5, maxLoss: 10, minDays: 3, consistency: 100, scalp: 120, t1: 20, t2: 10, t2Basis: 'net' },
-    
-    wemastertrade: { name: "WeMasterTrade (Challenge)", target: 8, dailyLoss: 5, maxLoss: 10, minDays: 0, consistency: 100, scalp: 120, t1: 20, t2: 10, t2Basis: 'gross' },
-    
-    goat_1: { name: "Goat Funded Trader (1-Step)", target: 10, dailyLoss: 3, maxLoss: 5, minDays: 0, consistency: 40, scalp: 120, t1: 20, t2: 10, t2Basis: 'gross' },
-    
-    alpha_1: { name: "Alpha Capital (Alpha One)", target: 999, dailyLoss: 4, maxLoss: 6, minDays: 1, consistency: 100, scalp: 120, t1: 20, t2: 10, t2Basis: 'gross' },
-    alpha_2: { name: "Alpha Capital (Pro/Swing)", target: 8, dailyLoss: 5, maxLoss: 10, minDays: 3, consistency: 100, scalp: 120, t1: 20, t2: 10, t2Basis: 'gross' },
-    
-    alphatrader_2: { name: "Alpha Trader Firm (2-Step)", target: 8, dailyLoss: 5, maxLoss: 10, minDays: 0, consistency: 100, scalp: 120, t1: 20, t2: 10, t2Basis: 'gross' },
-    topstep: { name: "Topstep (Combine Futures)", target: 6, dailyLoss: 2, maxLoss: 3, minDays: 0, consistency: 100, scalp: 120, t1: 20, t2: 10, t2Basis: 'gross' }
-  };
+  /* ============================ Populate firm/type selects ============================ */
+  Object.keys(PROPFIRM_RULES).forEach(key => {
+    const opt = document.createElement('option');
+    opt.value = key; opt.textContent = PROPFIRM_RULES[key].name;
+    firmSelect.appendChild(opt);
+  });
+  firmSelect.value = settings.firm;
 
-  let activeFirm = PROP_FIRMS['wemastertrade'];
+  function populateTypeSelect(){
+    typeSelect.innerHTML = '';
+    const firm = PROPFIRM_RULES[firmSelect.value];
+    Object.keys(firm.types).forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k; opt.textContent = firm.types[k].label;
+      typeSelect.appendChild(opt);
+    });
+    settings.type = typeSelect.value;
+  }
+  populateTypeSelect();
+  typeSelect.value = settings.type;
 
-  // Setup Listeners
+  firmSelect.addEventListener('change', () => { settings.firm = firmSelect.value; populateTypeSelect(); settings.type = typeSelect.value; if(STATE) renderDashboard(); });
+  typeSelect.addEventListener('change', () => { settings.type = typeSelect.value; if(STATE) renderDashboard(); });
+  balanceInput.addEventListener('change', e => { settings.balance = Math.max(1, parseFloat(e.target.value) || 10000); if(STATE) renderDashboard(); });
+
+  expertToggle.addEventListener('change', e => {
+    settings.expertOn = e.target.checked;
+    expertPanel.classList.toggle('show', settings.expertOn);
+    if(STATE) renderDashboard();
+  });
+
+  /* ============================ Currency toggle ============================ */
+  curUsdBtn.addEventListener('click', () => { settings.currency = 'usd'; curUsdBtn.classList.add('active'); curIdrBtn.classList.remove('active'); if(STATE) renderDashboard(); });
+  curIdrBtn.addEventListener('click', () => { settings.currency = 'idr'; curIdrBtn.classList.add('active'); curUsdBtn.classList.remove('active'); if(STATE) renderDashboard(); });
+  kursInput.addEventListener('change', e => { settings.kurs = Math.max(1, parseFloat(e.target.value) || 17600); if(STATE && settings.currency === 'idr') renderDashboard(); });
+
+  /* ============================ File handling ============================ */
   pickBtn.addEventListener('click', () => fileInput.click());
   dropzone.addEventListener('click', (e) => { if(e.target !== pickBtn) fileInput.click(); });
   fileInput.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
-
   ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('drag'); }));
   ['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('drag'); }));
   dropzone.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if(f) handleFile(f); });
 
   resetBtn.addEventListener('click', () => {
-    STATE = null; dashboard.classList.remove('show'); dropzoneWrap.style.display = 'block'; accChip.classList.remove('show'); fileInput.value = '';
-  });
-
-  currSwitch.addEventListener('change', e => {
-    useIDR = e.target.checked;
-    rateDiv.style.display = useIDR ? 'flex' : 'none';
-    if(STATE) renderDashboard();
-  });
-  idrRate.addEventListener('input', e => { rate = parseFloat(e.target.value) || 16000; if(STATE && useIDR) renderDashboard(); });
-  startBalInput.addEventListener('change', e => { startBalance = parseFloat(e.target.value) || 100000; if(STATE) renderDashboard(); });
-  toggleExpertBtn.addEventListener('click', () => { showExpert = !showExpert; expertPanel.classList.toggle('show', showExpert); });
-
-  firmPreset.addEventListener('change', (e) => {
-    const firm = PROP_FIRMS[e.target.value];
-    if(firm) {
-      activeFirm = firm;
-      document.getElementById('inpScalpSec').value = firm.scalp;
-      document.getElementById('inpT1').value = firm.t1;
-      document.getElementById('inpT2').value = firm.t2;
-      document.getElementById('inpBasis').value = firm.t2Basis;
-      if(STATE) renderDashboard();
-    }
+    STATE = null;
+    dashboard.classList.remove('show');
+    dropzoneWrap.style.display = 'block';
+    accChip.classList.remove('show');
+    fileInput.value = '';
   });
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -557,392 +528,591 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
   document.querySelectorAll('#filterTags .tag-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#filterTags .tag-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active'); activeFilterTag = btn.dataset.filter; allTablePage = 1; if(STATE) renderAllTable(compute());
+      btn.classList.add('active');
+      activeFilterTag = btn.dataset.filter;
+      allTablePage = 1;
+      if(STATE) renderAllTable(compute());
     });
   });
 
-  document.getElementById('searchAll').addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase().trim(); allTablePage = 1; if(STATE) renderAllTable(compute()); });
-  
-  // Settings Updates
-  document.getElementById('inpScalpSec').addEventListener('change', () => { if(STATE) renderDashboard(); });
-  document.getElementById('inpT1').addEventListener('change', () => { if(STATE) renderDashboard(); });
-  document.getElementById('inpT2').addEventListener('change', () => { if(STATE) renderDashboard(); });
-  document.getElementById('inpBasis').addEventListener('change', () => { if(STATE) renderDashboard(); });
+  document.getElementById('searchAll').addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    allTablePage = 1;
+    if(STATE) renderAllTable(compute());
+  });
 
-  function showError(msg) { errMsg.textContent = msg; errMsg.classList.add('show'); }
-  function clearError() { errMsg.classList.remove('show'); errMsg.textContent = ''; }
+  function showError(msg){ errMsg.textContent = msg; errMsg.classList.add('show'); }
+  function clearError(){ errMsg.classList.remove('show'); errMsg.textContent = ''; }
 
-  function handleFile(file) {
+  /* ============================ Parse xlsx ============================ */
+  function handleFile(file){
     clearError();
     const reader = new FileReader();
     reader.onload = (e) => {
-      try {
+      try{
         const data = new Uint8Array(e.target.result);
-        const wb = XLSX.read(data, {type: 'array', cellDates: true});
+        const wb = XLSX.read(data, {type:'array', cellDates:true});
         const sheet = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, {header: 1, raw: false, defval: null});
+        const rows = XLSX.utils.sheet_to_json(sheet, {header:1, raw:false, defval:null});
         const parsed = parseReport(rows);
-        if(!parsed.trades || parsed.trades.length === 0){ showError('Posisi valid tidak ditemukan.'); return; }
+        if(!parsed.trades || parsed.trades.length === 0){
+          showError('Tidak ditemukan posisi trading yang valid dalam file ini. Pastikan mengunggah file Report History (.xlsx) dari MT4 atau MT5.');
+          return;
+        }
         STATE = parsed;
         renderDashboard();
-        dropzoneWrap.style.display = 'none'; dashboard.classList.add('show');
-      } catch(err) { console.error(err); showError('Gagal memproses file xlsx.'); }
+        dropzoneWrap.style.display = 'none';
+        dashboard.classList.add('show');
+      }catch(err){
+        console.error(err);
+        showError('Gagal memproses file. Pastikan format file adalah .xlsx dari MetaTrader Report History.');
+      }
     };
+    reader.onerror = () => showError('Gagal membaca file dari komputer Anda.');
     reader.readAsArrayBuffer(file);
   }
 
-  function parseReport(rows) {
-    const accountInfo = {}; let posHeaderIdx = -1;
-    for(let i = 0; i < Math.min(rows.length, 30); i++) {
-      const r = rows[i]; if(!r) continue;
-      for(let j = 0; j < r.length; j++) {
-        const cell = String(r[j] || '').trim();
-        const nextVal = String(r[j+1] || '').trim();
-        if(cell.toLowerCase().startsWith('name:')) accountInfo.name = cell.split(':')[1]?.trim() || nextVal;
-        if(cell.toLowerCase().startsWith('account:')) accountInfo.account = cell.split(':')[1]?.trim() || nextVal;
-        if(cell.toLowerCase().startsWith('company:')) accountInfo.company = cell.split(':')[1]?.trim() || nextVal;
+  function parseReport(rows){
+    const accountInfo = {};
+    let posHeaderIdx = -1;
+    for(let i=0;i<Math.min(rows.length,30);i++){
+      const r = rows[i];
+      if(!r) continue;
+      for(let j=0;j<r.length;j++){
+        const cell = String(r[j]||'').trim();
+        if(!cell) continue;
+        const inlineVal = cell.split(':')[1]?.trim();
+        let nextVal = '';
+        for(let k=j+1;k<r.length;k++){ const v = String(r[k]||'').trim(); if(v){ nextVal = v; break; } }
+        const value = inlineVal || nextVal;
+        if(!value) continue;
+        const lc = cell.toLowerCase();
+        if(lc.startsWith('name:')) accountInfo.name = value;
+        if(lc.startsWith('account:')) accountInfo.account = value;
+        if(lc.startsWith('company:')) accountInfo.company = value;
+        if(lc.startsWith('date:')) accountInfo.date = value;
       }
-      if(['Positions','Closed Transactions'].includes(String(r[0] || '').trim())) posHeaderIdx = i + 1;
+      if(String(r[0]||'').trim() === 'Positions' || String(r[0]||'').trim() === 'Closed Transactions') posHeaderIdx = i + 1;
     }
-    if(posHeaderIdx === -1) {
-      for(let i = 0; i < rows.length; i++) {
-        if(rows[i] && rows[i].some(c => ['Positions','Closed Transactions','Ticket'].includes(String(c||'').trim()))){
-          posHeaderIdx = i; if(String(rows[i][0]||'').trim() === 'Positions') posHeaderIdx = i + 1; break;
+    if(posHeaderIdx === -1){
+      for(let i=0;i<rows.length;i++){
+        if(rows[i] && rows[i].some(c => ['Positions','Closed Transactions','Ticket','Position'].includes(String(c||'').trim()))){
+          posHeaderIdx = i;
+          if(String(rows[i][0]||'').trim() === 'Positions') posHeaderIdx = i + 1;
+          break;
         }
       }
     }
 
     const trades = [];
-    if(posHeaderIdx > -1 && posHeaderIdx < rows.length) {
+    if(posHeaderIdx > -1 && posHeaderIdx < rows.length){
       const headerRow = rows[posHeaderIdx].map(h => String(h||'').trim().toLowerCase());
       const colMap = {
         openTime: headerRow.indexOf('time'), closeTime: headerRow.lastIndexOf('time'),
         ticket: headerRow.findIndex(h => h.includes('position') || h.includes('ticket')),
         symbol: headerRow.findIndex(h => h.includes('symbol') || h.includes('item')),
-        type: headerRow.indexOf('type'), volume: headerRow.findIndex(h => h.includes('volume') || h.includes('size')),
-        profit: headerRow.findIndex(h => h.includes('profit')), comm: headerRow.findIndex(h => h.includes('commission')),
-        swap: headerRow.findIndex(h => h.includes('swap')), sl: headerRow.findIndex(h => h.includes('s / l') || h.includes('sl'))
+        type: headerRow.indexOf('type'),
+        volume: headerRow.findIndex(h => h.includes('volume') || h.includes('size')),
+        openPrice: headerRow.indexOf('price'), closePrice: headerRow.lastIndexOf('price'),
+        sl: headerRow.findIndex(h => h.includes('s / l') || h.includes('sl')),
+        tp: headerRow.findIndex(h => h.includes('t / p') || h.includes('tp')),
+        comm: headerRow.findIndex(h => h.includes('commission')),
+        swap: headerRow.findIndex(h => h.includes('swap')),
+        profit: headerRow.findIndex(h => h.includes('profit'))
       };
-      
       if(colMap.openTime === -1) colMap.openTime = 0;
       if(colMap.closeTime === colMap.openTime || colMap.closeTime === -1) colMap.closeTime = 8;
-      if(colMap.ticket === -1) colMap.ticket = 1; if(colMap.profit === -1) colMap.profit = 12;
+      if(colMap.ticket === -1) colMap.ticket = 1;
+      if(colMap.symbol === -1) colMap.symbol = 2;
+      if(colMap.type === -1) colMap.type = 3;
+      if(colMap.volume === -1) colMap.volume = 4;
+      if(colMap.profit === -1) colMap.profit = 12;
 
-      for(let i = posHeaderIdx + 1; i < rows.length; i++) {
-        const r = rows[i]; if(!r || !r[0]) break;
-        if(['Orders','Deals','Summary'].includes(String(r[0]).trim())) break;
-        const openTime = parseMtDate(r[colMap.openTime]); const closeTime = parseMtDate(r[colMap.closeTime]);
+      for(let i=posHeaderIdx+1;i<rows.length;i++){
+        const r = rows[i];
+        if(!r || r[0] === null || r[0] === undefined || r[0] === '') break;
+        const val0 = String(r[0]).trim();
+        if(['Orders','Deals','Working Orders','Summary','Results'].includes(val0)) break;
+
+        const openTime = parseMtDate(r[colMap.openTime]);
+        const closeTime = parseMtDate(r[colMap.closeTime]);
         const profit = parseNum(r[colMap.profit]);
         if(!openTime || !closeTime || profit === null) continue;
 
-        const comm = parseNum(r[colMap.comm]) || 0; const swap = parseNum(r[colMap.swap]) || 0;
+        const comm = parseNum(r[colMap.comm]) || 0;
+        const swap = parseNum(r[colMap.swap]) || 0;
+        const durationSec = Math.max(0, (closeTime - openTime) / 1000);
+        const slVal = parseNum(r[colMap.sl]) || 0;
+
         trades.push({
-          ticket: r[colMap.ticket] || `#${i}`, openTime, closeTime, symbol: r[colMap.symbol] || 'N/A', type: String(r[colMap.type] || 'buy').toLowerCase(),
-          volume: parseNum(r[colMap.volume]) || 0, sl: parseNum(r[colMap.sl]) || 0,
-          profit: profit, netProfit: profit + comm + swap, durationSec: Math.max(0, (closeTime - openTime) / 1000)
+          ticket: r[colMap.ticket] || ('#'+i),
+          openTime, closeTime,
+          symbol: r[colMap.symbol] || 'N/A',
+          type: String(r[colMap.type] || 'buy').toLowerCase(),
+          volume: parseNum(r[colMap.volume]) || 0,
+          openPrice: parseNum(r[colMap.openPrice]) || 0,
+          closePrice: parseNum(r[colMap.closePrice]) || 0,
+          sl: slVal, tp: parseNum(r[colMap.tp]) || 0,
+          commission: comm, swap: swap, profit: profit,
+          netProfit: profit + comm + swap,
+          durationSec: durationSec
         });
       }
     }
     return { accountInfo, trades };
   }
-  function parseMtDate(val) {
-    if(!val) return null; if(val instanceof Date) return val;
+
+  function parseMtDate(val){
+    if(!val) return null;
+    if(val instanceof Date) return val;
     if(typeof val === 'number') return new Date(Math.round((val - 25569) * 86400 * 1000));
-    const m = String(val).match(/(\d{4})[\.\/\-](\d{1,2})[\.\/\-](\d{1,2})\s+(\d{1,2}):(\d{1,2})/);
-    if(m) return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5]);
-    const d = new Date(val); return isNaN(d.getTime()) ? null : d;
+    const s = String(val).trim();
+    const m = s.match(/(\d{4})[\.\/\-](\d{1,2})[\.\/\-](\d{1,2})\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?/);
+    if(m) return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5], +(m[6]||0));
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? null : d;
   }
-  function parseNum(val) {
-    if(!val) return 0; if(typeof val === 'number') return isNaN(val) ? 0 : val;
-    const n = parseFloat(String(val).replace(/[^0-9.\-]/g,'')); return isNaN(n) ? 0 : n;
+  function parseNum(val){
+    if(val === null || val === undefined || val === '') return 0;
+    if(typeof val === 'number') return isNaN(val) ? 0 : val;
+    const n = parseFloat(String(val).replace(/[^0-9.\-]/g,''));
+    return isNaN(n) ? 0 : n;
   }
 
-  function compute() {
-    const s_sec = parseInt(document.getElementById('inpScalpSec').value) || 120;
-    const t1_th = parseFloat(document.getElementById('inpT1').value) || 20;
-    const t2_th = parseFloat(document.getElementById('inpT2').value) || 10;
-    const basis = document.getElementById('inpBasis').value || 'gross';
-
-    const trades = STATE.trades.sort((a,b) => a.openTime - b.openTime);
+  /* ============================ Compute ============================ */
+  function compute(){
+    const trades = STATE.trades;
     const total = trades.length;
-
-    const scalp = trades.filter(t => t.durationSec < s_sec);
+    const scalp = trades.filter(t => t.durationSec < settings.scalpSeconds);
     const scalpWinProfit = scalp.filter(t => t.profit > 0).reduce((s,t) => s + t.profit, 0);
-
+    const scalpNetProfit = scalp.reduce((s,t) => s + t.netProfit, 0);
     const netProfit = trades.reduce((s,t) => s + t.netProfit, 0);
     const grossProfit = trades.filter(t => t.profit > 0).reduce((s,t) => s + t.profit, 0);
     const grossLoss = trades.filter(t => t.profit < 0).reduce((s,t) => s + t.profit, 0);
-
-    // Calc Drawdowns & EOD logic
-    let peak = 0; let maxOverallDD = 0; let cum = 0;
-    const byDay = {};
-    
-    trades.forEach(t => {
-      cum += t.netProfit;
-      if (cum > peak) peak = cum;
-      const dd = peak - cum;
-      if (dd > maxOverallDD) maxOverallDD = dd;
-      
-      const d = t.openTime.toISOString().slice(0,10);
-      if(!byDay[d]) byDay[d] = { date: d, total: 0, scalp: 0, netProfit: 0 };
-      byDay[d].total++; byDay[d].netProfit += t.netProfit;
-      if(t.durationSec < s_sec) byDay[d].scalp++;
-    });
-
-    const dailyRows = Object.values(byDay).sort((a,b) => a.date.localeCompare(b.date));
-    let maxDailyLossAmt = 0;
-    let maxDailyProfitAmt = 0;
-    
-    dailyRows.forEach(d => {
-      if(d.netProfit < 0 && Math.abs(d.netProfit) > maxDailyLossAmt) maxDailyLossAmt = Math.abs(d.netProfit);
-      if(d.netProfit > 0 && d.netProfit > maxDailyProfitAmt) maxDailyProfitAmt = d.netProfit;
-    });
+    const wins = trades.filter(t => t.profit > 0).length;
+    const losses = trades.filter(t => t.profit < 0).length;
+    const avgDur = total ? (trades.reduce((s,t) => s + t.durationSec, 0) / total) : 0;
+    const totalVolume = trades.reduce((s,t) => s + t.volume, 0);
+    const avgLot = total ? (totalVolume / total) : 0;
+    const highLotCount = trades.filter(t => t.volume >= avgLot * settings.maxLotFactor).length;
+    const noSlCount = trades.filter(t => !t.sl || t.sl === 0).length;
+    const weekendCount = trades.filter(t => { const d = t.closeTime.getDay(); return d === 0 || d === 6; }).length;
 
     const trigger1 = total ? ((scalp.length / total) * 100) : 0;
-    let basisValue = basis==='net' ? netProfit : basis==='winscalp' ? scalpWinProfit : grossProfit;
+    let basisValue = grossProfit;
+    if(settings.t2Basis === 'net') basisValue = netProfit;
+    if(settings.t2Basis === 'winscalp') basisValue = scalpWinProfit;
     const trigger2 = (basisValue > 0) ? ((scalpWinProfit / basisValue) * 100) : 0;
-    
-    return {
-      total, scalp, scalpWinProfit, netProfit, grossProfit, grossLoss,
-      trigger1, trigger2, basisValue, t1_th, t2_th, s_sec, dailyRows,
-      tradingDays: dailyRows.length,
-      maxOverallDD, maxDailyLossAmt, maxDailyProfitAmt,
-      avgLot: total ? (trades.reduce((s,t) => s + t.volume, 0) / total) : 0,
-      noSlCount: trades.filter(t => !t.sl || t.sl === 0).length,
-      wins: trades.filter(t => t.profit > 0).length,
-      losses: trades.filter(t => t.profit < 0).length,
-      avgDur: total ? (trades.reduce((s,t) => s + t.durationSec, 0) / total) : 0
-    };
+
+    const byDay = {};
+    trades.forEach(t => {
+      const d = t.openTime.toISOString().slice(0,10);
+      if(!byDay[d]) byDay[d] = { date: d, total: 0, scalp: 0, scalpProfit: 0, netProfit: 0 };
+      byDay[d].total++;
+      byDay[d].netProfit += t.netProfit;
+      if(t.durationSec < settings.scalpSeconds){ byDay[d].scalp++; if(t.profit > 0) byDay[d].scalpProfit += t.profit; }
+    });
+    const dailyRows = Object.values(byDay).sort((a,b) => a.date.localeCompare(b.date));
+
+    return { total, scalp, scalpWinProfit, scalpNetProfit, netProfit, grossProfit, grossLoss, wins, losses,
+      avgDur, avgLot, highLotCount, noSlCount, weekendCount, trigger1, trigger2, basisValue, dailyRows };
   }
 
-  function fmtMoney(n) {
-    if(useIDR) {
-      const val = n * rate;
-      return (val < 0 ? '-' : '') + 'Rp ' + Math.abs(val).toLocaleString('id-ID', {maximumFractionDigits:0});
-    }
-    return (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
-  }
-  function fmtDur(sec) {
-    if(sec < 60) return Math.round(sec) + 's';
-    return Math.floor(sec/60) + 'm ' + Math.round(sec%60) + 's';
+  function computeEquityCurve(balance){
+    const sorted = [...STATE.trades].sort((a,b) => a.closeTime - b.closeTime);
+    let running = balance, peak = balance, maxDDTrailing = 0, maxDDStatic = 0;
+    const curve = [{ t: sorted.length ? sorted[0].openTime : new Date(), bal: balance }];
+    sorted.forEach(t => {
+      running += t.netProfit;
+      if(running > peak) peak = running;
+      maxDDTrailing = Math.max(maxDDTrailing, peak - running);
+      maxDDStatic = Math.max(maxDDStatic, balance - running);
+      curve.push({ t: t.closeTime, bal: running });
+    });
+    return { curve, finalBalance: running, maxDDTrailing, maxDDStatic, peak };
   }
 
-  function renderDashboard() {
+  /* ============================ Formatting ============================ */
+  function fmtMoneyUSD(n){ const sign = n < 0 ? '-' : ''; return sign + '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function fmtMoneyIDR(n){ const idr = n * settings.kurs; const sign = idr < 0 ? '-' : ''; return sign + 'Rp' + Math.abs(idr).toLocaleString('id-ID',{maximumFractionDigits:0}); }
+  function fmtCur(n){ return settings.currency === 'idr' ? fmtMoneyIDR(n) : fmtMoneyUSD(n); }
+  function fmtDur(sec){ if(sec < 60) return Math.round(sec) + 's'; const m = Math.floor(sec/60), s = Math.round(sec%60); return m + 'm ' + s + 's'; }
+  function fmtDate(d){ return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+  function verdictFor(val, limit){ if(val >= limit) return 'danger'; if(val >= limit * 0.75) return 'warn'; return 'safe'; }
+  function verdictText(level){ return level === 'danger' ? 'Melanggar Rule' : level === 'warn' ? 'Mendekati Ambang' : level === 'info' ? 'Info' : 'Aman'; }
+  function verdictColor(level){ return level === 'danger' ? 'var(--danger)' : level === 'warn' ? 'var(--warn)' : level === 'info' ? 'var(--info)' : 'var(--safe)'; }
+
+  /* ============================ Render root ============================ */
+  function renderDashboard(){
     const c = compute();
-    if(STATE.accountInfo.name || STATE.accountInfo.account) {
-      accChip.innerHTML = `<div class="acc-item"><span class="lbl">Trader</span><span class="val">${STATE.accountInfo.name || '-'}</span></div><div class="acc-item"><span class="lbl">Account</span><span class="val">${STATE.accountInfo.account || '-'}</span></div>`;
+    const { accountInfo } = STATE;
+
+    if(accountInfo.name || accountInfo.account){
+      accChip.innerHTML = `
+        <div class="acc-item"><span class="lbl">Trader</span><span class="val">${accountInfo.name || '-'}</span></div>
+        <div class="acc-item"><span class="lbl">Account No</span><span class="val">${accountInfo.account || '-'}</span></div>
+        <div class="acc-item"><span class="lbl">Broker</span><span class="val">${accountInfo.company || 'MetaTrader'}</span></div>`;
       accChip.classList.add('show');
     }
 
+    const dates = STATE.trades.map(t => t.openTime).sort((a,b) => a - b);
+    if(dates.length) document.getElementById('periodLabel').textContent = `Periode: ${fmtDate(dates[0]).split(' ')[0]} – ${fmtDate(dates[dates.length-1]).split(' ')[0]}`;
+
     renderVerdictBanner(c);
-    renderExpertPanel(c);
     renderKpiGrid(c);
     renderTriggers(c);
+    renderSettings();
+    renderExpertPanel(c);
     renderCharts(c);
     renderScalpTable(c);
     renderAllTable(c);
     renderDailyTable(c);
-    
-    document.getElementById('chartCurrUnit').textContent = useIDR ? '(dalam Rupiah)' : '(dalam USD)';
+    renderFirmRulesGuide();
   }
 
-  function renderExpertPanel(c) {
-    document.getElementById('expertFirmName').textContent = activeFirm.name;
-    const ddpctOverall = (c.maxOverallDD / startBalance) * 100;
-    const ddpctDaily = (c.maxDailyLossAmt / startBalance) * 100;
-    const targetPct = (c.netProfit / startBalance) * 100;
-    const consistencyPct = c.netProfit > 0 ? (c.maxDailyProfitAmt / c.netProfit) * 100 : 0;
-
-    const html = `
-      <div class="rule-item">
-        <div class="rule-info">
-          <h4>Target Profit: ${activeFirm.target === 999 ? 'N/A' : activeFirm.target + '%'}</h4>
-          <p>Tercapai: <b>${targetPct.toFixed(2)}%</b> (${fmtMoney(c.netProfit)})</p>
-        </div>
-        <div class="rule-status ${targetPct >= activeFirm.target || activeFirm.target===999 ? 'pass' : 'warn'}">
-          ${targetPct >= activeFirm.target || activeFirm.target===999 ? 'LULUS' : 'PROGRES'}
-        </div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-info">
-          <h4>Max Daily Loss: ${activeFirm.dailyLoss}%</h4>
-          <p>Daily Drawdown terbesar: <b>${ddpctDaily.toFixed(2)}%</b></p>
-        </div>
-        <div class="rule-status ${ddpctDaily > activeFirm.dailyLoss ? 'fail' : 'pass'}">
-          ${ddpctDaily > activeFirm.dailyLoss ? 'VIOLATION' : 'AMAN'}
-        </div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-info">
-          <h4>Max Overall Loss: ${activeFirm.maxLoss}%</h4>
-          <p>Total Drawdown terbesar: <b>${ddpctOverall.toFixed(2)}%</b></p>
-        </div>
-        <div class="rule-status ${ddpctOverall > activeFirm.maxLoss ? 'fail' : 'pass'}">
-          ${ddpctOverall > activeFirm.maxLoss ? 'VIOLATION' : 'AMAN'}
-        </div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-info">
-          <h4>Minimum Hari Trading: ${activeFirm.minDays}</h4>
-          <p>Total hari aktif: <b>${c.tradingDays} hari</b></p>
-        </div>
-        <div class="rule-status ${c.tradingDays >= activeFirm.minDays ? 'pass' : 'warn'}">
-          ${c.tradingDays >= activeFirm.minDays ? 'LULUS' : 'PROGRES'}
-        </div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-info">
-          <h4>Aturan Konsistensi Profit: ${activeFirm.consistency === 100 ? 'Tanpa Batas' : 'Max ' + activeFirm.consistency + '%'}</h4>
-          <p>Kontribusi hari terbaik: <b>${consistencyPct.toFixed(2)}%</b></p>
-        </div>
-        <div class="rule-status ${consistencyPct > activeFirm.consistency ? 'fail' : 'pass'}">
-          ${consistencyPct > activeFirm.consistency ? 'MELANGGAR' : 'AMAN'}
-        </div>
-      </div>
-    `;
-    document.getElementById('expertGrid').innerHTML = html;
-  }
-
-  function renderVerdictBanner(c) {
-    const l1 = c.trigger1 >= c.t1_th ? 'danger' : 'safe';
-    const l2 = c.trigger2 >= c.t2_th ? 'danger' : 'safe';
-    const worst = l1 === 'danger' || l2 === 'danger' ? 'danger' : 'safe';
+  function renderVerdictBanner(c){
+    const l1 = verdictFor(c.trigger1, settings.t1Threshold);
+    const l2 = verdictFor(c.trigger2, settings.t2Threshold);
+    const worst = (l1 === 'danger' || l2 === 'danger') ? 'danger' : (l1 === 'warn' || l2 === 'warn') ? 'warn' : 'safe';
     const banner = document.getElementById('verdictBanner');
-    banner.style.background = worst === 'danger' ? 'var(--danger-bg)' : 'var(--safe-bg)';
-    banner.innerHTML = `<div class="v-icon" style="background:${worst==='danger'?'var(--danger)':'var(--safe)'}; color:#0B0F17;">${worst==='danger'?'❌':'✅'}</div>
-      <div><div class="v-title" style="color:${worst==='danger'?'var(--danger)':'var(--safe)'}">${worst==='danger'?'PELANGGARAN RULE TERDETEKSI':'AKUN AMAN & COMPLIANT'}</div>
-      <div class="v-desc">${worst==='danger'?'Akun berisiko gagal evaluasi akibat tingginya aktivitas tick scalping.':'Seluruh indikator kepatuhan scalping memenuhi ambang batas aman.'}</div></div>`;
+    banner.style.background = worst === 'danger' ? 'var(--danger-bg)' : worst === 'warn' ? 'var(--warn-bg)' : 'var(--safe-bg)';
+    banner.style.borderColor = verdictColor(worst);
+    const icon = worst === 'danger' ? '\u2715' : worst === 'warn' ? '\u26A0' : '\u2713';
+    const title = worst === 'danger' ? 'Pelanggaran Terdeteksi Pada Universal Scalp Check' : worst === 'warn' ? 'Mendekati Ambang Batas' : 'Aman Pada Universal Scalp Check';
+    let desc = worst === 'danger' ? 'Trigger tick scalping terlampaui pada periode ini. Cek daftar trade &amp; rincian di tab terkait.'
+      : worst === 'warn' ? `Belum melanggar, tapi mendekati batas. Perhatikan pola close di bawah ${settings.scalpSeconds} detik.`
+      : 'Pola transaksi masih berada di bawah ambang tick scalping yang ditetapkan.';
+    let list = '';
+    if(l1 === 'danger') list += `<li><b>Trigger 1:</b> ${c.trigger1.toFixed(2)}% melampaui limit ${settings.t1Threshold}%.</li>`;
+    if(l2 === 'danger') list += `<li><b>Trigger 2:</b> ${c.trigger2.toFixed(2)}% melampaui limit ${settings.t2Threshold}%.</li>`;
+    if(c.noSlCount > 0) list += `<li><b>Catatan:</b> ${c.noSlCount} transaksi dibuka tanpa Stop Loss.</li>`;
+    if(settings.expertOn) list += `<li>Cek panel <b>Mode Expert</b> di bawah untuk hasil evaluasi rule ${PROPFIRM_RULES[settings.firm].name} secara rinci.</li>`;
+    banner.innerHTML = `
+      <div class="v-icon" style="background:${verdictColor(worst)}; color:#0B0F17;">${icon}</div>
+      <div><div class="v-title" style="color:${verdictColor(worst)}">${title}</div>
+      <div class="v-desc">${desc}</div>${list ? `<ul class="v-list">${list}</ul>` : ''}</div>`;
   }
 
-  function renderKpiGrid(c) {
+  function renderKpiGrid(c){
+    const pf = c.grossLoss !== 0 ? Math.abs(c.grossProfit / c.grossLoss).toFixed(2) : 'N/A';
+    const winRate = c.total ? ((c.wins / c.total) * 100).toFixed(1) : '0';
     document.getElementById('kpiGrid').innerHTML = `
-      <div class="kpi"><div class="label">Total Net Profit</div><div class="value ${c.netProfit>=0?'pos':'neg'}">${fmtMoney(c.netProfit)}</div><div class="sub">Gross: ${fmtMoney(c.grossProfit)}</div></div>
-      <div class="kpi"><div class="label">Win Rate / Profit Factor</div><div class="value">${((c.wins/c.total||0)*100).toFixed(1)}%</div><div class="sub">PF: <b>${c.grossLoss?Math.abs(c.grossProfit/c.grossLoss).toFixed(2):'-'}</b></div></div>
-      <div class="kpi"><div class="label">Hari Aktif &amp; Trade</div><div class="value">${c.tradingDays} Hari</div><div class="sub">${c.total} Trade (${c.avgLot.toFixed(2)} Lots avg)</div></div>
-      <div class="kpi"><div class="label">Jumlah Trade Scalp</div><div class="value ${c.scalp.length>0?'neg':'pos'}">${c.scalp.length}</div><div class="sub">Profit Scalp: ${fmtMoney(c.scalpWinProfit)}</div></div>
-    `;
+      <div class="kpi"><div class="label">Total Net Profit</div><div class="value ${c.netProfit>=0?'pos':'neg'}">${fmtCur(c.netProfit)}</div><div class="sub">Gross: ${fmtCur(c.grossProfit)}</div></div>
+      <div class="kpi"><div class="label">Win Rate / Profit Factor</div><div class="value">${winRate}%</div><div class="sub">PF: <b>${pf}</b> (${c.wins}W / ${c.losses}L)</div></div>
+      <div class="kpi"><div class="label">Total Transaksi</div><div class="value">${c.total}</div><div class="sub">Avg Lot: <b>${c.avgLot.toFixed(2)}</b></div></div>
+      <div class="kpi"><div class="label">Rata-rata Durasi</div><div class="value">${fmtDur(c.avgDur)}</div><div class="sub">Ambang Scalp: &lt; ${settings.scalpSeconds}s</div></div>
+      <div class="kpi"><div class="label">Jumlah Trade Scalp</div><div class="value ${c.scalp.length>0?'neg':'pos'}">${c.scalp.length}</div><div class="sub">Profit Scalp: ${fmtCur(c.scalpWinProfit)}</div></div>
+      <div class="kpi"><div class="label">Parameter Risiko</div><div class="value">${c.noSlCount} <span style="font-size:13px;color:var(--text-faint)">No SL</span></div><div class="sub">Hold Weekend: <b>${c.weekendCount}</b> &middot; Lot Outlier: <b>${c.highLotCount}</b></div></div>`;
   }
 
-  function renderTriggers(c) {
+  function renderTriggers(c){
+    const l1 = verdictFor(c.trigger1, settings.t1Threshold);
+    const l2 = verdictFor(c.trigger2, settings.t2Threshold);
     document.getElementById('triggerGrid').innerHTML = `
-      <div class="trigger-card"><div class="t-head"><div class="t-label">Trigger 1 — Rasio Frekuensi Scalp</div></div>
-        <div class="t-value">${c.trigger1.toFixed(2)}<span class="pct">%</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.min((c.trigger1/c.t1_th)*100,100)}%; background:${c.trigger1>=c.t1_th?'var(--danger)':'var(--safe)'}"></div></div>
-        <div style="font-size:12px;color:var(--text-dim)">Limit max: ${c.t1_th}% (<b>${c.scalp.length}</b> dr <b>${c.total}</b> trade).</div>
+      <div class="trigger-card">
+        <div class="t-label">Trigger 1 — Rasio Frekuensi Transaksi Scalp</div>
+        <div class="t-formula">(Trade &lt; ${settings.scalpSeconds}s / Total Trade) &times; 100</div>
+        <div class="t-value" style="color:${verdictColor(l1)}">${c.trigger1.toFixed(2)}<span class="pct">%</span></div>
+        <div class="badge ${l1}"><span class="dot"></span>${verdictText(l1)} &middot; Limit ${settings.t1Threshold}%</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.min((c.trigger1/settings.t1Threshold)*100,100)}%; background:${verdictColor(l1)}"></div></div>
+        <div style="font-size:12px; color:var(--text-dim); margin-top:8px;">Tercatat <b>${c.scalp.length}</b> dari total <b>${c.total}</b> transaksi ditutup di bawah ${settings.scalpSeconds} detik.</div>
       </div>
-      <div class="trigger-card"><div class="t-head"><div class="t-label">Trigger 2 — Rasio Profit Scalp</div></div>
-        <div class="t-value">${c.trigger2.toFixed(2)}<span class="pct">%</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.min((c.trigger2/c.t2_th)*100,100)}%; background:${c.trigger2>=c.t2_th?'var(--danger)':'var(--safe)'}"></div></div>
-        <div style="font-size:12px;color:var(--text-dim)">Limit max: ${c.t2_th}% (Basis: ${fmtMoney(c.basisValue)}).</div>
+      <div class="trigger-card">
+        <div class="t-label">Trigger 2 — Rasio Keuntungan dari Scalp</div>
+        <div class="t-formula">(Win Scalp Profit / ${settings.t2Basis.toUpperCase()} Profit) &times; 100</div>
+        <div class="t-value" style="color:${verdictColor(l2)}">${c.trigger2.toFixed(2)}<span class="pct">%</span></div>
+        <div class="badge ${l2}"><span class="dot"></span>${verdictText(l2)} &middot; Limit ${settings.t2Threshold}%</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.min((c.trigger2/settings.t2Threshold)*100,100)}%; background:${verdictColor(l2)}"></div></div>
+        <div style="font-size:12px; color:var(--text-dim); margin-top:8px;">Profit scalp <b>${fmtCur(c.scalpWinProfit)}</b> dari basis <b>${fmtCur(c.basisValue)}</b>.</div>
       </div>`;
   }
 
-  function renderCharts(c) {
+  function renderSettings(){
+    document.getElementById('settingsGrid').innerHTML = `
+      <div class="field"><label>Ambang Durasi Scalp (Detik)</label><input type="number" id="inpScalpSec" value="${settings.scalpSeconds}" min="1"></div>
+      <div class="field"><label>Limit Trigger 1 (%)</label><input type="number" id="inpT1" value="${settings.t1Threshold}" min="1" step="0.5"></div>
+      <div class="field"><label>Limit Trigger 2 (%)</label><input type="number" id="inpT2" value="${settings.t2Threshold}" min="1" step="0.5"></div>
+      <div class="field"><label>Basis Profit Trigger 2</label>
+        <select id="inpBasis">
+          <option value="gross" ${settings.t2Basis==='gross'?'selected':''}>Total Gross Profit</option>
+          <option value="net" ${settings.t2Basis==='net'?'selected':''}>Total Net Profit</option>
+          <option value="winscalp" ${settings.t2Basis==='winscalp'?'selected':''}>Win Scalp vs Total Win Scalp</option>
+        </select></div>`;
+    document.getElementById('inpScalpSec').addEventListener('change', e => { settings.scalpSeconds = Math.max(1, parseInt(e.target.value)||120); renderDashboard(); });
+    document.getElementById('inpT1').addEventListener('change', e => { settings.t1Threshold = parseFloat(e.target.value)||20; renderDashboard(); });
+    document.getElementById('inpT2').addEventListener('change', e => { settings.t2Threshold = parseFloat(e.target.value)||10; renderDashboard(); });
+    document.getElementById('inpBasis').addEventListener('change', e => { settings.t2Basis = e.target.value; renderDashboard(); });
+  }
+
+  /* ============================ Expert rule evaluation ============================ */
+  function evalExpert(c){
+    const firm = PROPFIRM_RULES[settings.firm];
+    const type = firm.types[settings.type];
+    const balance = settings.balance;
+    const results = [];
+    const eq = computeEquityCurve(balance);
+
+    // Daily loss
+    if(type.dailyLoss !== null && type.dailyLoss !== undefined){
+      const limits = Array.isArray(type.dailyLoss) ? type.dailyLoss : [type.dailyLoss, type.dailyLoss];
+      const worstDay = Math.min(0, ...c.dailyRows.map(d => d.netProfit));
+      const pct = balance ? (Math.abs(worstDay) / balance * 100) : 0;
+      const lvl = verdictFor(pct, limits[limits.length-1]);
+      results.push({ label:'Daily Loss Limit', formula:`|hari terburuk| / balance × 100 (limit ${limits.join('–')}%)`,
+        value:`${pct.toFixed(2)}%`, desc:`Kerugian hari terburuk: ${fmtCur(worstDay)}`, level:lvl });
+    }
+    // Max loss / drawdown
+    if(type.maxLoss !== null && type.maxLoss !== undefined){
+      const limits = Array.isArray(type.maxLoss) ? type.maxLoss : [type.maxLoss, type.maxLoss];
+      const isTrailing = (type.maxLossType||'').includes('trailing') || (type.maxLossType||'').includes('stop_out');
+      const ddUsd = isTrailing ? eq.maxDDTrailing : eq.maxDDStatic;
+      const pct = balance ? (ddUsd / balance * 100) : 0;
+      const lvl = verdictFor(pct, limits[limits.length-1]);
+      results.push({ label:'Max Loss / Drawdown', formula:`${isTrailing?'Peak-to-trough':'Dari balance awal'} / balance × 100 (limit ${limits.join('–')}%)`,
+        value:`${pct.toFixed(2)}%`, desc:`Drawdown terbesar: ${fmtCur(ddUsd)}`, level:lvl });
+    }
+    // Target profit
+    if(type.targetProfit && type.targetProfit.length){
+      const returnPct = balance ? (c.netProfit / balance * 100) : 0;
+      const p1 = type.targetProfit[0];
+      const lvl = returnPct >= p1 ? 'safe' : returnPct >= p1*0.7 ? 'warn' : 'info';
+      results.push({ label:'Target Profit (Fase 1)', formula:`Net profit / balance × 100 (target ${type.targetProfit.join('% → ')}%)`,
+        value:`${returnPct.toFixed(2)}%`, desc:`Sudah mencapai ${returnPct.toFixed(2)}% dari target ${p1}%.`, level:lvl });
+    }
+    // Min trading days
+    if(type.minTradingDays){
+      const need = Array.isArray(type.minTradingDays) ? type.minTradingDays[0] : type.minTradingDays;
+      const have = c.dailyRows.length;
+      const lvl = have >= need ? 'safe' : 'warn';
+      results.push({ label:'Minimum Hari Trading', formula:`Jumlah hari unik dengan transaksi (min ${need} hari)`,
+        value:`${have} hari`, desc: have >= need ? 'Syarat minimum hari sudah terpenuhi.' : `Masih kurang ${need-have} hari lagi.`, level:lvl });
+    }
+    // Extra rules
+    (type.extra||[]).forEach(rule => {
+      if(rule.kind === 'info'){
+        results.push({ label:rule.label, formula:'Tidak dapat diverifikasi otomatis dari file trade history', value:'—', desc:rule.desc||'Perlu verifikasi manual.', level:'info' });
+      } else if(rule.kind === 'single_trade_vs_target'){
+        if(!type.targetProfit || !type.targetProfit.length || !balance){
+          results.push({ label:rule.label, formula:'—', value:'—', desc:rule.desc+' (butuh target profit & balance)', level:'info' });
+        } else {
+          const maxTrade = Math.max(0, ...STATE.trades.map(t => t.profit));
+          const targetUsd = balance * (type.targetProfit[0]/100);
+          const pct = targetUsd ? (maxTrade/targetUsd*100) : 0;
+          const lvl = verdictFor(pct, rule.limit);
+          results.push({ label:rule.label, formula:`Profit trade terbesar / target profit ($) × 100 (limit ${rule.limit}%)`,
+            value:`${pct.toFixed(2)}%`, desc:`Trade terbesar: ${fmtCur(maxTrade)} dari target ${fmtCur(targetUsd)}. ${rule.desc}`, level:lvl });
+        }
+      } else if(rule.kind === 'best_day'){
+        const maxDay = Math.max(0, ...c.dailyRows.map(d => d.netProfit));
+        const pct = c.netProfit > 0 ? (maxDay/c.netProfit*100) : 0;
+        const lvl = verdictFor(pct, rule.limit);
+        results.push({ label:rule.label, formula:`Profit hari terbaik / total net profit × 100 (limit ${rule.limit}%)`,
+          value:`${pct.toFixed(2)}%`, desc:rule.desc, level:lvl });
+      } else if(rule.kind === 'consistency_limit'){
+        const maxDay = Math.max(0, ...c.dailyRows.map(d => d.netProfit));
+        const pct = c.netProfit > 0 ? (maxDay/c.netProfit*100) : 0;
+        const lvl = verdictFor(pct, rule.limit);
+        results.push({ label:rule.label, formula:`Profit hari terbaik / total net profit × 100 (ambang ${rule.limitLow}-${rule.limit}%)`,
+          value:`${pct.toFixed(2)}%`, desc:rule.desc, level:lvl });
+      } else if(rule.kind === 'avg_duration'){
+        const belowCount = STATE.trades.filter(t => t.durationSec < rule.limit).length;
+        const lvl = c.avgDur >= rule.limit ? 'safe' : 'danger';
+        results.push({ label:rule.label, formula:`Rata-rata durasi seluruh trade (harus &gt; ${rule.limit}s)`,
+          value:fmtDur(c.avgDur), desc:`${belowCount} dari ${c.total} trade tercatat di bawah ${rule.limit} detik. ${rule.desc}`, level:lvl });
+      } else if(rule.kind === 'sl_required'){
+        const lvl = c.noSlCount === 0 ? 'safe' : 'danger';
+        results.push({ label:rule.label, formula:'Jumlah trade tanpa Stop Loss', value:`${c.noSlCount} trade`,
+          desc: c.noSlCount === 0 ? 'Semua trade memiliki Stop Loss.' : 'Ditemukan trade tanpa Stop Loss — wajib diperbaiki.', level:lvl });
+      } else if(rule.kind === 'weekend_hold'){
+        const lvl = rule.disallow ? (c.weekendCount === 0 ? 'safe' : 'danger') : 'info';
+        results.push({ label:rule.label, formula:'Trade yang close pada hari Sabtu/Minggu', value:`${c.weekendCount} trade`,
+          desc: rule.disallow ? (c.weekendCount===0 ? 'Tidak ditemukan posisi yang menutup di akhir pekan.' : 'Ditemukan posisi yang menutup saat weekend — berpotensi melanggar.') : (rule.desc||''), level:lvl });
+      }
+    });
+    return results;
+  }
+
+  function renderExpertPanel(c){
+    if(!settings.expertOn) { document.getElementById('ruleGrid').innerHTML = ''; return; }
+    balanceInput.value = settings.balance;
+    const results = evalExpert(c);
+    document.getElementById('ruleGrid').innerHTML = results.map(r => `
+      <div class="rule-card">
+        <div class="r-top">
+          <div class="r-label">${r.label}</div>
+          <div class="badge ${r.level}"><span class="dot"></span>${verdictText(r.level)}</div>
+        </div>
+        <div class="r-formula">${r.formula}</div>
+        <div class="r-val" style="color:${verdictColor(r.level)}">${r.value}</div>
+        <div class="r-desc">${r.desc||''}</div>
+      </div>`).join('');
+  }
+
+  /* ============================ Charts ============================ */
+  function renderCharts(c){
     const svgEq = document.getElementById('equityChart');
-    const tt = document.getElementById('eqTooltip');
-    let cum = 0;
-    
-    // Scale factor for currency
-    const r = useIDR ? rate : 1; 
-    
-    const points = STATE.trades.map((t, idx) => { cum += t.netProfit; return { x: idx, y: cum * r, t: t }; });
-    if(points.length === 0) return;
-    
-    const minY = Math.min(0, ...points.map(p => p.y));
-    const maxY = Math.max(10*r, ...points.map(p => p.y));
-    const rangeY = maxY - minY || 1;
-    const W = 600, H = 220; // Internal SVG resolution
-    
-    // Draw Y-Axis grids and text
+    const eq = computeEquityCurve(settings.balance);
+    const points = eq.curve;
+    if(points.length < 2){ svgEq.innerHTML=''; return; }
+
+    const width = 560, height = 220, padL = 64, padR = 12, padT = 14, padB = 26;
+    const plotW = width - padL - padR, plotH = height - padT - padB;
+    const values = points.map(p => p.bal);
+    const minY = Math.min(...values), maxY = Math.max(...values);
+    const rangeY = (maxY - minY) || 1;
+
+    const xFor = i => padL + (i / (points.length - 1)) * plotW;
+    const yFor = v => padT + plotH - ((v - minY) / rangeY) * plotH;
+
+    let pathD = `M ${xFor(0)} ${yFor(points[0].bal)}`;
+    points.forEach((p,i) => { if(i>0) pathD += ` L ${xFor(i)} ${yFor(p.bal)}`; });
+    let areaD = pathD + ` L ${xFor(points.length-1)} ${padT+plotH} L ${xFor(0)} ${padT+plotH} Z`;
+
+    const gridLines = 4;
     let gridHTML = '';
-    [0, 0.25, 0.5, 0.75, 1].forEach(frac => {
-      const yVal = minY + (rangeY * frac);
-      const svgY = H - 20 - ((yVal - minY)/rangeY)*(H-40);
-      const label = useIDR ? 'Rp ' + (yVal/1000000).toFixed(1)+'M' : '$' + Math.round(yVal).toLocaleString();
-      gridHTML += `<line x1="50" y1="${svgY}" x2="${W}" y2="${svgY}" stroke="var(--border-light)" stroke-dasharray="4,4"/>`;
-      gridHTML += `<text x="40" y="${svgY+4}" fill="var(--text-faint)" font-size="10" text-anchor="end" font-family="IBM Plex Mono">${label}</text>`;
-    });
+    for(let g=0; g<=gridLines; g++){
+      const v = minY + (rangeY * g / gridLines);
+      const y = yFor(v);
+      gridHTML += `<line x1="${padL}" y1="${y}" x2="${width-padR}" y2="${y}" stroke="#233145" stroke-width="1" stroke-dasharray="3,4"/>`;
+      gridHTML += `<text x="${padL-8}" y="${y+4}" fill="#64748B" font-size="10" text-anchor="end" font-family="IBM Plex Mono">${fmtCur(v).replace(/\.00$/,'')}</text>`;
+    }
+    const zeroLine = (minY < settings.balance && maxY > settings.balance) ? `<line x1="${padL}" y1="${yFor(settings.balance)}" x2="${width-padR}" y2="${yFor(settings.balance)}" stroke="#FFC72C" stroke-width="1" stroke-dasharray="2,3" opacity="0.6"/>` : '';
+    const lineColor = eq.finalBalance >= settings.balance ? '#10B981' : '#EF4444';
 
-    let pathD = `M 50 ${H - 20 - ((points[0].y - minY)/rangeY)*(H-40)}`;
-    let pointsHTML = '';
-    points.forEach((p, i) => {
-      const x = 50 + (i / (points.length - 1 || 1)) * (W-50);
-      const y = H - 20 - ((p.y - minY) / rangeY) * (H-40);
-      pathD += ` L ${x} ${y}`;
-      // Invisible hover circle for tooltip
-      pointsHTML += `<circle cx="${x}" cy="${y}" r="12" fill="transparent" style="cursor:crosshair" 
-        onmouseover="showTT(evt, '${p.t.ticket}', ${p.t.netProfit}, ${p.y})" 
-        onmouseout="hideTT()"/>`;
-      // Small visible dot
-      pointsHTML += `<circle cx="${x}" cy="${y}" r="2" fill="var(--accent)" pointer-events="none"/>`;
-    });
+    svgEq.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svgEq.innerHTML = `
+      <defs><linearGradient id="eqGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${lineColor}" stop-opacity="0.28"/>
+        <stop offset="100%" stop-color="${lineColor}" stop-opacity="0"/>
+      </linearGradient></defs>
+      ${gridHTML}${zeroLine}
+      <path d="${areaD}" fill="url(#eqGrad)"/>
+      <path d="${pathD}" fill="none" stroke="${lineColor}" stroke-width="2.25"/>`;
+    document.getElementById('equityMeta').textContent = `Saldo akhir: ${fmtCur(eq.finalBalance)} (dari ${fmtCur(settings.balance)})`;
 
-    svgEq.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    svgEq.innerHTML = gridHTML + `<path d="${pathD}" fill="none" stroke="var(--accent)" stroke-width="2" pointer-events="none"/>` + pointsHTML;
-
-    // Attach TT logic globally
-    window.showTT = (evt, ticket, tProfit, totalVal) => {
-      tt.innerHTML = `<b>Ticket: ${ticket}</b><br>Trade PnL: ${fmtMoney(tProfit)}<br>Balance PnL: ${fmtMoney(totalVal/r)}`;
-      tt.style.opacity = '1';
-      tt.style.left = (evt.pageX + 15) + 'px';
-      tt.style.top = (evt.pageY - 20) + 'px';
-    };
-    window.hideTT = () => tt.style.opacity = '0';
-
-    // Duration Chart (simplified)
     const svgDur = document.getElementById('durationChart');
     const bins = [
-      { l: '<15s', c: STATE.trades.filter(t => t.durationSec<15).length },
-      { l: '15-60s', c: STATE.trades.filter(t => t.durationSec>=15&&t.durationSec<60).length },
-      { l: '1-5m', c: STATE.trades.filter(t => t.durationSec>=60&&t.durationSec<300).length },
-      { l: '>5m', c: STATE.trades.filter(t => t.durationSec>=300).length }
+      { label:'<15s', count: STATE.trades.filter(t=>t.durationSec<15).length },
+      { label:'15-30s', count: STATE.trades.filter(t=>t.durationSec>=15&&t.durationSec<30).length },
+      { label:'30-60s', count: STATE.trades.filter(t=>t.durationSec>=30&&t.durationSec<60).length },
+      { label:'60-120s', count: STATE.trades.filter(t=>t.durationSec>=60&&t.durationSec<120).length },
+      { label:'>120s', count: STATE.trades.filter(t=>t.durationSec>=120).length }
     ];
-    const maxC = Math.max(1, ...bins.map(b => b.c));
+    const maxCount = Math.max(1, ...bins.map(b=>b.count));
     let barsHTML = '';
-    bins.forEach((b, i) => {
-      const h = (b.c/maxC)*140; const x = i*100 + 40; const y = 180-h;
-      barsHTML += `<rect x="${x}" y="${y}" width="60" height="${h}" fill="var(--safe)" rx="4"/><text x="${x+30}" y="${y-8}" fill="var(--text-dim)" text-anchor="middle" font-size="12">${b.c}</text><text x="${x+30}" y="200" fill="var(--text-faint)" text-anchor="middle" font-size="11">${b.l}</text>`;
+    const barWidth = 60;
+    bins.forEach((b,i) => {
+      const h = (b.count/maxCount)*130;
+      const x = i*95+25, y=160-h;
+      const color = i<4 ? '#F59E0B' : '#10B981';
+      barsHTML += `<rect x="${x}" y="${y}" width="${barWidth}" height="${h}" fill="${color}" rx="4"/>
+        <text x="${x+barWidth/2}" y="${y-6}" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">${b.count}</text>
+        <text x="${x+barWidth/2}" y="180" fill="#64748B" font-size="11" text-anchor="middle">${b.label}</text>`;
     });
-    svgDur.setAttribute('viewBox', '0 0 500 220');
+    svgDur.setAttribute('viewBox','0 0 540 190');
     svgDur.innerHTML = barsHTML;
   }
 
-  function renderScalpTable(c) {
+  /* ============================ Tables ============================ */
+  function renderScalpTable(c){
     document.getElementById('tabScalpCount').textContent = c.scalp.length;
-    let html = `<thead><tr><th>Ticket</th><th>Waktu</th><th class="num">Durasi</th><th>Sym</th><th class="num">Lot</th><th class="num">PnL</th></tr></thead><tbody>`;
-    c.scalp.forEach(t => {
-      html += `<tr><td class="mono strong">${t.ticket}</td><td class="mono">${t.openTime.toLocaleString('id')}</td><td class="num"><span class="flag-tag">${fmtDur(t.durationSec)}</span></td><td class="strong">${t.symbol}</td><td class="num">${t.volume}</td><td class="num ${t.netProfit>=0?'pos':'neg'}">${fmtMoney(t.netProfit)}</td></tr>`;
-    });
-    document.getElementById('scalpTable').innerHTML = html + '</tbody>';
+    let html = `<thead><tr><th>Ticket</th><th>Waktu Buka</th><th>Waktu Tutup</th><th class="num">Durasi</th><th>Symbol</th><th>Type</th><th class="num">Volume</th><th class="num">S/L</th><th class="num">Net Profit</th></tr></thead><tbody>`;
+    if(c.scalp.length === 0){
+      html += `<tr><td colspan="9" style="text-align:center; color:var(--text-faint); padding:32px;">Tidak ada transaksi di bawah ambang ${settings.scalpSeconds} detik.</td></tr>`;
+    } else {
+      [...c.scalp].sort((a,b)=>a.openTime-b.openTime).forEach(t => {
+        html += `<tr>
+          <td class="mono strong">${t.ticket}</td><td class="mono">${fmtDate(t.openTime)}</td><td class="mono">${fmtDate(t.closeTime)}</td>
+          <td class="num"><span class="flag-tag">${fmtDur(t.durationSec)}</span></td><td class="strong">${t.symbol}</td>
+          <td style="text-transform:uppercase; font-weight:600;">${t.type}</td><td class="num">${t.volume.toFixed(2)}</td>
+          <td class="num">${t.sl || '<span style="color:var(--danger)">NO SL</span>'}</td>
+          <td class="num ${t.netProfit>=0?'pos':'neg'}">${fmtCur(t.netProfit)}</td></tr>`;
+      });
+    }
+    html += '</tbody>';
+    document.getElementById('scalpTable').innerHTML = html;
   }
 
-  function renderAllTable(c) {
-    let f = STATE.trades;
-    if(activeFilterTag === 'scalp') f = f.filter(t => t.durationSec < c.s_sec);
-    if(activeFilterTag === 'winscalp') f = f.filter(t => t.durationSec < c.s_sec && t.profit > 0);
-    if(searchQuery) f = f.filter(t => String(t.ticket).toLowerCase().includes(searchQuery) || String(t.symbol).toLowerCase().includes(searchQuery));
+  function renderAllTable(c){
+    let filtered = STATE.trades;
+    if(activeFilterTag === 'scalp') filtered = filtered.filter(t => t.durationSec < settings.scalpSeconds);
+    if(activeFilterTag === 'winscalp') filtered = filtered.filter(t => t.durationSec < settings.scalpSeconds && t.profit > 0);
+    if(activeFilterTag === 'nosl') filtered = filtered.filter(t => !t.sl || t.sl === 0);
+    if(activeFilterTag === 'highlot') filtered = filtered.filter(t => t.volume >= c.avgLot * settings.maxLotFactor);
+    if(activeFilterTag === 'weekend') filtered = filtered.filter(t => { const d=t.closeTime.getDay(); return d===0||d===6; });
+    if(searchQuery) filtered = filtered.filter(t => String(t.ticket).toLowerCase().includes(searchQuery) || String(t.symbol).toLowerCase().includes(searchQuery) || String(t.type).toLowerCase().includes(searchQuery));
 
-    const totalRows = f.length; const totalPages = Math.ceil(totalRows / pageSize) || 1;
+    const totalRows = filtered.length;
+    const totalPages = Math.ceil(totalRows/pageSize) || 1;
     allTablePage = Math.min(allTablePage, totalPages);
-    const startIdx = (allTablePage - 1) * pageSize;
-    
-    let html = `<thead><tr><th>Ticket</th><th>Waktu Buka</th><th class="num">Durasi</th><th>Sym</th><th>Type</th><th class="num">Lot</th><th class="num">Net Profit</th><th>Status</th></tr></thead><tbody>`;
-    f.slice(startIdx, startIdx + pageSize).forEach(t => {
-      html += `<tr><td class="mono strong">${t.ticket}</td><td class="mono">${t.openTime.toLocaleString('id')}</td><td class="num mono">${fmtDur(t.durationSec)}</td><td class="strong">${t.symbol}</td><td>${t.type}</td><td class="num">${t.volume}</td><td class="num ${t.netProfit>=0?'pos':'neg'}">${fmtMoney(t.netProfit)}</td><td>${t.durationSec<c.s_sec?'<span class="flag-tag">SCALP</span>':'<span class="safe-tag">OK</span>'}</td></tr>`;
+    const startIdx = (allTablePage-1)*pageSize;
+    const pageTrades = filtered.slice(startIdx, startIdx+pageSize);
+
+    let html = `<thead><tr><th>Ticket</th><th>Waktu Buka</th><th>Waktu Tutup</th><th class="num">Durasi</th><th>Symbol</th><th>Type</th><th class="num">Volume</th><th class="num">Net Profit</th><th>Status</th></tr></thead><tbody>`;
+    pageTrades.forEach(t => {
+      const isScalp = t.durationSec < settings.scalpSeconds;
+      const isWeekend = [0,6].includes(t.closeTime.getDay());
+      const tag = isScalp ? `<span class="flag-tag">SCALP ${fmtDur(t.durationSec)}</span>` : `<span class="safe-tag">OK ${fmtDur(t.durationSec)}</span>`;
+      html += `<tr>
+        <td class="mono strong">${t.ticket}</td><td class="mono">${fmtDate(t.openTime)}</td><td class="mono">${fmtDate(t.closeTime)}</td>
+        <td class="num mono">${fmtDur(t.durationSec)}</td><td class="strong">${t.symbol}</td><td style="text-transform:uppercase;">${t.type}</td>
+        <td class="num">${t.volume.toFixed(2)}</td><td class="num ${t.netProfit>=0?'pos':'neg'}">${fmtCur(t.netProfit)}</td>
+        <td>${tag}${isWeekend?' <span class="flag-tag">WEEKEND</span>':''}</td></tr>`;
     });
-    document.getElementById('allTable').innerHTML = html + '</tbody>';
-    document.getElementById('allPagination').innerHTML = `<div>Show ${startIdx+1}-${Math.min(startIdx+pageSize, totalRows)} of ${totalRows}</div>
-      <div class="page-btns"><button class="btn-ghost" id="prevPage" ${allTablePage===1?'disabled':''}>&laquo; Prev</button><span style="padding:6px; font-weight:bold">Page ${allTablePage} / ${totalPages}</span><button class="btn-ghost" id="nextPage" ${allTablePage===totalPages?'disabled':''}>Next &raquo;</button></div>`;
-    document.getElementById('prevPage')?.addEventListener('click', () => { if(allTablePage > 1) { allTablePage--; renderAllTable(c); } });
-    document.getElementById('nextPage')?.addEventListener('click', () => { if(allTablePage < totalPages) { allTablePage++; renderAllTable(c); } });
+    html += '</tbody>';
+    document.getElementById('allTable').innerHTML = html;
+
+    document.getElementById('allPagination').innerHTML = `
+      <div>Menampilkan ${totalRows?startIdx+1:0} - ${Math.min(startIdx+pageSize,totalRows)} dari ${totalRows} transaksi</div>
+      <div class="page-btns">
+        <button class="btn-ghost" id="prevPage" ${allTablePage===1?'disabled':''}>&laquo; Prev</button>
+        <span style="padding:6px 12px; font-weight:600;">Halaman ${allTablePage} / ${totalPages}</span>
+        <button class="btn-ghost" id="nextPage" ${allTablePage===totalPages?'disabled':''}>Next &raquo;</button>
+      </div>`;
+    document.getElementById('prevPage')?.addEventListener('click', () => { if(allTablePage>1){ allTablePage--; renderAllTable(c); } });
+    document.getElementById('nextPage')?.addEventListener('click', () => { if(allTablePage<totalPages){ allTablePage++; renderAllTable(c); } });
   }
 
-  function renderDailyTable(c) {
-    let html = `<thead><tr><th>Tanggal</th><th class="num">Trade</th><th class="num">Scalp</th><th class="num">Daily Net Profit</th></tr></thead><tbody>`;
+  function renderDailyTable(c){
+    let html = `<thead><tr><th>Tanggal</th><th class="num">Total Trade</th><th class="num">Trade Scalp</th><th class="num">Profit Scalp</th><th class="num">Net Profit Harian</th><th>Status</th></tr></thead><tbody>`;
     c.dailyRows.forEach(d => {
-      html += `<tr><td class="strong">${new Date(d.date).toLocaleDateString('id-ID',{day:'2-digit',month:'long'})}</td><td class="num">${d.total}</td><td class="num ${d.scalp>0?'neg':''}">${d.scalp}</td><td class="num ${d.netProfit>=0?'pos':'neg'}">${fmtMoney(d.netProfit)}</td></tr>`;
+      const dateFmt = new Date(d.date).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+      const isViolated = d.scalp > 0 && (d.scalp/d.total)*100 > settings.t1Threshold;
+      const statusTag = isViolated ? `<span class="flag-tag">WARNING</span>` : `<span class="safe-tag">OK</span>`;
+      html += `<tr><td class="strong">${dateFmt}</td><td class="num">${d.total}</td><td class="num ${d.scalp>0?'neg':''}">${d.scalp}</td>
+        <td class="num">${fmtCur(d.scalpProfit)}</td><td class="num ${d.netProfit>=0?'pos':'neg'}">${fmtCur(d.netProfit)}</td><td>${statusTag}</td></tr>`;
     });
-    document.getElementById('dailyTable').innerHTML = html + '</tbody>';
+    html += '</tbody>';
+    document.getElementById('dailyTable').innerHTML = html;
+  }
+
+  function renderFirmRulesGuide(){
+    const firm = PROPFIRM_RULES[settings.firm];
+    let html = `<div class="rules-card"><h4>Ringkasan Rule — ${firm.name}</h4><ul>`;
+    Object.values(firm.types).forEach(t => {
+      const parts = [];
+      if(t.targetProfit && t.targetProfit.length) parts.push(`Target: ${t.targetProfit.join('% → ')}%`);
+      if(t.dailyLoss) parts.push(`Daily loss: ${Array.isArray(t.dailyLoss)?t.dailyLoss.join('–'):t.dailyLoss}%`);
+      if(t.maxLoss) parts.push(`Max loss: ${Array.isArray(t.maxLoss)?t.maxLoss.join('–'):t.maxLoss}%`);
+      if(t.minTradingDays) parts.push(`Min hari: ${Array.isArray(t.minTradingDays)?t.minTradingDays.join('–'):t.minTradingDays}`);
+      html += `<li><b>${t.label}</b> — ${parts.join(' · ')||'Lihat detail resmi'}</li>`;
+    });
+    html += `</ul></div>`;
+    document.getElementById('firmRulesGuide').innerHTML = html;
+  }
+
+  /* ============================ CSV export ============================ */
+  exportScalpBtn.addEventListener('click', () => { if(!STATE) return; exportCSV(compute().scalp, 'trade_tick_scalping_flagged.csv'); });
+  exportAllBtn.addEventListener('click', () => { if(!STATE) return; exportCSV(STATE.trades, 'seluruh_transaksi_trading.csv'); });
+  function exportCSV(tradesList, filename){
+    const rows = [['Ticket','Waktu Buka','Waktu Tutup','Durasi (Detik)','Symbol','Type','Volume','Open Price','Close Price','S/L','T/P','Net Profit (USD)']];
+    tradesList.forEach(t => rows.push([t.ticket, fmtDate(t.openTime), fmtDate(t.closeTime), Math.round(t.durationSec), t.symbol, t.type, t.volume, t.openPrice, t.closePrice, t.sl, t.tp, t.netProfit]));
+    const csvContent = rows.map(r => r.map(v => `"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csvContent], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
 })();
