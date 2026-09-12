@@ -76,8 +76,38 @@ html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-
 #dashboard { display: none; }
 #dashboard.show { display: block; }
 
+/* Score hero */
+.score-hero { display: grid; grid-template-columns: 220px 1fr; gap: 20px; margin-bottom: 28px; align-items: stretch; }
+.score-gauge-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+.score-gauge-card .sg-label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.score-gauge-card .sg-value { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; }
+@media(max-width: 720px){ .score-hero { grid-template-columns: 1fr; } }
+
+/* Override box */
+.override-box { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; }
+.override-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 8px; }
+
+/* Calendar */
+.cal-month { margin-bottom: 22px; }
+.cal-month-title { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 700; margin-bottom: 10px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal-dow { text-align: center; font-size: 10.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; padding-bottom: 4px; }
+.cal-cell { border-radius: 8px; padding: 8px 6px; min-height: 58px; border: 1px solid var(--border); background: var(--panel-2); display: flex; flex-direction: column; justify-content: space-between; }
+.cal-cell.empty { background: transparent; border-color: transparent; }
+.cal-cell .cal-day { font-size: 11px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
+.cal-cell .cal-pnl { font-size: 11.5px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+.cal-cell .cal-trades { font-size: 10px; color: var(--text-faint); }
+
+@media print {
+  .topbar-right .cur-toggle, #printBtn, #resetBtn, .dropzone, .tabs, .search-input, .filter-tags, #exportAllBtn, #exportScalpBtn,
+  .settings-box, #resetOverrideBtn, .pagination button { display: none !important; }
+  .tab-content { display: block !important; margin-bottom: 24px; page-break-inside: avoid; }
+  body { background: #fff; color: #111; }
+  .panel, .kpi, .trigger-card, .table-wrap, .verdict-banner, .score-gauge-card, .rule-card, .rules-card, .chart-container, .cal-cell { border-color: #ccc !important; }
+}
+
 /* Verdict */
-.verdict-banner { border-radius: 16px; padding: 20px 24px; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 18px; border: 1px solid transparent; }
+.verdict-banner { border-radius: 16px; padding: 20px 24px; margin-bottom: 0; display: flex; align-items: flex-start; gap: 18px; border: 1px solid transparent; }
 .verdict-banner .v-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; font-weight: bold; }
 .verdict-banner .v-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
 .verdict-banner .v-desc { font-size: 13.5px; line-height: 1.5; }
@@ -216,6 +246,7 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
         <input type="number" class="kurs-input" id="kursInput" value="17600" title="Kurs USD → IDR">
       </div>
       <div class="acc-chip" id="accChip"></div>
+      <button class="btn-ghost" id="printBtn" style="display:none;">Cetak / Simpan PDF</button>
     </div>
   </div>
 
@@ -234,8 +265,17 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
 
   <div id="dashboard">
 
-    <div class="verdict-banner" id="verdictBanner"></div>
+    <div class="score-hero">
+      <div class="score-gauge-card" id="scoreGaugeCard"></div>
+      <div class="verdict-banner" id="verdictBanner"></div>
+    </div>
+
     <div class="kpi-grid" id="kpiGrid"></div>
+
+    <div class="section-head">
+      <div class="section-title">Statistik Lanjutan</div>
+    </div>
+    <div class="kpi-grid" id="statsGrid"></div>
 
     <div class="section-head">
       <div class="section-title">Universal Scalp Check <span class="sub" id="periodLabel"></span></div>
@@ -276,6 +316,32 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
             <div class="hint">Dipakai untuk kalkulasi rule berbasis % (daily loss, max loss, target profit).</div>
           </div>
         </div>
+
+        <div class="override-box">
+          <div class="override-head">
+            <div class="section-title" style="font-size:13px; margin:0;">Override Limit (opsional)</div>
+            <button class="btn-ghost" id="resetOverrideBtn" style="padding:5px 12px; font-size:11.5px;">Reset ke Preset</button>
+          </div>
+          <div class="hint" style="margin-bottom:12px;">Sebagian firm menawarkan beberapa pilihan tier risiko (mis. daily loss 8% atau 10%). Isi manual di sini kalau paket akunmu beda dari preset default.</div>
+          <div class="settings-grid">
+            <div class="field">
+              <label>Daily Loss Limit (%)</label>
+              <input type="number" id="ovDailyLoss" step="0.5" min="0.1" placeholder="preset">
+              <div class="hint" id="ovDailyLossHint"></div>
+            </div>
+            <div class="field">
+              <label>Max Loss / Drawdown (%)</label>
+              <input type="number" id="ovMaxLoss" step="0.5" min="0.1" placeholder="preset">
+              <div class="hint" id="ovMaxLossHint"></div>
+            </div>
+            <div class="field">
+              <label>Target Profit Fase 1 (%)</label>
+              <input type="number" id="ovTarget" step="0.5" min="0.1" placeholder="preset">
+              <div class="hint" id="ovTargetHint"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="rule-grid" id="ruleGrid"></div>
       </div>
     </div>
@@ -285,6 +351,8 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
       <button class="tab-btn" data-tab="tab-scalp">Trade Terindikasi Scalp (<span id="tabScalpCount">0</span>)</button>
       <button class="tab-btn" data-tab="tab-all">Seluruh Transaksi</button>
       <button class="tab-btn" data-tab="tab-daily">Rekap Harian</button>
+      <button class="tab-btn" data-tab="tab-calendar">Kalender Harian</button>
+      <button class="tab-btn" data-tab="tab-symbol">Analisis Symbol</button>
       <button class="tab-btn" data-tab="tab-rules">Panduan Rule Funded</button>
     </div>
 
@@ -333,6 +401,14 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
 
     <div class="tab-content" id="tab-daily">
       <div class="table-wrap"><div class="table-scroll"><table id="dailyTable"></table></div></div>
+    </div>
+
+    <div class="tab-content" id="tab-calendar">
+      <div id="calendarWrap"></div>
+    </div>
+
+    <div class="tab-content" id="tab-symbol">
+      <div class="table-wrap"><div class="table-scroll"><table id="symbolTable"></table></div></div>
     </div>
 
     <div class="tab-content" id="tab-rules">
@@ -454,10 +530,16 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
   const curUsdBtn = document.getElementById('curUsdBtn');
   const curIdrBtn = document.getElementById('curIdrBtn');
   const kursInput = document.getElementById('kursInput');
+  const printBtn = document.getElementById('printBtn');
+  const ovDailyLoss = document.getElementById('ovDailyLoss');
+  const ovMaxLoss = document.getElementById('ovMaxLoss');
+  const ovTarget = document.getElementById('ovTarget');
+  const resetOverrideBtn = document.getElementById('resetOverrideBtn');
 
   let STATE = null;
   let settings = { scalpSeconds: 120, t1Threshold: 20, t2Threshold: 10, t2Basis: 'gross', maxLotFactor: 2.0,
-    currency: 'usd', kurs: 17600, expertOn: false, firm: 'wemastertrade', type: 'challenge2', balance: 10000 };
+    currency: 'usd', kurs: 17600, expertOn: false, firm: 'wemastertrade', type: 'challenge2', balance: 10000,
+    overrides: { dailyLoss: null, maxLoss: null, targetProfit: null } };
 
   let allTablePage = 1;
   const pageSize = 25;
@@ -485,15 +567,24 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
   populateTypeSelect();
   typeSelect.value = settings.type;
 
-  firmSelect.addEventListener('change', () => { settings.firm = firmSelect.value; populateTypeSelect(); settings.type = typeSelect.value; if(STATE) renderDashboard(); });
-  typeSelect.addEventListener('change', () => { settings.type = typeSelect.value; if(STATE) renderDashboard(); });
+  function resetOverrides(){ settings.overrides = { dailyLoss: null, maxLoss: null, targetProfit: null }; ovDailyLoss.value=''; ovMaxLoss.value=''; ovTarget.value=''; }
+
+  firmSelect.addEventListener('change', () => { settings.firm = firmSelect.value; populateTypeSelect(); settings.type = typeSelect.value; resetOverrides(); if(STATE) renderDashboard(); });
+  typeSelect.addEventListener('change', () => { settings.type = typeSelect.value; resetOverrides(); if(STATE) renderDashboard(); });
   balanceInput.addEventListener('change', e => { settings.balance = Math.max(1, parseFloat(e.target.value) || 10000); if(STATE) renderDashboard(); });
+
+  ovDailyLoss.addEventListener('change', e => { settings.overrides.dailyLoss = e.target.value === '' ? null : parseFloat(e.target.value); if(STATE) renderDashboard(); });
+  ovMaxLoss.addEventListener('change', e => { settings.overrides.maxLoss = e.target.value === '' ? null : parseFloat(e.target.value); if(STATE) renderDashboard(); });
+  ovTarget.addEventListener('change', e => { settings.overrides.targetProfit = e.target.value === '' ? null : parseFloat(e.target.value); if(STATE) renderDashboard(); });
+  resetOverrideBtn.addEventListener('click', () => { resetOverrides(); if(STATE) renderDashboard(); });
 
   expertToggle.addEventListener('change', e => {
     settings.expertOn = e.target.checked;
     expertPanel.classList.toggle('show', settings.expertOn);
     if(STATE) renderDashboard();
   });
+
+  printBtn.addEventListener('click', () => window.print());
 
   /* ============================ Currency toggle ============================ */
   curUsdBtn.addEventListener('click', () => { settings.currency = 'usd'; curUsdBtn.classList.add('active'); curIdrBtn.classList.remove('active'); if(STATE) renderDashboard(); });
@@ -513,6 +604,7 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
     dashboard.classList.remove('show');
     dropzoneWrap.style.display = 'block';
     accChip.classList.remove('show');
+    printBtn.style.display = 'none';
     fileInput.value = '';
   });
 
@@ -563,6 +655,7 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
         renderDashboard();
         dropzoneWrap.style.display = 'none';
         dashboard.classList.add('show');
+        printBtn.style.display = 'inline-flex';
       }catch(err){
         console.error(err);
         showError('Gagal memproses file. Pastikan format file adalah .xlsx dari MetaTrader Report History.');
@@ -758,8 +851,10 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
     const dates = STATE.trades.map(t => t.openTime).sort((a,b) => a - b);
     if(dates.length) document.getElementById('periodLabel').textContent = `Periode: ${fmtDate(dates[0]).split(' ')[0]} – ${fmtDate(dates[dates.length-1]).split(' ')[0]}`;
 
+    renderScoreGauge(c);
     renderVerdictBanner(c);
     renderKpiGrid(c);
+    renderStatsRow(c);
     renderTriggers(c);
     renderSettings();
     renderExpertPanel(c);
@@ -767,6 +862,8 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
     renderScalpTable(c);
     renderAllTable(c);
     renderDailyTable(c);
+    renderCalendar(c);
+    renderSymbolTable(c);
     renderFirmRulesGuide();
   }
 
@@ -803,6 +900,70 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
       <div class="kpi"><div class="label">Rata-rata Durasi</div><div class="value">${fmtDur(c.avgDur)}</div><div class="sub">Ambang Scalp: &lt; ${settings.scalpSeconds}s</div></div>
       <div class="kpi"><div class="label">Jumlah Trade Scalp</div><div class="value ${c.scalp.length>0?'neg':'pos'}">${c.scalp.length}</div><div class="sub">Profit Scalp: ${fmtCur(c.scalpWinProfit)}</div></div>
       <div class="kpi"><div class="label">Parameter Risiko</div><div class="value">${c.noSlCount} <span style="font-size:13px;color:var(--text-faint)">No SL</span></div><div class="sub">Hold Weekend: <b>${c.weekendCount}</b> &middot; Lot Outlier: <b>${c.highLotCount}</b></div></div>`;
+  }
+
+  function computeAdvancedStats(c){
+    const sorted = [...STATE.trades].sort((a,b) => a.closeTime - b.closeTime);
+    let curWinStreak=0, curLossStreak=0, maxWinStreak=0, maxLossStreak=0;
+    sorted.forEach(t => {
+      if(t.profit > 0){ curWinStreak++; curLossStreak=0; if(curWinStreak>maxWinStreak) maxWinStreak=curWinStreak; }
+      else if(t.profit < 0){ curLossStreak++; curWinStreak=0; if(curLossStreak>maxLossStreak) maxLossStreak=curLossStreak; }
+      else { curWinStreak=0; curLossStreak=0; }
+    });
+    const winTrades = STATE.trades.filter(t=>t.profit>0);
+    const lossTrades = STATE.trades.filter(t=>t.profit<0);
+    const avgWin = winTrades.length ? winTrades.reduce((s,t)=>s+t.profit,0)/winTrades.length : 0;
+    const avgLoss = lossTrades.length ? Math.abs(lossTrades.reduce((s,t)=>s+t.profit,0)/lossTrades.length) : 0;
+    const winRate = c.total ? c.wins/c.total : 0;
+    const expectancy = (winRate*avgWin) - ((1-winRate)*avgLoss);
+    const rr = avgLoss ? (avgWin/avgLoss) : 0;
+    return { maxWinStreak, maxLossStreak, avgWin, avgLoss, expectancy, rr };
+  }
+
+  function renderStatsRow(c){
+    const s = computeAdvancedStats(c);
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="kpi"><div class="label">Win / Loss Streak Terpanjang</div><div class="value"><span class="pos">${s.maxWinStreak}W</span> / <span class="neg">${s.maxLossStreak}L</span></div><div class="sub">Beruntun kemenangan &amp; kekalahan terpanjang</div></div>
+      <div class="kpi"><div class="label">Rata-rata Win / Loss</div><div class="value"><span class="pos">${fmtCur(s.avgWin)}</span></div><div class="sub">Avg loss: <span class="neg">${fmtCur(-s.avgLoss)}</span></div></div>
+      <div class="kpi"><div class="label">Risk : Reward Ratio</div><div class="value">1 : ${s.rr.toFixed(2)}</div><div class="sub">Avg win dibagi avg loss</div></div>
+      <div class="kpi"><div class="label">Expectancy per Trade</div><div class="value ${s.expectancy>=0?'pos':'neg'}">${fmtCur(s.expectancy)}</div><div class="sub">Ekspektasi profit rata-rata tiap trade</div></div>`;
+  }
+
+  /* ============================ Compliance score ============================ */
+  function computeComplianceScore(c){
+    const l1 = verdictFor(c.trigger1, settings.t1Threshold);
+    const l2 = verdictFor(c.trigger2, settings.t2Threshold);
+    const scoreFor = lvl => lvl==='danger' ? 0 : lvl==='warn' ? 60 : 100;
+    let parts = [scoreFor(l1), scoreFor(l2)];
+    let weight = [0.5, 0.5];
+    if(settings.expertOn){
+      const results = evalExpert(c).filter(r => r.level !== 'info');
+      if(results.length){
+        const expertAvg = results.reduce((s,r)=>s+scoreFor(r.level),0)/results.length;
+        parts = [scoreFor(l1)*0.15, scoreFor(l2)*0.15, expertAvg*0.70];
+        weight = [1,1,1];
+      }
+    }
+    const score = Math.round(parts.reduce((a,b)=>a+b,0) / (settings.expertOn && parts.length===3 ? 1 : 2));
+    return Math.max(0, Math.min(100, score));
+  }
+
+  function renderScoreGauge(c){
+    const score = computeComplianceScore(c);
+    const color = score>=80 ? 'var(--safe)' : score>=50 ? 'var(--warn)' : 'var(--danger)';
+    const r = 52, circ = 2*Math.PI*r;
+    const offset = circ * (1 - score/100);
+    const label = score>=80 ? 'Kepatuhan Baik' : score>=50 ? 'Perlu Perhatian' : 'Berisiko Tinggi';
+    document.getElementById('scoreGaugeCard').innerHTML = `
+      <div class="sg-label">Skor Kepatuhan</div>
+      <svg viewBox="0 0 130 130" width="130" height="130">
+        <circle cx="65" cy="65" r="${r}" fill="none" stroke="#233145" stroke-width="10"/>
+        <circle cx="65" cy="65" r="${r}" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round"
+          stroke-dasharray="${circ}" stroke-dashoffset="${offset}" transform="rotate(-90 65 65)" style="transition:stroke-dashoffset .5s ease;"/>
+        <text x="65" y="60" text-anchor="middle" fill="#F1F5F9" font-size="30" font-weight="700" font-family="IBM Plex Mono">${score}</text>
+        <text x="65" y="80" text-anchor="middle" fill="#64748B" font-size="11" font-family="IBM Plex Sans">/ 100</text>
+      </svg>
+      <div class="sg-value" style="color:${color}">${label}</div>`;
   }
 
   function renderTriggers(c){
@@ -852,32 +1013,39 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
     const results = [];
     const eq = computeEquityCurve(balance);
 
-    // Daily loss
+    // Daily loss (range-aware, overridable — some firms offer multiple risk tiers e.g. 8% or 10%)
     if(type.dailyLoss !== null && type.dailyLoss !== undefined){
       const limits = Array.isArray(type.dailyLoss) ? type.dailyLoss : [type.dailyLoss, type.dailyLoss];
+      const presetLimit = limits[limits.length-1];
+      const effLimit = settings.overrides.dailyLoss ?? presetLimit;
       const worstDay = Math.min(0, ...c.dailyRows.map(d => d.netProfit));
       const pct = balance ? (Math.abs(worstDay) / balance * 100) : 0;
-      const lvl = verdictFor(pct, limits[limits.length-1]);
-      results.push({ label:'Daily Loss Limit', formula:`|hari terburuk| / balance × 100 (limit ${limits.join('–')}%)`,
-        value:`${pct.toFixed(2)}%`, desc:`Kerugian hari terburuk: ${fmtCur(worstDay)}`, level:lvl });
+      const lvl = verdictFor(pct, effLimit);
+      const rangeTxt = limits[0] === limits[1] ? `${effLimit}%` : `pilih ${limits.join('% / ')}% — aktif: ${effLimit}%`;
+      results.push({ label:'Daily Loss Limit', formula:`|hari terburuk| / balance × 100 (limit ${rangeTxt})`,
+        value:`${pct.toFixed(2)}%`, desc:`Kerugian hari terburuk: ${fmtCur(worstDay)}.${settings.overrides.dailyLoss!==null?' (limit di-override manual)':''}`, level:lvl });
     }
-    // Max loss / drawdown
+    // Max loss / drawdown (range-aware, overridable)
     if(type.maxLoss !== null && type.maxLoss !== undefined){
       const limits = Array.isArray(type.maxLoss) ? type.maxLoss : [type.maxLoss, type.maxLoss];
+      const presetLimit = limits[limits.length-1];
+      const effLimit = settings.overrides.maxLoss ?? presetLimit;
       const isTrailing = (type.maxLossType||'').includes('trailing') || (type.maxLossType||'').includes('stop_out');
       const ddUsd = isTrailing ? eq.maxDDTrailing : eq.maxDDStatic;
       const pct = balance ? (ddUsd / balance * 100) : 0;
-      const lvl = verdictFor(pct, limits[limits.length-1]);
-      results.push({ label:'Max Loss / Drawdown', formula:`${isTrailing?'Peak-to-trough':'Dari balance awal'} / balance × 100 (limit ${limits.join('–')}%)`,
-        value:`${pct.toFixed(2)}%`, desc:`Drawdown terbesar: ${fmtCur(ddUsd)}`, level:lvl });
+      const lvl = verdictFor(pct, effLimit);
+      const rangeTxt = limits[0] === limits[1] ? `${effLimit}%` : `pilih ${limits.join('% / ')}% — aktif: ${effLimit}%`;
+      results.push({ label:'Max Loss / Drawdown', formula:`${isTrailing?'Peak-to-trough':'Dari balance awal'} / balance × 100 (limit ${rangeTxt})`,
+        value:`${pct.toFixed(2)}%`, desc:`Drawdown terbesar: ${fmtCur(ddUsd)}.${settings.overrides.maxLoss!==null?' (limit di-override manual)':''}`, level:lvl });
     }
-    // Target profit
+    // Target profit (overridable)
     if(type.targetProfit && type.targetProfit.length){
+      const presetP1 = type.targetProfit[0];
+      const p1 = settings.overrides.targetProfit ?? presetP1;
       const returnPct = balance ? (c.netProfit / balance * 100) : 0;
-      const p1 = type.targetProfit[0];
       const lvl = returnPct >= p1 ? 'safe' : returnPct >= p1*0.7 ? 'warn' : 'info';
-      results.push({ label:'Target Profit (Fase 1)', formula:`Net profit / balance × 100 (target ${type.targetProfit.join('% → ')}%)`,
-        value:`${returnPct.toFixed(2)}%`, desc:`Sudah mencapai ${returnPct.toFixed(2)}% dari target ${p1}%.`, level:lvl });
+      results.push({ label:'Target Profit (Fase 1)', formula:`Net profit / balance × 100 (target ${p1}%${type.targetProfit.length>1?' → '+type.targetProfit.slice(1).join('% → ')+'%':''})`,
+        value:`${returnPct.toFixed(2)}%`, desc:`Sudah mencapai ${returnPct.toFixed(2)}% dari target ${p1}%.${settings.overrides.targetProfit!==null?' (target di-override manual)':''}`, level:lvl });
     }
     // Min trading days
     if(type.minTradingDays){
@@ -935,6 +1103,15 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
   function renderExpertPanel(c){
     if(!settings.expertOn) { document.getElementById('ruleGrid').innerHTML = ''; return; }
     balanceInput.value = settings.balance;
+    const type = PROPFIRM_RULES[settings.firm].types[settings.type];
+    const dlLimits = Array.isArray(type.dailyLoss) ? type.dailyLoss : (type.dailyLoss!=null ? [type.dailyLoss] : []);
+    const mlLimits = Array.isArray(type.maxLoss) ? type.maxLoss : (type.maxLoss!=null ? [type.maxLoss] : []);
+    document.getElementById('ovDailyLossHint').textContent = dlLimits.length ? `Preset: ${dlLimits.join('–')}%` : 'Tidak ada data preset';
+    document.getElementById('ovMaxLossHint').textContent = mlLimits.length ? `Preset: ${mlLimits.join('–')}%` : 'Tidak ada data preset';
+    document.getElementById('ovTargetHint').textContent = (type.targetProfit&&type.targetProfit.length) ? `Preset: ${type.targetProfit[0]}%` : 'Tidak ada data preset';
+    ovDailyLoss.placeholder = dlLimits.length ? dlLimits[dlLimits.length-1] : 'preset';
+    ovMaxLoss.placeholder = mlLimits.length ? mlLimits[mlLimits.length-1] : 'preset';
+    ovTarget.placeholder = (type.targetProfit&&type.targetProfit.length) ? type.targetProfit[0] : 'preset';
     const results = evalExpert(c);
     document.getElementById('ruleGrid').innerHTML = results.map(r => `
       <div class="rule-card">
@@ -1084,6 +1261,72 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
     });
     html += '</tbody>';
     document.getElementById('dailyTable').innerHTML = html;
+  }
+
+  /* ============================ Calendar heatmap ============================ */
+  function renderCalendar(c){
+    const byDate = {};
+    c.dailyRows.forEach(d => byDate[d.date] = d);
+    const monthKeys = [...new Set(c.dailyRows.map(d => d.date.slice(0,7)))].sort();
+    const dow = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+    const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+    const maxAbs = Math.max(1, ...c.dailyRows.map(d => Math.abs(d.netProfit)));
+    let html = '';
+    monthKeys.forEach(mk => {
+      const [y,m] = mk.split('-').map(Number);
+      const firstDay = new Date(y, m-1, 1);
+      const daysInMonth = new Date(y, m, 0).getDate();
+      const startOffset = firstDay.getDay();
+      html += `<div class="cal-month"><div class="cal-month-title">${monthNames[m-1]} ${y}</div><div class="cal-grid">`;
+      dow.forEach(d => html += `<div class="cal-dow">${d}</div>`);
+      for(let i=0;i<startOffset;i++) html += `<div class="cal-cell empty"></div>`;
+      for(let day=1; day<=daysInMonth; day++){
+        const key = `${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        const d = byDate[key];
+        if(d){
+          const intensity = Math.min(1, Math.abs(d.netProfit)/maxAbs);
+          const bg = d.netProfit >= 0 ? `rgba(16,185,129,${0.12+intensity*0.35})` : `rgba(239,68,68,${0.12+intensity*0.35})`;
+          const col = d.netProfit >= 0 ? 'var(--safe)' : 'var(--danger)';
+          html += `<div class="cal-cell" style="background:${bg}; border-color:${col}33;">
+            <div class="cal-day">${day}</div>
+            <div class="cal-pnl" style="color:${col}">${fmtCur(d.netProfit)}</div>
+            <div class="cal-trades">${d.total} trade${d.scalp>0?` · ${d.scalp} scalp`:''}</div>
+          </div>`;
+        } else {
+          html += `<div class="cal-cell"><div class="cal-day">${day}</div></div>`;
+        }
+      }
+      html += `</div></div>`;
+    });
+    document.getElementById('calendarWrap').innerHTML = html || '<div style="color:var(--text-faint); padding:20px;">Tidak ada data.</div>';
+  }
+
+  /* ============================ Symbol breakdown ============================ */
+  function renderSymbolTable(c){
+    const bySymbol = {};
+    STATE.trades.forEach(t => {
+      const s = t.symbol || 'N/A';
+      if(!bySymbol[s]) bySymbol[s] = { symbol:s, total:0, wins:0, netProfit:0, scalp:0, durSum:0 };
+      bySymbol[s].total++;
+      if(t.profit>0) bySymbol[s].wins++;
+      bySymbol[s].netProfit += t.netProfit;
+      bySymbol[s].durSum += t.durationSec;
+      if(t.durationSec < settings.scalpSeconds) bySymbol[s].scalp++;
+    });
+    const rows = Object.values(bySymbol).sort((a,b) => b.total - a.total);
+    let html = `<thead><tr><th>Symbol</th><th class="num">Total Trade</th><th class="num">Win Rate</th><th class="num">Net Profit</th><th class="num">Trade Scalp</th><th class="num">Rata-rata Durasi</th></tr></thead><tbody>`;
+    if(rows.length === 0){
+      html += `<tr><td colspan="6" style="text-align:center; color:var(--text-faint); padding:24px;">Tidak ada data.</td></tr>`;
+    }
+    rows.forEach(r => {
+      const wr = r.total ? (r.wins/r.total*100).toFixed(1) : '0';
+      html += `<tr><td class="strong">${r.symbol}</td><td class="num">${r.total}</td><td class="num">${wr}%</td>
+        <td class="num ${r.netProfit>=0?'pos':'neg'}">${fmtCur(r.netProfit)}</td>
+        <td class="num ${r.scalp>0?'neg':''}">${r.scalp}</td><td class="num">${fmtDur(r.durSum/r.total)}</td></tr>`;
+    });
+    html += '</tbody>';
+    document.getElementById('symbolTable').innerHTML = html;
   }
 
   function renderFirmRulesGuide(){
