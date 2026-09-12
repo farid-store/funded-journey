@@ -87,23 +87,47 @@ html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-
 .override-box { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; }
 .override-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 8px; }
 
-/* Calendar */
-.cal-month { margin-bottom: 22px; }
-.cal-month-title { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 700; margin-bottom: 10px; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-.cal-dow { text-align: center; font-size: 10.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; padding-bottom: 4px; }
-.cal-cell { border-radius: 8px; padding: 8px 6px; min-height: 58px; border: 1px solid var(--border); background: var(--panel-2); display: flex; flex-direction: column; justify-content: space-between; }
+/* Calendar layout: stats left, calendar+weekly recap right */
+.cal-layout { display: grid; grid-template-columns: 250px 1fr; gap: 22px; align-items: start; }
+.cal-stat-col { display: flex; flex-direction: column; gap: 10px; position: sticky; top: 16px; }
+.cal-stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.cal-stat-card .cs-label { font-size: 10.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
+.cal-stat-card .cs-value { font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 700; }
+.cal-stat-card .cs-value.pos { color: var(--safe); }
+.cal-stat-card .cs-value.neg { color: var(--danger); }
+.cal-stat-card .cs-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+.cal-grid-col { min-width: 0; }
+
+.cal-month { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 18px 14px; margin-bottom: 18px; }
+.cal-month-title { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 700; margin-bottom: 12px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr) 128px; gap: 6px; }
+.cal-dow { text-align: center; font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; padding-bottom: 6px; font-weight: 600; }
+.cal-dow.cal-week-head { text-align: left; padding-left: 10px; }
+.cal-cell { border-radius: 9px; padding: 8px 7px; min-height: 62px; border: 1px solid var(--border); background: var(--panel-2); display: flex; flex-direction: column; justify-content: space-between; transition: transform .12s ease; }
+.cal-cell:hover:not(.empty) { transform: translateY(-1px); }
 .cal-cell.empty { background: transparent; border-color: transparent; }
-.cal-cell .cal-day { font-size: 11px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
-.cal-cell .cal-pnl { font-size: 11.5px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
-.cal-cell .cal-trades { font-size: 10px; color: var(--text-faint); }
+.cal-cell .cal-day { font-size: 10.5px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
+.cal-cell .cal-pnl { font-size: 11px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+.cal-cell .cal-trades { font-size: 9.5px; color: var(--text-faint); }
+.cal-week-recap { border-radius: 9px; padding: 8px 10px; min-height: 62px; border: 1px solid var(--border-light); background: var(--panel-hover); display: flex; flex-direction: column; justify-content: center; gap: 3px; }
+.cal-week-recap .cwr-label { font-size: 9px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+.cal-week-recap .cwr-pnl { font-size: 13px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+.cal-week-recap .cwr-meta { font-size: 9.5px; color: var(--text-dim); }
+.cal-week-recap.empty { visibility: hidden; }
+@media(max-width: 900px){
+  .cal-layout { grid-template-columns: 1fr; }
+  .cal-stat-col { position: static; flex-direction: row; flex-wrap: wrap; }
+  .cal-stat-card { flex: 1 1 150px; }
+  .cal-grid { grid-template-columns: repeat(7, minmax(34px,1fr)); }
+  .cal-week-recap { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; min-height: auto; padding: 8px 12px; }
+}
 
 @media print {
   .topbar-right .cur-toggle, #printBtn, #resetBtn, .dropzone, .tabs, .search-input, .filter-tags, #exportAllBtn, #exportScalpBtn,
   .settings-box, #resetOverrideBtn, .pagination button { display: none !important; }
   .tab-content { display: block !important; margin-bottom: 24px; page-break-inside: avoid; }
   body { background: #fff; color: #111; }
-  .panel, .kpi, .trigger-card, .table-wrap, .verdict-banner, .score-gauge-card, .rule-card, .rules-card, .chart-container, .cal-cell { border-color: #ccc !important; }
+  .panel, .kpi, .trigger-card, .table-wrap, .verdict-banner, .score-gauge-card, .rule-card, .rules-card, .chart-container, .cal-cell, .cal-week-recap, .cal-month, .cal-stat-card { border-color: #ccc !important; }
 }
 
 /* Verdict */
@@ -404,7 +428,10 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
     </div>
 
     <div class="tab-content" id="tab-calendar">
-      <div id="calendarWrap"></div>
+      <div class="cal-layout">
+        <div class="cal-stat-col" id="calStatsCol"></div>
+        <div class="cal-grid-col" id="calendarWrap"></div>
+      </div>
     </div>
 
     <div class="tab-content" id="tab-symbol">
@@ -800,9 +827,11 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
     const byDay = {};
     trades.forEach(t => {
       const d = t.openTime.toISOString().slice(0,10);
-      if(!byDay[d]) byDay[d] = { date: d, total: 0, scalp: 0, scalpProfit: 0, netProfit: 0 };
+      if(!byDay[d]) byDay[d] = { date: d, total: 0, scalp: 0, scalpProfit: 0, netProfit: 0, wins: 0, losses: 0 };
       byDay[d].total++;
       byDay[d].netProfit += t.netProfit;
+      if(t.profit > 0) byDay[d].wins++;
+      if(t.profit < 0) byDay[d].losses++;
       if(t.durationSec < settings.scalpSeconds){ byDay[d].scalp++; if(t.profit > 0) byDay[d].scalpProfit += t.profit; }
     });
     const dailyRows = Object.values(byDay).sort((a,b) => a.date.localeCompare(b.date));
@@ -863,6 +892,7 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
     renderAllTable(c);
     renderDailyTable(c);
     renderCalendar(c);
+    renderCalendarStats(c);
     renderSymbolTable(c);
     renderFirmRulesGuide();
   }
@@ -1263,39 +1293,85 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
     document.getElementById('dailyTable').innerHTML = html;
   }
 
-  /* ============================ Calendar heatmap ============================ */
+  /* ============================ Calendar heatmap + weekly recap ============================ */
+  function renderCalendarStats(c){
+    const days = c.dailyRows;
+    const winRate = c.total ? (c.wins/c.total*100) : 0;
+    const avgPerDay = days.length ? (c.netProfit/days.length) : 0;
+    const bestDay = days.length ? days.reduce((a,b)=> b.netProfit>a.netProfit?b:a) : null;
+    const worstDay = days.length ? days.reduce((a,b)=> b.netProfit<a.netProfit?b:a) : null;
+    const pf = c.grossLoss !== 0 ? Math.abs(c.grossProfit/c.grossLoss).toFixed(2) : 'N/A';
+    const fmtDayLabel = d => d ? new Date(d.date).toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) : '-';
+
+    document.getElementById('calStatsCol').innerHTML = `
+      <div class="cal-stat-card"><div class="cs-label">Net Profit Total</div><div class="cs-value ${c.netProfit>=0?'pos':'neg'}">${fmtCur(c.netProfit)}</div><div class="cs-sub">Periode berjalan</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Win Rate</div><div class="cs-value">${winRate.toFixed(1)}%</div><div class="cs-sub">${c.wins}W / ${c.losses}L dari ${c.total} trade</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Total Transaksi</div><div class="cs-value">${c.total}</div><div class="cs-sub">${days.length} hari trading aktif</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Rata-rata Profit / Hari</div><div class="cs-value ${avgPerDay>=0?'pos':'neg'}">${fmtCur(avgPerDay)}</div><div class="cs-sub">Dari hari aktif trading</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Hari Terbaik</div><div class="cs-value pos">${bestDay?fmtCur(bestDay.netProfit):'-'}</div><div class="cs-sub">${fmtDayLabel(bestDay)}</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Hari Terburuk</div><div class="cs-value neg">${worstDay?fmtCur(worstDay.netProfit):'-'}</div><div class="cs-sub">${fmtDayLabel(worstDay)}</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Profit Factor</div><div class="cs-value">${pf}</div><div class="cs-sub">Gross profit / gross loss</div></div>`;
+  }
+
   function renderCalendar(c){
     const byDate = {};
     c.dailyRows.forEach(d => byDate[d.date] = d);
     const monthKeys = [...new Set(c.dailyRows.map(d => d.date.slice(0,7)))].sort();
     const dow = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
     const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-
     const maxAbs = Math.max(1, ...c.dailyRows.map(d => Math.abs(d.netProfit)));
+
+    function dayCellHtml(day, key){
+      if(day === null) return `<div class="cal-cell empty"></div>`;
+      const d = byDate[key];
+      if(!d) return `<div class="cal-cell"><div class="cal-day">${day}</div></div>`;
+      const intensity = Math.min(1, Math.abs(d.netProfit)/maxAbs);
+      const bg = d.netProfit >= 0 ? `rgba(16,185,129,${0.12+intensity*0.35})` : `rgba(239,68,68,${0.12+intensity*0.35})`;
+      const col = d.netProfit >= 0 ? 'var(--safe)' : 'var(--danger)';
+      return `<div class="cal-cell" style="background:${bg}; border-color:${col}33;">
+        <div class="cal-day">${day}</div>
+        <div class="cal-pnl" style="color:${col}">${fmtCur(d.netProfit)}</div>
+        <div class="cal-trades">${d.total} trade${d.scalp>0?` · ${d.scalp} scalp`:''}</div>
+      </div>`;
+    }
+
+    function weekRecapHtml(weekCells){
+      const dataDays = weekCells.filter(x => x && byDate[x.key]).map(x => byDate[x.key]);
+      if(dataDays.length === 0) return `<div class="cal-week-recap empty"></div>`;
+      const netProfit = dataDays.reduce((s,d)=>s+d.netProfit,0);
+      const totalTrx = dataDays.reduce((s,d)=>s+d.total,0);
+      const wins = dataDays.reduce((s,d)=>s+d.wins,0);
+      const winRate = totalTrx ? (wins/totalTrx*100) : 0;
+      const col = netProfit >= 0 ? 'var(--safe)' : 'var(--danger)';
+      return `<div class="cal-week-recap">
+        <div class="cwr-label">Rekap Minggu</div>
+        <div class="cwr-pnl" style="color:${col}">${fmtCur(netProfit)}</div>
+        <div class="cwr-meta">${totalTrx} trx &middot; WR ${winRate.toFixed(0)}%</div>
+      </div>`;
+    }
+
     let html = '';
     monthKeys.forEach(mk => {
       const [y,m] = mk.split('-').map(Number);
       const firstDay = new Date(y, m-1, 1);
       const daysInMonth = new Date(y, m, 0).getDate();
       const startOffset = firstDay.getDay();
+
+      // Build flat list of day cells (null = padding), then chunk into weeks of 7
+      const cells = [];
+      for(let i=0;i<startOffset;i++) cells.push(null);
+      for(let day=1; day<=daysInMonth; day++){
+        cells.push({ day, key: `${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}` });
+      }
+      while(cells.length % 7 !== 0) cells.push(null);
+
       html += `<div class="cal-month"><div class="cal-month-title">${monthNames[m-1]} ${y}</div><div class="cal-grid">`;
       dow.forEach(d => html += `<div class="cal-dow">${d}</div>`);
-      for(let i=0;i<startOffset;i++) html += `<div class="cal-cell empty"></div>`;
-      for(let day=1; day<=daysInMonth; day++){
-        const key = `${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-        const d = byDate[key];
-        if(d){
-          const intensity = Math.min(1, Math.abs(d.netProfit)/maxAbs);
-          const bg = d.netProfit >= 0 ? `rgba(16,185,129,${0.12+intensity*0.35})` : `rgba(239,68,68,${0.12+intensity*0.35})`;
-          const col = d.netProfit >= 0 ? 'var(--safe)' : 'var(--danger)';
-          html += `<div class="cal-cell" style="background:${bg}; border-color:${col}33;">
-            <div class="cal-day">${day}</div>
-            <div class="cal-pnl" style="color:${col}">${fmtCur(d.netProfit)}</div>
-            <div class="cal-trades">${d.total} trade${d.scalp>0?` · ${d.scalp} scalp`:''}</div>
-          </div>`;
-        } else {
-          html += `<div class="cal-cell"><div class="cal-day">${day}</div></div>`;
-        }
+      html += `<div class="cal-dow cal-week-head">Rekap Minggu</div>`;
+      for(let w=0; w<cells.length; w+=7){
+        const weekCells = cells.slice(w, w+7);
+        weekCells.forEach(cell => { html += cell ? dayCellHtml(cell.day, cell.key) : dayCellHtml(null, null); });
+        html += weekRecapHtml(weekCells);
       }
       html += `</div></div>`;
     });
