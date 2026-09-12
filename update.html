@@ -88,7 +88,7 @@ html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-
 .override-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; flex-wrap: wrap; gap: 8px; }
 
 /* Calendar layout: stats left, calendar+weekly recap right */
-.cal-layout { display: grid; grid-template-columns: 250px 1fr; gap: 22px; align-items: start; }
+.cal-layout { display: grid; grid-template-columns: 250px 1fr; gap: 22px; align-items: start; margin-bottom: 8px; }
 .cal-stat-col { display: flex; flex-direction: column; gap: 10px; position: sticky; top: 16px; }
 .cal-stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
 .cal-stat-card .cs-label { font-size: 10.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
@@ -370,12 +370,19 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
       </div>
     </div>
 
+    <div class="section-head">
+      <div class="section-title">Kalender PnL Harian <span class="sub">Statistik di kiri, kalender &amp; rekap mingguan di kanan</span></div>
+    </div>
+    <div class="cal-layout">
+      <div class="cal-stat-col" id="calStatsCol"></div>
+      <div class="cal-grid-col" id="calendarWrap"></div>
+    </div>
+
     <div class="tabs">
       <button class="tab-btn active" data-tab="tab-overview">Ringkasan &amp; Grafik</button>
       <button class="tab-btn" data-tab="tab-scalp">Trade Terindikasi Scalp (<span id="tabScalpCount">0</span>)</button>
       <button class="tab-btn" data-tab="tab-all">Seluruh Transaksi</button>
       <button class="tab-btn" data-tab="tab-daily">Rekap Harian</button>
-      <button class="tab-btn" data-tab="tab-calendar">Kalender Harian</button>
       <button class="tab-btn" data-tab="tab-symbol">Analisis Symbol</button>
       <button class="tab-btn" data-tab="tab-rules">Panduan Rule Funded</button>
     </div>
@@ -425,13 +432,6 @@ footer { margin-top: 60px; text-align: center; color: var(--text-faint); font-si
 
     <div class="tab-content" id="tab-daily">
       <div class="table-wrap"><div class="table-scroll"><table id="dailyTable"></table></div></div>
-    </div>
-
-    <div class="tab-content" id="tab-calendar">
-      <div class="cal-layout">
-        <div class="cal-stat-col" id="calStatsCol"></div>
-        <div class="cal-grid-col" id="calendarWrap"></div>
-      </div>
     </div>
 
     <div class="tab-content" id="tab-symbol">
