@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Account Dashboard</title>
+<title>Live Account Overview</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
 
@@ -25,134 +25,53 @@
   --warn-bg: rgba(245, 158, 11, 0.12);
   --danger: #EF4444;
   --danger-bg: rgba(239, 68, 68, 0.12);
-  --info: #8B9BB4;
-  --info-bg: rgba(139, 155, 180, 0.12);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', -apple-system, sans-serif; line-height: 1.5; font-size: 14px; }
 .mono { font-family: 'IBM Plex Mono', monospace; }
-.wrap { max-width: 1320px; margin: 0 auto; padding: 26px 22px 70px; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 26px 22px 70px; }
 
 /* Topbar */
-.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 14px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 14px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
 .brand { display: flex; align-items: center; gap: 12px; }
 .brand-mark { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #FFC72C, #D97706); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; color: #0B0F17; flex-shrink: 0; }
 .brand-text h1 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
 .brand-text p { font-size: 12px; color: var(--text-dim); margin-top: 1px; }
-.topbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-
-.acc-select { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; cursor: pointer; }
 
 .status-chip { display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); flex-shrink: 0; }
-.status-dot.live { background: var(--safe); animation: pulse 1.6s infinite; }
+.status-dot.live { background: var(--safe); box-shadow: 0 0 0 0 rgba(16,185,129,0.6); animation: pulse 1.6s infinite; }
 .status-dot.stale { background: var(--warn); }
 .status-dot.offline { background: var(--danger); }
 @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,0.55);} 70%{box-shadow:0 0 0 7px rgba(16,185,129,0);} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0);} }
 .status-text .status-sub { display:block; font-size: 10.5px; color: var(--text-faint); font-weight: 400; margin-top: 1px; }
 
-.acc-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; color: var(--text-dim); font-size: 12.5px; }
+/* Account identity row */
+.acc-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; color: var(--text-dim); font-size: 12.5px; }
 .acc-row b { color: var(--text); font-family: 'IBM Plex Mono', monospace; }
 
+/* Empty / error state */
 .state-msg { background: var(--panel); border: 1px dashed var(--border-light); border-radius: 16px; padding: 60px 30px; text-align: center; color: var(--text-dim); }
 .state-msg h2 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: var(--text); margin-bottom: 8px; }
-.state-msg p { font-size: 13px; max-width: 460px; margin: 0 auto; line-height: 1.6; }
-
-/* Alerts */
-.alert-stack { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-.alert-item { display: flex; align-items: center; gap: 12px; border-radius: 12px; padding: 12px 16px; font-size: 13px; border: 1px solid transparent; }
-.alert-item.warn { background: var(--warn-bg); border-color: rgba(245,158,11,0.35); color: var(--warn); }
-.alert-item.danger { background: var(--danger-bg); border-color: rgba(239,68,68,0.35); color: var(--danger); }
-.alert-item b { color: var(--text); }
-.alert-item .a-icon { font-weight: 700; }
-
-/* Section headers */
-.section-title { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; font-weight: 700; margin: 26px 0 14px; display:flex; align-items:center; gap:10px; }
-.section-title .sub { font-family: 'IBM Plex Sans', sans-serif; font-weight: 400; font-size: 12px; color: var(--text-faint); }
+.state-msg p { font-size: 13px; max-width: 420px; margin: 0 auto; line-height: 1.6; }
 
 /* KPI cards */
+.section-title { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; font-weight: 700; margin: 26px 0 14px; }
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 240px)); gap: 12px; }
-.kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 16px 18px; display:flex; flex-direction:column; justify-content:center; height:100%; }
+.kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 16px 18px; transition: background .3s ease; }
+.kpi.flash { background: var(--panel-hover); }
 .kpi .label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; margin-bottom: 7px; }
 .kpi .value { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 700; }
 .kpi .value.pos { color: var(--safe); }
 .kpi .value.neg { color: var(--danger); }
 .kpi .sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
 
-/* Limit / risk cards with progress bar */
-.limit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-.limit-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
-.limit-card .lc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-.limit-card .lc-label { font-size: 12.5px; font-weight: 600; color: var(--text-dim); }
-.limit-card .lc-pct { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 15px; }
-.limit-track { height: 9px; border-radius: 6px; background: var(--panel-2); overflow: hidden; border: 1px solid var(--border); margin-bottom: 8px; }
-.limit-fill { height: 100%; border-radius: 6px; transition: width .4s ease; }
-.limit-card .lc-detail { font-size: 11.5px; color: var(--text-faint); }
-
-/* Config box */
-.settings-box { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px 22px; margin-bottom: 6px; }
-.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 230px)); gap: 16px; }
-.field label { display: block; font-size: 11px; color: var(--text-dim); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
-.field input { width: 100%; background: var(--panel-2); border: 1px solid var(--border-light); border-radius: 8px; padding: 8px 11px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
-.field input:focus { outline: none; border-color: var(--gold); }
-
-/* Chart */
-.chart-container { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
-.chart-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
-.chart-head .chart-title { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 700; }
-.chart-head .chart-meta { font-size: 11px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
-.svg-chart { width: 100%; height: 230px; display: block; }
-
-/* Calendar */
-.cal-layout { display: grid; grid-template-columns: 230px 1fr; gap: 20px; align-items: start; }
-.cal-stat-col { display: flex; flex-direction: column; gap: 10px; position: sticky; top: 16px; }
-.cal-stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; }
-.cal-stat-card .cs-label { font-size: 10.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
-.cal-stat-card .cs-value { font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 700; }
-.cal-stat-card .cs-value.pos { color: var(--safe); }
-.cal-stat-card .cs-value.neg { color: var(--danger); }
-.cal-stat-card .cs-sub { font-size: 10.5px; color: var(--text-dim); margin-top: 3px; }
-.cal-grid-col { min-width: 0; }
-.cal-month { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px 16px 12px; margin-bottom: 16px; }
-.cal-month-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr) 122px; gap: 6px; }
-.cal-dow { text-align: center; font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; padding-bottom: 6px; font-weight: 600; }
-.cal-dow.cal-week-head { text-align: left; padding-left: 8px; }
-.cal-cell { border-radius: 9px; padding: 8px 8px; min-height: 68px; border: 1px solid var(--border); background: var(--panel-2); display: flex; flex-direction: column; justify-content: space-between; transition: transform .15s ease, box-shadow .15s ease; cursor: default; }
-.cal-cell.has-data { cursor: pointer; }
-.cal-cell.has-data:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 20px rgba(0,0,0,0.35); z-index: 2; }
-.cal-cell.empty { background: transparent; border-color: transparent; cursor: default; }
-.cal-cell .cal-day { font-size: 10.5px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
-.cal-cell .cal-pnl { font-size: 11px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
-.cal-cell .cal-trades { font-size: 9.5px; color: var(--text-faint); }
-.cal-week-recap { border-radius: 9px; padding: 8px 10px; min-height: 68px; border: 1px solid var(--border-light); background: var(--panel-hover); display: flex; flex-direction: column; justify-content: center; gap: 3px; }
-.cal-week-recap .cwr-label { font-size: 9px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; }
-.cal-week-recap .cwr-pnl { font-size: 13px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
-.cal-week-recap .cwr-meta { font-size: 9.5px; color: var(--text-dim); }
-.cal-week-recap.empty { visibility: hidden; }
-@media(max-width: 900px){
-  .cal-layout { grid-template-columns: 1fr; }
-  .cal-stat-col { position: static; flex-direction: row; flex-wrap: wrap; }
-  .cal-stat-card { flex: 1 1 140px; }
-  .cal-grid { grid-template-columns: repeat(7, minmax(32px,1fr)); }
-  .cal-week-recap { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; min-height: auto; padding: 8px 12px; }
-}
-
-/* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(5,8,13,0.72); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 50; padding: 20px; }
-.modal-overlay.show { display: flex; }
-.modal-box { background: var(--panel); border: 1px solid var(--border-light); border-radius: 16px; max-width: 620px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
-.modal-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
-.modal-head h3 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; }
-.modal-close { background: var(--panel-2); border: 1px solid var(--border-light); color: var(--text-dim); width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-size: 14px; }
-.modal-body { padding: 12px 0; overflow-y: auto; }
-
 /* Tables */
 .table-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
 .table-scroll { max-height: 420px; overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left; }
 thead th { background: var(--panel-2); padding: 11px 14px; font-size: 10.5px; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); position: sticky; top: 0; white-space: nowrap; }
-tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-dim); white-space: nowrap; }
+tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text-dim); white-space: nowrap; }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover { background: var(--panel-hover); }
 td.num, th.num { font-family: 'IBM Plex Mono', monospace; text-align: right; }
@@ -162,29 +81,9 @@ td.strong { color: var(--text); font-weight: 600; }
 .dir-tag { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 5px; text-transform: uppercase; }
 .dir-tag.buy { background: var(--safe-bg); color: var(--safe); }
 .dir-tag.sell { background: var(--danger-bg); color: var(--danger); }
-.session-tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 5px; background: var(--info-bg); color: var(--info); }
-.empty-row td { text-align: center; color: var(--text-faint); padding: 24px; }
-
-/* Exposure bars */
-.exposure-list { display: flex; flex-direction: column; gap: 10px; }
-.exposure-row { display: grid; grid-template-columns: 90px 1fr 100px; align-items: center; gap: 12px; font-size: 12.5px; }
-.exposure-row .exp-sym { font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
-.exposure-track { height: 8px; border-radius: 5px; background: var(--panel-2); overflow: hidden; border: 1px solid var(--border); }
-.exposure-fill { height: 100%; background: var(--gold); border-radius: 5px; }
-.exposure-row .exp-val { text-align: right; font-family: 'IBM Plex Mono', monospace; color: var(--text-dim); }
-
-.news-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; font-size: 12.5px; color: var(--text-dim); line-height: 1.7; }
-.news-card a { color: var(--gold); text-decoration: none; }
-.news-card a:hover { text-decoration: underline; }
-
-.chart-row { display: grid; grid-template-columns: 1fr; gap: 20px; }
+.empty-row td { text-align: center; color: var(--text-faint); padding: 26px; }
 
 footer { margin-top: 50px; text-align: center; color: var(--text-faint); font-size: 11.5px; border-top: 1px solid var(--border); padding-top: 20px; }
-
-@media(max-width: 720px){
-  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  .settings-grid { grid-template-columns: 1fr 1fr; }
-}
 </style>
 </head>
 <body>
@@ -194,122 +93,61 @@ footer { margin-top: 50px; text-align: center; color: var(--text-faint); font-si
     <div class="brand">
       <div class="brand-mark">FX</div>
       <div class="brand-text">
-        <h1>Live Account Dashboard</h1>
-        <p>Statistik &amp; manajemen risiko real-time — Farid Gold Killer</p>
+        <h1>Live Account Overview</h1>
+        <p>Statistik akun trading real-time — Farid Gold Killer</p>
       </div>
     </div>
-    <div class="topbar-right">
-      <select class="acc-select" id="accountSelect" style="display:none;"></select>
-      <div class="status-chip">
-        <span class="status-dot" id="statusDot"></span>
-        <span class="status-text"><span id="statusLabel">Menghubungkan...</span><span class="status-sub" id="statusSub">-</span></span>
-      </div>
+    <div class="status-chip">
+      <span class="status-dot" id="statusDot"></span>
+      <span class="status-text"><span id="statusLabel">Menghubungkan...</span><span class="status-sub" id="statusSub">-</span></span>
     </div>
   </div>
 
   <div class="acc-row" id="accRow" style="display:none;"></div>
 
-  <div id="alertStack" class="alert-stack"></div>
-
   <div id="stateMsg" class="state-msg">
     <h2>Menunggu data dari EA</h2>
-    <p>Pastikan EA <code>AccountMonitor_WebhookEA</code> sudah berjalan di MT5 dan webhook sudah dikonfigurasi. Halaman ini otomatis terisi begitu snapshot pertama diterima.</p>
+    <p>Pastikan EA <code>AccountMonitor_WebhookEA</code> sudah berjalan di MT5 dan webhook sudah dikonfigurasi. Halaman ini akan otomatis terisi begitu snapshot pertama diterima.</p>
   </div>
 
   <div id="content" style="display:none;">
 
-    <div class="settings-box">
-      <div class="section-title" style="margin:0 0 12px;">Pengaturan Limit &amp; Risiko</div>
-      <div class="settings-grid">
-        <div class="field"><label>Balance Awal Challenge (USD)</label><input type="number" id="cfgStartBalance" value="10000" min="1"></div>
-        <div class="field"><label>Daily Loss Limit (%)</label><input type="number" id="cfgDailyLimit" value="5" min="0.1" step="0.5"></div>
-        <div class="field"><label>Overall Loss Limit (%)</label><input type="number" id="cfgOverallLimit" value="10" min="0.1" step="0.5"></div>
-        <div class="field"><label>Ambang Peringatan (%)</label><input type="number" id="cfgWarnPct" value="80" min="10" max="100" step="5"></div>
-      </div>
-    </div>
-
     <div class="section-title">Ringkasan Akun</div>
     <div class="kpi-grid" id="accountKpis"></div>
 
-    <div class="section-title">Limit &amp; Drawdown</div>
-    <div class="limit-grid" id="limitGrid"></div>
+    <div class="section-title">Statistik Trading <span style="font-weight:400; font-size:12px; color:var(--text-faint);" id="statsPeriodLabel"></span></div>
+    <div class="kpi-grid" id="statsKpis"></div>
 
-    <div class="section-title">Equity &amp; Balance Curve <span class="sub" id="equityMeta"></span></div>
-    <div class="chart-row">
-      <div class="chart-container">
-        <div class="chart-head"><div class="chart-title">All-Time Balance Curve</div></div>
-        <svg class="svg-chart" id="equityChart"></svg>
-      </div>
-    </div>
-
-    <div class="section-title">Kalender PnL Harian <span class="sub">Klik / arahkan kursor ke tanggal untuk detail — kolom kanan rekap mingguan</span></div>
-    <div class="cal-layout">
-      <div class="cal-stat-col" id="calStatsCol"></div>
-      <div class="cal-grid-col" id="calendarWrap"></div>
-    </div>
-
-    <div class="section-title">Eksposur per Pair</div>
-    <div class="table-wrap" style="padding:18px 20px;">
-      <div class="exposure-list" id="exposureList"></div>
-    </div>
-
-    <div class="section-title">Posisi Berjalan <span class="sub" id="posCount"></span></div>
+    <div class="section-title">Posisi Berjalan <span id="posCount" style="font-weight:400; font-size:12px; color:var(--text-faint);"></span></div>
     <div class="table-wrap"><div class="table-scroll"><table id="posTable"></table></div></div>
 
-    <div class="section-title">Pending Order <span class="sub" id="ordCount"></span></div>
+    <div class="section-title">Pending Order <span id="ordCount" style="font-weight:400; font-size:12px; color:var(--text-faint);"></span></div>
     <div class="table-wrap"><div class="table-scroll"><table id="ordTable"></table></div></div>
 
-    <div class="section-title">Riwayat Transaksi Terakhir <span class="sub" id="histCount"></span></div>
-    <div class="table-wrap"><div class="table-scroll"><table id="histTable"></table></div></div>
-
-    <div class="section-title">Kalender Ekonomi / Berita</div>
-    <div class="news-card">
-      Dashboard ini tidak menarik data berita/ekonomi secara otomatis. Untuk cek jadwal rilis berita high-impact sebelum entry,
-      gunakan kalender eksternal: <a href="https://www.forexfactory.com/calendar" target="_blank" rel="noopener">ForexFactory Calendar</a> atau
-      <a href="https://id.investing.com/economic-calendar/" target="_blank" rel="noopener">Investing.com</a>.
-    </div>
-
   </div>
 
-  <footer>Data diperbarui otomatis tiap beberapa detik langsung dari terminal MT5. Sesi trading &amp; drawdown dihitung berdasarkan jam server broker (pendekatan). Bukan saran finansial.</footer>
-</div>
-
-<div class="modal-overlay" id="dayModal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3 id="modalTitle">Detail Transaksi</h3>
-      <button class="modal-close" id="modalCloseBtn">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="table-wrap" style="border:none; border-radius:0;">
-        <table id="modalTable"></table>
-      </div>
-    </div>
-  </div>
+  <footer>Data diperbarui otomatis tiap beberapa detik langsung dari terminal MT5. Bukan saran finansial.</footer>
 </div>
 
 <script>
 (function(){
-  /* ============================ KONFIGURASI ============================ */
-  const DEFAULT_WEBHOOK_URL = 'https://funded-journey-nu.vercel.app/api/webhook';
-  const POLL_INTERVAL_MS = 3000;
-  const STALE_AFTER_SEC   = 20;
-  const OFFLINE_AFTER_SEC = 60;
+  // ============================ KONFIGURASI ============================
+  // Ganti dengan URL webhook Vercel kamu (endpoint GET yang sama dengan yang dipakai EA untuk POST).
+  // Bisa juga di-override lewat query string: index.html?url=https://domain.vercel.app/api/webhook
+  const DEFAULT_WEBHOOK_URL = 'https://your-domain.vercel.app/api/webhook';
+  const POLL_INTERVAL_MS = 3000;      // seberapa sering fetch data terbaru
+  const STALE_AFTER_SEC  = 20;        // dianggap "stale" kalau data lebih tua dari ini
+  const OFFLINE_AFTER_SEC = 60;       // dianggap "offline" kalau lebih tua dari ini
 
   const params = new URLSearchParams(window.location.search);
   const WEBHOOK_URL = params.get('url') || DEFAULT_WEBHOOK_URL;
-  const URL_LOGIN = params.get('login') || '';
 
-  let storeData = null;         // seluruh objek multi-akun dari server
-  let activeLogin = URL_LOGIN;  // login yg sedang ditampilkan
+  let lastData = null;
   let lastReceivedAt = null;
-  let alertState = { daily: 'safe', overall: 'safe' }; // utk deteksi transisi (edge-trigger notifikasi)
-
-  const cfg = { startBalance: 10000, dailyLimitPct: 5, overallLimitPct: 10, warnPct: 80 };
+  let tickTimer = null;
 
   const el = id => document.getElementById(id);
 
-  /* ============================ Formatting ============================ */
   function fmtMoney(n){
     n = Number(n)||0;
     const sign = n < 0 ? '-' : '';
@@ -322,179 +160,66 @@ footer { margin-top: 50px; text-align: center; color: var(--text-faint); font-si
     if(h > 0) return h+'j '+m+'m';
     return m+'m '+s+'d';
   }
-  function fmtDateTime(epochSec){
+  function fmtDate(epochSec){
     if(!epochSec) return '-';
     const d = new Date(epochSec*1000);
     return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   }
-  function verdictColor(level){ return level==='danger' ? 'var(--danger)' : level==='warn' ? 'var(--warn)' : level==='info' ? 'var(--info)' : 'var(--safe)'; }
-  function getSession(epochSec){
-    const h = new Date(epochSec*1000).getUTCHours(); // pendekatan berbasis UTC, offset server broker bisa berbeda
-    if(h>=0 && h<8) return 'Asia';
-    if(h>=8 && h<13) return 'London';
-    if(h>=13 && h<21) return 'New York';
-    return 'Sepi';
+  function flash(elm){
+    if(!elm) return;
+    elm.classList.add('flash');
+    setTimeout(() => elm.classList.remove('flash'), 400);
   }
 
-  /* ============================ Config inputs ============================ */
-  ['cfgStartBalance','cfgDailyLimit','cfgOverallLimit','cfgWarnPct'].forEach(id => {
-    el(id).addEventListener('change', () => {
-      cfg.startBalance   = Math.max(1, parseFloat(el('cfgStartBalance').value) || 10000);
-      cfg.dailyLimitPct  = Math.max(0.1, parseFloat(el('cfgDailyLimit').value) || 5);
-      cfg.overallLimitPct= Math.max(0.1, parseFloat(el('cfgOverallLimit').value) || 10);
-      cfg.warnPct        = Math.max(10, parseFloat(el('cfgWarnPct').value) || 80);
-      if(storeData) renderActive();
-    });
-  });
-
-  /* ============================ Fetch loop ============================ */
+  // ============================ Fetch loop ============================
   async function fetchSnapshot(){
     try{
       const res = await fetch(WEBHOOK_URL, { cache: 'no-store' });
       if(!res.ok) throw new Error('HTTP '+res.status);
       const data = await res.json();
-      if(!data || typeof data !== 'object' || Object.keys(data).length === 0) return;
-      storeData = data;
-      const logins = Object.keys(storeData);
-      if(!activeLogin || !storeData[activeLogin]) activeLogin = logins[0];
-      populateAccountSelect(logins);
-      const active = storeData[activeLogin];
-      lastReceivedAt = active.receivedAt ? new Date(active.receivedAt).getTime() : Date.now();
-      renderActive();
+      if(!data || !data.account){ return; } // belum ada snapshot pertama
+      lastData = data;
+      lastReceivedAt = data.receivedAt ? new Date(data.receivedAt).getTime() : Date.now();
+      render(data);
     }catch(err){
       console.error('Gagal mengambil data live:', err);
     }
     updateStatus();
   }
 
-  function populateAccountSelect(logins){
-    const sel = el('accountSelect');
-    if(logins.length <= 1){ sel.style.display = 'none'; return; }
-    sel.style.display = 'inline-block';
-    if(sel.dataset.rendered !== logins.join(',')){
-      sel.innerHTML = logins.map(l => `<option value="${l}">${l}</option>`).join('');
-      sel.dataset.rendered = logins.join(',');
-      sel.value = activeLogin;
-      sel.onchange = () => { activeLogin = sel.value; renderActive(); };
-    } else {
-      sel.value = activeLogin;
-    }
-  }
-
   function updateStatus(){
     const dot = el('statusDot'), label = el('statusLabel'), sub = el('statusSub');
     if(!lastReceivedAt){
-      dot.className = 'status-dot offline'; label.textContent = 'Menunggu data'; sub.textContent = 'Belum ada snapshot masuk';
+      dot.className = 'status-dot offline';
+      label.textContent = 'Menunggu data';
+      sub.textContent = 'Belum ada snapshot masuk';
       return;
     }
     const ageSec = (Date.now() - lastReceivedAt) / 1000;
-    if(ageSec <= STALE_AFTER_SEC){ dot.className = 'status-dot live'; label.textContent = 'Live'; }
-    else if(ageSec <= OFFLINE_AFTER_SEC){ dot.className = 'status-dot stale'; label.textContent = 'Data tertunda'; }
-    else { dot.className = 'status-dot offline'; label.textContent = 'Terputus'; }
+    if(ageSec <= STALE_AFTER_SEC){
+      dot.className = 'status-dot live';
+      label.textContent = 'Live';
+    } else if(ageSec <= OFFLINE_AFTER_SEC){
+      dot.className = 'status-dot stale';
+      label.textContent = 'Data tertunda';
+    } else {
+      dot.className = 'status-dot offline';
+      label.textContent = 'Terputus';
+    }
     sub.textContent = 'Update terakhir ' + Math.round(ageSec) + 'd lalu';
   }
 
-  /* ============================ Derived calculations ============================ */
-  function buildBalanceCurve(history, currentBalance){
-    const sorted = [...history].filter(d => d.closeTime).sort((a,b) => a.closeTime - b.closeTime);
-    const totalNet = sorted.reduce((s,d) => s + (d.netProfit ?? d.profit ?? 0), 0);
-    let running = currentBalance - totalNet; // rekonstruksi titik awal sebelum trade tertua yang tercatat
-    const curve = [{ t: sorted.length ? sorted[0].openTime*1000 : Date.now(), bal: running }];
-    sorted.forEach(d => {
-      running += (d.netProfit ?? d.profit ?? 0);
-      curve.push({ t: d.closeTime*1000, bal: running });
-    });
-    return curve;
-  }
-
-  function computeDrawdown(curve, currentEquity){
-    let peak = curve.length ? curve[0].bal : currentEquity;
-    let maxDD = 0, maxDDPct = 0;
-    curve.forEach(p => {
-      if(p.bal > peak) peak = p.bal;
-      const dd = peak - p.bal;
-      if(dd > maxDD){ maxDD = dd; maxDDPct = peak>0 ? (dd/peak*100) : 0; }
-    });
-    // sertakan floating saat ini juga dalam perhitungan peak/drawdown live
-    const livePeak = Math.max(peak, currentEquity);
-    const liveDD = livePeak - currentEquity;
-    const liveDDPct = livePeak>0 ? (liveDD/livePeak*100) : 0;
-    return { maxDD, maxDDPct, currentDD: liveDD, currentDDPct: liveDDPct, allTimePeak: livePeak };
-  }
-
-  function todayPL(history, floatingProfit){
-    const todayKey = new Date().toISOString().slice(0,10);
-    const closedToday = history.filter(d => d.closeTime && new Date(d.closeTime*1000).toISOString().slice(0,10) === todayKey);
-    const closedSum = closedToday.reduce((s,d) => s + (d.netProfit ?? d.profit ?? 0), 0);
-    return closedSum + (floatingProfit||0);
-  }
-
-  function groupDaily(history){
-    const byDay = {};
-    history.forEach(d => {
-      if(!d.closeTime) return;
-      const key = new Date(d.closeTime*1000).toISOString().slice(0,10);
-      if(!byDay[key]) byDay[key] = { date:key, total:0, wins:0, losses:0, netProfit:0, trades:[] };
-      const net = d.netProfit ?? d.profit ?? 0;
-      byDay[key].total++;
-      byDay[key].netProfit += net;
-      if(net>0) byDay[key].wins++; else if(net<0) byDay[key].losses++;
-      byDay[key].trades.push(d);
-    });
-    return Object.values(byDay).sort((a,b)=>a.date.localeCompare(b.date));
-  }
-
-  function computeExposure(positions){
-    const map = {};
-    let totalVol = 0;
-    positions.forEach(p => {
-      if(!map[p.symbol]) map[p.symbol] = { symbol:p.symbol, volume:0, count:0 };
-      map[p.symbol].volume += Number(p.volume)||0;
-      map[p.symbol].count++;
-      totalVol += Number(p.volume)||0;
-    });
-    return { rows: Object.values(map).sort((a,b)=>b.volume-a.volume), totalVol };
-  }
-
-  /* ============================ Alerts (edge-triggered) ============================ */
-  function beep(){
-    try{
-      const AC = window.AudioContext || window.webkitAudioContext;
-      const ctx = new AC();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.frequency.value = 880;
-      osc.connect(gain); gain.connect(ctx.destination);
-      gain.gain.setValueAtTime(0.15, ctx.currentTime);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.25);
-    }catch(e){ /* audio tidak tersedia, abaikan */ }
-  }
-  function notify(title, body){
-    if(!('Notification' in window)) return;
-    if(Notification.permission === 'granted'){ new Notification(title, { body }); }
-    else if(Notification.permission !== 'denied'){ Notification.requestPermission(); }
-  }
-  function checkAlertTransition(key, level, title, body){
-    const prev = alertState[key];
-    if(level === 'danger' && prev !== 'danger'){ notify(title, body); beep(); }
-    else if(level === 'warn' && prev === 'safe'){ beep(); }
-    alertState[key] = level;
-  }
-
-  /* ============================ Render ============================ */
-  function renderActive(){
-    if(!storeData || !storeData[activeLogin]) return;
-    const rec = storeData[activeLogin];
+  // ============================ Render ============================
+  function render(data){
     el('stateMsg').style.display = 'none';
     el('content').style.display = 'block';
 
-    const a = rec.account || {};
-    const positions = rec.positions || [];
-    const orders = rec.pendingOrders || [];
-    const history = rec.history || [];
+    const a = data.account || {};
+    const s = data.stats || {};
+    const positions = data.positions || [];
+    const orders = data.pendingOrders || [];
 
-    // Account identity
+    // Account identity row
     const accRow = el('accRow');
     accRow.style.display = 'flex';
     accRow.innerHTML = `
@@ -503,238 +228,32 @@ footer { margin-top: 50px; text-align: center; color: var(--text-faint); font-si
       <div>Broker: <b>${a.company ?? '-'}</b></div>
       <div>Leverage: <b>1:${a.leverage ?? '-'}</b></div>`;
 
-    renderAccountKpis(a);
-    const curve = buildBalanceCurve(history, a.balance||0);
-    const dd = computeDrawdown(curve, a.equity||0);
-    renderLimits(a, history, dd);
-    renderEquityChart(curve, a);
-    renderCalendar(history);
-    renderExposure(positions);
-    renderPositions(positions);
-    renderOrders(orders);
-    renderHistory(history);
-  }
-
-  function renderAccountKpis(a){
+    // Account KPIs
     el('accountKpis').innerHTML = `
-      <div class="kpi"><div class="label">Balance</div><div class="value">${fmtMoney(a.balance)}</div></div>
-      <div class="kpi"><div class="label">Equity</div><div class="value ${(a.equity>=a.balance)?'pos':'neg'}">${fmtMoney(a.equity)}</div></div>
-      <div class="kpi"><div class="label">Floating P/L</div><div class="value ${(a.floatingProfit>=0)?'pos':'neg'}">${fmtMoney(a.floatingProfit)}</div></div>
-      <div class="kpi"><div class="label">Margin Bebas</div><div class="value">${fmtMoney(a.marginFree)}</div></div>
-      <div class="kpi"><div class="label">Margin Level</div><div class="value">${a.marginLevel!=null ? Number(a.marginLevel).toFixed(1)+'%' : '-'}</div><div class="sub">${a.currency ?? '-'}</div></div>`;
-  }
+      <div class="kpi" data-k="balance"><div class="label">Balance</div><div class="value">${fmtMoney(a.balance)}</div></div>
+      <div class="kpi" data-k="equity"><div class="label">Equity</div><div class="value ${(a.equity>=a.balance)?'pos':'neg'}">${fmtMoney(a.equity)}</div></div>
+      <div class="kpi" data-k="floating"><div class="label">Floating P/L</div><div class="value ${(a.floatingProfit>=0)?'pos':'neg'}">${fmtMoney(a.floatingProfit)}</div></div>
+      <div class="kpi" data-k="marginfree"><div class="label">Margin Bebas</div><div class="value">${fmtMoney(a.marginFree)}</div></div>
+      <div class="kpi" data-k="marginlevel"><div class="label">Margin Level</div><div class="value">${a.marginLevel!=null ? Number(a.marginLevel).toFixed(1)+'%' : '-'}</div><div class="sub">Currency: ${a.currency ?? '-'}</div></div>`;
 
-  function renderLimits(a, history, dd){
-    const dailyPLNow = todayPL(history, a.floatingProfit||0);
-    const dailyLossUsd = Math.max(0, -dailyPLNow);
-    const dailyLimitUsd = cfg.startBalance * cfg.dailyLimitPct / 100;
-    const dailyPct = dailyLimitUsd>0 ? (dailyLossUsd/dailyLimitUsd*100) : 0;
-    const dailyLevel = dailyPct>=100 ? 'danger' : dailyPct>=cfg.warnPct ? 'warn' : 'safe';
+    // Stats KPIs
+    el('statsPeriodLabel').textContent = s.periodDays ? `(${s.periodDays} hari terakhir)` : '';
+    el('statsKpis').innerHTML = `
+      <div class="kpi"><div class="label">Net Profit</div><div class="value ${(s.netProfit>=0)?'pos':'neg'}">${fmtMoney(s.netProfit)}</div></div>
+      <div class="kpi"><div class="label">Win Rate</div><div class="value">${s.winRate!=null?Number(s.winRate).toFixed(1):'0'}%</div><div class="sub">${s.wins??0}W / ${s.losses??0}L dari ${s.totalTrades??0} trade</div></div>
+      <div class="kpi"><div class="label">Profit Factor</div><div class="value">${s.profitFactor!=null?Number(s.profitFactor).toFixed(2):'-'}</div></div>
+      <div class="kpi"><div class="label">Rata-rata Win / Loss</div><div class="value pos">${fmtMoney(s.avgWin)}</div><div class="sub">Avg loss: <span class="neg">${fmtMoney(-(s.avgLoss||0))}</span></div></div>
+      <div class="kpi"><div class="label">Total Volume</div><div class="value">${s.totalVolume!=null?Number(s.totalVolume).toFixed(2):'0'} lot</div></div>`;
 
-    const overallLossUsd = Math.max(0, cfg.startBalance - (a.equity||0));
-    const overallLimitUsd = cfg.startBalance * cfg.overallLimitPct / 100;
-    const overallPct = overallLimitUsd>0 ? (overallLossUsd/overallLimitUsd*100) : 0;
-    const overallLevel = overallPct>=100 ? 'danger' : overallPct>=cfg.warnPct ? 'warn' : 'safe';
-
-    checkAlertTransition('daily', dailyLevel, 'Daily Loss Limit', `Pemakaian daily loss sudah ${dailyPct.toFixed(0)}% dari limit ${cfg.dailyLimitPct}%.`);
-    checkAlertTransition('overall', overallLevel, 'Overall Loss Limit', `Pemakaian overall loss sudah ${overallPct.toFixed(0)}% dari limit ${cfg.overallLimitPct}%.`);
-
-    // Alert stack
-    const alerts = [];
-    if(dailyLevel !== 'safe') alerts.push({level:dailyLevel, text:`<b>Daily Loss</b>: ${fmtMoney(-dailyLossUsd)} terpakai dari limit ${fmtMoney(-dailyLimitUsd)} (${dailyPct.toFixed(0)}%)`});
-    if(overallLevel !== 'safe') alerts.push({level:overallLevel, text:`<b>Overall Loss</b>: ${fmtMoney(-overallLossUsd)} terpakai dari limit ${fmtMoney(-overallLimitUsd)} (${overallPct.toFixed(0)}%)`});
-    el('alertStack').innerHTML = alerts.map(al => `<div class="alert-item ${al.level}"><span class="a-icon">${al.level==='danger'?'\u2715':'\u26A0'}</span><span>${al.text}</span></div>`).join('');
-
-    el('limitGrid').innerHTML = `
-      <div class="limit-card">
-        <div class="lc-head"><div class="lc-label">Daily Loss Limit</div><div class="lc-pct" style="color:${verdictColor(dailyLevel)}">${dailyPct.toFixed(1)}%</div></div>
-        <div class="limit-track"><div class="limit-fill" style="width:${Math.min(dailyPct,100)}%; background:${verdictColor(dailyLevel)}"></div></div>
-        <div class="lc-detail">P/L hari ini: <b style="color:${dailyPLNow>=0?'var(--safe)':'var(--danger)'}">${fmtMoney(dailyPLNow)}</b> &middot; limit ${fmtMoney(-dailyLimitUsd)}</div>
-      </div>
-      <div class="limit-card">
-        <div class="lc-head"><div class="lc-label">Overall Loss Limit</div><div class="lc-pct" style="color:${verdictColor(overallLevel)}">${overallPct.toFixed(1)}%</div></div>
-        <div class="limit-track"><div class="limit-fill" style="width:${Math.min(overallPct,100)}%; background:${verdictColor(overallLevel)}"></div></div>
-        <div class="lc-detail">Equity vs balance awal: <b style="color:${overallLossUsd<=0?'var(--safe)':'var(--danger)'}">${fmtMoney(-overallLossUsd)}</b> &middot; limit ${fmtMoney(-overallLimitUsd)}</div>
-      </div>
-      <div class="limit-card">
-        <div class="lc-head"><div class="lc-label">Current Drawdown</div><div class="lc-pct" style="color:${dd.currentDDPct>10?'var(--danger)':dd.currentDDPct>5?'var(--warn)':'var(--safe)'}">${dd.currentDDPct.toFixed(2)}%</div></div>
-        <div class="limit-track"><div class="limit-fill" style="width:${Math.min(dd.currentDDPct*2,100)}%; background:${dd.currentDDPct>10?'var(--danger)':dd.currentDDPct>5?'var(--warn)':'var(--safe)'}"></div></div>
-        <div class="lc-detail">Dari peak balance/equity: ${fmtMoney(dd.currentDD)}</div>
-      </div>
-      <div class="limit-card">
-        <div class="lc-head"><div class="lc-label">Max Drawdown (All-Time)</div><div class="lc-pct" style="color:var(--text)">${dd.maxDDPct.toFixed(2)}%</div></div>
-        <div class="limit-track"><div class="limit-fill" style="width:${Math.min(dd.maxDDPct*2,100)}%; background:var(--gold)"></div></div>
-        <div class="lc-detail">Penurunan terbesar dari puncak: ${fmtMoney(dd.maxDD)}</div>
-      </div>`;
-  }
-
-  function renderEquityChart(curve, a){
-    const svg = el('equityChart');
-    if(curve.length < 2){ svg.innerHTML=''; return; }
-    const width = 1100, height = 230, padL = 74, padR = 16, padT = 16, padB = 26;
-    const plotW = width-padL-padR, plotH = height-padT-padB;
-    const values = curve.map(p=>p.bal);
-    const minY = Math.min(...values), maxY = Math.max(...values);
-    const rangeY = (maxY-minY) || 1;
-    const xFor = i => padL + (i/(curve.length-1))*plotW;
-    const yFor = v => padT + plotH - ((v-minY)/rangeY)*plotH;
-
-    let pathD = `M ${xFor(0)} ${yFor(curve[0].bal)}`;
-    curve.forEach((p,i)=>{ if(i>0) pathD += ` L ${xFor(i)} ${yFor(p.bal)}`; });
-    const areaD = pathD + ` L ${xFor(curve.length-1)} ${padT+plotH} L ${xFor(0)} ${padT+plotH} Z`;
-
-    let gridHTML = '';
-    for(let g=0; g<=4; g++){
-      const v = minY + rangeY*g/4, y = yFor(v);
-      gridHTML += `<line x1="${padL}" y1="${y}" x2="${width-padR}" y2="${y}" stroke="#233145" stroke-width="1" stroke-dasharray="3,4"/>`;
-      gridHTML += `<text x="${padL-8}" y="${y+4}" fill="#64748B" font-size="10" text-anchor="end" font-family="IBM Plex Mono">${fmtMoney(v)}</text>`;
-    }
-    const lineColor = curve[curve.length-1].bal >= curve[0].bal ? '#10B981' : '#EF4444';
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    svg.innerHTML = `
-      <defs><linearGradient id="eqGrad2" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="${lineColor}" stop-opacity="0.25"/>
-        <stop offset="100%" stop-color="${lineColor}" stop-opacity="0"/>
-      </linearGradient></defs>
-      ${gridHTML}
-      <path d="${areaD}" fill="url(#eqGrad2)"/>
-      <path d="${pathD}" fill="none" stroke="${lineColor}" stroke-width="2.25"/>`;
-    el('equityMeta').textContent = `Titik data: ${curve.length} · Saldo awal tercatat: ${fmtMoney(curve[0].bal)} · Saldo sekarang: ${fmtMoney(a.balance)}`;
-  }
-
-  /* ============================ Calendar ============================ */
-  function renderCalendar(history){
-    const dailyRows = groupDaily(history);
-    const byDate = {};
-    dailyRows.forEach(d => byDate[d.date] = d);
-
-    const totalTrades = history.length;
-    const wins = dailyRows.reduce((s,d)=>s+d.wins,0);
-    const losses = dailyRows.reduce((s,d)=>s+d.losses,0);
-    const netProfit = dailyRows.reduce((s,d)=>s+d.netProfit,0);
-    const winRate = totalTrades ? (wins/totalTrades*100) : 0;
-    const avgPerDay = dailyRows.length ? (netProfit/dailyRows.length) : 0;
-    const bestDay = dailyRows.length ? dailyRows.reduce((a,b)=>b.netProfit>a.netProfit?b:a) : null;
-    const worstDay = dailyRows.length ? dailyRows.reduce((a,b)=>b.netProfit<a.netProfit?b:a) : null;
-    const fmtDayLabel = d => d ? new Date(d.date).toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) : '-';
-
-    el('calStatsCol').innerHTML = `
-      <div class="cal-stat-card"><div class="cs-label">Net Profit (Histori Tercatat)</div><div class="cs-value ${netProfit>=0?'pos':'neg'}">${fmtMoney(netProfit)}</div></div>
-      <div class="cal-stat-card"><div class="cs-label">Win Rate</div><div class="cs-value">${winRate.toFixed(1)}%</div><div class="cs-sub">${wins}W / ${losses}L dari ${totalTrades} trade</div></div>
-      <div class="cal-stat-card"><div class="cs-label">Hari Trading Aktif</div><div class="cs-value">${dailyRows.length}</div></div>
-      <div class="cal-stat-card"><div class="cs-label">Rata-rata Profit/Hari</div><div class="cs-value ${avgPerDay>=0?'pos':'neg'}">${fmtMoney(avgPerDay)}</div></div>
-      <div class="cal-stat-card"><div class="cs-label">Hari Terbaik</div><div class="cs-value pos">${bestDay?fmtMoney(bestDay.netProfit):'-'}</div><div class="cs-sub">${fmtDayLabel(bestDay)}</div></div>
-      <div class="cal-stat-card"><div class="cs-label">Hari Terburuk</div><div class="cs-value neg">${worstDay?fmtMoney(worstDay.netProfit):'-'}</div><div class="cs-sub">${fmtDayLabel(worstDay)}</div></div>`;
-
-    const monthKeys = [...new Set(dailyRows.map(d=>d.date.slice(0,7)))].sort();
-    const dow = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
-    const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    const maxAbs = Math.max(1, ...dailyRows.map(d=>Math.abs(d.netProfit)));
-
-    function dayCellHtml(day, key){
-      if(day===null) return `<div class="cal-cell empty"></div>`;
-      const d = byDate[key];
-      if(!d) return `<div class="cal-cell"><div class="cal-day">${day}</div></div>`;
-      const intensity = Math.min(1, Math.abs(d.netProfit)/maxAbs);
-      const bg = d.netProfit>=0 ? `rgba(16,185,129,${0.12+intensity*0.35})` : `rgba(239,68,68,${0.12+intensity*0.35})`;
-      const col = d.netProfit>=0 ? 'var(--safe)' : 'var(--danger)';
-      return `<div class="cal-cell has-data" style="background:${bg}; border-color:${col}33;" data-date="${key}">
-        <div class="cal-day">${day}</div>
-        <div class="cal-pnl" style="color:${col}">${fmtMoney(d.netProfit)}</div>
-        <div class="cal-trades">${d.total} trade</div>
-      </div>`;
-    }
-    function weekRecapHtml(weekCells){
-      const dataDays = weekCells.filter(x=>x && byDate[x.key]).map(x=>byDate[x.key]);
-      if(dataDays.length===0) return `<div class="cal-week-recap empty"></div>`;
-      const net = dataDays.reduce((s,d)=>s+d.netProfit,0);
-      const trx = dataDays.reduce((s,d)=>s+d.total,0);
-      const w = dataDays.reduce((s,d)=>s+d.wins,0);
-      const wr = trx ? (w/trx*100) : 0;
-      const col = net>=0 ? 'var(--safe)' : 'var(--danger)';
-      return `<div class="cal-week-recap"><div class="cwr-label">Rekap Minggu</div><div class="cwr-pnl" style="color:${col}">${fmtMoney(net)}</div><div class="cwr-meta">${trx} trx &middot; WR ${wr.toFixed(0)}%</div></div>`;
-    }
-
-    let html = '';
-    monthKeys.forEach(mk => {
-      const [y,m] = mk.split('-').map(Number);
-      const firstDay = new Date(y,m-1,1);
-      const daysInMonth = new Date(y,m,0).getDate();
-      const startOffset = firstDay.getDay();
-      const cells = [];
-      for(let i=0;i<startOffset;i++) cells.push(null);
-      for(let day=1; day<=daysInMonth; day++) cells.push({day, key:`${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`});
-      while(cells.length % 7 !== 0) cells.push(null);
-
-      html += `<div class="cal-month"><div class="cal-month-title">${monthNames[m-1]} ${y}</div><div class="cal-grid">`;
-      dow.forEach(d => html += `<div class="cal-dow">${d}</div>`);
-      html += `<div class="cal-dow cal-week-head">Rekap Minggu</div>`;
-      for(let w=0; w<cells.length; w+=7){
-        const weekCells = cells.slice(w,w+7);
-        weekCells.forEach(cell => html += cell ? dayCellHtml(cell.day, cell.key) : dayCellHtml(null,null));
-        html += weekRecapHtml(weekCells);
-      }
-      html += `</div></div>`;
-    });
-    el('calendarWrap').innerHTML = html || '<div style="color:var(--text-faint); padding:20px;">Belum ada histori transaksi tertutup.</div>';
-
-    // click handlers utk popup harian
-    el('calendarWrap').querySelectorAll('.cal-cell.has-data').forEach(cell => {
-      cell.addEventListener('click', () => openDayModal(byDate[cell.dataset.date]));
-    });
-  }
-
-  function openDayModal(dayData){
-    if(!dayData) return;
-    const dateLabel = new Date(dayData.date).toLocaleDateString('id-ID',{weekday:'long', day:'2-digit', month:'long', year:'numeric'});
-    el('modalTitle').textContent = `${dateLabel} — ${fmtMoney(dayData.netProfit)} (${dayData.total} trade)`;
-    let html = `<thead><tr><th>Waktu Buka</th><th>Waktu Tutup</th><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Profit</th></tr></thead><tbody>`;
-    [...dayData.trades].sort((a,b)=>a.closeTime-b.closeTime).forEach(t => {
-      const net = t.netProfit ?? t.profit ?? 0;
-      html += `<tr>
-        <td class="mono">${fmtDateTime(t.openTime)}</td>
-        <td class="mono">${fmtDateTime(t.closeTime)}</td>
-        <td class="strong">${t.symbol}</td>
-        <td><span class="dir-tag ${t.type}">${t.type}</span></td>
-        <td class="num">${Number(t.volume).toFixed(2)}</td>
-        <td class="num ${net>=0?'pos':'neg'}">${fmtMoney(net)}</td>
-      </tr>`;
-    });
-    html += '</tbody>';
-    el('modalTable').innerHTML = html;
-    el('dayModal').classList.add('show');
-  }
-  el('modalCloseBtn').addEventListener('click', () => el('dayModal').classList.remove('show'));
-  el('dayModal').addEventListener('click', e => { if(e.target.id === 'dayModal') el('dayModal').classList.remove('show'); });
-
-  /* ============================ Exposure ============================ */
-  function renderExposure(positions){
-    const { rows, totalVol } = computeExposure(positions);
-    if(rows.length === 0){
-      el('exposureList').innerHTML = `<div style="color:var(--text-faint); text-align:center; padding:10px;">Tidak ada posisi berjalan.</div>`;
-      return;
-    }
-    el('exposureList').innerHTML = rows.map(r => {
-      const pct = totalVol ? (r.volume/totalVol*100) : 0;
-      return `<div class="exposure-row">
-        <div class="exp-sym">${r.symbol}</div>
-        <div class="exposure-track"><div class="exposure-fill" style="width:${pct}%"></div></div>
-        <div class="exp-val">${r.volume.toFixed(2)} lot (${pct.toFixed(0)}%)</div>
-      </div>`;
-    }).join('');
-  }
-
-  /* ============================ Positions / Orders / History tables ============================ */
-  function renderPositions(positions){
+    // Positions table
     el('posCount').textContent = positions.length ? `(${positions.length} berjalan)` : '';
-    let html = `<thead><tr><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Open</th><th class="num">Harga Skrg</th><th class="num">SL</th><th class="num">TP</th><th class="num">Risk</th><th class="num">Profit</th><th class="num">Durasi</th><th>Sesi</th></tr></thead><tbody>`;
+    let posHtml = `<thead><tr><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Open</th><th class="num">Harga Skrg</th><th class="num">SL</th><th class="num">TP</th><th class="num">Profit</th><th class="num">Durasi</th></tr></thead><tbody>`;
     if(positions.length === 0){
-      html += `<tr class="empty-row"><td colspan="11">Tidak ada posisi yang sedang berjalan.</td></tr>`;
+      posHtml += `<tr class="empty-row"><td colspan="9">Tidak ada posisi yang sedang berjalan.</td></tr>`;
     } else {
       positions.forEach(p => {
         const nowDur = (p.durationSec||0) + (lastReceivedAt ? (Date.now()-lastReceivedAt)/1000 : 0);
-        const riskTxt = p.riskUsd ? `${fmtMoney(p.riskUsd)} (${Number(p.riskPct||0).toFixed(2)}%)` : '-';
-        html += `<tr>
+        posHtml += `<tr>
           <td class="strong">${p.symbol}</td>
           <td><span class="dir-tag ${p.type}">${p.type}</span></td>
           <td class="num">${Number(p.volume).toFixed(2)}</td>
@@ -742,69 +261,42 @@ footer { margin-top: 50px; text-align: center; color: var(--text-faint); font-si
           <td class="num mono">${p.priceCurrent}</td>
           <td class="num mono">${p.sl || '-'}</td>
           <td class="num mono">${p.tp || '-'}</td>
-          <td class="num mono">${riskTxt}</td>
           <td class="num ${p.profit>=0?'pos':'neg'}">${fmtMoney(p.profit)}</td>
           <td class="num mono">${fmtDur(nowDur)}</td>
-          <td><span class="session-tag">${getSession(p.openTime)}</span></td>
         </tr>`;
       });
     }
-    html += '</tbody>';
-    el('posTable').innerHTML = html;
-  }
+    posHtml += '</tbody>';
+    el('posTable').innerHTML = posHtml;
 
-  function renderOrders(orders){
+    // Orders table
     el('ordCount').textContent = orders.length ? `(${orders.length} terpasang)` : '';
-    let html = `<thead><tr><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Harga</th><th class="num">SL</th><th class="num">TP</th><th>Dipasang</th><th>Expiry</th></tr></thead><tbody>`;
+    let ordHtml = `<thead><tr><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Harga</th><th class="num">SL</th><th class="num">TP</th><th>Dipasang</th><th>Expiry</th></tr></thead><tbody>`;
     if(orders.length === 0){
-      html += `<tr class="empty-row"><td colspan="8">Tidak ada pending order terpasang.</td></tr>`;
+      ordHtml += `<tr class="empty-row"><td colspan="8">Tidak ada pending order terpasang.</td></tr>`;
     } else {
       orders.forEach(o => {
-        html += `<tr>
+        ordHtml += `<tr>
           <td class="strong">${o.symbol}</td>
           <td><span class="dir-tag ${o.type.includes('buy')?'buy':'sell'}">${o.type.replace('_',' ')}</span></td>
           <td class="num">${Number(o.volume).toFixed(2)}</td>
           <td class="num mono">${o.price}</td>
           <td class="num mono">${o.sl || '-'}</td>
           <td class="num mono">${o.tp || '-'}</td>
-          <td class="mono">${fmtDateTime(o.timeSetup)}</td>
-          <td class="mono">${o.timeExpiration ? fmtDateTime(o.timeExpiration) : '-'}</td>
+          <td class="mono">${fmtDate(o.timeSetup)}</td>
+          <td class="mono">${o.timeExpiration ? fmtDate(o.timeExpiration) : '-'}</td>
         </tr>`;
       });
     }
-    html += '</tbody>';
-    el('ordTable').innerHTML = html;
+    ordHtml += '</tbody>';
+    el('ordTable').innerHTML = ordHtml;
   }
 
-  function renderHistory(history){
-    const sorted = [...history].sort((a,b) => b.closeTime - a.closeTime).slice(0, 50);
-    el('histCount').textContent = `(${history.length} tercatat, menampilkan ${sorted.length} terbaru)`;
-    let html = `<thead><tr><th>Waktu Tutup</th><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Durasi</th><th class="num">Profit</th><th>Sesi</th></tr></thead><tbody>`;
-    if(sorted.length === 0){
-      html += `<tr class="empty-row"><td colspan="7">Belum ada histori transaksi tertutup.</td></tr>`;
-    } else {
-      sorted.forEach(t => {
-        const net = t.netProfit ?? t.profit ?? 0;
-        html += `<tr>
-          <td class="mono">${fmtDateTime(t.closeTime)}</td>
-          <td class="strong">${t.symbol}</td>
-          <td><span class="dir-tag ${t.type}">${t.type}</span></td>
-          <td class="num">${Number(t.volume).toFixed(2)}</td>
-          <td class="num mono">${fmtDur(t.durationSec)}</td>
-          <td class="num ${net>=0?'pos':'neg'}">${fmtMoney(net)}</td>
-          <td><span class="session-tag">${getSession(t.openTime)}</span></td>
-        </tr>`;
-      });
-    }
-    html += '</tbody>';
-    el('histTable').innerHTML = html;
-  }
-
-  /* ============================ Loop ============================ */
+  // Update status chip + position durations every second without waiting for next fetch
   setInterval(() => {
     updateStatus();
-    if(storeData && storeData[activeLogin] && storeData[activeLogin].positions && storeData[activeLogin].positions.length){
-      renderPositions(storeData[activeLogin].positions); // biar durasi posisi tetap jalan tiap detik
+    if(lastData && lastData.positions && lastData.positions.length){
+      render(lastData); // re-render so duration counters keep ticking smoothly
     }
   }, 1000);
 
