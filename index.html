@@ -2,625 +2,814 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>FaridFX — Prop Firm Command Center</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Account Dashboard</title>
 <style>
-:root{
-  --bg:#070a0f;--surface:#0d1219;--surface2:#121923;--surface3:#182230;
-  --line:#202b3a;--line2:#2d3a4d;--text:#edf2f7;--muted:#8996a8;--faint:#596678;
-  --gold:#e9c45a;--green:#27c994;--red:#f05f6d;--amber:#e6a844;--blue:#66a9ff;--purple:#a58bff;
-  --shadow:0 18px 50px rgba(0,0,0,.25);--radius:16px;
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #0B0F17;
+  --panel: #131B26;
+  --panel-2: #1A2433;
+  --panel-hover: #222E42;
+  --border: #233145;
+  --border-light: #2D3E57;
+  --text: #F1F5F9;
+  --text-dim: #94A3B8;
+  --text-faint: #64748B;
+  --gold: #FFC72C;
+  --gold-glow: rgba(255, 199, 44, 0.15);
+  --safe: #10B981;
+  --safe-bg: rgba(16, 185, 129, 0.12);
+  --warn: #F59E0B;
+  --warn-bg: rgba(245, 158, 11, 0.12);
+  --danger: #EF4444;
+  --danger-bg: rgba(239, 68, 68, 0.12);
+  --info: #8B9BB4;
+  --info-bg: rgba(139, 155, 180, 0.12);
 }
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:"DM Sans",system-ui,sans-serif}
-body{font-size:13px}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.app{max-width:1540px;margin:auto;padding:18px 22px 44px}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:7px 0 17px;border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:12px}.logo{width:43px;height:43px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#f3d57c,#92701b);color:#080b10;font-weight:900;letter-spacing:-.06em}
-.brand h1{font-size:18px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:10px}
-.top-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-.status{display:flex;gap:8px;align-items:center;padding:8px 11px;border:1px solid var(--line);background:var(--surface);border-radius:999px}.dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}.dot.live{background:var(--green);box-shadow:0 0 0 5px rgba(39,201,148,.08)}.dot.warn{background:var(--amber)}.dot.offline{background:var(--red)}
-.status b{font-size:11px}.status small{display:block;color:var(--faint);font-size:9px}
-.btn{border:1px solid var(--line2);background:var(--surface2);color:var(--text);border-radius:10px;padding:8px 11px;font-size:10px;font-weight:700}.btn:hover{background:var(--surface3)}.btn.primary{border-color:#6d5b2a;background:rgba(233,196,90,.1);color:#f0d274}.btn.danger{color:#ff8b94;border-color:#5b2930}.btn:disabled{opacity:.45;cursor:not-allowed}
-.account-strip{display:flex;gap:18px;flex-wrap:wrap;padding:12px 0;color:var(--muted);font-size:10px}.account-strip b{color:var(--text);font-family:"JetBrains Mono",monospace;font-weight:500}
-.account-selector{display:flex;align-items:center;gap:7px;margin-bottom:8px}.account-pill{border:1px solid var(--line);background:var(--surface);padding:7px 10px;border-radius:9px;color:var(--muted);font-size:10px}.account-pill.active{border-color:#6d5b2a;background:rgba(233,196,90,.09);color:var(--gold)}
-.nav{display:flex;gap:5px;overflow:auto;padding:3px;margin:3px 0 18px}.tab{white-space:nowrap;border:1px solid transparent;background:transparent;color:var(--muted);padding:8px 12px;border-radius:9px;font-size:10px;font-weight:700}.tab.active{background:var(--surface2);border-color:var(--line);color:var(--text)}
-.view{display:none}.view.active{display:block}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:21px 0 11px}.section-head h2{font-size:14px;margin:0}.section-head p{margin:3px 0 0;color:var(--faint);font-size:10px}
-.kpis{display:grid;grid-template-columns:repeat(8,minmax(125px,1fr));gap:9px}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.kpi{padding:14px 15px;min-height:91px}.kpi .label{color:var(--faint);font-size:8px;text-transform:uppercase;letter-spacing:.08em;font-weight:800}.kpi .value{font-family:"JetBrains Mono",monospace;font-size:17px;font-weight:700;margin-top:8px}.kpi .sub{font-size:9px;color:var(--muted);margin-top:4px}
-.pos{color:var(--green)}.neg{color:var(--red)}.warn{color:var(--amber)}.gold{color:var(--gold)}.blue{color:var(--blue)}.purple{color:var(--purple)}
-.grid2{display:grid;grid-template-columns:1.5fr .9fr;gap:12px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.panel{padding:15px}.panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.panel-title h3{font-size:12px;margin:0}.panel-title span{font-size:9px;color:var(--faint)}
-.chart{height:280px;position:relative;overflow:hidden}.chart svg{width:100%;height:100%}.chart-empty{height:100%;display:grid;place-items:center;color:var(--faint);font-size:10px}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}.metric{padding:11px;border:1px solid var(--line);border-radius:11px;background:var(--surface2)}.metric label{display:block;color:var(--faint);font-size:8px}.metric strong{display:block;font-family:"JetBrains Mono";font-size:14px;margin-top:5px}
-.toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.search{min-width:180px;flex:1;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:9px 11px;border-radius:10px;outline:none;font-size:10px}.select{border:1px solid var(--line);background:var(--surface);color:var(--text);padding:9px 10px;border-radius:10px;font-size:10px;outline:none}
-.table-card{overflow:hidden}.table-scroll{overflow:auto;max-height:570px}table{width:100%;border-collapse:collapse;min-width:820px}th{position:sticky;top:0;z-index:1;background:var(--surface2);color:var(--faint);font-size:8px;text-transform:uppercase;letter-spacing:.07em;text-align:left;padding:10px 11px;border-bottom:1px solid var(--line);white-space:nowrap}td{padding:10px 11px;border-bottom:1px solid var(--line);color:var(--muted);white-space:nowrap;font-size:10px}tbody tr:hover{background:rgba(255,255,255,.018)}
-.mono{font-family:"JetBrains Mono",monospace}.strong{color:var(--text);font-weight:600}.tag{display:inline-flex;padding:3px 7px;border-radius:6px;font-size:8px;font-weight:800;text-transform:uppercase}.tag.buy{color:var(--green);background:rgba(39,201,148,.1)}.tag.sell{color:var(--red);background:rgba(240,95,109,.1)}.tag.neutral{color:var(--muted);background:rgba(137,150,168,.1)}.tag.news{color:var(--amber);background:rgba(230,168,68,.1)}.tag.safe{color:var(--green);background:rgba(39,201,148,.1)}.tag.danger{color:var(--red);background:rgba(240,95,109,.1)}
-.empty{text-align:center!important;padding:35px!important;color:var(--faint)!important}
-.riskbar{height:7px;background:var(--surface3);border-radius:999px;overflow:hidden;margin-top:8px}.riskbar i{display:block;height:100%;width:0;transition:width .35s}.risk-green{background:var(--green)}.risk-amber{background:var(--amber)}.risk-red{background:var(--red)}
-.big-number{font-family:"JetBrains Mono";font-size:29px;font-weight:700}.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.statbox{padding:12px;border:1px solid var(--line);background:var(--surface);border-radius:12px}.statbox label{color:var(--faint);font-size:8px;text-transform:uppercase}.statbox strong{display:block;margin-top:6px;font-family:"JetBrains Mono";font-size:15px}
-.info-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}.info{padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.info small{display:block;color:var(--faint);font-size:8px}.info b{display:block;margin-top:4px;font-size:10px}
-.limit-card{padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--surface2)}.limit-row{display:flex;justify-content:space-between;gap:10px;font-size:10px}.limit-row b{font-family:"JetBrains Mono"}.limit-note{font-size:9px;color:var(--muted);margin-top:7px;line-height:1.5}
-.calendar-wrap{overflow:auto}.pnl-calendar{min-width:920px}.cal-head,.cal-row{display:grid;grid-template-columns:115px repeat(7,minmax(105px,1fr)) 125px;gap:5px}.cal-head>div{padding:9px;color:var(--faint);font-size:8px;text-transform:uppercase;font-weight:800}.cal-row{margin-bottom:5px}.cal-label{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:9px;color:var(--muted);font-size:9px}.day-cell{min-height:84px;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:8px;position:relative;overflow:hidden;cursor:pointer;transition:.18s}.day-cell:hover{transform:translateY(-2px);border-color:var(--line2);box-shadow:0 10px 28px rgba(0,0,0,.22)}.day-cell.empty-day{opacity:.3;cursor:default}.day-cell.profit{background:linear-gradient(145deg,rgba(39,201,148,.11),var(--surface))}.day-cell.loss{background:linear-gradient(145deg,rgba(240,95,109,.11),var(--surface))}.day-top{display:flex;justify-content:space-between;font-size:8px;color:var(--faint)}.day-pnl{font-family:"JetBrains Mono";font-size:13px;font-weight:700;margin-top:12px}.day-meta{font-size:8px;color:var(--muted);margin-top:5px}.week-total{min-height:84px;padding:9px;border:1px solid var(--line2);border-radius:10px;background:var(--surface2)}.week-total strong{display:block;font-family:"JetBrains Mono";font-size:12px;margin-top:13px}.week-total small{display:block;color:var(--faint);font-size:8px;margin-top:4px}
-.month-title{font-size:11px;color:var(--text);font-weight:700;margin:15px 0 8px}.heat{display:grid;grid-template-columns:repeat(12,1fr);gap:5px}.heat-cell{padding:8px;border:1px solid var(--line);border-radius:9px;text-align:center;font-size:8px}.heat-cell strong{display:block;font-family:"JetBrains Mono";margin-top:5px}.heat-pos{background:rgba(39,201,148,.12)}.heat-neg{background:rgba(240,95,109,.12)}
-.alert-list{display:grid;gap:7px}.alert{padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);display:flex;gap:9px;align-items:flex-start}.alert .icon{font-size:14px}.alert b{font-size:10px}.alert small{display:block;color:var(--muted);margin-top:2px;font-size:9px;line-height:1.4}
-.news-item{display:grid;grid-template-columns:90px 1fr auto;gap:9px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.news-item:last-child{border-bottom:0}.news-time{font-family:"JetBrains Mono";font-size:9px;color:var(--muted)}.news-title{font-size:10px}.news-sub{font-size:8px;color:var(--faint);margin-top:3px}
-.account-card{padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);display:flex;justify-content:space-between;gap:12px;align-items:center}.account-card+.account-card{margin-top:8px}.account-main b{font-size:11px}.account-main small{display:block;color:var(--faint);margin-top:3px;font-size:8px}.account-actions{display:flex;gap:5px}
-.modal-backdrop{position:fixed;inset:0;background:rgba(2,4,8,.78);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}.modal-backdrop.show{display:flex}.modal{width:min(980px,100%);max-height:90vh;overflow:auto;background:var(--surface);border:1px solid var(--line2);border-radius:18px;box-shadow:0 30px 90px rgba(0,0,0,.5);animation:modalIn .2s ease}.modal.small{width:min(560px,100%)}@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}.modal-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.modal-head h3{margin:0;font-size:13px}.modal-body{padding:16px}.close{border:0;background:transparent;color:var(--muted);font-size:18px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{display:block;color:var(--faint);font-size:8px;text-transform:uppercase;margin-bottom:5px;font-weight:800}.field input,.field select{width:100%;border:1px solid var(--line);background:var(--surface2);color:var(--text);padding:9px;border-radius:9px;outline:none}.field.full{grid-column:1/-1}.form-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:14px}
-.toast{position:fixed;right:18px;bottom:18px;background:var(--surface2);border:1px solid var(--line2);border-radius:11px;padding:10px 13px;box-shadow:var(--shadow);font-size:10px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s;z-index:200}.toast.show{opacity:1;transform:none}
-.footer{border-top:1px solid var(--line);margin-top:28px;padding-top:15px;text-align:center;color:var(--faint);font-size:8px}
-@media(max-width:1250px){.kpis{grid-template-columns:repeat(4,1fr)}.grid2,.grid3{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.app{padding:12px}.topbar{align-items:flex-start}.kpis{grid-template-columns:repeat(2,1fr)}.info-list,.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.stat-grid{grid-template-columns:1fr 1fr}.brand h1{font-size:16px}.top-actions .status{display:none}}
-@media(max-width:420px){.kpis,.stat-grid{grid-template-columns:1fr}.account-strip{gap:9px}}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', -apple-system, sans-serif; line-height: 1.5; font-size: 14px; }
+.mono { font-family: 'IBM Plex Mono', monospace; }
+.wrap { max-width: 1320px; margin: 0 auto; padding: 26px 22px 70px; }
+
+/* Topbar */
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 14px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #FFC72C, #D97706); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; color: #0B0F17; flex-shrink: 0; }
+.brand-text h1 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+.brand-text p { font-size: 12px; color: var(--text-dim); margin-top: 1px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+.acc-select { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+
+.status-chip { display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); flex-shrink: 0; }
+.status-dot.live { background: var(--safe); animation: pulse 1.6s infinite; }
+.status-dot.stale { background: var(--warn); }
+.status-dot.offline { background: var(--danger); }
+@keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,0.55);} 70%{box-shadow:0 0 0 7px rgba(16,185,129,0);} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0);} }
+.status-text .status-sub { display:block; font-size: 10.5px; color: var(--text-faint); font-weight: 400; margin-top: 1px; }
+
+.acc-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; color: var(--text-dim); font-size: 12.5px; }
+.acc-row b { color: var(--text); font-family: 'IBM Plex Mono', monospace; }
+
+.state-msg { background: var(--panel); border: 1px dashed var(--border-light); border-radius: 16px; padding: 60px 30px; text-align: center; color: var(--text-dim); }
+.state-msg h2 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: var(--text); margin-bottom: 8px; }
+.state-msg p { font-size: 13px; max-width: 460px; margin: 0 auto; line-height: 1.6; }
+
+/* Alerts */
+.alert-stack { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.alert-item { display: flex; align-items: center; gap: 12px; border-radius: 12px; padding: 12px 16px; font-size: 13px; border: 1px solid transparent; }
+.alert-item.warn { background: var(--warn-bg); border-color: rgba(245,158,11,0.35); color: var(--warn); }
+.alert-item.danger { background: var(--danger-bg); border-color: rgba(239,68,68,0.35); color: var(--danger); }
+.alert-item b { color: var(--text); }
+.alert-item .a-icon { font-weight: 700; }
+
+/* Section headers */
+.section-title { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; font-weight: 700; margin: 26px 0 14px; display:flex; align-items:center; gap:10px; }
+.section-title .sub { font-family: 'IBM Plex Sans', sans-serif; font-weight: 400; font-size: 12px; color: var(--text-faint); }
+
+/* KPI cards */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 240px)); gap: 12px; }
+.kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 16px 18px; display:flex; flex-direction:column; justify-content:center; height:100%; }
+.kpi .label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; margin-bottom: 7px; }
+.kpi .value { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 700; }
+.kpi .value.pos { color: var(--safe); }
+.kpi .value.neg { color: var(--danger); }
+.kpi .sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+/* Limit / risk cards with progress bar */
+.limit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.limit-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
+.limit-card .lc-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.limit-card .lc-label { font-size: 12.5px; font-weight: 600; color: var(--text-dim); }
+.limit-card .lc-pct { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 15px; }
+.limit-track { height: 9px; border-radius: 6px; background: var(--panel-2); overflow: hidden; border: 1px solid var(--border); margin-bottom: 8px; }
+.limit-fill { height: 100%; border-radius: 6px; transition: width .4s ease; }
+.limit-card .lc-detail { font-size: 11.5px; color: var(--text-faint); }
+
+/* Config box */
+.settings-box { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px 22px; margin-bottom: 6px; }
+.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 230px)); gap: 16px; }
+.field label { display: block; font-size: 11px; color: var(--text-dim); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+.field input { width: 100%; background: var(--panel-2); border: 1px solid var(--border-light); border-radius: 8px; padding: 8px 11px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+.field input:focus { outline: none; border-color: var(--gold); }
+
+/* Chart */
+.chart-container { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+.chart-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.chart-head .chart-title { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 700; }
+.chart-head .chart-meta { font-size: 11px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
+.svg-chart { width: 100%; height: 230px; display: block; }
+
+/* Calendar */
+.cal-layout { display: grid; grid-template-columns: 230px 1fr; gap: 20px; align-items: start; }
+.cal-stat-col { display: flex; flex-direction: column; gap: 10px; position: sticky; top: 16px; }
+.cal-stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; }
+.cal-stat-card .cs-label { font-size: 10.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
+.cal-stat-card .cs-value { font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 700; }
+.cal-stat-card .cs-value.pos { color: var(--safe); }
+.cal-stat-card .cs-value.neg { color: var(--danger); }
+.cal-stat-card .cs-sub { font-size: 10.5px; color: var(--text-dim); margin-top: 3px; }
+.cal-grid-col { min-width: 0; }
+.cal-month { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px 16px 12px; margin-bottom: 16px; }
+.cal-month-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr) 122px; gap: 6px; }
+.cal-dow { text-align: center; font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; padding-bottom: 6px; font-weight: 600; }
+.cal-dow.cal-week-head { text-align: left; padding-left: 8px; }
+.cal-cell { border-radius: 9px; padding: 8px 8px; min-height: 68px; border: 1px solid var(--border); background: var(--panel-2); display: flex; flex-direction: column; justify-content: space-between; transition: transform .15s ease, box-shadow .15s ease; cursor: default; }
+.cal-cell.has-data { cursor: pointer; }
+.cal-cell.has-data:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 20px rgba(0,0,0,0.35); z-index: 2; }
+.cal-cell.empty { background: transparent; border-color: transparent; cursor: default; }
+.cal-cell .cal-day { font-size: 10.5px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
+.cal-cell .cal-pnl { font-size: 11px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+.cal-cell .cal-trades { font-size: 9.5px; color: var(--text-faint); }
+.cal-week-recap { border-radius: 9px; padding: 8px 10px; min-height: 68px; border: 1px solid var(--border-light); background: var(--panel-hover); display: flex; flex-direction: column; justify-content: center; gap: 3px; }
+.cal-week-recap .cwr-label { font-size: 9px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+.cal-week-recap .cwr-pnl { font-size: 13px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+.cal-week-recap .cwr-meta { font-size: 9.5px; color: var(--text-dim); }
+.cal-week-recap.empty { visibility: hidden; }
+@media(max-width: 900px){
+  .cal-layout { grid-template-columns: 1fr; }
+  .cal-stat-col { position: static; flex-direction: row; flex-wrap: wrap; }
+  .cal-stat-card { flex: 1 1 140px; }
+  .cal-grid { grid-template-columns: repeat(7, minmax(32px,1fr)); }
+  .cal-week-recap { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; min-height: auto; padding: 8px 12px; }
+}
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(5,8,13,0.72); backdrop-filter: blur(2px); display: none; align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: var(--panel); border: 1px solid var(--border-light); border-radius: 16px; max-width: 620px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
+.modal-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.modal-head h3 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; }
+.modal-close { background: var(--panel-2); border: 1px solid var(--border-light); color: var(--text-dim); width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+.modal-body { padding: 12px 0; overflow-y: auto; }
+
+/* Tables */
+.table-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.table-scroll { max-height: 420px; overflow-y: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left; }
+thead th { background: var(--panel-2); padding: 11px 14px; font-size: 10.5px; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); position: sticky; top: 0; white-space: nowrap; }
+tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-dim); white-space: nowrap; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--panel-hover); }
+td.num, th.num { font-family: 'IBM Plex Mono', monospace; text-align: right; }
+td.strong { color: var(--text); font-weight: 600; }
+.pos { color: var(--safe); font-weight: 600; }
+.neg { color: var(--danger); font-weight: 600; }
+.dir-tag { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 5px; text-transform: uppercase; }
+.dir-tag.buy { background: var(--safe-bg); color: var(--safe); }
+.dir-tag.sell { background: var(--danger-bg); color: var(--danger); }
+.session-tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 5px; background: var(--info-bg); color: var(--info); }
+.empty-row td { text-align: center; color: var(--text-faint); padding: 24px; }
+
+/* Exposure bars */
+.exposure-list { display: flex; flex-direction: column; gap: 10px; }
+.exposure-row { display: grid; grid-template-columns: 90px 1fr 100px; align-items: center; gap: 12px; font-size: 12.5px; }
+.exposure-row .exp-sym { font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
+.exposure-track { height: 8px; border-radius: 5px; background: var(--panel-2); overflow: hidden; border: 1px solid var(--border); }
+.exposure-fill { height: 100%; background: var(--gold); border-radius: 5px; }
+.exposure-row .exp-val { text-align: right; font-family: 'IBM Plex Mono', monospace; color: var(--text-dim); }
+
+.news-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; font-size: 12.5px; color: var(--text-dim); line-height: 1.7; }
+.news-card a { color: var(--gold); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+
+.chart-row { display: grid; grid-template-columns: 1fr; gap: 20px; }
+
+footer { margin-top: 50px; text-align: center; color: var(--text-faint); font-size: 11.5px; border-top: 1px solid var(--border); padding-top: 20px; }
+
+@media(max-width: 720px){
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .settings-grid { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
-<div class="app">
-<header class="topbar">
-  <div class="brand"><div class="logo">FX</div><div><h1>Prop Firm Command Center</h1><p>FaridFX · Multi-Account Risk & Performance Terminal</p></div></div>
-  <div class="top-actions">
-    <div class="status"><i id="dot" class="dot"></i><div><b id="status">Menunggu data</b><small id="statusSub">Belum ada snapshot</small></div></div>
-    <button class="btn" id="refreshBtn">↻ Refresh</button>
-    <button class="btn" id="settingsBtn">⚙ Risk Settings</button>
-    <button class="btn primary" id="addAccountBtn">＋ Account</button>
-  </div>
-</header>
+<div class="wrap">
 
-<div class="account-selector" id="accountSelector"></div>
-<div class="account-strip">
-  <span>Login <b id="accLogin">—</b></span><span>Server <b id="accServer">—</b></span><span>Broker <b id="accCompany">—</b></span>
-  <span>Currency <b id="accCurrency">—</b></span><span>Leverage <b id="accLev">—</b></span><span>Snapshot <b id="lastSnapshot">—</b></span>
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">FX</div>
+      <div class="brand-text">
+        <h1>Live Account Dashboard</h1>
+        <p>Statistik &amp; manajemen risiko real-time — Farid Gold Killer</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <select class="acc-select" id="accountSelect" style="display:none;"></select>
+      <div class="status-chip">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-text"><span id="statusLabel">Menghubungkan...</span><span class="status-sub" id="statusSub">-</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-row" id="accRow" style="display:none;"></div>
+
+  <div id="alertStack" class="alert-stack"></div>
+
+  <div id="stateMsg" class="state-msg">
+    <h2>Menunggu data dari EA</h2>
+    <p>Pastikan EA <code>AccountMonitor_WebhookEA</code> sudah berjalan di MT5 dan webhook sudah dikonfigurasi. Halaman ini otomatis terisi begitu snapshot pertama diterima.</p>
+  </div>
+
+  <div id="content" style="display:none;">
+
+    <div class="settings-box">
+      <div class="section-title" style="margin:0 0 12px;">Pengaturan Limit &amp; Risiko</div>
+      <div class="settings-grid">
+        <div class="field"><label>Balance Awal Challenge (USD)</label><input type="number" id="cfgStartBalance" value="10000" min="1"></div>
+        <div class="field"><label>Daily Loss Limit (%)</label><input type="number" id="cfgDailyLimit" value="5" min="0.1" step="0.5"></div>
+        <div class="field"><label>Overall Loss Limit (%)</label><input type="number" id="cfgOverallLimit" value="10" min="0.1" step="0.5"></div>
+        <div class="field"><label>Ambang Peringatan (%)</label><input type="number" id="cfgWarnPct" value="80" min="10" max="100" step="5"></div>
+      </div>
+    </div>
+
+    <div class="section-title">Ringkasan Akun</div>
+    <div class="kpi-grid" id="accountKpis"></div>
+
+    <div class="section-title">Limit &amp; Drawdown</div>
+    <div class="limit-grid" id="limitGrid"></div>
+
+    <div class="section-title">Equity &amp; Balance Curve <span class="sub" id="equityMeta"></span></div>
+    <div class="chart-row">
+      <div class="chart-container">
+        <div class="chart-head"><div class="chart-title">All-Time Balance Curve</div></div>
+        <svg class="svg-chart" id="equityChart"></svg>
+      </div>
+    </div>
+
+    <div class="section-title">Kalender PnL Harian <span class="sub">Klik / arahkan kursor ke tanggal untuk detail — kolom kanan rekap mingguan</span></div>
+    <div class="cal-layout">
+      <div class="cal-stat-col" id="calStatsCol"></div>
+      <div class="cal-grid-col" id="calendarWrap"></div>
+    </div>
+
+    <div class="section-title">Eksposur per Pair</div>
+    <div class="table-wrap" style="padding:18px 20px;">
+      <div class="exposure-list" id="exposureList"></div>
+    </div>
+
+    <div class="section-title">Posisi Berjalan <span class="sub" id="posCount"></span></div>
+    <div class="table-wrap"><div class="table-scroll"><table id="posTable"></table></div></div>
+
+    <div class="section-title">Pending Order <span class="sub" id="ordCount"></span></div>
+    <div class="table-wrap"><div class="table-scroll"><table id="ordTable"></table></div></div>
+
+    <div class="section-title">Riwayat Transaksi Terakhir <span class="sub" id="histCount"></span></div>
+    <div class="table-wrap"><div class="table-scroll"><table id="histTable"></table></div></div>
+
+    <div class="section-title">Kalender Ekonomi / Berita</div>
+    <div class="news-card">
+      Dashboard ini tidak menarik data berita/ekonomi secara otomatis. Untuk cek jadwal rilis berita high-impact sebelum entry,
+      gunakan kalender eksternal: <a href="https://www.forexfactory.com/calendar" target="_blank" rel="noopener">ForexFactory Calendar</a> atau
+      <a href="https://id.investing.com/economic-calendar/" target="_blank" rel="noopener">Investing.com</a>.
+    </div>
+
+  </div>
+
+  <footer>Data diperbarui otomatis tiap beberapa detik langsung dari terminal MT5. Sesi trading &amp; drawdown dihitung berdasarkan jam server broker (pendekatan). Bukan saran finansial.</footer>
 </div>
 
-<nav class="nav">
-  <button class="tab active" data-view="overview">Overview</button>
-  <button class="tab" data-view="calendar">P&L Calendar</button>
-  <button class="tab" data-view="history">Trade History</button>
-  <button class="tab" data-view="risk">Risk Monitor</button>
-  <button class="tab" data-view="news">Calendar / News</button>
-  <button class="tab" data-view="accounts">Multi-Account</button>
-  <button class="tab" data-view="analytics">Analytics</button>
-  <button class="tab" data-view="account">Account</button>
-</nav>
-
-<div id="state" class="state card" style="padding:70px 20px;text-align:center">
-  <h2 style="margin:0 0 8px;font-size:18px">Menunggu data dari MT5</h2>
-  <p style="max-width:560px;margin:auto;color:var(--muted);line-height:1.6;font-size:11px">
-    Dashboard tetap kompatibel dengan <b>AccountMonitor_WebhookEA</b>. Tambahkan beberapa endpoint lewat menu Account untuk mengaktifkan mode multi-account.
-  </p>
+<div class="modal-overlay" id="dayModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modalTitle">Detail Transaksi</h3>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="table-wrap" style="border:none; border-radius:0;">
+        <table id="modalTable"></table>
+      </div>
+    </div>
+  </div>
 </div>
-
-<main id="content" style="display:none">
-<section id="view-overview" class="view active">
-  <div class="section-head"><div><h2>All-Time Portfolio Snapshot</h2><p>Dari snapshot pertama yang tersimpan sampai kondisi terbaru</p></div><button class="btn" id="clearSnapshotsBtn">Reset local snapshots</button></div>
-  <div class="kpis" id="accountKpis"></div>
-
-  <div class="grid2" style="margin-top:12px">
-    <div class="card panel"><div class="panel-title"><h3>Balance & Equity Curve</h3><span id="curveRange">ALL TIME</span></div><div class="chart" id="equityChart"></div></div>
-    <div class="card panel"><div class="panel-title"><h3>Portfolio Performance</h3><span>All-time derived metrics</span></div><div class="metrics" id="performanceMetrics"></div></div>
-  </div>
-
-  <div class="grid3" style="margin-top:12px">
-    <div class="card panel"><div class="panel-title"><h3>Loss Limits</h3><span>Prop-style controls</span></div><div id="limitOverview"></div></div>
-    <div class="card panel"><div class="panel-title"><h3>Exposure</h3><span>Current positions</span></div><div class="metrics" id="exposureOverview"></div></div>
-    <div class="card panel"><div class="panel-title"><h3>Alerts</h3><span>Near-limit engine</span></div><div class="alert-list" id="alertOverview"></div></div>
-  </div>
-
-  <div class="section-head"><div><h2>Live Positions</h2><p>Current exposure by symbol and position</p></div><button class="btn" data-jump="risk">Risk Monitor</button></div>
-  <div class="card table-card"><div class="table-scroll"><table id="overviewPos"></table></div></div>
-</section>
-
-<section id="view-calendar" class="view">
-  <div class="section-head"><div><h2>Daily P/L Calendar</h2><p>Hover untuk micro-summary · klik tanggal untuk seluruh transaksi hari tersebut</p></div><div class="toolbar" style="margin:0"><select id="calYear" class="select"></select><select id="calMonth" class="select"></select></div></div>
-  <div class="card panel calendar-wrap"><div class="pnl-calendar" id="pnlCalendar"></div></div>
-  <div class="section-head"><div><h2>Monthly P/L Heatmap</h2><p>Akumulasi berdasarkan bulan kalender</p></div></div>
-  <div class="card panel"><div class="heat" id="monthlyHeat"></div></div>
-</section>
-
-<section id="view-history" class="view">
-  <div class="section-head"><div><h2>Trade History</h2><p>Semua closed trades dari account aktif / agregasi akun</p></div></div>
-  <div class="toolbar"><input id="histSearch" class="search" placeholder="Cari symbol, ticket, account..."><select id="histResult" class="select"><option value="all">Semua hasil</option><option value="win">Profit</option><option value="loss">Loss</option></select><select id="histAccount" class="select"><option value="all">Semua account</option></select></div>
-  <div class="card table-card"><div class="table-scroll"><table id="historyTable"></table></div></div>
-</section>
-
-<section id="view-risk" class="view">
-  <div class="section-head"><div><h2>Risk Monitor</h2><p>Daily loss, overall loss, risk/position, exposure/pair & session control</p></div><span class="tag neutral" id="sessionTag">SESSION —</span></div>
-  <div class="stat-grid" id="riskStats"></div>
-  <div class="grid2" style="margin-top:12px">
-    <div class="card panel"><div class="panel-title"><h3>Daily Loss Limit</h3><span id="dailyLimitLabel">—</span></div><div class="big-number" id="dailyLossValue">—</div><div class="riskbar"><i id="dailyBar"></i></div><p id="dailyHint" class="limit-note">—</p></div>
-    <div class="card panel"><div class="panel-title"><h3>Overall Loss Limit</h3><span id="overallLimitLabel">—</span></div><div class="big-number" id="overallLossValue">—</div><div class="riskbar"><i id="overallBar"></i></div><p id="overallHint" class="limit-note">—</p></div>
-  </div>
-  <div class="grid2" style="margin-top:12px">
-    <div class="card panel"><div class="panel-title"><h3>Risk Per Position</h3><span>Estimated from SL distance</span></div><div class="metrics" id="positionRiskMetrics"></div></div>
-    <div class="card panel"><div class="panel-title"><h3>Exposure Per Pair</h3><span>Aggregated open volume / P&L</span></div><div class="table-scroll" style="max-height:260px"><table id="exposureTable"></table></div></div>
-  </div>
-  <div class="section-head"><div><h2>Position Risk Table</h2><p>SL/TP, estimated risk and floating P/L</p></div></div>
-  <div class="card table-card"><div class="table-scroll"><table id="riskTable"></table></div></div>
-</section>
-
-<section id="view-news" class="view">
-  <div class="section-head"><div><h2>Calendar / News Filter</h2><p>Filter trading berdasarkan event, impact, dan configured no-trade window</p></div><button class="btn primary" id="addNewsBtn">＋ News Event</button></div>
-  <div class="grid2">
-    <div class="card panel"><div class="panel-title"><h3>Trading Session</h3><span id="sessionNow">—</span></div><div class="metrics" id="sessionMetrics"></div><div style="margin-top:10px" id="sessionWindows"></div></div>
-    <div class="card panel"><div class="panel-title"><h3>News Filter Status</h3><span id="newsFilterStatus">—</span></div><div class="metrics" id="newsMetrics"></div><p class="limit-note">Event dapat berasal dari payload webhook <code>newsCalendar</code> atau ditambahkan manual. Filter ini memberi status risiko; eksekusi order tetap harus dikontrol EA/broker.</p></div>
-  </div>
-  <div class="section-head"><div><h2>Upcoming Events</h2><p>Impact tinggi/sedang dan no-trade windows</p></div></div>
-  <div class="card panel" id="newsList"></div>
-</section>
-
-<section id="view-accounts" class="view">
-  <div class="section-head"><div><h2>Multi-Account Management</h2><p>Monitor beberapa MT5 webhook endpoint dalam satu command center</p></div><button class="btn primary" id="addAccountBtn2">＋ Add account</button></div>
-  <div id="accountsList"></div>
-  <div class="section-head"><div><h2>Portfolio Aggregate</h2><p>Gabungan balance, equity, floating P/L dan closed P/L seluruh account</p></div></div>
-  <div class="stat-grid" id="aggregateStats"></div>
-</section>
-
-<section id="view-analytics" class="view">
-  <div class="section-head"><div><h2>Analytics</h2><p>Performance statistics dari trade history + local snapshots</p></div></div>
-  <div class="stat-grid" id="analyticsStats"></div>
-  <div class="grid2" style="margin-top:12px">
-    <div class="card panel"><div class="panel-title"><h3>Win / Loss Distribution</h3><span>Closed trades</span></div><div class="chart" id="resultChart"></div></div>
-    <div class="card panel"><div class="panel-title"><h3>Trade Quality</h3><span>Derived metrics</span></div><div class="info-list" id="qualityInfo"></div></div>
-  </div>
-</section>
-
-<section id="view-account" class="view">
-  <div class="section-head"><div><h2>Account Details</h2><p>Informasi account aktif yang diterima dari MT5</p></div></div>
-  <div class="card panel"><div class="info-list" id="accountInfo"></div></div>
-</section>
-</main>
-
-<footer class="footer">FaridFX · Prop-style portfolio monitoring · Local history is stored in this browser · Risk metrics are monitoring estimates, not broker-side enforcement.</footer>
-</div>
-
-<div class="modal-backdrop" id="dayModal"><div class="modal"><div class="modal-head"><h3 id="dayModalTitle">Daily Transactions</h3><button class="close" data-close="dayModal">×</button></div><div class="modal-body"><div class="metrics" id="daySummary"></div><div class="card table-card" style="margin-top:12px"><div class="table-scroll" style="max-height:55vh"><table id="dayTransactions"></table></div></div></div></div></div>
-
-<div class="modal-backdrop" id="settingsModal"><div class="modal small"><div class="modal-head"><h3>Prop Firm Risk Settings</h3><button class="close" data-close="settingsModal">×</button></div><div class="modal-body">
-  <div class="form-grid">
-    <div class="field"><label>Daily loss limit %</label><input id="setDailyPct" type="number" step=".1"></div>
-    <div class="field"><label>Overall loss limit %</label><input id="setOverallPct" type="number" step=".1"></div>
-    <div class="field"><label>Risk per position %</label><input id="setRiskPct" type="number" step=".1"></div>
-    <div class="field"><label>Alert threshold %</label><input id="setAlertPct" type="number" step=".1"></div>
-    <div class="field"><label>News buffer before (min)</label><input id="setNewsBefore" type="number"></div>
-    <div class="field"><label>News buffer after (min)</label><input id="setNewsAfter" type="number"></div>
-    <div class="field"><label>Trading session</label><select id="setSession"><option>Asia</option><option>London</option><option>New York</option><option>Overlap</option><option>Off-session</option></select></div>
-    <div class="field"><label>Base capital mode</label><select id="setBaseMode"><option value="initial">Initial balance</option><option value="high">Highest balance</option></select></div>
-  </div>
-  <div class="form-actions"><button class="btn" data-close="settingsModal">Cancel</button><button class="btn primary" id="saveSettings">Save settings</button></div>
-</div></div></div>
-
-<div class="modal-backdrop" id="accountModal"><div class="modal small"><div class="modal-head"><h3>Add / Edit MT5 Account</h3><button class="close" data-close="accountModal">×</button></div><div class="modal-body">
-  <div class="form-grid">
-    <div class="field"><label>Account label</label><input id="accLabelInput" placeholder="FTMO Main"></div>
-    <div class="field"><label>Webhook URL</label><input id="accUrlInput" placeholder="https://.../api/webhook"></div>
-    <div class="field"><label>Initial balance (optional)</label><input id="accInitialInput" type="number" step=".01"></div>
-    <div class="field"><label>Enabled</label><select id="accEnabledInput"><option value="true">Yes</option><option value="false">No</option></select></div>
-  </div>
-  <input type="hidden" id="accEditId">
-  <div class="form-actions"><button class="btn" data-close="accountModal">Cancel</button><button class="btn primary" id="saveAccount">Save account</button></div>
-</div></div></div>
-
-<div class="modal-backdrop" id="newsModal"><div class="modal small"><div class="modal-head"><h3>Add Calendar Event</h3><button class="close" data-close="newsModal">×</button></div><div class="modal-body">
-  <div class="form-grid">
-    <div class="field"><label>Date & time</label><input id="newsTimeInput" type="datetime-local"></div>
-    <div class="field"><label>Impact</label><select id="newsImpactInput"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
-    <div class="field full"><label>Event</label><input id="newsTitleInput" placeholder="FOMC / CPI / NFP"></div>
-    <div class="field"><label>Currency</label><input id="newsCurrencyInput" placeholder="USD"></div>
-    <div class="field"><label>No-trade window (min)</label><input id="newsWindowInput" type="number" value="30"></div>
-  </div>
-  <div class="form-actions"><button class="btn" data-close="newsModal">Cancel</button><button class="btn primary" id="saveNews">Add event</button></div>
-</div></div></div>
-
-<div class="toast" id="toast"></div>
 
 <script>
-(() => {
-'use strict';
+(function(){
+  /* ============================ KONFIGURASI ============================ */
+  const DEFAULT_WEBHOOK_URL = 'https://your-domain.vercel.app/api/webhook';
+  const POLL_INTERVAL_MS = 3000;
+  const STALE_AFTER_SEC   = 20;
+  const OFFLINE_AFTER_SEC = 60;
 
-const DEFAULT_WEBHOOK_URL='https://funded-journey-nu.vercel.app/api/webhook';
-const POLL_MS=3000, STALE_SEC=20, OFFLINE_SEC=60;
-const LS_ACCOUNTS='faridfx_accounts_v3', LS_SETTINGS='faridfx_risk_settings_v3', LS_SNAP='faridfx_snapshots_v3', LS_NEWS='faridfx_news_v3';
+  const params = new URLSearchParams(window.location.search);
+  const WEBHOOK_URL = params.get('url') || DEFAULT_WEBHOOK_URL;
+  const URL_LOGIN = params.get('login') || '';
 
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const n=(v,d=2)=>Number(v??0).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
-const money=(v,curr='$')=>{const x=Number(v||0),sg=x<0?'-':'';return sg+curr+Math.abs(x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})};
-const pct=v=>n(v,1)+'%';
-const valClass=v=>Number(v||0)>=0?'pos':'neg';
-const dateFmt=e=>e?new Date(Number(e)*1000).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-const dayKeyFromTs=e=>{const d=new Date(Number(e)*1000);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
-const dayKeyDate=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-const dur=sec=>{let s=Math.max(0,Math.round(Number(sec||0))),d=Math.floor(s/86400);s%=86400;let h=Math.floor(s/3600);s%=3600;let m=Math.floor(s/60);return (d?d+'h ':'')+(h?h+'j ':'')+(m?m+'m ':'')+Math.floor(s%60)+'d'};
-const typeTag=t=>`<span class="tag ${String(t).toLowerCase().includes('buy')?'buy':String(t).toLowerCase().includes('sell')?'sell':'neutral'}">${esc(String(t||'—').replaceAll('_',' '))}</span>`;
-function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1900)}
+  let storeData = null;         // seluruh objek multi-akun dari server
+  let activeLogin = URL_LOGIN;  // login yg sedang ditampilkan
+  let lastReceivedAt = null;
+  let alertState = { daily: 'safe', overall: 'safe' }; // utk deteksi transisi (edge-trigger notifikasi)
 
-const state={
-  accounts:JSON.parse(localStorage.getItem(LS_ACCOUNTS)||'null')||[{id:'default',label:'Primary MT5',url:DEFAULT_WEBHOOK_URL,initialBalance:0,enabled:true}],
-  settings:Object.assign({dailyLossPct:5,overallLossPct:10,riskPerPositionPct:1,alertPct:80,newsBefore:30,newsAfter:30,session:'New York',baseMode:'initial'},JSON.parse(localStorage.getItem(LS_SETTINGS)||'{}')),
-  snapshots:JSON.parse(localStorage.getItem(LS_SNAP)||'[]'),
-  manualNews:JSON.parse(localStorage.getItem(LS_NEWS)||'[]'),
-  datasets:{}, activeId:null, receivedAt:0, pollBusy:false, calYear:new Date().getFullYear(), calMonth:new Date().getMonth()
-};
+  const cfg = { startBalance: 10000, dailyLimitPct: 5, overallLimitPct: 10, warnPct: 80 };
 
-state.activeId=state.accounts.find(x=>x.enabled)?.id||state.accounts[0]?.id||'default';
+  const el = id => document.getElementById(id);
 
-function save(){localStorage.setItem(LS_ACCOUNTS,JSON.stringify(state.accounts));localStorage.setItem(LS_SETTINGS,JSON.stringify(state.settings));localStorage.setItem(LS_SNAP,JSON.stringify(state.snapshots.slice(-10000)));localStorage.setItem(LS_NEWS,JSON.stringify(state.manualNews))}
-function activeData(){return state.datasets[state.activeId]||null}
-function allDatasets(){return Object.entries(state.datasets).filter(([,d])=>d?.account)}
-function accountCurrency(d){return d?.account?.currency==='EUR'?'€':d?.account?.currency==='GBP'?'£':'$'}
-
-function setStatus(){
-  const age=state.receivedAt?(Date.now()-state.receivedAt)/1000:Infinity,dot=$('dot');
-  dot.className='dot';
-  if(!state.receivedAt){dot.classList.add('offline');$('status').textContent='Menunggu data';$('statusSub').textContent='Belum ada snapshot'}
-  else if(age<=STALE_SEC){dot.classList.add('live');$('status').textContent='Live';$('statusSub').textContent='Update '+Math.round(age)+'d lalu'}
-  else if(age<=OFFLINE_SEC){dot.classList.add('warn');$('status').textContent='Stale';$('statusSub').textContent='Update '+Math.round(age)+'d lalu'}
-  else{dot.classList.add('offline');$('status').textContent='Terputus';$('statusSub').textContent='Update '+Math.round(age)+'d lalu'}
-}
-
-function normalizeHistory(d,id){
-  return (d?.history||[]).map(t=>Object.assign({},t,{accountId:id,accountLabel:state.accounts.find(a=>a.id===id)?.label||id}));
-}
-
-async function fetchAccount(acc){
-  if(!acc.enabled||!acc.url)return;
-  try{
-    const r=await fetch(acc.url,{cache:'no-store',headers:{Accept:'application/json'}});
-    if(!r.ok)throw Error('HTTP '+r.status);
-    const raw=await r.json();
-    const d=raw?.data?.account?raw.data:(raw?.latest?.account?raw.latest:(raw?.payload?.account?raw.payload:raw));
-    if(!d?.account)return;
-    d.schemaVersion=Number(d.schemaVersion||raw.schemaVersion||2);
-    d.accountLabel=d.accountLabel||acc.label;
-    d.positions=Array.isArray(d.positions)?d.positions:[];
-    d.pendingOrders=Array.isArray(d.pendingOrders)?d.pendingOrders:[];
-    d.history=Array.isArray(d.history)?d.history:[];
-    d.dailyPnl=d.dailyPnl&&typeof d.dailyPnl==='object'?d.dailyPnl:{};
-    d.exposure=Array.isArray(d.exposure)?d.exposure:[];
-    d.newsCalendar=Array.isArray(d.newsCalendar)?d.newsCalendar:[];
-    d.snapshot=d.snapshot||{ts:Number(d.serverTime||0)*1000,balance:Number(d.account.balance||0),equity:Number(d.account.equity||0),floating:Number(d.account.floatingProfit||0),reason:d.reason||'webhook'};
-    state.datasets[acc.id]=d; state.receivedAt=Date.now();
-    const a=d.account||{},sn=d.snapshot||{};
-    const snap={ts:Number(sn.ts||Date.now()),accountId:acc.id,accountLabel:d.accountLabel,balance:Number(sn.balance??a.balance??0),equity:Number(sn.equity??a.equity??0),floating:Number(sn.floating??a.floatingProfit??0),currency:a.currency||'USD',reason:sn.reason||d.reason||'webhook'};
-    const own=state.snapshots.filter(x=>x.accountId===acc.id),last=own.at(-1);
-    if(!last||Math.abs(Number(last.equity)-snap.equity)>.001||Math.abs(Number(last.balance)-snap.balance)>.001||snap.ts-Number(last.ts)>60000){state.snapshots.push(snap);save();}
-  }catch(e){console.warn('Account fetch failed',acc.label,e)}
-}
-
-async function fetchAll(){
-  if(state.pollBusy)return;state.pollBusy=true;
-  try{await Promise.all(state.accounts.filter(a=>a.enabled).map(fetchAccount));renderAll();}finally{state.pollBusy=false;setStatus()}
-}
-
-function renderAccountStrip(d){
-  const a=d?.account||{}; const cur=accountCurrency(d);
-  $('accLogin').textContent=a.login??'—';$('accServer').textContent=a.server??'—';$('accCompany').textContent=a.company??'—';
-  $('accCurrency').textContent=a.currency??'—';$('accLev').textContent=a.leverage?'1:'+a.leverage:'—';$('lastSnapshot').textContent=d?.snapshot?.ts?dateFmt(Number(d.snapshot.ts)/1000):(state.receivedAt?dateFmt(state.receivedAt/1000):'—');
-}
-
-function renderSelector(){
-  $('accountSelector').innerHTML=state.accounts.map(a=>`<button class="account-pill ${a.id===state.activeId?'active':''}" data-account="${esc(a.id)}">${esc(a.label)}${a.enabled?'':' · OFF'}</button>`).join('')+
-  `<button class="account-pill" id="aggregatePill">◎ Portfolio Aggregate</button>`;
-  document.querySelectorAll('[data-account]').forEach(b=>b.onclick=()=>{state.activeId=b.dataset.account;renderAll()});
-  $('aggregatePill').onclick=()=>{state.activeId='__aggregate__';renderAll()};
-}
-
-function getHist(activeOnly=false){
-  let rows=[];
-  for(const [id,d] of allDatasets()) if(!activeOnly||id===state.activeId) rows.push(...normalizeHistory(d,id));
-  if(activeOnly && state.activeId==='__aggregate__')rows=[];
-  return rows.sort((a,b)=>Number(a.closeTime||0)-Number(b.closeTime||0));
-}
-
-function portfolio(){
-  const ds=allDatasets();
-  if(state.activeId!=='__aggregate__'){
-    const d=activeData(); if(d)return {balance:Number(d.account.balance||0),equity:Number(d.account.equity||0),floating:Number(d.account.floatingProfit||0),currency:d.account.currency||'USD'};
+  /* ============================ Formatting ============================ */
+  function fmtMoney(n){
+    n = Number(n)||0;
+    const sign = n < 0 ? '-' : '';
+    return sign + '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
   }
-  return {balance:ds.reduce((s,[,d])=>s+Number(d.account.balance||0),0),equity:ds.reduce((s,[,d])=>s+Number(d.account.equity||0),0),floating:ds.reduce((s,[,d])=>s+Number(d.account.floatingProfit||0),0),currency:'USD'};
-}
-
-function getBaseCapital(){
-  const p=portfolio();
-  const snaps=state.snapshots.filter(s=>state.activeId==='__aggregate__'||s.accountId===state.activeId);
-  if(state.settings.baseMode==='high')return Math.max(Number(p.balance||0),...snaps.map(s=>Number(s.balance||0)),1);
-  const acc=state.accounts.find(a=>a.id===state.activeId);
-  return Number(acc?.initialBalance||0)||Number(snaps[0]?.balance||0)||Number(p.balance||0)||1;
-}
-
-function dailyMap(){
-  const map={}, provided={};
-  for(const [,d] of allDatasets())for(const [k,v] of Object.entries(d.dailyPnl||{})){
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(k))continue;
-    if(!map[k])map[k]={pnl:0,trades:0,wins:0,losses:0,rows:[]};
-    map[k].pnl+=Number(v?.pnl??0);map[k].trades+=Number(v?.trades??0);map[k].wins+=Number(v?.wins??0);map[k].losses+=Number(v?.losses??0);provided[k]=true;
+  function fmtDur(sec){
+    sec = Math.max(0, Math.round(sec));
+    if(sec < 60) return sec + 'd';
+    const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+    if(h > 0) return h+'j '+m+'m';
+    return m+'m '+s+'d';
   }
-  const histDays={};
-  for(const t of getHist(false)){
-    const k=dayKeyFromTs(t.closeTime||t.openTime),x=Number(t.netProfit??t.profit??0);
-    if(!map[k])map[k]={pnl:0,trades:0,wins:0,losses:0,rows:[]}; map[k].rows.push(t);
-    if(!histDays[k])histDays[k]={pnl:0,trades:0,wins:0,losses:0};histDays[k].pnl+=x;histDays[k].trades++;if(x>0)histDays[k].wins++;if(x<0)histDays[k].losses++;
+  function fmtDateTime(epochSec){
+    if(!epochSec) return '-';
+    const d = new Date(epochSec*1000);
+    return d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   }
-  for(const [k,v] of Object.entries(histDays))if(!provided[k]){map[k].pnl=v.pnl;map[k].trades=v.trades;map[k].wins=v.wins;map[k].losses=v.losses;}
-  return map;
-}
+  function verdictColor(level){ return level==='danger' ? 'var(--danger)' : level==='warn' ? 'var(--warn)' : level==='info' ? 'var(--info)' : 'var(--safe)'; }
+  function getSession(epochSec){
+    const h = new Date(epochSec*1000).getUTCHours(); // pendekatan berbasis UTC, offset server broker bisa berbeda
+    if(h>=0 && h<8) return 'Asia';
+    if(h>=8 && h<13) return 'London';
+    if(h>=13 && h<21) return 'New York';
+    return 'Sepi';
+  }
 
-function equitySeries(){
-  const snaps=state.snapshots.filter(s=>state.activeId==='__aggregate__'||s.accountId===state.activeId).sort((a,b)=>Number(a.ts)-Number(b.ts));
-  const hist=getHist(false),base=getBaseCapital();let bal=base,peak=base,maxDD=0,series=[];
-  if(snaps.length)snaps.forEach(s=>{const eq=Number(s.equity||0),b=Number(s.balance||eq);peak=Math.max(peak,eq||b);const dd=peak?Math.max(0,(peak-eq)/peak*100):0;maxDD=Math.max(maxDD,dd);series.push({ts:Number(s.ts),balance:b,equity:eq,dd})});
-  else{series.push({ts:Date.now()-31536000000,balance:base,equity:base,dd:0});for(const t of hist){bal+=Number(t.netProfit??t.profit??0);peak=Math.max(peak,bal);const dd=peak?Math.max(0,(peak-bal)/peak*100):0;maxDD=Math.max(maxDD,dd);series.push({ts:Number(t.closeTime||t.openTime||0)*1000,balance:bal,equity:bal,dd})}}
-  return {series:series.filter(x=>x.ts>0).sort((a,b)=>a.ts-b.ts),maxDD};
-}
-
-function currentDaily(){const m=dailyMap(),k=dayKeyDate(new Date()),today=m[k]?.pnl||0;return {pnl:today,map:m};}
-
-function limitUsage(){
-  const base=getBaseCapital(), dailyLimit=base*state.settings.dailyLossPct/100, overallLimit=base*state.settings.overallLossPct/100;
-  const daily=Math.max(0,-currentDaily().pnl);
-  const eq=portfolio().equity, overallLoss=Math.max(0,(base-eq));
-  return {base,dailyLimit,overallLimit,daily,overallLoss,dailyPct:dailyLimit?daily/dailyLimit*100:0,overallPct:overallLimit?overallLoss/overallLimit*100:0};
-}
-
-function estimatePositionRisk(p){
-  const cap=Number(portfolio().equity||0),configured=Number(state.settings.riskPerPositionPct||1),exact=Number(p.riskMoney);
-  if(Number.isFinite(exact)&&exact>0)return {distance:Math.abs(Number(p.priceOpen||0)-Number(p.sl||0)),approx:exact,limit:cap*configured/100,pct:cap?exact/cap*100:0,exact:true};
-  const sl=Number(p.sl||0),open=Number(p.priceOpen||0),vol=Number(p.volume||0);if(!sl||!open||!vol)return null;
-  const approx=Math.abs(open-sl)*vol*100000;return {distance:Math.abs(open-sl),approx,limit:cap*configured/100,pct:cap?approx/cap*100:0,exact:false};
-}
-
-function exposures(){
-  const remote=[];for(const [id,d] of allDatasets())for(const x of d.exposure||[])remote.push({...x,accountId:id,accountLabel:d.accountLabel||state.accounts.find(a=>a.id===id)?.label||id});
-  if(remote.length){const m={};remote.forEach(x=>{const k=x.symbol||'—';if(!m[k])m[k]={symbol:k,volume:0,profit:0,notional:0,count:0,accounts:new Set};m[k].volume+=Number(x.volume||0);m[k].profit+=Number(x.profit||0);m[k].notional+=Number(x.notional||0);m[k].count+=Number(x.count||1);m[k].accounts.add(x.accountLabel)});return Object.values(m).map(x=>({...x,accounts:[...x.accounts].join(', ')})).sort((a,b)=>Math.abs(b.volume)-Math.abs(a.volume))}
-  const m={};for(const [id,d] of allDatasets())for(const p of d.positions||[]){const k=p.symbol||'—';if(!m[k])m[k]={symbol:k,volume:0,profit:0,notional:0,count:0,accounts:new Set};m[k].volume+=Number(p.volume||0);m[k].profit+=Number(p.profit||0);m[k].notional+=Number(p.notional||0);m[k].count++;m[k].accounts.add(d.accountLabel||state.accounts.find(a=>a.id===id)?.label||id)}
-  return Object.values(m).map(x=>({...x,accounts:[...x.accounts].join(', ')})).sort((a,b)=>Math.abs(b.volume)-Math.abs(a.volume));
-}
-
-function sessionNow(){
-  const h=new Date().getUTCHours()+new Date().getUTCMinutes()/60;
-  if(h>=0&&h<7)return 'Asia';
-  if(h>=7&&h<13)return 'London';
-  if(h>=13&&h<17)return 'Overlap';
-  if(h>=17&&h<22)return 'New York';
-  return 'Off-session';
-}
-
-function allNews(){
-  const d=activeData();
-  const remote=d?.newsCalendar||d?.news||[];
-  const normalize=x=>({
-    time:x.time||x.timestamp||x.datetime||x.date,
-    title:x.title||x.event||x.name||'Economic Event',
-    impact:String(x.impact||x.importance||'medium').toLowerCase(),
-    currency:x.currency||x.ccy||'—',
-    window:Number(x.window||state.settings.newsBefore||30)
+  /* ============================ Config inputs ============================ */
+  ['cfgStartBalance','cfgDailyLimit','cfgOverallLimit','cfgWarnPct'].forEach(id => {
+    el(id).addEventListener('change', () => {
+      cfg.startBalance   = Math.max(1, parseFloat(el('cfgStartBalance').value) || 10000);
+      cfg.dailyLimitPct  = Math.max(0.1, parseFloat(el('cfgDailyLimit').value) || 5);
+      cfg.overallLimitPct= Math.max(0.1, parseFloat(el('cfgOverallLimit').value) || 10);
+      cfg.warnPct        = Math.max(10, parseFloat(el('cfgWarnPct').value) || 80);
+      if(storeData) renderActive();
+    });
   });
-  return [...state.manualNews,...(Array.isArray(remote)?remote.map(normalize):[])].map(x=>Object.assign({},x,{time:typeof x.time==='number'?new Date(x.time*1000):new Date(x.time)})).filter(x=>x.time instanceof Date&&!isNaN(x.time)).sort((a,b)=>a.time-b.time);
-}
 
-function newsStatus(){
-  const now=Date.now(),events=allNews().filter(x=>x.time.getTime()>now-3600000);
-  const near=events.find(x=>x.impact==='high'&&Math.abs(x.time.getTime()-now)<=((x.window||state.settings.newsBefore)*60000+state.settings.newsAfter*60000));
-  return {events,near};
-}
-
-function alertEngine(){
-  const u=limitUsage(), alerts=[];
-  if(u.dailyPct>=100)alerts.push(['⛔','Daily loss limit breached',`Daily loss ${pct(u.dailyPct)} of configured limit.`,'danger']);
-  else if(u.dailyPct>=state.settings.alertPct)alerts.push(['⚠','Daily loss near limit',`${pct(u.dailyPct)} of daily loss allowance used.`,'warn']);
-  if(u.overallPct>=100)alerts.push(['⛔','Overall loss limit breached',`${pct(u.overallPct)} of overall loss allowance used.`,'danger']);
-  else if(u.overallPct>=state.settings.alertPct)alerts.push(['⚠','Overall loss near limit',`${pct(u.overallPct)} of overall loss allowance used.`,'warn']);
-  const ps=[];for(const [id,d] of allDatasets())for(const p of d.positions||[]){const r=estimatePositionRisk(p);if(r&&r.pct>=state.settings.riskPerPositionPct*state.settings.alertPct/100)ps.push(p.symbol)}
-  if(ps.length)alerts.push(['⚠','Position risk elevated',`${ps.length} position(s) estimate above the risk alert threshold.`,'warn']);
-  const ns=newsStatus();if(ns.near)alerts.push(['📰','High-impact news window',`${ns.near.title} · ${ns.near.currency} is inside the configured no-trade buffer.`,'warn']);
-  if(!alerts.length)alerts.push(['✓','Risk status normal','No configured limit is currently near breach.','safe']);
-  return alerts;
-}
-
-function renderKpis(){
-  const d=portfolio(),cur=accountCurrency(activeData()),u=limitUsage(),perf=equitySeries(),hist=getHist(false);
-  const net=hist.reduce((s,t)=>s+Number(t.netProfit??t.profit??0),0),dd=perf.maxDD;
-  const vals=[
-    ['Balance',money(d.balance,cur),'Current closed balance'],
-    ['Equity',money(d.equity,cur),valClass(d.equity-d.balance)+'Current mark-to-market'],
-    ['Floating P/L',money(d.floating,cur),valClass(d.floating)+'Open positions'],
-    ['Daily P/L',money(currentDaily().pnl,cur),valClass(currentDaily().pnl)+'Today'],
-    ['Net Closed P/L',money(net,cur),valClass(net)+'All recorded trades'],
-    ['Drawdown',pct(perf.series.at(-1)?.dd||0),'Current peak-to-equity'],
-    ['Max Drawdown',pct(dd),'All-time recorded'],
-    ['Daily Limit',pct(u.dailyPct),u.dailyPct>=80?'Near limit':'Usage']
-  ];
-  $('accountKpis').innerHTML=vals.map(x=>`<div class="card kpi"><div class="label">${x[0]}</div><div class="value ${x[3]||''}">${x[1]}</div><div class="sub">${x[2]}</div></div>`).join('');
-}
-
-function drawEquity(){
-  const c=$('equityChart'),s=equitySeries().series;
-  if(!s.length){c.innerHTML='<div class="chart-empty">Belum ada historical snapshot / trade history</div>';return}
-  const W=900,H=280,L=52,R=18,T=24,B=28,min=Math.min(...s.map(x=>Math.min(x.balance,x.equity))),max=Math.max(...s.map(x=>Math.max(x.balance,x.equity))),span=Math.max(max-min,1);
-  const x=i=>L+(i/Math.max(s.length-1,1))*(W-L-R),y=v=T+(max-v)/span*(H-T-B);
-  const balance=s.map((q,i)=>`${x(i)},${y(q.balance)}`).join(' '),eq=s.map((q,i)=>`${x(i)},${y(q.equity)}`).join(' ');
-  c.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-    <line x1="${L}" y1="${y(min)}" x2="${W-R}" y2="${y(min)}" stroke="var(--line)"/>
-    <line x1="${L}" y1="${y((max+min)/2)}" x2="${W-R}" y2="${y((max+min)/2)}" stroke="var(--line)" opacity=".5"/>
-    <polyline points="${balance}" fill="none" stroke="var(--faint)" stroke-width="1.5" stroke-dasharray="5 5"/>
-    <polyline points="${eq}" fill="none" stroke="var(--gold)" stroke-width="3"/>
-    <circle cx="${x(s.length-1)}" cy="${y(s.at(-1).equity)}" r="5" fill="var(--gold)"/>
-    <text x="${L}" y="14" fill="var(--faint)" font-size="10">Balance ${money(s.at(-1).balance)}</text>
-    <text x="${W-170}" y="14" fill="var(--gold)" font-size="10">Equity ${money(s.at(-1).equity)}</text>
-    <text x="${L}" y="${H-5}" fill="var(--faint)" font-size="9">${new Date(s[0].ts).toLocaleDateString('id-ID')}</text>
-    <text x="${W-R-70}" y="${H-5}" fill="var(--faint)" font-size="9">${new Date(s.at(-1).ts).toLocaleDateString('id-ID')}</text>
-  </svg>`;
-}
-
-function renderPerformance(){
-  const hist=getHist(false),wins=hist.filter(t=>Number(t.netProfit??t.profit)>0),losses=hist.filter(t=>Number(t.netProfit??t.profit)<0),net=hist.reduce((s,t)=>s+Number(t.netProfit??t.profit??0),0);
-  const grossWin=wins.reduce((s,t)=>s+Number(t.netProfit??t.profit??0),0),grossLoss=Math.abs(losses.reduce((s,t)=>s+Number(t.netProfit??t.profit??0),0));
-  const pf=grossLoss?grossWin/grossLoss:0,wr=hist.length?wins.length/hist.length*100:0,u=limitUsage(),p=equitySeries();
-  const vals=[['Net P/L',money(net),valClass(net)],['Win Rate',pct(wr),''],['Profit Factor',n(pf),''],['Best Trade',money(wins.length?Math.max(...wins.map(t=>Number(t.netProfit??t.profit))):0),'pos'],['Worst Trade',money(losses.length?Math.min(...losses.map(t=>Number(t.netProfit??t.profit))):0),'neg'],['Max Drawdown',pct(p.maxDD),''],['Daily Loss Used',pct(u.dailyPct),u.dailyPct>=80?'warn':''],['Overall Loss Used',pct(u.overallPct),u.overallPct>=80?'warn':'']];
-  $('performanceMetrics').innerHTML=vals.map(x=>`<div class="metric"><label>${x[0]}</label><strong class="${x[2]}">${x[1]}</strong></div>`).join('');
-}
-
-function limitBlock(){
-  const u=limitUsage(),row=(title,used,limit,percent)=>`<div class="limit-card"><div class="limit-row"><span>${title}</span><b>${money(used)} / ${money(limit)}</b></div><div class="riskbar"><i class="${percent>=100?'risk-red':percent>=state.settings.alertPct?'risk-amber':'risk-green'}" style="width:${Math.min(percent,100)}%"></i></div><div class="limit-note">${pct(percent)} used · alert at ${state.settings.alertPct}%</div></div>`;
-  $('limitOverview').innerHTML=row('Daily loss',u.daily,u.dailyLimit,u.dailyPct)+row('Overall loss',u.overallLoss,u.overallLimit,u.overallPct);
-}
-
-function renderExposureOverview(){
-  const ex=exposures(),floating=ex.reduce((s,x)=>s+x.profit,0),vol=ex.reduce((s,x)=>s+x.volume,0);
-  $('exposureOverview').innerHTML=[['Pairs',ex.length],['Open volume',n(vol)+' lot'],['Floating P/L',money(floating),valClass(floating)],['Largest pair',ex[0]?.symbol||'—']].map(x=>`<div class="metric"><label>${x[0]}</label><strong class="${x[2]||''}">${x[1]}</strong></div>`).join('');
-}
-
-function renderAlerts(){
-  $('alertOverview').innerHTML=alertEngine().slice(0,4).map(a=>`<div class="alert"><div class="icon">${a[0]}</div><div><b>${a[1]}</b><small>${a[2]}</small></div></div>`).join('');
-}
-
-function positionTable(rows,full=true){
-  const head=`<thead><tr><th>Account</th><th>Symbol</th><th>Type</th><th>Volume</th><th>Open</th><th>Current</th><th>SL</th><th>TP</th><th>Risk / Position</th><th>Floating P/L</th>${full?'<th>Ticket</th><th>Comment</th>':''}</tr></thead>`;
-  if(!rows.length)return head+`<tbody><tr><td class="empty" colspan="${full?12:10}">Tidak ada posisi berjalan.</td></tr></tbody>`;
-  return head+'<tbody>'+rows.map(p=>{const r=estimatePositionRisk(p);return `<tr><td>${esc(p.accountLabel||'—')}</td><td class="strong">${esc(p.symbol)}</td><td>${typeTag(p.type)}</td><td class="mono">${n(p.volume)}</td><td class="mono">${esc(p.priceOpen)}</td><td class="mono">${esc(p.priceCurrent)}</td><td class="mono">${p.sl?esc(p.sl):'—'}</td><td class="mono">${p.tp?esc(p.tp):'—'}</td><td class="mono ${r&&r.pct>=state.settings.riskPerPositionPct?'warn':''}">${r?n(r.pct,2)+'%'+(r.exact?'':' est.'):'—'}</td><td class="mono ${valClass(p.profit)}">${money(p.profit)}</td>${full?`<td class="mono">${esc(p.ticket)}</td><td>${esc(p.comment||'—')}</td>`:''}</tr>`}).join('')+'</tbody>';
-}
-
-function renderPending(){
-  const rows=[];for(const [id,d] of allDatasets())for(const o of d.pendingOrders||[])rows.push({...o,accountLabel:d.accountLabel||state.accounts.find(a=>a.id===id)?.label||id});
-  const head='<thead><tr><th>Account</th><th>Symbol</th><th>Type</th><th>Volume</th><th>Price</th><th>SL</th><th>TP</th><th>Ticket</th><th>Comment</th></tr></thead>';
-  $('pendingTable').innerHTML=head+(rows.length?'<tbody>'+rows.map(o=>`<tr><td>${esc(o.accountLabel)}</td><td class="strong">${esc(o.symbol)}</td><td>${typeTag(o.type)}</td><td class="mono">${n(o.volume)}</td><td class="mono">${esc(o.price||o.priceOpen)}</td><td class="mono">${esc(o.sl||'—')}</td><td class="mono">${esc(o.tp||'—')}</td><td class="mono">${esc(o.ticket)}</td><td>${esc(o.comment||'—')}</td></tr>`).join('')+'</tbody>':'<tbody><tr><td class="empty" colspan="9">Tidak ada pending order.</td></tr></tbody>');
-}
-
-function allPositions(){
-  const rows=[];for(const [id,d] of allDatasets())for(const p of d.positions||[])rows.push(Object.assign({},p,{accountId:id,accountLabel:state.accounts.find(a=>a.id===id)?.label||id}));return rows;
-}
-
-function renderRisk(){
-  const u=limitUsage(),ps=allPositions(),rs=ps.map(estimatePositionRisk).filter(Boolean),mx=rs.length?Math.max(...rs.map(x=>x.pct)):0;
-  $('riskStats').innerHTML=[['Current Session',sessionNow()],['Risk / Position',pct(state.settings.riskPerPositionPct)],['Max Est. Position Risk',pct(mx)],['Pair Exposure',exposures().length+' pairs']].map(x=>`<div class="statbox"><label>${x[0]}</label><strong>${x[1]}</strong></div>`).join('');
-  $('dailyLossValue').textContent=money(u.daily);$('dailyLimitLabel').textContent='Limit '+money(u.dailyLimit);$('dailyBar').style.width=Math.min(u.dailyPct,100)+'%';$('dailyBar').className=u.dailyPct>=100?'risk-red':u.dailyPct>=state.settings.alertPct?'risk-amber':'risk-green';$('dailyHint').textContent=`${pct(u.dailyPct)} digunakan dari daily loss allowance.`;
-  $('overallLossValue').textContent=money(u.overallLoss);$('overallLimitLabel').textContent='Limit '+money(u.overallLimit);$('overallBar').style.width=Math.min(u.overallPct,100)+'%';$('overallBar').className=u.overallPct>=100?'risk-red':u.overallPct>=state.settings.alertPct?'risk-amber':'risk-green';$('overallHint').textContent=`${pct(u.overallPct)} digunakan dari overall loss allowance.`;
-  const sumRisk=rs.reduce((s,x)=>s+x.approx,0);
-  $('positionRiskMetrics').innerHTML=[['Open Positions',ps.length],['Max Risk',pct(mx)],['Total Est. Risk',money(sumRisk)],['Configured Risk',pct(state.settings.riskPerPositionPct)]].map(x=>`<div class="metric"><label>${x[0]}</label><strong>${x[1]}</strong></div>`).join('');
-  const ex=exposures();$('exposureTable').innerHTML='<thead><tr><th>Pair</th><th>Vol</th><th>P/L</th><th>Pos</th></tr></thead><tbody>'+ (ex.length?ex.map(x=>`<tr><td class="strong">${esc(x.symbol)}</td><td class="mono">${n(x.volume)}</td><td class="mono ${valClass(x.profit)}">${money(x.profit)}</td><td>${x.count}</td></tr>`).join(''):'<tr><td class="empty" colspan="4">No exposure</td></tr>')+'</tbody>';
-  $('riskTable').innerHTML=positionTable(ps,true);
-  $('sessionTag').textContent='SESSION '+sessionNow().toUpperCase();
-}
-
-function renderCalendar(){
-  const m=dailyMap(), y=state.calYear, mon=state.calMonth;
-  const first=new Date(y,mon,1),last=new Date(y,mon+1,0),start=(first.getDay()+6)%7,days=last.getDate();
-  const monthName=new Intl.DateTimeFormat('id-ID',{month:'long',year:'numeric'}).format(first);
-  const labels=['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
-  let html=`<div class="month-title">${monthName}</div><div class="cal-head"><div>Minggu</div>${labels.map(x=>`<div>${x}</div>`).join('')}<div>Weekly Recap</div></div>`;
-  let day=1;
-  while(day<=days){
-    const rowStart=day, dates=[];
-    for(let i=0;i<7;i++){const idx=(rowStart-1+start)%7; if(i===0){}}
-    let weekPnl=0,weekTrades=0;
-    let cells='';
-    for(let dow=0;dow<7;dow++){
-      const pos=(day===1?start:0);
-      if(day===1 && dow<start){cells+='<div class="day-cell empty-day"></div>';continue}
-      if(day>days){cells+='<div class="day-cell empty-day"></div>';continue}
-      const d=new Date(y,mon,day),k=dayKeyDate(d),v=m[k],p=v?.pnl||0;
-      weekPnl+=p;weekTrades+=v?.trades||0;
-      cells+=`<div class="day-cell ${p>0?'profit':p<0?'loss':''}" data-day="${k}" title="${esc(v?money(p)+' · '+v.trades+' trade(s)':'No closed trade')}"><div class="day-top"><span>${day}</span><span>${v?v.trades+'T':'—'}</span></div><div class="day-pnl ${valClass(p)}">${v?money(p):'—'}</div><div class="day-meta">${v?`${v.wins}W · ${v.losses}L`:'No trade'}</div></div>`;
-      day++;
+  /* ============================ Fetch loop ============================ */
+  async function fetchSnapshot(){
+    try{
+      const res = await fetch(WEBHOOK_URL, { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      if(!data || typeof data !== 'object' || Object.keys(data).length === 0) return;
+      storeData = data;
+      const logins = Object.keys(storeData);
+      if(!activeLogin || !storeData[activeLogin]) activeLogin = logins[0];
+      populateAccountSelect(logins);
+      const active = storeData[activeLogin];
+      lastReceivedAt = active.receivedAt ? new Date(active.receivedAt).getTime() : Date.now();
+      renderActive();
+    }catch(err){
+      console.error('Gagal mengambil data live:', err);
     }
-    html+=`<div class="cal-row"><div class="cal-label">Week ${Math.ceil((rowStart+start)/7)}</div>${cells}<div class="week-total"><small>WEEKLY RECAP</small><strong class="${valClass(weekPnl)}">${money(weekPnl)}</strong><small>${weekTrades} trade(s)</small></div></div>`;
+    updateStatus();
   }
-  $('pnlCalendar').innerHTML=html;
-  document.querySelectorAll('[data-day]').forEach(el=>{el.onclick=()=>openDay(el.dataset.day)});
-  const monthly=Array.from({length:12},(_,i)=>{const yy=y;return {i,pnl:Object.entries(m).filter(([k])=>k.startsWith(yy+'-'+String(i+1).padStart(2,'0'))).reduce((s,[,v])=>s+v.pnl,0)}})
-  $('monthlyHeat').innerHTML=monthly.map(x=>`<div class="heat-cell ${x.pnl>0?'heat-pos':x.pnl<0?'heat-neg':''}">${new Intl.DateTimeFormat('id-ID',{month:'short'}).format(new Date(y,x.i,1))}<strong class="${valClass(x.pnl)}">${money(x.pnl)}</strong></div>`).join('');
-}
 
-function openDay(k){
-  const v=dailyMap()[k]||{pnl:0,trades:0,wins:0,losses:0,rows:[]};
-  $('dayModalTitle').textContent='Transactions · '+new Date(k+'T00:00:00').toLocaleDateString('id-ID',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
-  $('daySummary').innerHTML=[['Daily P/L',money(v.pnl),valClass(v.pnl)],['Trades',v.trades],['Wins',v.wins,'pos'],['Losses',v.losses,'neg']].map(x=>`<div class="metric"><label>${x[0]}</label><strong class="${x[2]||''}">${x[1]}</strong></div>`).join('');
-  $('dayTransactions').innerHTML=historyTable(v.rows);
-  $('dayModal').classList.add('show');
-}
+  function populateAccountSelect(logins){
+    const sel = el('accountSelect');
+    if(logins.length <= 1){ sel.style.display = 'none'; return; }
+    sel.style.display = 'inline-block';
+    if(sel.dataset.rendered !== logins.join(',')){
+      sel.innerHTML = logins.map(l => `<option value="${l}">${l}</option>`).join('');
+      sel.dataset.rendered = logins.join(',');
+      sel.value = activeLogin;
+      sel.onchange = () => { activeLogin = sel.value; renderActive(); };
+    } else {
+      sel.value = activeLogin;
+    }
+  }
 
-function historyTable(rows){
-  const head='<thead><tr><th>Account</th><th>Symbol</th><th>Type</th><th>Volume</th><th>Open</th><th>Close</th><th>Open Time</th><th>Close Time</th><th>Duration</th><th>Net</th><th>Ticket</th></tr></thead>';
-  if(!rows.length)return head+'<tbody><tr><td class="empty" colspan="11">Tidak ada transaksi pada tanggal ini.</td></tr></tbody>';
-  return head+'<tbody>'+rows.map(t=>`<tr><td>${esc(t.accountLabel||'—')}</td><td class="strong">${esc(t.symbol)}</td><td>${typeTag(t.type)}</td><td class="mono">${n(t.volume)}</td><td class="mono">${esc(t.openPrice)}</td><td class="mono">${esc(t.closePrice)}</td><td class="mono">${dateFmt(t.openTime)}</td><td class="mono">${dateFmt(t.closeTime)}</td><td class="mono">${dur(t.durationSec)}</td><td class="mono ${valClass(t.netProfit??t.profit)}">${money(t.netProfit??t.profit)}</td><td class="mono">${esc(t.ticket)}</td></tr>`).join('')+'</tbody>';
-}
+  function updateStatus(){
+    const dot = el('statusDot'), label = el('statusLabel'), sub = el('statusSub');
+    if(!lastReceivedAt){
+      dot.className = 'status-dot offline'; label.textContent = 'Menunggu data'; sub.textContent = 'Belum ada snapshot masuk';
+      return;
+    }
+    const ageSec = (Date.now() - lastReceivedAt) / 1000;
+    if(ageSec <= STALE_AFTER_SEC){ dot.className = 'status-dot live'; label.textContent = 'Live'; }
+    else if(ageSec <= OFFLINE_AFTER_SEC){ dot.className = 'status-dot stale'; label.textContent = 'Data tertunda'; }
+    else { dot.className = 'status-dot offline'; label.textContent = 'Terputus'; }
+    sub.textContent = 'Update terakhir ' + Math.round(ageSec) + 'd lalu';
+  }
 
-function renderHistory(){
-  const q=($('histSearch').value||'').toLowerCase(),rf=$('histResult').value,af=$('histAccount').value;
-  const rows=getHist(false).filter(t=>(af==='all'||t.accountId===af)&&(rf==='all'||(rf==='win'?Number(t.netProfit??t.profit)>0:Number(t.netProfit??t.profit)<0))&&(!q||[t.symbol,t.ticket,t.type,t.accountLabel].join(' ').toLowerCase().includes(q)));
-  $('historyTable').innerHTML=historyTable(rows);
-  const keep=af;$('histAccount').innerHTML='<option value="all">Semua account</option>'+state.accounts.map(a=>`<option value="${esc(a.id)}">${esc(a.label)}</option>`).join('');$('histAccount').value=keep;
-}
+  /* ============================ Derived calculations ============================ */
+  function buildBalanceCurve(history, currentBalance){
+    const sorted = [...history].filter(d => d.closeTime).sort((a,b) => a.closeTime - b.closeTime);
+    const totalNet = sorted.reduce((s,d) => s + (d.netProfit ?? d.profit ?? 0), 0);
+    let running = currentBalance - totalNet; // rekonstruksi titik awal sebelum trade tertua yang tercatat
+    const curve = [{ t: sorted.length ? sorted[0].openTime*1000 : Date.now(), bal: running }];
+    sorted.forEach(d => {
+      running += (d.netProfit ?? d.profit ?? 0);
+      curve.push({ t: d.closeTime*1000, bal: running });
+    });
+    return curve;
+  }
 
-function renderNews(){
-  const ns=newsStatus(),sess=sessionNow();
-  $('sessionNow').textContent=sess;$('newsFilterStatus').textContent=ns.near?'BLOCK / CAUTION':'CLEAR';
-  $('sessionMetrics').innerHTML=[['Current',sess],['Configured',state.settings.session],['News Buffer',state.settings.newsBefore+' / '+state.settings.newsAfter+' min'],['High Impact',ns.events.filter(x=>x.impact==='high').length]].map(x=>`<div class="metric"><label>${x[0]}</label><strong>${x[1]}</strong></div>`).join('');
-  $('newsMetrics').innerHTML=[['Status',ns.near?'CAUTION':'CLEAR'],['Next Event',ns.events[0]?ns.events[0].title:'—'],['Impact',ns.events[0]?.impact||'—'],['Currency',ns.events[0]?.currency||'—']].map(x=>`<div class="metric"><label>${x[0]}</label><strong class="${x[1]==='CAUTION'?'warn':''}">${esc(x[1])}</strong></div>`).join('');
-  $('sessionWindows').innerHTML='<div class="limit-note">Session clock: UTC. Asia 00–07 · London 07–13 · Overlap 13–17 · New York 17–22 · Off-session 22–00.</div>';
-  $('newsList').innerHTML=ns.events.slice(0,20).map((x,i)=>`<div class="news-item"><div class="news-time">${x.time.toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</div><div><div class="news-title">${esc(x.title)}</div><div class="news-sub">${esc(x.currency)} · ${esc(x.impact)} impact · window ${x.window||state.settings.newsBefore}m</div></div><span class="tag ${x.impact==='high'?'danger':x.impact==='medium'?'news':'neutral'}">${esc(x.impact)}</span></div>`).join('') || '<div class="empty">Belum ada event. Tambahkan manual atau kirim newsCalendar dari webhook.</div>';
-}
+  function computeDrawdown(curve, currentEquity){
+    let peak = curve.length ? curve[0].bal : currentEquity;
+    let maxDD = 0, maxDDPct = 0;
+    curve.forEach(p => {
+      if(p.bal > peak) peak = p.bal;
+      const dd = peak - p.bal;
+      if(dd > maxDD){ maxDD = dd; maxDDPct = peak>0 ? (dd/peak*100) : 0; }
+    });
+    // sertakan floating saat ini juga dalam perhitungan peak/drawdown live
+    const livePeak = Math.max(peak, currentEquity);
+    const liveDD = livePeak - currentEquity;
+    const liveDDPct = livePeak>0 ? (liveDD/livePeak*100) : 0;
+    return { maxDD, maxDDPct, currentDD: liveDD, currentDDPct: liveDDPct, allTimePeak: livePeak };
+  }
 
-function renderAccounts(){
-  $('accountsList').innerHTML=state.accounts.map(a=>{const d=state.datasets[a.id],eq=d?.account?.equity;return `<div class="account-card"><div class="account-main"><b>${esc(a.label)}</b><small>${esc(a.url)} · ${a.enabled?'Enabled':'Disabled'} · Equity ${eq!=null?money(eq):'—'}</small></div><div class="account-actions"><button class="btn" data-edit="${esc(a.id)}">Edit</button><button class="btn danger" data-delete="${esc(a.id)}">Delete</button></div></div>`}).join('');
-  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openAccount(b.dataset.edit));
-  document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{if(state.accounts.length<=1)return toast('Minimal satu account');state.accounts=state.accounts.filter(a=>a.id!==b.dataset.delete);if(state.activeId===b.dataset.delete)state.activeId=state.accounts[0].id;save();renderAll()});
-  const ds=allDatasets(),bal=ds.reduce((s,[,d])=>s+Number(d.account.balance||0),0),eq=ds.reduce((s,[,d])=>s+Number(d.account.equity||0),0),fl=ds.reduce((s,[,d])=>s+Number(d.account.floatingProfit||0),0),tr=getHist(false).length;
-  $('aggregateStats').innerHTML=[['Accounts',state.accounts.filter(a=>a.enabled).length],['Balance',money(bal)],['Equity',money(eq)],['Floating P/L',money(fl),valClass(fl)],['Closed Trades',tr],['Daily P/L',money(currentDaily().pnl),valClass(currentDaily().pnl)],['Max Drawdown',pct(equitySeries().maxDD)],['Risk / Position',pct(state.settings.riskPerPositionPct)]].map(x=>`<div class="statbox"><label>${x[0]}</label><strong class="${x[2]||''}">${x[1]}</strong></div>`).join('');
-}
+  function todayPL(history, floatingProfit){
+    const todayKey = new Date().toISOString().slice(0,10);
+    const closedToday = history.filter(d => d.closeTime && new Date(d.closeTime*1000).toISOString().slice(0,10) === todayKey);
+    const closedSum = closedToday.reduce((s,d) => s + (d.netProfit ?? d.profit ?? 0), 0);
+    return closedSum + (floatingProfit||0);
+  }
 
-function renderAnalytics(){
-  const h=getHist(false),wins=h.filter(x=>Number(x.netProfit??x.profit)>0),loss=h.filter(x=>Number(x.netProfit??x.profit)<0),net=h.reduce((s,x)=>s+Number(x.netProfit??x.profit??0),0),best=h.length?Math.max(...h.map(x=>Number(x.netProfit??x.profit??0))):0,worst=h.length?Math.min(...h.map(x=>Number(x.netProfit??x.profit??0))):0;
-  const avg=h.length?net/h.length:0,wr=h.length?wins.length/h.length*100:0,gw=wins.reduce((s,x)=>s+Number(x.netProfit??x.profit??0),0),gl=Math.abs(loss.reduce((s,x)=>s+Number(x.netProfit??x.profit??0),0)),pf=gl?gw/gl:0;
-  $('analyticsStats').innerHTML=[['Closed Trades',h.length],['Wins',wins.length],['Losses',loss.length],['Win Rate',pct(wr)],['Best Trade',money(best)],['Worst Trade',money(worst)],['Expectancy',money(avg)],['Profit Factor',n(pf)]].map(x=>`<div class="statbox"><label>${x[0]}</label><strong>${x[1]}</strong></div>`).join('');
-  const total=wins.length+loss.length;if(!total){$('resultChart').innerHTML='<div class="chart-empty">Belum ada closed trade</div>'}else{const r=82,c=2*Math.PI*r,wp=wins.length/total*c;$('resultChart').innerHTML=`<svg viewBox="0 0 260 260"><circle cx="130" cy="130" r="${r}" fill="none" stroke="var(--surface3)" stroke-width="23"/><circle cx="130" cy="130" r="${r}" fill="none" stroke="var(--green)" stroke-width="23" stroke-dasharray="${wp} ${c-wp}" transform="rotate(-90 130 130)"/><circle cx="130" cy="130" r="50" fill="var(--surface)"/><text x="130" y="126" text-anchor="middle" fill="var(--text)" font-size="24" font-family="JetBrains Mono">${pct(wr)}</text><text x="130" y="146" text-anchor="middle" fill="var(--faint)" font-size="10">WIN RATE</text></svg>`}
-  const avgW=wins.length?gw/wins.length:0,avgL=loss.length?gl/loss.length:0,rr=avgL?avgW/avgL:0;
-  $('qualityInfo').innerHTML=[['Average Win',money(avgW)],['Average Loss',money(avgL)],['Reward / Risk',n(rr)+'x'],['Profit Factor',n(pf)],['Total Volume',n(h.reduce((s,x)=>s+Number(x.volume||0),0))+' lot'],['Max Drawdown',pct(equitySeries().maxDD)]].map(x=>`<div class="info"><small>${x[0]}</small><b>${x[1]}</b></div>`).join('');
-}
+  function groupDaily(history){
+    const byDay = {};
+    history.forEach(d => {
+      if(!d.closeTime) return;
+      const key = new Date(d.closeTime*1000).toISOString().slice(0,10);
+      if(!byDay[key]) byDay[key] = { date:key, total:0, wins:0, losses:0, netProfit:0, trades:[] };
+      const net = d.netProfit ?? d.profit ?? 0;
+      byDay[key].total++;
+      byDay[key].netProfit += net;
+      if(net>0) byDay[key].wins++; else if(net<0) byDay[key].losses++;
+      byDay[key].trades.push(d);
+    });
+    return Object.values(byDay).sort((a,b)=>a.date.localeCompare(b.date));
+  }
 
-function renderAccount(){
-  const d=activeData(),a=d?.account||{},cur=accountCurrency(d);
-  $('accountInfo').innerHTML=[['Login',a.login],['Name',a.name],['Broker',a.company],['Server',a.server],['Currency',a.currency],['Leverage',a.leverage?'1:'+a.leverage:'—'],['Balance',money(a.balance,cur)],['Equity',money(a.equity,cur)],['Margin',money(a.margin,cur)],['Free Margin',money(a.marginFree,cur)],['Margin Level',a.marginLevel!=null?pct(a.marginLevel):'—'],['Credit',money(a.credit,cur)],['Floating P/L',money(a.floatingProfit,cur)]].map(x=>`<div class="info"><small>${x[0]}</small><b>${esc(x[1])}</b></div>`).join('');
-}
+  function computeExposure(positions){
+    const map = {};
+    let totalVol = 0;
+    positions.forEach(p => {
+      if(!map[p.symbol]) map[p.symbol] = { symbol:p.symbol, volume:0, count:0 };
+      map[p.symbol].volume += Number(p.volume)||0;
+      map[p.symbol].count++;
+      totalVol += Number(p.volume)||0;
+    });
+    return { rows: Object.values(map).sort((a,b)=>b.volume-a.volume), totalVol };
+  }
 
-function activate(view){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===view));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+view));if(state.datasets[state.activeId]||state.activeId==='__aggregate__')renderAll()}
-function renderAll(){
-  renderSelector();const d=activeData();const has=allDatasets().length>0;
-  $('state').style.display=has?'none':'block';$('content').style.display=has?'block':'none';
-  if(!has)return;
-  if(state.activeId!=='__aggregate__')renderAccountStrip(d);
-  renderKpis();drawEquity();renderPerformance();limitBlock();renderExposureOverview();renderAlerts();renderCalendar();renderHistory();renderRisk();renderNews();renderAccounts();renderAnalytics();renderAccount();renderPending();
-  setStatus();
-}
+  /* ============================ Alerts (edge-triggered) ============================ */
+  function beep(){
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AC();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = 880;
+      osc.connect(gain); gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.25);
+    }catch(e){ /* audio tidak tersedia, abaikan */ }
+  }
+  function notify(title, body){
+    if(!('Notification' in window)) return;
+    if(Notification.permission === 'granted'){ new Notification(title, { body }); }
+    else if(Notification.permission !== 'denied'){ Notification.requestPermission(); }
+  }
+  function checkAlertTransition(key, level, title, body){
+    const prev = alertState[key];
+    if(level === 'danger' && prev !== 'danger'){ notify(title, body); beep(); }
+    else if(level === 'warn' && prev === 'safe'){ beep(); }
+    alertState[key] = level;
+  }
 
-function openSettings(){
-  $('setDailyPct').value=state.settings.dailyLossPct;$('setOverallPct').value=state.settings.overallLossPct;$('setRiskPct').value=state.settings.riskPerPositionPct;$('setAlertPct').value=state.settings.alertPct;$('setNewsBefore').value=state.settings.newsBefore;$('setNewsAfter').value=state.settings.newsAfter;$('setSession').value=state.settings.session;$('setBaseMode').value=state.settings.baseMode;$('settingsModal').classList.add('show');
-}
-function openAccount(id){
-  const a=state.accounts.find(x=>x.id===id);
-  $('accEditId').value=a?.id||'';$('accLabelInput').value=a?.label||'';$('accUrlInput').value=a?.url||'';$('accInitialInput').value=a?.initialBalance||'';$('accEnabledInput').value=String(a?.enabled??true);$('accountModal').classList.add('show');
-}
+  /* ============================ Render ============================ */
+  function renderActive(){
+    if(!storeData || !storeData[activeLogin]) return;
+    const rec = storeData[activeLogin];
+    el('stateMsg').style.display = 'none';
+    el('content').style.display = 'block';
 
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>activate(b.dataset.view));
-document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>activate(b.dataset.jump));
-['histSearch','histResult','histAccount'].forEach(id=>$(id).addEventListener('input',renderHistory));
-$('refreshBtn').onclick=async()=>{await fetchAll();toast('Dashboard diperbarui')};
-$('settingsBtn').onclick=openSettings;$('addAccountBtn').onclick=()=>openAccount('');$('addAccountBtn2').onclick=()=>openAccount('');
-$('clearSnapshotsBtn').onclick=()=>{if(confirm('Hapus semua snapshot lokal? Trade history dari webhook tidak akan dihapus.')){state.snapshots=[];save();renderAll();toast('Snapshot lokal direset')}};
-$('saveSettings').onclick=()=>{state.settings.dailyLossPct=Number($('setDailyPct').value)||5;state.settings.overallLossPct=Number($('setOverallPct').value)||10;state.settings.riskPerPositionPct=Number($('setRiskPct').value)||1;state.settings.alertPct=Number($('setAlertPct').value)||80;state.settings.newsBefore=Number($('setNewsBefore').value)||30;state.settings.newsAfter=Number($('setNewsAfter').value)||30;state.settings.session=$('setSession').value;state.settings.baseMode=$('setBaseMode').value;save();$('settingsModal').classList.remove('show');renderAll();toast('Risk settings tersimpan')};
-$('saveAccount').onclick=()=>{const id=$('accEditId').value||crypto.randomUUID();const obj={id,label:$('accLabelInput').value.trim()||'MT5 Account',url:$('accUrlInput').value.trim(),initialBalance:Number($('accInitialInput').value)||0,enabled:$('accEnabledInput').value==='true'};if(!obj.url)return toast('Webhook URL wajib diisi');const i=state.accounts.findIndex(a=>a.id===id);if(i>=0)state.accounts[i]=obj;else state.accounts.push(obj);state.activeId=id;save();$('accountModal').classList.remove('show');fetchAll();toast('Account disimpan')};
-$('addNewsBtn').onclick=()=>{$('newsTimeInput').value=new Date(Date.now()+3600000).toISOString().slice(0,16);$('newsTitleInput').value='';$('newsCurrencyInput').value='USD';$('newsWindowInput').value=30;$('newsModal').classList.add('show')};
-$('saveNews').onclick=()=>{const dt=new Date($('newsTimeInput').value);if(isNaN(dt))return toast('Tanggal event tidak valid');state.manualNews.push({time:dt.toISOString(),title:$('newsTitleInput').value.trim()||'Economic Event',impact:$('newsImpactInput').value,currency:$('newsCurrencyInput').value.trim()||'—',window:Number($('newsWindowInput').value)||30});save();$('newsModal').classList.remove('show');renderAll();toast('News event ditambahkan')};
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.remove('show'));
-document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')}));
-$('calYear').innerHTML=Array.from({length:7},(_,i)=>new Date().getFullYear()-3+i).map(y=>`<option>${y}</option>`).join('');$('calMonth').innerHTML=Array.from({length:12},(_,i)=>`<option value="${i}">${new Intl.DateTimeFormat('id-ID',{month:'long'}).format(new Date(2025,i,1))}</option>`).join('');$('calYear').value=state.calYear;$('calMonth').value=state.calMonth;
-$('calYear').onchange=()=>{state.calYear=Number($('calYear').value);renderCalendar()};$('calMonth').onchange=()=>{state.calMonth=Number($('calMonth').value);renderCalendar()};
+    const a = rec.account || {};
+    const positions = rec.positions || [];
+    const orders = rec.pendingOrders || [];
+    const history = rec.history || [];
 
-setInterval(()=>{setStatus();if(state.datasets[state.activeId]){renderKpis();renderRisk();renderAlerts();renderNews()}},1000);
-fetchAll();setInterval(fetchAll,POLL_MS);
+    // Account identity
+    const accRow = el('accRow');
+    accRow.style.display = 'flex';
+    accRow.innerHTML = `
+      <div>Login: <b>${a.login ?? '-'}</b></div>
+      <div>Server: <b>${a.server ?? '-'}</b></div>
+      <div>Broker: <b>${a.company ?? '-'}</b></div>
+      <div>Leverage: <b>1:${a.leverage ?? '-'}</b></div>`;
+
+    renderAccountKpis(a);
+    const curve = buildBalanceCurve(history, a.balance||0);
+    const dd = computeDrawdown(curve, a.equity||0);
+    renderLimits(a, history, dd);
+    renderEquityChart(curve, a);
+    renderCalendar(history);
+    renderExposure(positions);
+    renderPositions(positions);
+    renderOrders(orders);
+    renderHistory(history);
+  }
+
+  function renderAccountKpis(a){
+    el('accountKpis').innerHTML = `
+      <div class="kpi"><div class="label">Balance</div><div class="value">${fmtMoney(a.balance)}</div></div>
+      <div class="kpi"><div class="label">Equity</div><div class="value ${(a.equity>=a.balance)?'pos':'neg'}">${fmtMoney(a.equity)}</div></div>
+      <div class="kpi"><div class="label">Floating P/L</div><div class="value ${(a.floatingProfit>=0)?'pos':'neg'}">${fmtMoney(a.floatingProfit)}</div></div>
+      <div class="kpi"><div class="label">Margin Bebas</div><div class="value">${fmtMoney(a.marginFree)}</div></div>
+      <div class="kpi"><div class="label">Margin Level</div><div class="value">${a.marginLevel!=null ? Number(a.marginLevel).toFixed(1)+'%' : '-'}</div><div class="sub">${a.currency ?? '-'}</div></div>`;
+  }
+
+  function renderLimits(a, history, dd){
+    const dailyPLNow = todayPL(history, a.floatingProfit||0);
+    const dailyLossUsd = Math.max(0, -dailyPLNow);
+    const dailyLimitUsd = cfg.startBalance * cfg.dailyLimitPct / 100;
+    const dailyPct = dailyLimitUsd>0 ? (dailyLossUsd/dailyLimitUsd*100) : 0;
+    const dailyLevel = dailyPct>=100 ? 'danger' : dailyPct>=cfg.warnPct ? 'warn' : 'safe';
+
+    const overallLossUsd = Math.max(0, cfg.startBalance - (a.equity||0));
+    const overallLimitUsd = cfg.startBalance * cfg.overallLimitPct / 100;
+    const overallPct = overallLimitUsd>0 ? (overallLossUsd/overallLimitUsd*100) : 0;
+    const overallLevel = overallPct>=100 ? 'danger' : overallPct>=cfg.warnPct ? 'warn' : 'safe';
+
+    checkAlertTransition('daily', dailyLevel, 'Daily Loss Limit', `Pemakaian daily loss sudah ${dailyPct.toFixed(0)}% dari limit ${cfg.dailyLimitPct}%.`);
+    checkAlertTransition('overall', overallLevel, 'Overall Loss Limit', `Pemakaian overall loss sudah ${overallPct.toFixed(0)}% dari limit ${cfg.overallLimitPct}%.`);
+
+    // Alert stack
+    const alerts = [];
+    if(dailyLevel !== 'safe') alerts.push({level:dailyLevel, text:`<b>Daily Loss</b>: ${fmtMoney(-dailyLossUsd)} terpakai dari limit ${fmtMoney(-dailyLimitUsd)} (${dailyPct.toFixed(0)}%)`});
+    if(overallLevel !== 'safe') alerts.push({level:overallLevel, text:`<b>Overall Loss</b>: ${fmtMoney(-overallLossUsd)} terpakai dari limit ${fmtMoney(-overallLimitUsd)} (${overallPct.toFixed(0)}%)`});
+    el('alertStack').innerHTML = alerts.map(al => `<div class="alert-item ${al.level}"><span class="a-icon">${al.level==='danger'?'\u2715':'\u26A0'}</span><span>${al.text}</span></div>`).join('');
+
+    el('limitGrid').innerHTML = `
+      <div class="limit-card">
+        <div class="lc-head"><div class="lc-label">Daily Loss Limit</div><div class="lc-pct" style="color:${verdictColor(dailyLevel)}">${dailyPct.toFixed(1)}%</div></div>
+        <div class="limit-track"><div class="limit-fill" style="width:${Math.min(dailyPct,100)}%; background:${verdictColor(dailyLevel)}"></div></div>
+        <div class="lc-detail">P/L hari ini: <b style="color:${dailyPLNow>=0?'var(--safe)':'var(--danger)'}">${fmtMoney(dailyPLNow)}</b> &middot; limit ${fmtMoney(-dailyLimitUsd)}</div>
+      </div>
+      <div class="limit-card">
+        <div class="lc-head"><div class="lc-label">Overall Loss Limit</div><div class="lc-pct" style="color:${verdictColor(overallLevel)}">${overallPct.toFixed(1)}%</div></div>
+        <div class="limit-track"><div class="limit-fill" style="width:${Math.min(overallPct,100)}%; background:${verdictColor(overallLevel)}"></div></div>
+        <div class="lc-detail">Equity vs balance awal: <b style="color:${overallLossUsd<=0?'var(--safe)':'var(--danger)'}">${fmtMoney(-overallLossUsd)}</b> &middot; limit ${fmtMoney(-overallLimitUsd)}</div>
+      </div>
+      <div class="limit-card">
+        <div class="lc-head"><div class="lc-label">Current Drawdown</div><div class="lc-pct" style="color:${dd.currentDDPct>10?'var(--danger)':dd.currentDDPct>5?'var(--warn)':'var(--safe)'}">${dd.currentDDPct.toFixed(2)}%</div></div>
+        <div class="limit-track"><div class="limit-fill" style="width:${Math.min(dd.currentDDPct*2,100)}%; background:${dd.currentDDPct>10?'var(--danger)':dd.currentDDPct>5?'var(--warn)':'var(--safe)'}"></div></div>
+        <div class="lc-detail">Dari peak balance/equity: ${fmtMoney(dd.currentDD)}</div>
+      </div>
+      <div class="limit-card">
+        <div class="lc-head"><div class="lc-label">Max Drawdown (All-Time)</div><div class="lc-pct" style="color:var(--text)">${dd.maxDDPct.toFixed(2)}%</div></div>
+        <div class="limit-track"><div class="limit-fill" style="width:${Math.min(dd.maxDDPct*2,100)}%; background:var(--gold)"></div></div>
+        <div class="lc-detail">Penurunan terbesar dari puncak: ${fmtMoney(dd.maxDD)}</div>
+      </div>`;
+  }
+
+  function renderEquityChart(curve, a){
+    const svg = el('equityChart');
+    if(curve.length < 2){ svg.innerHTML=''; return; }
+    const width = 1100, height = 230, padL = 74, padR = 16, padT = 16, padB = 26;
+    const plotW = width-padL-padR, plotH = height-padT-padB;
+    const values = curve.map(p=>p.bal);
+    const minY = Math.min(...values), maxY = Math.max(...values);
+    const rangeY = (maxY-minY) || 1;
+    const xFor = i => padL + (i/(curve.length-1))*plotW;
+    const yFor = v => padT + plotH - ((v-minY)/rangeY)*plotH;
+
+    let pathD = `M ${xFor(0)} ${yFor(curve[0].bal)}`;
+    curve.forEach((p,i)=>{ if(i>0) pathD += ` L ${xFor(i)} ${yFor(p.bal)}`; });
+    const areaD = pathD + ` L ${xFor(curve.length-1)} ${padT+plotH} L ${xFor(0)} ${padT+plotH} Z`;
+
+    let gridHTML = '';
+    for(let g=0; g<=4; g++){
+      const v = minY + rangeY*g/4, y = yFor(v);
+      gridHTML += `<line x1="${padL}" y1="${y}" x2="${width-padR}" y2="${y}" stroke="#233145" stroke-width="1" stroke-dasharray="3,4"/>`;
+      gridHTML += `<text x="${padL-8}" y="${y+4}" fill="#64748B" font-size="10" text-anchor="end" font-family="IBM Plex Mono">${fmtMoney(v)}</text>`;
+    }
+    const lineColor = curve[curve.length-1].bal >= curve[0].bal ? '#10B981' : '#EF4444';
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.innerHTML = `
+      <defs><linearGradient id="eqGrad2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${lineColor}" stop-opacity="0.25"/>
+        <stop offset="100%" stop-color="${lineColor}" stop-opacity="0"/>
+      </linearGradient></defs>
+      ${gridHTML}
+      <path d="${areaD}" fill="url(#eqGrad2)"/>
+      <path d="${pathD}" fill="none" stroke="${lineColor}" stroke-width="2.25"/>`;
+    el('equityMeta').textContent = `Titik data: ${curve.length} · Saldo awal tercatat: ${fmtMoney(curve[0].bal)} · Saldo sekarang: ${fmtMoney(a.balance)}`;
+  }
+
+  /* ============================ Calendar ============================ */
+  function renderCalendar(history){
+    const dailyRows = groupDaily(history);
+    const byDate = {};
+    dailyRows.forEach(d => byDate[d.date] = d);
+
+    const totalTrades = history.length;
+    const wins = dailyRows.reduce((s,d)=>s+d.wins,0);
+    const losses = dailyRows.reduce((s,d)=>s+d.losses,0);
+    const netProfit = dailyRows.reduce((s,d)=>s+d.netProfit,0);
+    const winRate = totalTrades ? (wins/totalTrades*100) : 0;
+    const avgPerDay = dailyRows.length ? (netProfit/dailyRows.length) : 0;
+    const bestDay = dailyRows.length ? dailyRows.reduce((a,b)=>b.netProfit>a.netProfit?b:a) : null;
+    const worstDay = dailyRows.length ? dailyRows.reduce((a,b)=>b.netProfit<a.netProfit?b:a) : null;
+    const fmtDayLabel = d => d ? new Date(d.date).toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) : '-';
+
+    el('calStatsCol').innerHTML = `
+      <div class="cal-stat-card"><div class="cs-label">Net Profit (Histori Tercatat)</div><div class="cs-value ${netProfit>=0?'pos':'neg'}">${fmtMoney(netProfit)}</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Win Rate</div><div class="cs-value">${winRate.toFixed(1)}%</div><div class="cs-sub">${wins}W / ${losses}L dari ${totalTrades} trade</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Hari Trading Aktif</div><div class="cs-value">${dailyRows.length}</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Rata-rata Profit/Hari</div><div class="cs-value ${avgPerDay>=0?'pos':'neg'}">${fmtMoney(avgPerDay)}</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Hari Terbaik</div><div class="cs-value pos">${bestDay?fmtMoney(bestDay.netProfit):'-'}</div><div class="cs-sub">${fmtDayLabel(bestDay)}</div></div>
+      <div class="cal-stat-card"><div class="cs-label">Hari Terburuk</div><div class="cs-value neg">${worstDay?fmtMoney(worstDay.netProfit):'-'}</div><div class="cs-sub">${fmtDayLabel(worstDay)}</div></div>`;
+
+    const monthKeys = [...new Set(dailyRows.map(d=>d.date.slice(0,7)))].sort();
+    const dow = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+    const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const maxAbs = Math.max(1, ...dailyRows.map(d=>Math.abs(d.netProfit)));
+
+    function dayCellHtml(day, key){
+      if(day===null) return `<div class="cal-cell empty"></div>`;
+      const d = byDate[key];
+      if(!d) return `<div class="cal-cell"><div class="cal-day">${day}</div></div>`;
+      const intensity = Math.min(1, Math.abs(d.netProfit)/maxAbs);
+      const bg = d.netProfit>=0 ? `rgba(16,185,129,${0.12+intensity*0.35})` : `rgba(239,68,68,${0.12+intensity*0.35})`;
+      const col = d.netProfit>=0 ? 'var(--safe)' : 'var(--danger)';
+      return `<div class="cal-cell has-data" style="background:${bg}; border-color:${col}33;" data-date="${key}">
+        <div class="cal-day">${day}</div>
+        <div class="cal-pnl" style="color:${col}">${fmtMoney(d.netProfit)}</div>
+        <div class="cal-trades">${d.total} trade</div>
+      </div>`;
+    }
+    function weekRecapHtml(weekCells){
+      const dataDays = weekCells.filter(x=>x && byDate[x.key]).map(x=>byDate[x.key]);
+      if(dataDays.length===0) return `<div class="cal-week-recap empty"></div>`;
+      const net = dataDays.reduce((s,d)=>s+d.netProfit,0);
+      const trx = dataDays.reduce((s,d)=>s+d.total,0);
+      const w = dataDays.reduce((s,d)=>s+d.wins,0);
+      const wr = trx ? (w/trx*100) : 0;
+      const col = net>=0 ? 'var(--safe)' : 'var(--danger)';
+      return `<div class="cal-week-recap"><div class="cwr-label">Rekap Minggu</div><div class="cwr-pnl" style="color:${col}">${fmtMoney(net)}</div><div class="cwr-meta">${trx} trx &middot; WR ${wr.toFixed(0)}%</div></div>`;
+    }
+
+    let html = '';
+    monthKeys.forEach(mk => {
+      const [y,m] = mk.split('-').map(Number);
+      const firstDay = new Date(y,m-1,1);
+      const daysInMonth = new Date(y,m,0).getDate();
+      const startOffset = firstDay.getDay();
+      const cells = [];
+      for(let i=0;i<startOffset;i++) cells.push(null);
+      for(let day=1; day<=daysInMonth; day++) cells.push({day, key:`${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`});
+      while(cells.length % 7 !== 0) cells.push(null);
+
+      html += `<div class="cal-month"><div class="cal-month-title">${monthNames[m-1]} ${y}</div><div class="cal-grid">`;
+      dow.forEach(d => html += `<div class="cal-dow">${d}</div>`);
+      html += `<div class="cal-dow cal-week-head">Rekap Minggu</div>`;
+      for(let w=0; w<cells.length; w+=7){
+        const weekCells = cells.slice(w,w+7);
+        weekCells.forEach(cell => html += cell ? dayCellHtml(cell.day, cell.key) : dayCellHtml(null,null));
+        html += weekRecapHtml(weekCells);
+      }
+      html += `</div></div>`;
+    });
+    el('calendarWrap').innerHTML = html || '<div style="color:var(--text-faint); padding:20px;">Belum ada histori transaksi tertutup.</div>';
+
+    // click handlers utk popup harian
+    el('calendarWrap').querySelectorAll('.cal-cell.has-data').forEach(cell => {
+      cell.addEventListener('click', () => openDayModal(byDate[cell.dataset.date]));
+    });
+  }
+
+  function openDayModal(dayData){
+    if(!dayData) return;
+    const dateLabel = new Date(dayData.date).toLocaleDateString('id-ID',{weekday:'long', day:'2-digit', month:'long', year:'numeric'});
+    el('modalTitle').textContent = `${dateLabel} — ${fmtMoney(dayData.netProfit)} (${dayData.total} trade)`;
+    let html = `<thead><tr><th>Waktu Buka</th><th>Waktu Tutup</th><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Profit</th></tr></thead><tbody>`;
+    [...dayData.trades].sort((a,b)=>a.closeTime-b.closeTime).forEach(t => {
+      const net = t.netProfit ?? t.profit ?? 0;
+      html += `<tr>
+        <td class="mono">${fmtDateTime(t.openTime)}</td>
+        <td class="mono">${fmtDateTime(t.closeTime)}</td>
+        <td class="strong">${t.symbol}</td>
+        <td><span class="dir-tag ${t.type}">${t.type}</span></td>
+        <td class="num">${Number(t.volume).toFixed(2)}</td>
+        <td class="num ${net>=0?'pos':'neg'}">${fmtMoney(net)}</td>
+      </tr>`;
+    });
+    html += '</tbody>';
+    el('modalTable').innerHTML = html;
+    el('dayModal').classList.add('show');
+  }
+  el('modalCloseBtn').addEventListener('click', () => el('dayModal').classList.remove('show'));
+  el('dayModal').addEventListener('click', e => { if(e.target.id === 'dayModal') el('dayModal').classList.remove('show'); });
+
+  /* ============================ Exposure ============================ */
+  function renderExposure(positions){
+    const { rows, totalVol } = computeExposure(positions);
+    if(rows.length === 0){
+      el('exposureList').innerHTML = `<div style="color:var(--text-faint); text-align:center; padding:10px;">Tidak ada posisi berjalan.</div>`;
+      return;
+    }
+    el('exposureList').innerHTML = rows.map(r => {
+      const pct = totalVol ? (r.volume/totalVol*100) : 0;
+      return `<div class="exposure-row">
+        <div class="exp-sym">${r.symbol}</div>
+        <div class="exposure-track"><div class="exposure-fill" style="width:${pct}%"></div></div>
+        <div class="exp-val">${r.volume.toFixed(2)} lot (${pct.toFixed(0)}%)</div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ============================ Positions / Orders / History tables ============================ */
+  function renderPositions(positions){
+    el('posCount').textContent = positions.length ? `(${positions.length} berjalan)` : '';
+    let html = `<thead><tr><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Open</th><th class="num">Harga Skrg</th><th class="num">SL</th><th class="num">TP</th><th class="num">Risk</th><th class="num">Profit</th><th class="num">Durasi</th><th>Sesi</th></tr></thead><tbody>`;
+    if(positions.length === 0){
+      html += `<tr class="empty-row"><td colspan="11">Tidak ada posisi yang sedang berjalan.</td></tr>`;
+    } else {
+      positions.forEach(p => {
+        const nowDur = (p.durationSec||0) + (lastReceivedAt ? (Date.now()-lastReceivedAt)/1000 : 0);
+        const riskTxt = p.riskUsd ? `${fmtMoney(p.riskUsd)} (${Number(p.riskPct||0).toFixed(2)}%)` : '-';
+        html += `<tr>
+          <td class="strong">${p.symbol}</td>
+          <td><span class="dir-tag ${p.type}">${p.type}</span></td>
+          <td class="num">${Number(p.volume).toFixed(2)}</td>
+          <td class="num mono">${p.priceOpen}</td>
+          <td class="num mono">${p.priceCurrent}</td>
+          <td class="num mono">${p.sl || '-'}</td>
+          <td class="num mono">${p.tp || '-'}</td>
+          <td class="num mono">${riskTxt}</td>
+          <td class="num ${p.profit>=0?'pos':'neg'}">${fmtMoney(p.profit)}</td>
+          <td class="num mono">${fmtDur(nowDur)}</td>
+          <td><span class="session-tag">${getSession(p.openTime)}</span></td>
+        </tr>`;
+      });
+    }
+    html += '</tbody>';
+    el('posTable').innerHTML = html;
+  }
+
+  function renderOrders(orders){
+    el('ordCount').textContent = orders.length ? `(${orders.length} terpasang)` : '';
+    let html = `<thead><tr><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Harga</th><th class="num">SL</th><th class="num">TP</th><th>Dipasang</th><th>Expiry</th></tr></thead><tbody>`;
+    if(orders.length === 0){
+      html += `<tr class="empty-row"><td colspan="8">Tidak ada pending order terpasang.</td></tr>`;
+    } else {
+      orders.forEach(o => {
+        html += `<tr>
+          <td class="strong">${o.symbol}</td>
+          <td><span class="dir-tag ${o.type.includes('buy')?'buy':'sell'}">${o.type.replace('_',' ')}</span></td>
+          <td class="num">${Number(o.volume).toFixed(2)}</td>
+          <td class="num mono">${o.price}</td>
+          <td class="num mono">${o.sl || '-'}</td>
+          <td class="num mono">${o.tp || '-'}</td>
+          <td class="mono">${fmtDateTime(o.timeSetup)}</td>
+          <td class="mono">${o.timeExpiration ? fmtDateTime(o.timeExpiration) : '-'}</td>
+        </tr>`;
+      });
+    }
+    html += '</tbody>';
+    el('ordTable').innerHTML = html;
+  }
+
+  function renderHistory(history){
+    const sorted = [...history].sort((a,b) => b.closeTime - a.closeTime).slice(0, 50);
+    el('histCount').textContent = `(${history.length} tercatat, menampilkan ${sorted.length} terbaru)`;
+    let html = `<thead><tr><th>Waktu Tutup</th><th>Symbol</th><th>Tipe</th><th class="num">Volume</th><th class="num">Durasi</th><th class="num">Profit</th><th>Sesi</th></tr></thead><tbody>`;
+    if(sorted.length === 0){
+      html += `<tr class="empty-row"><td colspan="7">Belum ada histori transaksi tertutup.</td></tr>`;
+    } else {
+      sorted.forEach(t => {
+        const net = t.netProfit ?? t.profit ?? 0;
+        html += `<tr>
+          <td class="mono">${fmtDateTime(t.closeTime)}</td>
+          <td class="strong">${t.symbol}</td>
+          <td><span class="dir-tag ${t.type}">${t.type}</span></td>
+          <td class="num">${Number(t.volume).toFixed(2)}</td>
+          <td class="num mono">${fmtDur(t.durationSec)}</td>
+          <td class="num ${net>=0?'pos':'neg'}">${fmtMoney(net)}</td>
+          <td><span class="session-tag">${getSession(t.openTime)}</span></td>
+        </tr>`;
+      });
+    }
+    html += '</tbody>';
+    el('histTable').innerHTML = html;
+  }
+
+  /* ============================ Loop ============================ */
+  setInterval(() => {
+    updateStatus();
+    if(storeData && storeData[activeLogin] && storeData[activeLogin].positions && storeData[activeLogin].positions.length){
+      renderPositions(storeData[activeLogin].positions); // biar durasi posisi tetap jalan tiap detik
+    }
+  }, 1000);
+
+  fetchSnapshot();
+  setInterval(fetchSnapshot, POLL_INTERVAL_MS);
 })();
 </script>
 </body>
