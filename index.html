@@ -222,7 +222,7 @@ button{cursor:pointer}
 
 const DEFAULT_WEBHOOK_URL='https://funded-journey-nu.vercel.app/api/webhook';
 const POLL_MS=3000, STALE_SEC=20, OFFLINE_SEC=60;
-const LS_ACCOUNTS='faridfx_accounts_v2', LS_SETTINGS='faridfx_risk_settings_v2', LS_SNAP='faridfx_snapshots_v2', LS_NEWS='faridfx_news_v2';
+const LS_ACCOUNTS='faridfx_accounts_v3', LS_SETTINGS='faridfx_risk_settings_v3', LS_SNAP='faridfx_snapshots_v3', LS_NEWS='faridfx_news_v3';
 
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -266,20 +266,27 @@ function normalizeHistory(d,id){
 }
 
 async function fetchAccount(acc){
-  if(!acc.enabled)return;
+  if(!acc.enabled||!acc.url)return;
   try{
-    const r=await fetch(acc.url,{cache:'no-store'});
+    const r=await fetch(acc.url,{cache:'no-store',headers:{Accept:'application/json'}});
     if(!r.ok)throw Error('HTTP '+r.status);
-    const d=await r.json();
+    const raw=await r.json();
+    const d=raw?.data?.account?raw.data:(raw?.latest?.account?raw.latest:(raw?.payload?.account?raw.payload:raw));
     if(!d?.account)return;
-    state.datasets[acc.id]=d;
-    state.receivedAt=Date.now();
-    const a=d.account||{};
-    const snap={ts:Date.now(),accountId:acc.id,accountLabel:acc.label,balance:Number(a.balance||0),equity:Number(a.equity||0),floating:Number(a.floatingProfit||0),currency:a.currency||'USD'};
-    const last=state.snapshots[state.snapshots.length-1];
-    if(!last||last.accountId!==snap.accountId||Math.abs(last.equity-snap.equity)>.001||Date.now()-last.ts>60000){
-      state.snapshots.push(snap); save();
-    }
+    d.schemaVersion=Number(d.schemaVersion||raw.schemaVersion||2);
+    d.accountLabel=d.accountLabel||acc.label;
+    d.positions=Array.isArray(d.positions)?d.positions:[];
+    d.pendingOrders=Array.isArray(d.pendingOrders)?d.pendingOrders:[];
+    d.history=Array.isArray(d.history)?d.history:[];
+    d.dailyPnl=d.dailyPnl&&typeof d.dailyPnl==='object'?d.dailyPnl:{};
+    d.exposure=Array.isArray(d.exposure)?d.exposure:[];
+    d.newsCalendar=Array.isArray(d.newsCalendar)?d.newsCalendar:[];
+    d.snapshot=d.snapshot||{ts:Number(d.serverTime||0)*1000,balance:Number(d.account.balance||0),equity:Number(d.account.equity||0),floating:Number(d.account.floatingProfit||0),reason:d.reason||'webhook'};
+    state.datasets[acc.id]=d; state.receivedAt=Date.now();
+    const a=d.account||{},sn=d.snapshot||{};
+    const snap={ts:Number(sn.ts||Date.now()),accountId:acc.id,accountLabel:d.accountLabel,balance:Number(sn.balance??a.balance??0),equity:Number(sn.equity??a.equity??0),floating:Number(sn.floating??a.floatingProfit??0),currency:a.currency||'USD',reason:sn.reason||d.reason||'webhook'};
+    const own=state.snapshots.filter(x=>x.accountId===acc.id),last=own.at(-1);
+    if(!last||Math.abs(Number(last.equity)-snap.equity)>.001||Math.abs(Number(last.balance)-snap.balance)>.001||snap.ts-Number(last.ts)>60000){state.snapshots.push(snap);save();}
   }catch(e){console.warn('Account fetch failed',acc.label,e)}
 }
 
@@ -291,7 +298,7 @@ async function fetchAll(){
 function renderAccountStrip(d){
   const a=d?.account||{}; const cur=accountCurrency(d);
   $('accLogin').textContent=a.login??'—';$('accServer').textContent=a.server??'—';$('accCompany').textContent=a.company??'—';
-  $('accCurrency').textContent=a.currency??'—';$('accLev').textContent=a.leverage?'1:'+a.leverage:'—';$('lastSnapshot').textContent=state.receivedAt?dateFmt(state.receivedAt/1000):'—';
+  $('accCurrency').textContent=a.currency??'—';$('accLev').textContent=a.leverage?'1:'+a.leverage:'—';$('lastSnapshot').textContent=d?.snapshot?.ts?dateFmt(Number(d.snapshot.ts)/1000):(state.receivedAt?dateFmt(state.receivedAt/1000):'—');
 }
 
 function renderSelector(){
@@ -325,33 +332,31 @@ function getBaseCapital(){
 }
 
 function dailyMap(){
-  const map={};
-  for(const t of getHist(false)){
-    const k=dayKeyFromTs(t.closeTime||t.openTime); const x=Number(t.netProfit??t.profit??0);
+  const map={}, provided={};
+  for(const [,d] of allDatasets())for(const [k,v] of Object.entries(d.dailyPnl||{})){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(k))continue;
     if(!map[k])map[k]={pnl:0,trades:0,wins:0,losses:0,rows:[]};
-    map[k].pnl+=x;map[k].trades++;if(x>0)map[k].wins++;if(x<0)map[k].losses++;map[k].rows.push(t);
+    map[k].pnl+=Number(v?.pnl??0);map[k].trades+=Number(v?.trades??0);map[k].wins+=Number(v?.wins??0);map[k].losses+=Number(v?.losses??0);provided[k]=true;
   }
+  const histDays={};
+  for(const t of getHist(false)){
+    const k=dayKeyFromTs(t.closeTime||t.openTime),x=Number(t.netProfit??t.profit??0);
+    if(!map[k])map[k]={pnl:0,trades:0,wins:0,losses:0,rows:[]}; map[k].rows.push(t);
+    if(!histDays[k])histDays[k]={pnl:0,trades:0,wins:0,losses:0};histDays[k].pnl+=x;histDays[k].trades++;if(x>0)histDays[k].wins++;if(x<0)histDays[k].losses++;
+  }
+  for(const [k,v] of Object.entries(histDays))if(!provided[k]){map[k].pnl=v.pnl;map[k].trades=v.trades;map[k].wins=v.wins;map[k].losses=v.losses;}
   return map;
 }
 
 function equitySeries(){
-  const hist=getHist(false), base=getBaseCapital();
-  let bal=base, peak=base, maxDD=0;
-  const series=[{ts:Date.now()-31536000000,balance:base,equity:base,dd:0}];
-  for(const t of hist){
-    bal+=Number(t.netProfit??t.profit??0);peak=Math.max(peak,bal);const dd=peak?Math.max(0,(peak-bal)/peak*100):0;maxDD=Math.max(maxDD,dd);
-    series.push({ts:Number(t.closeTime||t.openTime||0)*1000,balance:bal,equity:bal,dd});
-  }
-  const snaps=state.snapshots.filter(s=>state.activeId==='__aggregate__'||s.accountId===state.activeId).sort((a,b)=>a.ts-b.ts);
-  for(const s of snaps){peak=Math.max(peak,Number(s.equity));const dd=peak?Math.max(0,(peak-Number(s.equity))/peak*100):0;maxDD=Math.max(maxDD,dd);series.push({ts:s.ts,balance:Number(s.balance),equity:Number(s.equity),dd})}
-  const uniq=[];for(const x of series){const last=uniq[uniq.length-1];if(!last||Math.abs(last.ts-x.ts)>500)uniq.push(x);else uniq[uniq.length-1]=x}
-  return {series:uniq.sort((a,b)=>a.ts-b.ts),maxDD};
+  const snaps=state.snapshots.filter(s=>state.activeId==='__aggregate__'||s.accountId===state.activeId).sort((a,b)=>Number(a.ts)-Number(b.ts));
+  const hist=getHist(false),base=getBaseCapital();let bal=base,peak=base,maxDD=0,series=[];
+  if(snaps.length)snaps.forEach(s=>{const eq=Number(s.equity||0),b=Number(s.balance||eq);peak=Math.max(peak,eq||b);const dd=peak?Math.max(0,(peak-eq)/peak*100):0;maxDD=Math.max(maxDD,dd);series.push({ts:Number(s.ts),balance:b,equity:eq,dd})});
+  else{series.push({ts:Date.now()-31536000000,balance:base,equity:base,dd:0});for(const t of hist){bal+=Number(t.netProfit??t.profit??0);peak=Math.max(peak,bal);const dd=peak?Math.max(0,(peak-bal)/peak*100):0;maxDD=Math.max(maxDD,dd);series.push({ts:Number(t.closeTime||t.openTime||0)*1000,balance:bal,equity:bal,dd})}}
+  return {series:series.filter(x=>x.ts>0).sort((a,b)=>a.ts-b.ts),maxDD};
 }
 
-function currentDaily(){
-  const m=dailyMap(),k=dayKeyDate(new Date()),today=m[k]?.pnl||0;
-  return {pnl:today,map:m};
-}
+function currentDaily(){const m=dailyMap(),k=dayKeyDate(new Date()),today=m[k]?.pnl||0;return {pnl:today,map:m};}
 
 function limitUsage(){
   const base=getBaseCapital(), dailyLimit=base*state.settings.dailyLossPct/100, overallLimit=base*state.settings.overallLossPct/100;
@@ -361,23 +366,17 @@ function limitUsage(){
 }
 
 function estimatePositionRisk(p){
-  const a=portfolio(), riskPct=state.settings.riskPerPositionPct;
-  const sl=Number(p.sl||0),open=Number(p.priceOpen||0),vol=Number(p.volume||0);
-  if(!sl||!open||!vol)return null;
-  const distance=Math.abs(open-sl);
-  // Conservative monitoring proxy; broker contract size/tick value should be supplied by EA for exact monetary risk.
-  const approx=distance*vol*100000;
-  const cap=Number(a.equity||0);
-  const fallback=cap*riskPct/100;
-  return {distance,approx,limit:fallback,pct:cap?approx/cap*100:0};
+  const cap=Number(portfolio().equity||0),configured=Number(state.settings.riskPerPositionPct||1),exact=Number(p.riskMoney);
+  if(Number.isFinite(exact)&&exact>0)return {distance:Math.abs(Number(p.priceOpen||0)-Number(p.sl||0)),approx:exact,limit:cap*configured/100,pct:cap?exact/cap*100:0,exact:true};
+  const sl=Number(p.sl||0),open=Number(p.priceOpen||0),vol=Number(p.volume||0);if(!sl||!open||!vol)return null;
+  const approx=Math.abs(open-sl)*vol*100000;return {distance:Math.abs(open-sl),approx,limit:cap*configured/100,pct:cap?approx/cap*100:0,exact:false};
 }
 
 function exposures(){
-  const rows=[];for(const [id,d] of allDatasets()){
-    for(const p of (d.positions||[])){rows.push(Object.assign({},p,{accountId:id,accountLabel:state.accounts.find(a=>a.id===id)?.label||id}))}
-  }
-  const m={};rows.forEach(p=>{const s=p.symbol||'—';if(!m[s])m[s]={symbol:s,volume:0,profit:0,count:0,accounts:new Set};m[s].volume+=Number(p.volume||0);m[s].profit+=Number(p.profit||0);m[s].count++;m[s].accounts.add(p.accountLabel)});
-  return Object.values(m).map(x=>Object.assign(x,{accounts:[...x.accounts].join(', ')})).sort((a,b)=>Math.abs(b.volume)-Math.abs(a.volume));
+  const remote=[];for(const [id,d] of allDatasets())for(const x of d.exposure||[])remote.push({...x,accountId:id,accountLabel:d.accountLabel||state.accounts.find(a=>a.id===id)?.label||id});
+  if(remote.length){const m={};remote.forEach(x=>{const k=x.symbol||'—';if(!m[k])m[k]={symbol:k,volume:0,profit:0,notional:0,count:0,accounts:new Set};m[k].volume+=Number(x.volume||0);m[k].profit+=Number(x.profit||0);m[k].notional+=Number(x.notional||0);m[k].count+=Number(x.count||1);m[k].accounts.add(x.accountLabel)});return Object.values(m).map(x=>({...x,accounts:[...x.accounts].join(', ')})).sort((a,b)=>Math.abs(b.volume)-Math.abs(a.volume))}
+  const m={};for(const [id,d] of allDatasets())for(const p of d.positions||[]){const k=p.symbol||'—';if(!m[k])m[k]={symbol:k,volume:0,profit:0,notional:0,count:0,accounts:new Set};m[k].volume+=Number(p.volume||0);m[k].profit+=Number(p.profit||0);m[k].notional+=Number(p.notional||0);m[k].count++;m[k].accounts.add(d.accountLabel||state.accounts.find(a=>a.id===id)?.label||id)}
+  return Object.values(m).map(x=>({...x,accounts:[...x.accounts].join(', ')})).sort((a,b)=>Math.abs(b.volume)-Math.abs(a.volume));
 }
 
 function sessionNow(){
@@ -479,9 +478,15 @@ function renderAlerts(){
 }
 
 function positionTable(rows,full=true){
-  const head=`<thead><tr><th>Account</th><th>Symbol</th><th>Type</th><th>Volume</th><th>Open</th><th>Current</th><th>SL</th><th>TP</th><th>Est. Risk</th><th>Floating P/L</th>${full?'<th>Ticket</th><th>Comment</th>':''}</tr></thead>`;
+  const head=`<thead><tr><th>Account</th><th>Symbol</th><th>Type</th><th>Volume</th><th>Open</th><th>Current</th><th>SL</th><th>TP</th><th>Risk / Position</th><th>Floating P/L</th>${full?'<th>Ticket</th><th>Comment</th>':''}</tr></thead>`;
   if(!rows.length)return head+`<tbody><tr><td class="empty" colspan="${full?12:10}">Tidak ada posisi berjalan.</td></tr></tbody>`;
-  return head+'<tbody>'+rows.map(p=>{const r=estimatePositionRisk(p);return `<tr><td>${esc(p.accountLabel||'—')}</td><td class="strong">${esc(p.symbol)}</td><td>${typeTag(p.type)}</td><td class="mono">${n(p.volume)}</td><td class="mono">${esc(p.priceOpen)}</td><td class="mono">${esc(p.priceCurrent)}</td><td class="mono">${p.sl?esc(p.sl):'—'}</td><td class="mono">${p.tp?esc(p.tp):'—'}</td><td class="mono ${r&&r.pct>=state.settings.riskPerPositionPct?'warn':''}">${r?n(r.pct,2)+'%':'—'}</td><td class="mono ${valClass(p.profit)}">${money(p.profit)}</td>${full?`<td class="mono">${esc(p.ticket)}</td><td>${esc(p.comment||'—')}</td>`:''}</tr>`}).join('')+'</tbody>';
+  return head+'<tbody>'+rows.map(p=>{const r=estimatePositionRisk(p);return `<tr><td>${esc(p.accountLabel||'—')}</td><td class="strong">${esc(p.symbol)}</td><td>${typeTag(p.type)}</td><td class="mono">${n(p.volume)}</td><td class="mono">${esc(p.priceOpen)}</td><td class="mono">${esc(p.priceCurrent)}</td><td class="mono">${p.sl?esc(p.sl):'—'}</td><td class="mono">${p.tp?esc(p.tp):'—'}</td><td class="mono ${r&&r.pct>=state.settings.riskPerPositionPct?'warn':''}">${r?n(r.pct,2)+'%'+(r.exact?'':' est.'):'—'}</td><td class="mono ${valClass(p.profit)}">${money(p.profit)}</td>${full?`<td class="mono">${esc(p.ticket)}</td><td>${esc(p.comment||'—')}</td>`:''}</tr>`}).join('')+'</tbody>';
+}
+
+function renderPending(){
+  const rows=[];for(const [id,d] of allDatasets())for(const o of d.pendingOrders||[])rows.push({...o,accountLabel:d.accountLabel||state.accounts.find(a=>a.id===id)?.label||id});
+  const head='<thead><tr><th>Account</th><th>Symbol</th><th>Type</th><th>Volume</th><th>Price</th><th>SL</th><th>TP</th><th>Ticket</th><th>Comment</th></tr></thead>';
+  $('pendingTable').innerHTML=head+(rows.length?'<tbody>'+rows.map(o=>`<tr><td>${esc(o.accountLabel)}</td><td class="strong">${esc(o.symbol)}</td><td>${typeTag(o.type)}</td><td class="mono">${n(o.volume)}</td><td class="mono">${esc(o.price||o.priceOpen)}</td><td class="mono">${esc(o.sl||'—')}</td><td class="mono">${esc(o.tp||'—')}</td><td class="mono">${esc(o.ticket)}</td><td>${esc(o.comment||'—')}</td></tr>`).join('')+'</tbody>':'<tbody><tr><td class="empty" colspan="9">Tidak ada pending order.</td></tr></tbody>');
 }
 
 function allPositions(){
@@ -547,7 +552,7 @@ function renderHistory(){
   const q=($('histSearch').value||'').toLowerCase(),rf=$('histResult').value,af=$('histAccount').value;
   const rows=getHist(false).filter(t=>(af==='all'||t.accountId===af)&&(rf==='all'||(rf==='win'?Number(t.netProfit??t.profit)>0:Number(t.netProfit??t.profit)<0))&&(!q||[t.symbol,t.ticket,t.type,t.accountLabel].join(' ').toLowerCase().includes(q)));
   $('historyTable').innerHTML=historyTable(rows);
-  $('histAccount').innerHTML='<option value="all">Semua account</option>'+state.accounts.map(a=>`<option value="${esc(a.id)}">${esc(a.label)}</option>`).join('');
+  const keep=af;$('histAccount').innerHTML='<option value="all">Semua account</option>'+state.accounts.map(a=>`<option value="${esc(a.id)}">${esc(a.label)}</option>`).join('');$('histAccount').value=keep;
 }
 
 function renderNews(){
@@ -587,7 +592,7 @@ function renderAll(){
   $('state').style.display=has?'none':'block';$('content').style.display=has?'block':'none';
   if(!has)return;
   if(state.activeId!=='__aggregate__')renderAccountStrip(d);
-  renderKpis();drawEquity();renderPerformance();limitBlock();renderExposureOverview();renderAlerts();renderCalendar();renderHistory();renderRisk();renderNews();renderAccounts();renderAnalytics();renderAccount();
+  renderKpis();drawEquity();renderPerformance();limitBlock();renderExposureOverview();renderAlerts();renderCalendar();renderHistory();renderRisk();renderNews();renderAccounts();renderAnalytics();renderAccount();renderPending();
   setStatus();
 }
 
