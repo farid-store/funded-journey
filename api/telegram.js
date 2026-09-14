@@ -67,20 +67,39 @@ function needAccountHint(accounts) {
 
 const HELP_TEXT =
   '*FaridFX Bot — Commands*\n\n' +
+  '/status `[akun]` — ringkasan cepat: equity, PnL hari ini, risk usage, margin\n' +
   '/pnl `[akun]` — ringkasan profit/loss hari ini & all-time\n' +
   '/balance `[akun]` — balance, equity, margin\n' +
   '/positions `[akun]` — posisi terbuka\n' +
   '/orders `[akun]` — pending order\n' +
   '/history `[akun] [jumlah]` — riwayat transaksi terakhir (default 5)\n' +
   '/risk `[akun]` — status daily/overall loss limit & margin level\n' +
+  '/exposure `[akun]` — exposure per pair dari posisi terbuka\n' +
+  '/drawdown `[akun]` — current & max drawdown dari kurva balance harian\n' +
+  '/session — sesi trading yang sedang aktif (UTC)\n' +
   '/accounts — daftar semua akun terhubung\n' +
+  '/ping — cek bot masih hidup\n' +
   '/help — tampilkan pesan ini\n\n' +
   '_`[akun]` opsional kalau cuma ada 1 akun terhubung._';
+
+function sessionInfo() {
+  const h = new Date().getUTCHours();
+  const sessions = [
+    { name: 'Sydney/Tokyo', from: 0, to: 8 },
+    { name: 'London', from: 8, to: 16 },
+    { name: 'London/NY Overlap', from: 13, to: 16 },
+    { name: 'New York', from: 13, to: 21 },
+  ];
+  const active = sessions.filter((s) => h >= s.from && h < s.to).map((s) => s.name);
+  return active.length ? active.join(' + ') : 'Quiet hours';
+}
 
 async function handleCommand(cmd, args, chatId) {
   const accounts = await getAccounts();
 
   if (cmd === '/start' || cmd === '/help') return reply(chatId, HELP_TEXT);
+  if (cmd === '/ping') return reply(chatId, '🏓 Pong — bot aktif.');
+  if (cmd === '/session') return reply(chatId, `🕒 Sesi aktif sekarang: *${sessionInfo()}* (UTC)`);
 
   if (cmd === '/accounts') {
     if (!accounts.length) return reply(chatId, 'Belum ada akun terhubung.');
@@ -167,6 +186,57 @@ async function handleCommand(cmd, args, chatId) {
         `Daily loss limit: \`${pct(dailyUsage)}\` terpakai (limit ${acc.dailyLossLimitPct || 5}%)\n` +
         `Overall loss limit: \`${pct(overallUsage)}\` terpakai (limit ${acc.overallLossLimitPct || 10}%)\n` +
         `Margin Level: \`${acc.marginLevel != null ? pct(acc.marginLevel) : '—'}\``
+    );
+  }
+
+  if (cmd === '/exposure') {
+    const exp = acc.exposure || [];
+    if (!exp.length) return reply(chatId, `*${acc.accountLabel}* — tidak ada exposure aktif.`);
+    const eq = Number(acc.equity || 1);
+    const lines = exp.map((x) => `*${x.symbol}*: \`${fmt(x.volume, 2)}\` lot (${x.count}x) · ${pct((x.notional / eq) * 100)} of equity · P/L ${money(x.profit)}`);
+    return reply(chatId, `📐 *${acc.accountLabel}* — Exposure per Pair\n\n${lines.join('\n')}`);
+  }
+
+  if (cmd === '/drawdown') {
+    const snap = await db.collection('accounts').doc(acc.id).collection('dailyPnl').orderBy('date', 'asc').get();
+    const startBal = Number(acc.startingBalance || acc.balance || 0);
+    let cum = startBal, peak = -Infinity, maxDD = 0, curDD = 0, days = 0;
+    snap.forEach((d) => {
+      cum += Number(d.data().pnl || 0);
+      peak = Math.max(peak, cum);
+      curDD = peak > 0 ? ((peak - cum) / peak) * 100 : 0;
+      maxDD = Math.max(maxDD, curDD);
+      days++;
+    });
+    if (!days) return reply(chatId, `*${acc.accountLabel}* — belum cukup data harian utk drawdown.`);
+    return reply(
+      chatId,
+      `📉 *${acc.accountLabel}* — Drawdown\n` +
+        `Current: \`${pct(curDD)}\`\n` +
+        `Max: \`${pct(maxDD)}\`\n` +
+        `Trading days tercatat: \`${days}\``
+    );
+  }
+
+  if (cmd === '/status') {
+    const todayStr = ymd(new Date());
+    const todayDoc = await db.collection('accounts').doc(acc.id).collection('dailyPnl').doc(todayStr).get();
+    const todayRealized = todayDoc.exists ? Number(todayDoc.data().pnl || 0) : 0;
+    const todayTotal = todayRealized + Number(acc.floatingProfit || 0);
+    const dayStartBal = Number(acc.dayStartBalance || acc.balance || 1);
+    const dailyUsage = ((dayStartBal * (acc.dailyLossLimitPct || 5)) / 100) > 0 ? (Math.max(0, -todayTotal) / ((dayStartBal * (acc.dailyLossLimitPct || 5)) / 100)) * 100 : 0;
+    const startBal = Number(acc.startingBalance || acc.balance || 1);
+    const overallPnl = Number(acc.equity || 0) - startBal;
+    const overallUsage = ((startBal * (acc.overallLossLimitPct || 10)) / 100) > 0 ? (Math.max(0, -overallPnl) / ((startBal * (acc.overallLossLimitPct || 10)) / 100)) * 100 : 0;
+    const p = acc.positions || [];
+    return reply(
+      chatId,
+      `⚡ *${acc.accountLabel}* — Quick Status\n` +
+        `Equity: \`${money(acc.equity)}\` (${todayTotal >= 0 ? '+' : ''}${money(todayTotal)} hari ini)\n` +
+        `Posisi terbuka: \`${p.length}\`\n` +
+        `Daily limit: \`${pct(dailyUsage)}\` · Overall limit: \`${pct(overallUsage)}\`\n` +
+        `Margin Level: \`${acc.marginLevel != null ? pct(acc.marginLevel) : '—'}\`\n` +
+        `Sesi: ${sessionInfo()}`
     );
   }
 
