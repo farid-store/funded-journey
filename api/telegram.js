@@ -43,6 +43,21 @@ async function reply(chatId, text) {
   }).catch((e) => console.error('reply failed', e));
 }
 
+async function deleteMessage(chatId, messageId) {
+  if (!TG_TOKEN) return;
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/deleteMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, message_id: messageId }),
+    });
+    const j = await r.json();
+    if (!j.ok) console.error('deleteMessage failed (cek bot punya izin "Delete Messages" di channel/grup ini):', j.description);
+  } catch (e) {
+    console.error('deleteMessage error', e);
+  }
+}
+
 const fmt = (n, d = 2) => Number(n ?? 0).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 const money = (n) => { const v = Number(n || 0); return (v < 0 ? '-' : '') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
 const pct = (n) => fmt(n, 1) + '%';
@@ -254,6 +269,14 @@ module.exports = async (req, res) => {
     const cmd = rawCmd.split('@')[0].toLowerCase(); // buang @BotUsername kalau ada (dipakai di grup)
 
     await handleCommand(cmd, args, msg.chat.id);
+
+    // Hapus pesan command aslinya di channel/grup supaya tidak numpuk (biarkan balasan bot tetap ada).
+    // Butuh bot jadi admin dgn izin "Delete Messages" di channel/grup tsb. Di chat pribadi tidak
+    // dihapus krn bot tidak bisa hapus pesan user di private chat (batasan Telegram).
+    if (['group', 'supergroup', 'channel'].includes(msg.chat.type)) {
+      await deleteMessage(msg.chat.id, msg.message_id);
+    }
+
     return res.status(200).json({ ok: true });
   } catch (e) {
     console.error(e);
