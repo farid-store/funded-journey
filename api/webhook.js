@@ -32,21 +32,64 @@ const TG_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
 const TG_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
 
 async function sendTelegram(chatId, text) {
-  if (!TG_TOKEN || !chatId) return;
+  if (!TG_TOKEN || !chatId) return null;
   try {
     const r = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'Markdown', disable_web_page_preview: true }),
     });
-    if (!r.ok) console.error('telegram sendMessage failed', await r.text());
+    const j = await r.json();
+    if (!j.ok) { console.error('telegram sendMessage failed', j); return null; }
+    return j; // { ok:true, result:{ message_id, ... } }
   } catch (e) {
     console.error('telegram send error', e);
+    return null;
+  }
+}
+
+async function editTelegram(chatId, messageId, text) {
+  if (!TG_TOKEN || !chatId || !messageId) return false;
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/editMessageText`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, message_id: messageId, text, parse_mode: 'Markdown', disable_web_page_preview: true }),
+    });
+    const j = await r.json();
+    if (!j.ok) { console.error('telegram editMessageText failed', j); return false; }
+    return true;
+  } catch (e) {
+    console.error('telegram edit error', e);
+    return false;
   }
 }
 
 function fmt(n, d = 2) {
   return Number(n ?? 0).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+
+// Satu "kartu" pesan per posisi (per ticket) yang di-EDIT terus menerus mengikuti
+// status posisi (open -> modified -> closed), bukan kirim pesan baru tiap event.
+function liveCardText(label, p, opts = {}) {
+  const dir = String(p.type).includes('buy') ? '🟢 BUY' : '🔴 SELL';
+  let status;
+  if (opts.closed) {
+    const win = Number(opts.netProfit) >= 0;
+    status = `${win ? '✅ CLOSED (Profit)' : '❌ CLOSED (Loss)'} — Net P/L: *${win ? '+' : ''}$${fmt(opts.netProfit)}*`;
+  } else {
+    status = '🟡 OPEN' + (opts.statusNote ? ` — _${opts.statusNote}_` : '');
+  }
+  const closeLine = opts.closed && opts.closePrice ? `\nClose: \`${opts.closePrice}\`` : '';
+  const hhmm = new Date().toISOString().slice(11, 16);
+  return (
+    `${dir} *${p.symbol}*\n` +
+    `Lot: \`${fmt(p.volume, 2)}\`  Entry: \`${p.priceOpen}\`${closeLine}\n` +
+    `SL: \`${p.sl || '-'}\`  TP: \`${p.tp || '-'}\`\n` +
+    `Status: ${status}\n` +
+    `Akun: ${label} · Ticket #${p.ticket}\n` +
+    `_update: ${hhmm} UTC_`
+  );
 }
 
 function signalOpenText(label, p) {
@@ -67,6 +110,13 @@ function signalCloseText(label, t) {
     `Net P/L: *${win ? '+' : ''}$${fmt(t.netProfit)}*\n` +
     `Akun: ${label} · Ticket #${t.ticket}`
   );
+}
+
+function signalModifyText(label, p, prev) {
+  const parts = [];
+  if (Number(prev.sl) !== Number(p.sl)) parts.push(`SL: \`${prev.sl || '-'}\` → \`${p.sl || '-'}\``);
+  if (Number(prev.tp) !== Number(p.tp)) parts.push(`TP: \`${prev.tp || '-'}\` → \`${p.tp || '-'}\``);
+  return `✏️ *MODIFIED* ${p.symbol} #${p.ticket}\n${parts.join('\n')}\nAkun: ${label}`;
 }
 
 function tierFor(usagePct) {
@@ -212,12 +262,52 @@ module.exports = async (req, res) => {
     // ribuan history/posisi lama pas EA pertama kali connect).
     if (existing) {
       const prevTickets = new Set((existing.positions || []).map((p) => String(p.ticket)));
+      const prevPosMap = new Map((existing.positions || []).map((p) => [String(p.ticket), p]));
       const newlyOpened = positions.filter((p) => !prevTickets.has(String(p.ticket)));
+      const modified = positions.filter((p) => {
+        const prev = prevPosMap.get(String(p.ticket));
+        return prev && (Number(prev.sl) !== Number(p.sl) || Number(prev.tp) !== Number(p.tp));
+      });
+
+      // OPEN — kirim kartu baru, simpan message_id supaya bisa di-edit nanti
       for (const p of newlyOpened) {
-        await sendTelegram(TG_CHANNEL_ID, signalOpenText(accountLabel, p));
+        const sent = await sendTelegram(TG_CHANNEL_ID, liveCardText(accountLabel, p));
+        if (sent?.result?.message_id) {
+          await accountRef.collection('signalMessages').doc(String(p.ticket)).set({
+            messageId: sent.result.message_id,
+            chatId: TG_CHANNEL_ID,
+            symbol: p.symbol,
+            openedAt: now,
+          });
+        }
       }
+
+      // MODIFY — edit kartu yang sudah ada; kalau tidak ketemu (mis. >48 jam / dikirim sblm fitur ini ada), fallback kirim pesan baru
+      for (const p of modified) {
+        const msgDoc = await accountRef.collection('signalMessages').doc(String(p.ticket)).get();
+        const text = liveCardText(accountLabel, p, { statusNote: 'SL/TP diupdate' });
+        let edited = false;
+        if (msgDoc.exists) {
+          edited = await editTelegram(msgDoc.data().chatId, msgDoc.data().messageId, text);
+        }
+        if (!edited) {
+          await sendTelegram(TG_CHANNEL_ID, signalModifyText(accountLabel, p, prevPosMap.get(String(p.ticket))));
+        }
+      }
+
+      // CLOSE — edit kartu jadi status final, lalu hapus tracking doc-nya
       for (const t of newTrades) {
-        await sendTelegram(TG_CHANNEL_ID, signalCloseText(accountLabel, t));
+        const msgDoc = await accountRef.collection('signalMessages').doc(String(t.ticket)).get();
+        const lastKnownPos = prevPosMap.get(String(t.ticket)) || { symbol: t.symbol, type: t.type, volume: t.volume, sl: null, tp: null };
+        const cardText = liveCardText(accountLabel, { ...lastKnownPos, priceOpen: t.openPrice, ticket: t.ticket }, { closed: true, netProfit: t.netProfit, closePrice: t.closePrice });
+        let edited = false;
+        if (msgDoc.exists) {
+          edited = await editTelegram(msgDoc.data().chatId, msgDoc.data().messageId, cardText);
+          await msgDoc.ref.delete().catch(() => {});
+        }
+        if (!edited) {
+          await sendTelegram(TG_CHANNEL_ID, signalCloseText(accountLabel, t));
+        }
       }
     }
 
