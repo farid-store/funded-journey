@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FaridFX Control Panel</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121821; --panel2:#161d28; --border:#232c3a;
+    --text:#e8edf5; --sub:#8896ab; --accent:#3b82f6; --green:#22c55e;
+    --red:#ef4444; --amber:#f59e0b; --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,Roboto,Inter,sans-serif;}
+  header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.2px;}
+  header h1 span{color:var(--accent);}
+  .topbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  select,input,button{font-family:inherit;font-size:13px;}
+  select,input{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 10px;}
+  button{cursor:pointer;border:none;border-radius:8px;padding:9px 14px;font-weight:600;transition:filter .15s;}
+  button:hover{filter:brightness(1.12);}
+  button:active{filter:brightness(0.9);}
+  .btn-ghost{background:var(--panel2);color:var(--text);border:1px solid var(--border);}
+  .btn-accent{background:var(--accent);color:#fff;}
+  .btn-red{background:var(--red);color:#fff;}
+  .btn-green{background:var(--green);color:#04140a;}
+  .btn-amber{background:var(--amber);color:#221600;}
+  main{padding:20px;max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
+  .card .label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+  .card .value{font-size:20px;font-weight:700;}
+  .pos{color:var(--green);} .neg{color:var(--red);}
+  section{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
+  section h2{font-size:14px;margin:0 0 12px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .manual-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+  .manual-row input{width:90px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);}
+  th{color:var(--sub);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;}
+  tr:last-child td{border-bottom:none;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge-buy{background:rgba(34,197,94,.15);color:var(--green);}
+  .badge-sell{background:rgba(239,68,68,.15);color:var(--red);}
+  .empty{color:var(--sub);font-size:13px;padding:12px 0;text-align:center;}
+  .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--panel2);border:1px solid var(--border);
+         border-radius:10px;padding:12px 16px;font-size:13px;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,.4);
+         opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:50;}
+  .toast.show{opacity:1;transform:translateY(0);}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:100;}
+  .modal-backdrop.show{display:flex;}
+  .modal{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;width:420px;max-width:92vw;}
+  .modal h3{margin:0 0 14px;font-size:15px;}
+  .modal label{display:block;font-size:12px;color:var(--sub);margin:10px 0 4px;}
+  .modal input{width:100%;}
+  .modal .actions{margin-top:16px;display:flex;justify-content:flex-end;gap:8px;}
+  .gear{background:none;border:1px solid var(--border);color:var(--sub);border-radius:8px;padding:8px 10px;}
+  .hint{font-size:12px;color:var(--sub);margin-top:4px;}
+  .confirm-pending{outline:2px solid var(--amber);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>FaridFX <span>Control Panel</span></h1>
+  <div class="topbar">
+    <select id="accountSelect"><option>Memuat akun...</option></select>
+    <button class="gear" id="settingsBtn" title="Pengaturan koneksi">⚙</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="cards" id="statCards">
+    <div class="card"><div class="label">Equity</div><div class="value" id="stEquity">-</div></div>
+    <div class="card"><div class="label">Balance</div><div class="value" id="stBalance">-</div></div>
+    <div class="card"><div class="label">Floating PnL</div><div class="value" id="stFloating">-</div></div>
+    <div class="card"><div class="label">Margin Level</div><div class="value" id="stMargin">-</div></div>
+    <div class="card"><div class="label">Daily Loss Usage</div><div class="value" id="stDaily">-</div></div>
+    <div class="card"><div class="label">Status EA</div><div class="value" id="stStatus"><span class="status-dot" style="background:var(--sub)"></span>-</div></div>
+  </div>
+
+  <section>
+    <h2>Kontrol Cepat</h2>
+    <div class="btn-row">
+      <button class="btn-amber" data-cmd="auto_on">🤖 Auto ON</button>
+      <button class="btn-ghost" data-cmd="auto_off">🤖 Auto OFF</button>
+      <button class="btn-red" data-cmd="close_all" data-confirm="1">🛑 Close All</button>
+      <button class="btn-ghost" data-cmd="close_buy" data-confirm="1">🔵 Close Buy</button>
+      <button class="btn-ghost" data-cmd="close_sell" data-confirm="1">🔴 Close Sell</button>
+      <button class="btn-green" data-cmd="close_profit" data-confirm="1">💰 Close Profit</button>
+      <button class="btn-ghost" data-cmd="close_nearest" data-confirm="1">📍 Close Nearest</button>
+    </div>
+    <div class="manual-row">
+      <span style="color:var(--sub);font-size:13px;">Order manual:</span>
+      <input type="number" id="manualLot" value="0.01" step="0.01" min="0.01">
+      <button class="btn-green" id="manualBuyBtn">BUY</button>
+      <button class="btn-red" id="manualSellBtn">SELL</button>
+      <span class="hint">Perintah diambil EA saat polling berikutnya (~5 detik), lalu SL/TP fibo otomatis diset.</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Posisi Terbuka</h2>
+    <div id="posTableWrap"><div class="empty">Memuat...</div></div>
+  </section>
+
+  <section>
+    <h2>Riwayat Transaksi Terakhir</h2>
+    <div id="histTableWrap"><div class="empty">Memuat...</div></div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal">
+    <h3>Pengaturan Koneksi</h3>
+    <div class="hint">Disimpan di browser ini saja (localStorage) - tidak ditulis ke file, jadi aman kalau control.html ini kamu commit ke repo publik.</div>
+    <label>Firebase apiKey</label><input id="cfgApiKey">
+    <label>Firebase authDomain</label><input id="cfgAuthDomain">
+    <label>Firebase projectId</label><input id="cfgProjectId">
+    <label>Firebase storageBucket</label><input id="cfgStorageBucket">
+    <label>Firebase messagingSenderId</label><input id="cfgSenderId">
+    <label>Firebase appId</label><input id="cfgAppId">
+    <label>URL /api/commands</label><input id="cfgCommandsUrl" placeholder="https://project-anda.vercel.app/api/commands">
+    <label>Token (samakan dgn EA_WEBHOOK_SECRET)</label><input id="cfgToken" type="password">
+    <div class="actions">
+      <button class="btn-ghost" id="cfgCancel">Batal</button>
+      <button class="btn-accent" id="cfgSave">Simpan &amp; Muat Ulang</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// KONFIGURASI - diisi lewat tombol ⚙ (tersimpan di localStorage,
+// bukan hardcoded disini) supaya file ini aman dibagikan/dicommit.
+// ============================================================
+const LS_KEY = 'faridfx_control_cfg';
+function loadCfg(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'{}'); }catch(e){ return {}; } }
+function saveCfg(cfg){ localStorage.setItem(LS_KEY, JSON.stringify(cfg)); }
+let CFG = loadCfg();
+
+const $ = (id) => document.getElementById(id);
+
+function openSettings(){
+  $('cfgApiKey').value = CFG.apiKey || '';
+  $('cfgAuthDomain').value = CFG.authDomain || '';
+  $('cfgProjectId').value = CFG.projectId || '';
+  $('cfgStorageBucket').value = CFG.storageBucket || '';
+  $('cfgSenderId').value = CFG.messagingSenderId || '';
+  $('cfgAppId').value = CFG.appId || '';
+  $('cfgCommandsUrl').value = CFG.commandsUrl || '';
+  $('cfgToken').value = CFG.token || '';
+  $('settingsModal').classList.add('show');
+}
+$('settingsBtn').onclick = openSettings;
+$('cfgCancel').onclick = () => $('settingsModal').classList.remove('show');
+$('cfgSave').onclick = () => {
+  CFG = {
+    apiKey: $('cfgApiKey').value.trim(),
+    authDomain: $('cfgAuthDomain').value.trim(),
+    projectId: $('cfgProjectId').value.trim(),
+    storageBucket: $('cfgStorageBucket').value.trim(),
+    messagingSenderId: $('cfgSenderId').value.trim(),
+    appId: $('cfgAppId').value.trim(),
+    commandsUrl: $('cfgCommandsUrl').value.trim(),
+    token: $('cfgToken').value.trim(),
+  };
+  saveCfg(CFG);
+  location.reload();
+};
+
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+if(!CFG.apiKey || !CFG.projectId || !CFG.commandsUrl){
+  openSettings();
+}
+
+// ============================================================
+// FIREBASE (baca realtime, sama seperti dashboard utama kamu)
+// ============================================================
+let db = null, currentAccountId = null, unsubAccount = null, unsubHistory = null;
+
+function initFirebase(){
+  if(!CFG.apiKey) return;
+  firebase.initializeApp({
+    apiKey: CFG.apiKey, authDomain: CFG.authDomain, projectId: CFG.projectId,
+    storageBucket: CFG.storageBucket, messagingSenderId: CFG.messagingSenderId, appId: CFG.appId,
+  });
+  db = firebase.firestore();
+  loadAccountList();
+}
+
+function loadAccountList(){
+  db.collection('accounts').onSnapshot((snap) => {
+    const sel = $('accountSelect');
+    const prev = sel.value;
+    sel.innerHTML = '';
+    snap.forEach((doc) => {
+      const a = doc.data();
+      const opt = document.createElement('option');
+      opt.value = doc.id;
+      opt.textContent = a.accountLabel || doc.id;
+      sel.appendChild(opt);
+    });
+    if(snap.size === 0){
+      sel.innerHTML = '<option>Belum ada akun</option>';
+      return;
+    }
+    sel.value = (prev && [...sel.options].some(o=>o.value===prev)) ? prev : sel.options[0].value;
+    watchAccount(sel.value);
+  });
+  $('accountSelect').addEventListener('change', (e) => watchAccount(e.target.value));
+}
+
+const money = (n) => { const v = Number(n||0); return (v<0?'-':'') + '$' + Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+const pct = (n) => Number(n||0).toFixed(1) + '%';
+
+function watchAccount(accountId){
+  currentAccountId = accountId;
+  if(unsubAccount) unsubAccount();
+  if(unsubHistory) unsubHistory();
+
+  unsubAccount = db.collection('accounts').doc(accountId).onSnapshot((doc) => {
+    if(!doc.exists) return;
+    const a = doc.data();
+    $('stEquity').textContent = money(a.equity);
+    $('stBalance').textContent = money(a.balance);
+    const floating = Number(a.floatingProfit||0);
+    $('stFloating').textContent = money(floating);
+    $('stFloating').className = 'value ' + (floating>=0?'pos':'neg');
+    $('stMargin').textContent = a.marginLevel!=null ? pct(a.marginLevel) : '-';
+
+    const age = a.updatedAt && a.updatedAt.toMillis ? (Date.now()-a.updatedAt.toMillis())/1000 : Infinity;
+    const live = age <= 30;
+    $('stStatus').innerHTML = `<span class="status-dot" style="background:${live?'var(--green)':'var(--red)'}"></span>${live?'Live':'Offline'}`;
+
+    renderPositions(a.positions||[]);
+  });
+
+  unsubHistory = db.collection('accounts').doc(accountId).collection('history')
+    .orderBy('closeTime','desc').limit(20)
+    .onSnapshot((snap) => {
+      const rows = [];
+      snap.forEach(d => rows.push(d.data()));
+      renderHistory(rows);
+    }, () => { $('histTableWrap').innerHTML = '<div class="empty">Belum ada data history.</div>'; });
+}
+
+function renderPositions(positions){
+  const wrap = $('posTableWrap');
+  if(!positions.length){ wrap.innerHTML = '<div class="empty">Tidak ada posisi terbuka.</div>'; return; }
+  let html = '<table><thead><tr><th>Symbol</th><th>Tipe</th><th>Lot</th><th>Open</th><th>SL</th><th>TP</th><th>P/L</th></tr></thead><tbody>';
+  positions.forEach(p => {
+    const isBuy = String(p.type).includes('buy');
+    html += `<tr>
+      <td>${p.symbol}</td>
+      <td><span class="badge ${isBuy?'badge-buy':'badge-sell'}">${isBuy?'BUY':'SELL'}</span></td>
+      <td>${Number(p.volume).toFixed(2)}</td>
+      <td>${p.priceOpen}</td>
+      <td>${p.sl || '-'}</td>
+      <td>${p.tp || '-'}</td>
+      <td class="${Number(p.profit)>=0?'pos':'neg'}">${money(p.profit)}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+function renderHistory(rows){
+  const wrap = $('histTableWrap');
+  if(!rows.length){ wrap.innerHTML = '<div class="empty">Belum ada history.</div>'; return; }
+  let html = '<table><thead><tr><th>Waktu</th><th>Symbol</th><th>Tipe</th><th>Lot</th><th>Net P/L</th></tr></thead><tbody>';
+  rows.forEach(t => {
+    const isBuy = String(t.type).includes('buy');
+    const d = t.closeTime ? new Date(t.closeTime*1000).toLocaleString('id-ID') : '-';
+    html += `<tr>
+      <td>${d}</td>
+      <td>${t.symbol}</td>
+      <td><span class="badge ${isBuy?'badge-buy':'badge-sell'}">${isBuy?'BUY':'SELL'}</span></td>
+      <td>${Number(t.volume).toFixed(2)}</td>
+      <td class="${Number(t.netProfit)>=0?'pos':'neg'}">${money(t.netProfit)}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+// ============================================================
+// KIRIM PERINTAH ke /api/commands (diambil EA saat polling)
+// ============================================================
+async function sendCommand(action, params){
+  if(!CFG.commandsUrl || !CFG.token){ openSettings(); return; }
+  if(!currentAccountId){ toast('Pilih akun dulu.'); return; }
+  try{
+    const r = await fetch(CFG.commandsUrl, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ token: CFG.token, accountId: currentAccountId, action, params: params||[] }),
+    });
+    const j = await r.json();
+    if(j.ok) toast(`Perintah "${action}" terkirim - menunggu EA (~5 detik).`);
+    else toast(`Gagal: ${j.error||'unknown error'}`);
+  }catch(e){
+    toast('Gagal mengirim perintah: ' + e.message);
+  }
+}
+
+// tombol dgn pola klik-2x utk konfirmasi (sama spt tombol emergency di EA)
+let armedBtn = null, armedTimer = null;
+document.querySelectorAll('[data-cmd]').forEach((btn) => {
+  const needsConfirm = btn.dataset.confirm === '1';
+  const originalText = btn.textContent;
+  btn.addEventListener('click', () => {
+    const action = btn.dataset.cmd;
+    if(!needsConfirm){ sendCommand(action); return; }
+
+    if(armedBtn === btn){
+      clearTimeout(armedTimer);
+      btn.classList.remove('confirm-pending');
+      btn.textContent = originalText;
+      armedBtn = null;
+      sendCommand(action);
+      return;
+    }
+    if(armedBtn){ armedBtn.classList.remove('confirm-pending'); armedBtn.textContent = armedBtn._orig; }
+    btn._orig = originalText;
+    btn.classList.add('confirm-pending');
+    btn.textContent = '⚠️ Yakin? Klik lagi';
+    armedBtn = btn;
+    armedTimer = setTimeout(() => {
+      btn.classList.remove('confirm-pending');
+      btn.textContent = originalText;
+      armedBtn = null;
+    }, 4000);
+  });
+});
+
+$('manualBuyBtn').onclick  = () => sendCommand('open_order', ['buy',  $('manualLot').value || '0.01']);
+$('manualSellBtn').onclick = () => sendCommand('open_order', ['sell', $('manualLot').value || '0.01']);
+
+if(CFG.apiKey) initFirebase();
+</script>
+
+</body>
+</html>
