@@ -116,7 +116,7 @@ module.exports = async (req, res) => {
       }
 
       const ALLOWED_ACTIONS = [
-        'close_all', 'close_buy', 'close_sell', 'close_profit', 'close_nearest',
+        'close_all', 'close_buy', 'close_sell', 'close_profit', 'close_nearest', 'close_ticket',
         'auto_on', 'auto_off', 'open_order',
       ];
       if (!ALLOWED_ACTIONS.includes(action)) {
