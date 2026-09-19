@@ -154,29 +154,6 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
 .news-item .del{border:none;background:transparent;color:var(--faint);font-size:14px}
 .news-item .del:hover{color:var(--red)}
 
-/* Clock + session pills (replaces old plain session-badge) */
-.clock-strip{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--line)}
-.clock-block{display:flex;align-items:center;gap:8px;padding:6px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
-.clock-block .dot-blink{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blinkDot 1.4s steps(1) infinite}
-@keyframes blinkDot{0%,100%{opacity:1}50%{opacity:.25}}
-.clock-time{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.02em}
-.clock-label{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
-
-/* Fade-in on first render of a card/table (not re-triggered on every live update) */
-@keyframes cardFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:cardFadeIn .35s ease both}
-
-/* Scrollable tab nav — edge fade hint */
-.nav-wrap{position:relative}
-.nav-wrap::after{content:'';position:absolute;top:0;right:0;bottom:0;width:28px;background:linear-gradient(90deg,transparent,var(--bg));pointer-events:none}
-
-/* Reset danger zone */
-.danger-trigger{opacity:.18;cursor:default;user-select:none;transition:opacity .2s}
-.danger-trigger:hover{opacity:.35}
-.reset-scope{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-.reset-scope label{display:flex;align-items:center;gap:8px;font-size:11px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);cursor:pointer}
-.reset-warning{background:rgba(239,91,104,.08);border:1px solid #6d2733;color:#ffb0b6;padding:11px 13px;border-radius:10px;font-size:11px;line-height:1.5;margin-bottom:12px}
-
 @media(max-width:1150px){.kpis{grid-template-columns:repeat(3,1fr)}.grid2,.grid3{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}.cal-grid{grid-template-columns:repeat(7,minmax(38px,1fr)) 1fr}}
 @media(max-width:700px){.app{padding:12px 12px 30px}.topbar{align-items:flex-start}.top-actions{justify-content:flex-end}.kpis{grid-template-columns:repeat(2,1fr)}.account-strip{gap:10px}.info-list{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}.kpi .value{font-size:16px}.news-form{grid-template-columns:1fr 1fr}.cal-grid{grid-template-columns:repeat(4,1fr)}.cal-cell.cal-week{grid-column:span 4}}
 @media(max-width:420px){.kpis{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr}.top-actions .btn{padding:7px 8px}}
@@ -198,37 +175,31 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     </div>
   </header>
 
-  <div class="clock-strip">
-    <div class="clock-block"><span class="dot-blink"></span><span class="clock-label">WIB</span><span class="clock-time" id="clockWIB">—</span></div>
-    <div class="clock-block"><span class="clock-label">UTC</span><span class="clock-time" id="clockUTC" style="color:var(--text)">—</span></div>
-    <div class="session-row" id="sessionPills"></div>
-  </div>
-
   <div class="account-strip" id="accountStrip">
     <span>Login <b id="accLogin">—</b></span>
     <span>Server <b id="accServer">—</b></span>
     <span>Broker <b id="accCompany">—</b></span>
     <span>Currency <b id="accCurrency">—</b></span>
     <span>Leverage <b id="accLev">—</b></span>
+    <span class="session-badge"><i id="sessionDot"></i><span id="sessionLabel">—</span></span>
     <span>Last snapshot <b id="lastSnapshot">—</b></span>
   </div>
 
   <div id="alertsBox" class="alerts"></div>
 
-  <div class="nav-wrap">
-    <nav class="nav">
-      <button class="tab active" data-view="overview">Overview</button>
-      <button class="tab" data-view="positions">Positions</button>
-      <button class="tab" data-view="orders">Orders</button>
-      <button class="tab" data-view="history">History</button>
-      <button class="tab" data-view="analytics">Analytics</button>
-      <button class="tab" data-view="calendar">PnL Calendar</button>
-      <button class="tab" data-view="portfolio">Portfolio</button>
-      <button class="tab" data-view="risk">Risk Monitor</button>
-      <button class="tab" data-view="news">News Filter</button>
-      <button class="tab" data-view="accounts">Multi-Account</button>
-    </nav>
-  </div>
+  <nav class="nav">
+    <button class="tab active" data-view="overview">Overview</button>
+    <button class="tab" data-view="control">Control<span id="controlPip" class="pip" style="display:none"></span></button>
+    <button class="tab" data-view="positions">Positions</button>
+    <button class="tab" data-view="orders">Orders</button>
+    <button class="tab" data-view="history">History</button>
+    <button class="tab" data-view="analytics">Analytics</button>
+    <button class="tab" data-view="calendar">PnL Calendar</button>
+    <button class="tab" data-view="portfolio">Portfolio</button>
+    <button class="tab" data-view="risk">Risk Monitor</button>
+    <button class="tab" data-view="news">News Filter</button>
+    <button class="tab" data-view="accounts">Multi-Account</button>
+  </nav>
 
   <div id="state" class="state">
     <h2>Menghubungkan ke Firestore…</h2>
@@ -253,6 +224,43 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
 
       <div class="section-head"><div><h2>Live Positions</h2><p>Posisi yang sedang berjalan</p></div><button class="btn" data-jump="positions">View all</button></div>
       <div class="card table-card"><div class="table-scroll"><table id="overviewPos"></table></div></div>
+    </section>
+
+    <section id="view-control" class="view">
+      <div class="section-head"><div><h2>Trading Control</h2><p>Kontrol EA dari jarak jauh — tanpa buka MT5. Perintah diambil EA saat polling berikutnya (±5 detik).</p></div>
+        <span class="session-badge"><i id="autoDot"></i><span id="autoLabel">Auto Mode: —</span></span>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-title"><h3>Auto Trading Mode</h3><span>EA entry sendiri sesuai rule Stochastic + AO/Divergence + Candle (atau Mode 2: Cross+MTF)</span></div>
+        <div class="toolbar">
+          <button class="btn primary" id="ctlAutoOn">🤖 Aktifkan Auto Mode</button>
+          <button class="btn" id="ctlAutoOff">⏸ Matikan Auto Mode</button>
+        </div>
+      </div>
+
+      <div class="card panel" style="margin-top:12px">
+        <div class="panel-title"><h3>Tutup Posisi</h3><span>Klik 2x untuk konfirmasi (mencegah salah pencet)</span></div>
+        <div class="toolbar">
+          <button class="btn danger" data-cmd="close_all">🛑 Close All</button>
+          <button class="btn" data-cmd="close_buy">🔵 Close Buy</button>
+          <button class="btn" data-cmd="close_sell">🔴 Close Sell</button>
+          <button class="btn" data-cmd="close_profit">💰 Close Profit</button>
+          <button class="btn" data-cmd="close_nearest">📍 Close Nearest</button>
+        </div>
+      </div>
+
+      <div class="card panel" style="margin-top:12px">
+        <div class="panel-title"><h3>Order Manual</h3><span>Masuk lewat sistem manajemen yang sama (SL/TP fibo, BE, reentry otomatis)</span></div>
+        <div class="toolbar">
+          <input id="ctlLot" class="search" style="max-width:110px" type="number" step="0.01" min="0.01" value="0.01" placeholder="Lot">
+          <button class="btn primary" id="ctlBuy" style="border-color:#1e5738;background:rgba(37,197,138,.10);color:#7fe8c1">▲ BUY Market</button>
+          <button class="btn danger" id="ctlSell">▼ SELL Market</button>
+        </div>
+      </div>
+
+      <div class="section-head"><div><h2>Log Perintah</h2><p>15 perintah terakhir yang dikirim ke EA & statusnya</p></div></div>
+      <div class="card table-card"><div class="table-scroll"><table id="commandsTable"></table></div></div>
     </section>
 
     <section id="view-positions" class="view">
@@ -365,10 +373,7 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     </section>
   </main>
 
-  <footer class="footer">
-    FaridFX · Firebase-powered account monitoring · EA source: AccountMonitor_WebhookEA.mq5 · Not financial advice
-    <span id="dangerTrigger" class="danger-trigger" title=" ">　·　⚙</span>
-  </footer>
+  <footer class="footer">FaridFX · Firebase-powered account monitoring · EA source: AccountMonitor_WebhookEA.mq5 · Not financial advice</footer>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -392,30 +397,6 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
         <div class="info"><small>Target risk per position (%)</small><input id="cfgRiskPos" type="number" step="0.1" class="search" style="margin-top:6px"></div>
         <button class="btn primary" type="submit" style="margin-top:6px">Save settings</button>
       </form>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="resetModalOverlay">
-  <div class="modal">
-    <div class="modal-head"><h3>⚠ Reset Database</h3><button class="x-close" id="resetModalClose">✕</button></div>
-    <div class="modal-body">
-      <div id="resetStep1">
-        <p style="color:var(--muted);font-size:11px;margin-bottom:10px">Fitur ini menghapus data secara permanen. Masukkan kode akses untuk melanjutkan.</p>
-        <input id="resetPassword" type="password" class="search" placeholder="Kode akses" autocomplete="off">
-        <button class="btn danger" id="resetPasswordSubmit" style="margin-top:10px">Lanjutkan</button>
-        <p id="resetPasswordError" style="color:var(--red);font-size:10px;margin-top:8px;display:none">Kode salah.</p>
-      </div>
-      <div id="resetStep2" style="display:none">
-        <div class="reset-warning">⚠ Tindakan ini <b>PERMANEN</b> dan tidak bisa dibatalkan. Seluruh trade history, PnL harian, equity curve, dan pesan Telegram tercatat (signalMessages) untuk cakupan yang dipilih akan terhapus dari Firestore.</div>
-        <div class="reset-scope">
-          <label><input type="radio" name="resetScope" value="current" checked> Reset akun aktif saja — <b id="resetAccLabel">—</b></label>
-          <label><input type="radio" name="resetScope" value="all"> Reset SEMUA akun (seluruh data di Firestore ini)</label>
-        </div>
-        <p style="color:var(--muted);font-size:10px;margin-bottom:6px">Ketik <b>HAPUS</b> di bawah ini untuk mengaktifkan tombol konfirmasi:</p>
-        <input id="resetConfirmText" class="search" placeholder="Ketik HAPUS" autocomplete="off">
-        <button class="btn danger" id="resetExecute" style="margin-top:10px" disabled>Hapus Permanen</button>
-      </div>
     </div>
   </div>
 </div>
@@ -476,11 +457,11 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
   let dailyPnlMap = new Map();// date -> {pnl,trades,wins,losses,volume}
   let equityCurveCache = [];  // {ts,balance,equity}
   let newsCache = [];
+  let commandsCache = [];
   let calendarMonth = new Date();
   let activeUnsubs = [];
   let receivedAt = 0;
   let notifiedKeys = new Set();
-  let firstRenderDone = false;
 
   function clearAccountListeners(){ activeUnsubs.forEach(u=>{try{u()}catch(e){}}); activeUnsubs=[]; }
 
@@ -505,13 +486,8 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
       if (pick !== currentAccountId) selectAccount(pick);
     }
     renderAccountsTable();
-  }, err => {
-    console.error(err);
-    const isPerm = /permission|insufficient/i.test(err.message||'');
-    $('state').innerHTML = isPerm
-      ? `<h2>Firestore menolak akses (permission denied)</h2><p>Cek Firestore Security Rules — pastikan <code>allow read: if true;</code> sudah aktif untuk collection <code>accounts</code> (lihat SETUP.md). Detail: ${esc(err.message)}</p>`
-      : `<h2>Gagal terhubung ke Firestore</h2><p>${esc(err.message)}</p>`;
-  });
+    if ($('view-portfolio').classList.contains('active') || $('view-accounts').classList.contains('active')) renderAccountsTable();
+  }, err => { console.error(err); $('state').innerHTML = `<h2>Gagal terhubung ke Firestore</h2><p>${esc(err.message)}</p>`; });
 
   $('accountSelect').addEventListener('change', e => selectAccount(e.target.value));
 
@@ -520,8 +496,7 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     currentAccountId = id;
     localStorage.setItem('faridfx_last_account', id);
     clearAccountListeners();
-    historyCache = []; dailyPnlMap = new Map(); equityCurveCache = []; newsCache = [];
-    firstRenderDone = false;
+    historyCache = []; dailyPnlMap = new Map(); equityCurveCache = []; newsCache = []; commandsCache = [];
 
     activeUnsubs.push(db.collection('accounts').doc(id).onSnapshot(doc => {
       if (!doc.exists) return;
@@ -552,6 +527,11 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
       renderNews();
       renderAlerts();
     }, err => console.warn('news listener', err)));
+
+    activeUnsubs.push(db.collection('accounts').doc(id).collection('commands').orderBy('createdAt','desc').limit(15).onSnapshot(snap => {
+      commandsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderCommands();
+    }, err => console.warn('commands listener', err)));
   }
 
   // ================= STATUS DOT =================
@@ -566,24 +546,22 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
   }
   setInterval(setStatus, 1000);
 
-  // ================= CLOCK + SESSION PILLS =================
-  const SESSIONS = [
-    { name: 'Sydney', from: 21, to: 6, wrap: true },
-    { name: 'Tokyo', from: 0, to: 9 },
-    { name: 'London', from: 8, to: 16 },
-    { name: 'New York', from: 13, to: 21 },
-  ];
-  function sessionActive(s, h){ return s.wrap ? (h>=s.from || h<s.to) : (h>=s.from && h<s.to); }
-  function activeSessionNames(h){ return SESSIONS.filter(s=>sessionActive(s,h)).map(s=>s.name); }
-  function updateClockAndSessions(){
-    const now = new Date();
-    const wib = new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
-    $('clockWIB').textContent = wib;
-    $('clockUTC').textContent = now.toISOString().slice(11,19);
-    const h = now.getUTCHours();
-    $('sessionPills').innerHTML = SESSIONS.map(s=>`<span class="pill ${sessionActive(s,h)?'now':''}">${s.name}</span>`).join('');
+  // ================= SESSION BADGE =================
+  function sessionInfo(){
+    const h = new Date().getUTCHours();
+    const sessions = [
+      {name:'Sydney/Tokyo', from:0, to:8},
+      {name:'London', from:8, to:16},
+      {name:'London/NY Overlap', from:13, to:16},
+      {name:'New York', from:13, to:21},
+    ];
+    const active = sessions.filter(s => h>=s.from && h<s.to).map(s=>s.name);
+    return active.length ? active.join(' + ') : 'Quiet hours';
   }
-  setInterval(updateClockAndSessions, 1000);
+  function renderSessionBadge(){
+    $('sessionLabel').textContent = sessionInfo();
+  }
+  setInterval(renderSessionBadge, 30000);
 
   // ================= MASTER RENDER =================
   function renderAll(){
@@ -598,16 +576,17 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     renderRisk();
     renderAccountInfo();
     renderAccountsTable();
-    updateClockAndSessions();
+    renderSessionBadge();
     renderAlerts();
+    renderAutoBadge();
+    renderCommands();
     setStatus();
-    if (!firstRenderDone) {
-      document.querySelectorAll('#content .card').forEach((el,i) => {
-        el.classList.add('fade-in');
-        el.style.animationDelay = (Math.min(i,10) * 0.03) + 's';
-      });
-      firstRenderDone = true;
-    }
+  }
+
+  function renderAutoBadge(){
+    const on = !!currentAccount?.fullAutoModeFlag;
+    $('autoDot').style.background = on ? 'var(--green)' : 'var(--faint)';
+    $('autoLabel').textContent = 'Auto Mode: ' + (on ? 'ON' : 'OFF');
   }
 
   function renderOverview(){
@@ -640,15 +619,18 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     drawEquity(a);
   }
 
-  function positionTable(rows, full){
-    const head = `<thead><tr><th>Symbol</th><th>Type</th><th>Volume</th><th>Open</th><th>Current</th><th>SL</th><th>TP</th><th>Floating P/L</th><th>Risk</th>${full?'<th>Ticket</th><th>Comment</th>':''}</tr></thead>`;
-    if(!rows.length) return head+'<tbody><tr><td class="empty" colspan="'+(full?11:9)+'">Tidak ada posisi berjalan.</td></tr></tbody>';
+  function positionTable(rows, full, withActions){
+    const head = `<thead><tr><th>Symbol</th><th>Type</th><th>Volume</th><th>Open</th><th>Current</th><th>SL</th><th>TP</th><th>Floating P/L</th><th>Risk</th>${full?'<th>Ticket</th><th>Comment</th>':''}${withActions?'<th>Aksi</th>':''}</tr></thead>`;
+    const cols = (full?11:9) + (withActions?1:0);
+    if(!rows.length) return head+'<tbody><tr><td class="empty" colspan="'+cols+'">Tidak ada posisi berjalan.</td></tr></tbody>';
     return head+'<tbody>'+rows.map(p=>`<tr>
       <td class="strong">${esc(p.symbol)}</td><td>${typeTag(p.type)}</td><td class="mono">${num(p.volume)}</td>
       <td class="mono">${esc(p.priceOpen)}</td><td class="mono">${esc(p.priceCurrent)}</td><td class="mono">${p.sl?esc(p.sl):'—'}</td><td class="mono">${p.tp?esc(p.tp):'—'}</td>
       <td class="mono ${valClass(p.profit)}">${money(p.profit)}</td>
       <td class="mono ${Number(p.riskPct)>Number(currentAccount?.riskPerPositionPct||1)*1.5?'neg':''}">${p.riskMoney?money(p.riskMoney)+' ('+pct(p.riskPct)+')':'—'}</td>
-      ${full?`<td class="mono">${esc(p.ticket)}</td><td>${esc(p.comment||'—')}</td>`:''}</tr>`).join('')+'</tbody>';
+      ${full?`<td class="mono">${esc(p.ticket)}</td><td>${esc(p.comment||'—')}</td>`:''}
+      ${withActions?`<td><button class="btn danger" data-close-ticket="${esc(p.ticket)}" style="padding:5px 9px;font-size:10px">Close</button></td>`:''}
+      </tr>`).join('')+'</tbody>';
   }
 
   function orderTable(rows){
@@ -663,7 +645,7 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     return head+'<tbody>'+rows.map(t=>`<tr><td class="strong">${esc(t.symbol)}</td><td>${typeTag(t.type)}</td><td class="mono">${num(t.volume)}</td><td class="mono">${esc(t.openPrice)}</td><td class="mono">${esc(t.closePrice)}</td><td class="mono">${date(t.openTime)}</td><td class="mono">${date(t.closeTime)}</td><td class="mono">${dur(t.durationSec)}</td><td class="mono ${valClass(t.profit)}">${money(t.profit)}</td><td class="mono">${money(t.swap)}</td><td class="mono">${money(t.commission)}</td><td class="mono ${valClass(t.netProfit)}">${money(t.netProfit)}</td><td class="mono">${esc(t.ticket)}</td></tr>`).join('')+'</tbody>';
   }
 
-  function renderPositions(){ $('positionsTable').innerHTML = positionTable(filteredPositions(), true); }
+  function renderPositions(){ $('positionsTable').innerHTML = positionTable(filteredPositions(), true, true); }
   function filteredPositions(){
     const q=($('posSearch')?.value||'').toLowerCase(), f=$('posFilter')?.value||'all';
     return (currentAccount?.positions||[]).filter(p=>(f==='all'||p.type===f)&&(!q||[p.symbol,p.ticket,p.comment,p.type].join(' ').toLowerCase().includes(q)));
@@ -679,6 +661,65 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     return historyCache.filter(t=>(f==='all'||(f==='win'?Number(t.netProfit)>0:Number(t.netProfit)<0))&&(!q||[t.symbol,t.ticket,t.type].join(' ').toLowerCase().includes(q)));
   }
   ['posSearch','posFilter','ordSearch','histSearch','histResult'].forEach(id=>$(id)?.addEventListener('input',()=>{ if(id.startsWith('pos'))renderPositions(); else if(id.startsWith('ord'))renderOrders(); else renderHistoryTab(); }));
+
+  // ================= CONTROL TAB (kirim perintah ke EA lewat Firestore) =================
+  function sendCommand(action, params){
+    if (!currentAccountId) { toast('Pilih akun dulu'); return; }
+    db.collection('accounts').doc(currentAccountId).collection('commands').add({
+      action, params: params || [], status: 'pending', createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }).then(() => toast(`Perintah "${action}" terkirim — EA mengambilnya dlm ±5 detik.`))
+      .catch(e => toast('Gagal kirim perintah: ' + e.message));
+  }
+
+  let armedEl = null, armedTimer = null;
+  function armOrFire(el, fireFn){
+    if (armedEl === el) {
+      clearTimeout(armedTimer);
+      el.textContent = el.dataset.orig; el.style.background = ''; el.style.borderColor = ''; el.style.color = '';
+      armedEl = null;
+      fireFn();
+      return;
+    }
+    if (armedEl) { armedEl.textContent = armedEl.dataset.orig; armedEl.style.background=''; armedEl.style.borderColor=''; armedEl.style.color=''; }
+    el.dataset.orig = el.dataset.orig || el.textContent;
+    el.textContent = '⚠ Yakin? Klik lagi';
+    el.style.background = 'rgba(231,168,62,.22)'; el.style.borderColor = 'var(--amber)'; el.style.color = '#ffe1a8';
+    armedEl = el;
+    armedTimer = setTimeout(() => {
+      el.textContent = el.dataset.orig; el.style.background=''; el.style.borderColor=''; el.style.color='';
+      armedEl = null;
+    }, 4000);
+  }
+
+  document.querySelectorAll('[data-cmd]').forEach(btn => {
+    btn.addEventListener('click', () => armOrFire(btn, () => sendCommand(btn.dataset.cmd)));
+  });
+  $('ctlAutoOn').addEventListener('click', () => armOrFire($('ctlAutoOn'), () => sendCommand('auto_on')));
+  $('ctlAutoOff').addEventListener('click', () => sendCommand('auto_off')); // langsung, panic-stop, tanpa konfirmasi
+  $('ctlBuy').addEventListener('click', () => sendCommand('open_order', ['buy', $('ctlLot').value || '0.01']));
+  $('ctlSell').addEventListener('click', () => sendCommand('open_order', ['sell', $('ctlLot').value || '0.01']));
+
+  // tombol "Close" per baris di tabel Positions — event delegation krn baris di-render ulang
+  $('positionsTable').addEventListener('click', e => {
+    const btn = e.target.closest('[data-close-ticket]');
+    if (!btn) return;
+    armOrFire(btn, () => sendCommand('close_ticket', [btn.dataset.closeTicket]));
+  });
+
+  function renderCommands(){
+    const wrap = $('commandsTable');
+    if (!wrap) return;
+    const head = '<thead><tr><th>Waktu</th><th>Perintah</th><th>Status</th><th>Keterangan</th></tr></thead>';
+    if (!commandsCache.length) { wrap.innerHTML = head + '<tbody><tr><td class="empty" colspan="4">Belum ada perintah dikirim.</td></tr></tbody>'; $('controlPip').style.display='none'; return; }
+    const rows = commandsCache.map(c => {
+      const t = c.createdAt?.toMillis ? new Date(c.createdAt.toMillis()).toLocaleString('id-ID') : '—';
+      const badge = c.status==='done' ? '<span class="tag buy">done</span>' : c.status==='error' ? '<span class="tag sell">error</span>' : '<span class="tag medium">pending</span>';
+      const paramsTxt = (c.params && c.params.length) ? ` (${esc(c.params.join(', '))})` : '';
+      return `<tr><td class="mono">${t}</td><td class="strong">${esc(c.action)}${paramsTxt}</td><td>${badge}</td><td>${esc(c.message||'—')}</td></tr>`;
+    }).join('');
+    wrap.innerHTML = head + '<tbody>' + rows + '</tbody>';
+    $('controlPip').style.display = commandsCache.some(c=>c.status==='pending') ? 'block' : 'none';
+  }
 
   function renderAnalytics(){
     const h=historyCache, s=currentAccount.stats||{};
@@ -973,17 +1014,6 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     } else if (Notification && Notification.permission==='default' && alerts.length){
       Notification.requestPermission();
     }
-
-    toggleTabPip('risk', alerts.some(a=>a.level==='danger'));
-    toggleTabPip('news', alerts.some(a=>a.key && a.key.startsWith('news')));
-  }
-
-  function toggleTabPip(view, show){
-    const tab = document.querySelector(`.tab[data-view="${view}"]`);
-    if (!tab) return;
-    let pip = tab.querySelector('.pip');
-    if (show && !pip){ pip = document.createElement('span'); pip.className='pip'; tab.appendChild(pip); }
-    if (!show && pip) pip.remove();
   }
 
   // ================= TABS =================
@@ -1028,89 +1058,7 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     }, {merge:true}).then(()=>{ $('limitsModalOverlay').classList.remove('show'); toast('Settings tersimpan'); });
   });
 
-  updateClockAndSessions();
-
-  // ================= HIDDEN RESET (klik footer 5x cepat) =================
-  const RESET_PASSWORD = '01122004'; // catatan: ini HANYA pengaman client-side (bisa dibaca lewat View Source),
-                                      // bukan keamanan sungguhan — lihat SETUP.md utk cara memperkuatnya.
-  let dangerClicks = 0, dangerTimer = null;
-  $('dangerTrigger').addEventListener('click', () => {
-    dangerClicks++;
-    clearTimeout(dangerTimer);
-    dangerTimer = setTimeout(() => dangerClicks = 0, 1200);
-    if (dangerClicks >= 5) {
-      dangerClicks = 0;
-      $('resetPassword').value = '';
-      $('resetPasswordError').style.display = 'none';
-      $('resetStep1').style.display = 'block';
-      $('resetStep2').style.display = 'none';
-      $('resetModalOverlay').classList.add('show');
-    }
-  });
-  $('resetModalClose').onclick = () => $('resetModalOverlay').classList.remove('show');
-  $('resetModalOverlay').addEventListener('click', e => { if (e.target===$('resetModalOverlay')) $('resetModalOverlay').classList.remove('show'); });
-
-  $('resetPasswordSubmit').onclick = () => {
-    if ($('resetPassword').value === RESET_PASSWORD) {
-      $('resetStep1').style.display = 'none';
-      $('resetStep2').style.display = 'block';
-      $('resetAccLabel').textContent = currentAccount?.accountLabel || currentAccountId || '—';
-      $('resetConfirmText').value = '';
-      $('resetExecute').disabled = true;
-    } else {
-      $('resetPasswordError').style.display = 'block';
-    }
-  };
-  $('resetConfirmText').addEventListener('input', () => {
-    $('resetExecute').disabled = $('resetConfirmText').value.trim().toUpperCase() !== 'HAPUS';
-  });
-
-  async function deleteCollectionInChunks(colRef){
-    const CHUNK = 400;
-    while (true) {
-      const snap = await colRef.limit(CHUNK).get();
-      if (snap.empty) break;
-      const batch = db.batch();
-      snap.docs.forEach(d => batch.delete(d.ref));
-      await batch.commit();
-      if (snap.size < CHUNK) break;
-    }
-  }
-  async function resetAccountData(id){
-    const ref = db.collection('accounts').doc(id);
-    for (const sub of ['history','dailyPnl','equityCurve','signalMessages','newsEvents']) {
-      await deleteCollectionInChunks(ref.collection(sub));
-    }
-    await ref.delete();
-  }
-
-  $('resetExecute').onclick = async () => {
-    const scope = document.querySelector('input[name="resetScope"]:checked').value;
-    $('resetExecute').disabled = true;
-    $('resetExecute').textContent = 'Menghapus...';
-    try {
-      if (scope === 'current') {
-        if (!currentAccountId) throw new Error('Tidak ada akun aktif');
-        await resetAccountData(currentAccountId);
-      } else {
-        const ids = Object.keys(accountsMeta);
-        for (const id of ids) await resetAccountData(id);
-      }
-      toast('Reset selesai.');
-      $('resetModalOverlay').classList.remove('show');
-      clearAccountListeners();
-      currentAccountId = null; currentAccount = null;
-      $('content').style.display = 'none';
-      $('state').style.display = 'block';
-      $('state').innerHTML = '<h2>Data direset</h2><p>Menunggu snapshot berikutnya dari EA…</p>';
-    } catch (e) {
-      console.error(e);
-      toast('Gagal reset: ' + e.message);
-    } finally {
-      $('resetExecute').disabled = false;
-      $('resetExecute').textContent = 'Hapus Permanen';
-    }
-  };
+  renderSessionBadge();
 })();
 </script>
 </body>
