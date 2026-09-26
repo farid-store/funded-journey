@@ -1133,6 +1133,7 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
   let walletLastFetch = 0;
   let cryptoPrices = {};
   let walletPollTimer = null;
+  let walletConfigError = null;
 
   function applyAdminVisibility(){
     document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? 'inline-flex' : 'none');
@@ -1210,10 +1211,17 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
 
   function watchWalletConfig(){
     db.collection('payoutWallets').doc('config').onSnapshot(doc => {
+      walletConfigError = null;
       walletsConfig = (doc.exists && doc.data().wallets) || [];
       renderWalletsAdminList();
       refreshWallets();
-    }, err => console.warn('wallet config listener', err));
+    }, err => {
+      console.warn('wallet config listener', err.code || err.message);
+      walletConfigError = err.code === 'permission-denied'
+        ? 'Firestore belum mengizinkan akses ke collection "payoutWallets". Tambahkan rule read/write untuk collection ini di Firebase Console \u2192 Firestore Database \u2192 Rules, lalu Publish.'
+        : ('Gagal memuat konfigurasi wallet: ' + err.message);
+      renderWalletView();
+    });
   }
 
   async function refreshWallets(){
@@ -1227,6 +1235,15 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
   }
 
   function renderWalletView(){
+    if (!$('walletKpis')) return;
+    if (walletConfigError){
+      $('walletKpis').innerHTML = `<div class="card kpi" style="grid-column:1/-1"><div class="label">Konfigurasi Wallet</div><div class="value neg" style="font-size:13px;line-height:1.5">${esc(walletConfigError)}</div></div>`;
+      $('walletsListWrap').innerHTML = '';
+      $('walletTxTable').innerHTML = '';
+      $('payoutChart').innerHTML = '<div class="chart-empty">Tidak bisa memuat data — lihat pesan di atas.</div>';
+      $('walletLastUpdate').textContent = '—';
+      return;
+    }
     const validResults = walletResults.filter(r => r.data);
     const totalUsd = validResults.reduce((a,r) => a + r.data.balance * priceFor(r.data.symbol), 0);
     const allTxs = validResults.flatMap(r => r.data.txs.map(t => ({ ...t, usd: t.amount * priceFor(t.symbol) })));
@@ -1313,7 +1330,7 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     const updated = [...walletsConfig, w];
     db.collection('payoutWallets').doc('config').set({ wallets: updated, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, {merge:true})
       .then(() => { e.target.reset(); toast('Wallet ditambahkan'); })
-      .catch(err => toast('Gagal menyimpan: ' + err.message));
+      .catch(err => toast(err.code === 'permission-denied' ? 'Gagal: Firestore rules belum mengizinkan collection payoutWallets.' : ('Gagal menyimpan: ' + err.message)));
   });
 
   $('walletAdminList')?.addEventListener('click', e => {
