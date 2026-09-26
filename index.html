@@ -154,6 +154,18 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
 .news-item .del{border:none;background:transparent;color:var(--faint);font-size:14px}
 .news-item .del:hover{color:var(--red)}
 
+/* Payout Wallet */
+.wallet-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface2)}
+.wallet-card .net{display:flex;align-items:center;gap:10px}
+.net-badge{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:9px;font-weight:800;color:#0a0d12;letter-spacing:-.02em}
+.net-badge.btc{background:linear-gradient(145deg,#ffb057,#f7931a)}
+.net-badge.eth{background:linear-gradient(145deg,#b9c9ee,#8fa8d6)}
+.net-badge.bnb{background:linear-gradient(145deg,#ffd35c,#f3ba2f)}
+.net-badge.trx{background:linear-gradient(145deg,#ff7a70,#e6493f)}
+.addr-copy{border:none;background:transparent;color:var(--faint);font-size:10px;cursor:pointer;padding:0;margin-left:6px}
+.addr-copy:hover{color:var(--text)}
+.admin-only{display:none}
+
 @media(max-width:1150px){.kpis{grid-template-columns:repeat(3,1fr)}.grid2,.grid3{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}.cal-grid{grid-template-columns:repeat(7,minmax(38px,1fr)) 1fr}}
 @media(max-width:700px){.app{padding:12px 12px 30px}.topbar{align-items:flex-start}.top-actions{justify-content:flex-end}.kpis{grid-template-columns:repeat(2,1fr)}.account-strip{gap:10px}.info-list{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}.kpi .value{font-size:16px}.news-form{grid-template-columns:1fr 1fr}.cal-grid{grid-template-columns:repeat(4,1fr)}.cal-cell.cal-week{grid-column:span 4}}
 @media(max-width:420px){.kpis{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr}.top-actions .btn{padding:7px 8px}}
@@ -197,6 +209,7 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
     <button class="tab" data-view="calendar">PnL Calendar</button>
     <button class="tab" data-view="portfolio">Portfolio</button>
     <button class="tab" data-view="risk">Risk Monitor</button>
+    <button class="tab" data-view="wallet">Payout Wallet</button>
     <button class="tab" data-view="news">News Filter</button>
     <button class="tab" data-view="accounts">Multi-Account</button>
   </nav>
@@ -371,6 +384,30 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
       <div class="section-head"><div><h2>Account Details</h2><p>Informasi akun yang aktif dipilih</p></div></div>
       <div class="card panel"><div class="info-list" id="accountInfo"></div></div>
     </section>
+
+    <section id="view-wallet" class="view">
+      <div class="section-head">
+        <div><h2>Payout Wallet — Live Tracking</h2><p>Saldo &amp; histori payout dari wallet crypto FaridFX, diambil langsung dari blockchain secara realtime</p></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" id="walletRefreshBtn">↻ Refresh</button>
+          <button class="btn primary admin-only" id="walletSettingsBtn">⚙ Kelola Wallet</button>
+        </div>
+      </div>
+      <div class="kpis" id="walletKpis" style="grid-template-columns:repeat(4,minmax(160px,1fr))"></div>
+
+      <div class="section-head"><div><h2>Wallet Terhubung</h2><p>Update terakhir: <span id="walletLastUpdate">—</span></p></div></div>
+      <div id="walletsListWrap" style="display:grid;gap:9px"></div>
+
+      <div class="card panel" style="margin-top:16px">
+        <div class="panel-title"><h3>Kumulatif Payout Diterima</h3><span>Berdasarkan transaksi masuk on-chain, terurut waktu</span></div>
+        <div class="chart" id="payoutChart"></div>
+      </div>
+
+      <div class="section-head"><div><h2>Riwayat Transaksi Masuk</h2><p>Digabung dari semua wallet, terbaru dahulu</p></div></div>
+      <div class="card table-card"><div class="table-scroll"><table id="walletTxTable"></table></div></div>
+
+      <p style="color:var(--faint);font-size:9px;margin-top:10px">Data diambil langsung dari explorer publik (Blockstream, TronGrid, Etherscan, BscScan) di sisi browser member. Hanya alamat wallet publik yang digunakan — tidak ada private key yang pernah disimpan atau dikirim ke mana pun.</p>
+    </section>
   </main>
 
   <footer class="footer">FaridFX · Firebase-powered account monitoring · EA source: AccountMonitor_WebhookEA.mq5 · Not financial advice</footer>
@@ -397,6 +434,30 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
         <div class="info"><small>Target risk per position (%)</small><input id="cfgRiskPos" type="number" step="0.1" class="search" style="margin-top:6px"></div>
         <button class="btn primary" type="submit" style="margin-top:6px">Save settings</button>
       </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="walletModalOverlay">
+  <div class="modal">
+    <div class="modal-head"><h3>Kelola Payout Wallet (Admin)</h3><button class="x-close" id="walletModalClose">✕</button></div>
+    <div class="modal-body">
+      <form id="walletAddForm" class="info-list" style="grid-template-columns:1fr">
+        <div class="info"><small>Label (mis. USDT Payout Utama)</small><input id="wLabel" required class="search" style="margin-top:6px"></div>
+        <div class="info"><small>Network</small>
+          <select id="wNetwork" class="select" style="margin-top:6px;width:100%">
+            <option value="usdt-trc20">USDT — TRON (TRC20)</option>
+            <option value="usdt-erc20">USDT — Ethereum (ERC20)</option>
+            <option value="usdt-bep20">USDT — BNB Chain (BEP20)</option>
+            <option value="btc">BTC — Bitcoin (native)</option>
+          </select>
+        </div>
+        <div class="info"><small>Alamat wallet (publik)</small><input id="wAddress" required class="search" style="margin-top:6px"></div>
+        <div class="info"><small>API Key explorer (khusus ERC20/BEP20 — Etherscan/BscScan, gratis di situsnya)</small><input id="wApiKey" class="search" style="margin-top:6px" placeholder="Kosongkan utk BTC/TRON"></div>
+        <button class="btn primary" type="submit" style="margin-top:6px">+ Tambah Wallet</button>
+      </form>
+      <div id="walletAdminList" style="margin-top:14px"></div>
+      <p style="color:var(--faint);font-size:9px;margin-top:10px">Konfigurasi ini tersimpan di Firestore dan berlaku utk semua pengunjung dashboard. Buka panel ini hanya lewat link dgn <code>?admin=1</code> yang kamu simpan sendiri.</p>
     </div>
   </div>
 </div>
@@ -1057,6 +1118,223 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
       riskPerPositionPct: Number($('cfgRiskPos').value),
     }, {merge:true}).then(()=>{ $('limitsModalOverlay').classList.remove('show'); toast('Settings tersimpan'); });
   });
+
+  // ================= PAYOUT WALLET (live crypto tracking) =================
+  const isAdmin = new URLSearchParams(location.search).get('admin') === '1';
+  const USDT_CONTRACTS = {
+    eth: { contract:'0xdAC17F958D2ee523a2206206994597C13D831ec', decimals:6, explorer:'https://api.etherscan.io/api', explorerName:'Etherscan', txUrl: h=>`https://etherscan.io/tx/${h}` },
+    bnb: { contract:'0x55d398326f99059fF775485246999027B3197955', decimals:18, explorer:'https://api.bscscan.com/api', explorerName:'BscScan', txUrl: h=>`https://bscscan.com/tx/${h}` },
+  };
+  const TRON_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+  const COINGECKO_IDS = { btc:'bitcoin' };
+
+  let walletsConfig = [];
+  let walletResults = [];
+  let walletLastFetch = 0;
+  let cryptoPrices = {};
+  let walletPollTimer = null;
+
+  function applyAdminVisibility(){
+    document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin ? 'inline-flex' : 'none');
+  }
+
+  async function fetchBTC(w){
+    const r = await fetch(`https://blockstream.info/api/address/${w.address}`);
+    if (!r.ok) throw new Error('blockstream ' + r.status);
+    const d = await r.json();
+    const sats = (d.chain_stats.funded_txo_sum - d.chain_stats.spent_txo_sum) + ((d.mempool_stats?.funded_txo_sum||0) - (d.mempool_stats?.spent_txo_sum||0));
+    const balance = sats / 1e8;
+    const txr = await fetch(`https://blockstream.info/api/address/${w.address}/txs`);
+    const txd = txr.ok ? await txr.json() : [];
+    const txs = txd.slice(0, 25).filter(t => t.vout.some(o => o.scriptpubkey_address === w.address)).map(t => {
+      const inSum = t.vout.filter(o => o.scriptpubkey_address === w.address).reduce((a,o) => a + o.value, 0) / 1e8;
+      return { network:'btc', label:w.label, amount:inSum, symbol:'BTC', time:t.status.block_time || Math.floor(Date.now()/1000), txid:t.txid, url:`https://blockstream.info/tx/${t.txid}` };
+    });
+    return { balance, symbol:'BTC', txs };
+  }
+
+  async function fetchTronUSDT(w){
+    const r = await fetch(`https://api.trongrid.io/v1/accounts/${w.address}`);
+    if (!r.ok) throw new Error('trongrid ' + r.status);
+    const d = await r.json();
+    let balance = 0;
+    const acc = d.data && d.data[0];
+    if (acc && acc.trc20) acc.trc20.forEach(tok => { if (tok[TRON_USDT_CONTRACT]) balance = Number(tok[TRON_USDT_CONTRACT]) / 1e6; });
+    const txr = await fetch(`https://api.trongrid.io/v1/accounts/${w.address}/transactions/trc20?contract_address=${TRON_USDT_CONTRACT}&limit=25&only_confirmed=true`);
+    const txd = txr.ok ? await txr.json() : {data:[]};
+    const txs = (txd.data||[]).filter(t => t.to === w.address).map(t => ({
+      network:'usdt-trc20', label:w.label, amount:Number(t.value)/1e6, symbol:'USDT',
+      time:Math.floor(t.block_timestamp/1000), txid:t.transaction_id, url:`https://tronscan.org/#/transaction/${t.transaction_id}`
+    }));
+    return { balance, symbol:'USDT', txs };
+  }
+
+  async function fetchEvmUSDT(w, chain){
+    const cfg = USDT_CONTRACTS[chain];
+    if (!w.apiKey) throw new Error('API key diperlukan untuk ' + cfg.explorerName);
+    const balR = await fetch(`${cfg.explorer}?module=account&action=tokenbalance&contractaddress=${cfg.contract}&address=${w.address}&tag=latest&apikey=${w.apiKey}`);
+    const balD = await balR.json();
+    const balance = Number(balD.result||0) / Math.pow(10, cfg.decimals);
+    const txR = await fetch(`${cfg.explorer}?module=account&action=tokentx&contractaddress=${cfg.contract}&address=${w.address}&sort=desc&page=1&offset=25&apikey=${w.apiKey}`);
+    const txD = await txR.json();
+    const txs = (Array.isArray(txD.result) ? txD.result : []).filter(t => t.to.toLowerCase() === w.address.toLowerCase()).map(t => ({
+      network: chain==='eth' ? 'usdt-erc20' : 'usdt-bep20', label:w.label, amount:Number(t.value)/Math.pow(10,cfg.decimals), symbol:'USDT',
+      time:Number(t.timeStamp), txid:t.hash, url:cfg.txUrl(t.hash)
+    }));
+    return { balance, symbol:'USDT', txs };
+  }
+
+  async function fetchWalletData(w){
+    try{
+      if (w.network === 'btc') return await fetchBTC(w);
+      if (w.network === 'usdt-trc20') return await fetchTronUSDT(w);
+      if (w.network === 'usdt-erc20') return await fetchEvmUSDT(w, 'eth');
+      if (w.network === 'usdt-bep20') return await fetchEvmUSDT(w, 'bnb');
+      return null;
+    } catch(e){ console.warn('wallet fetch failed', w.label, e.message); return null; }
+  }
+
+  async function fetchCryptoPrices(){
+    try{
+      const ids = Object.values(COINGECKO_IDS).join(',');
+      const r = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`);
+      cryptoPrices = await r.json();
+    } catch(e){ console.warn('price fetch failed', e); }
+  }
+
+  function priceFor(symbol){
+    if (symbol === 'USDT') return 1;
+    if (symbol === 'BTC') return cryptoPrices.bitcoin?.usd || 0;
+    return 0;
+  }
+
+  function watchWalletConfig(){
+    db.collection('payoutWallets').doc('config').onSnapshot(doc => {
+      walletsConfig = (doc.exists && doc.data().wallets) || [];
+      renderWalletsAdminList();
+      refreshWallets();
+    }, err => console.warn('wallet config listener', err));
+  }
+
+  async function refreshWallets(){
+    if (!$('walletKpis')) return;
+    if (!walletsConfig.length){ walletResults = []; renderWalletView(); return; }
+    const results = await Promise.all(walletsConfig.map(async w => ({ wallet:w, data: await fetchWalletData(w) })));
+    walletResults = results;
+    walletLastFetch = Date.now();
+    await fetchCryptoPrices();
+    renderWalletView();
+  }
+
+  function renderWalletView(){
+    const validResults = walletResults.filter(r => r.data);
+    const totalUsd = validResults.reduce((a,r) => a + r.data.balance * priceFor(r.data.symbol), 0);
+    const allTxs = validResults.flatMap(r => r.data.txs.map(t => ({ ...t, usd: t.amount * priceFor(t.symbol) })));
+    allTxs.sort((a,b) => b.time - a.time);
+    const totalReceived = allTxs.reduce((a,t) => a + t.usd, 0);
+
+    $('walletKpis').innerHTML = [
+      ['Total Saldo Wallet', money(totalUsd), '', 'Estimasi USD, live dari blockchain'],
+      ['Total Payout Diterima', money(totalReceived), 'pos', 'Akumulasi transaksi masuk yang tercatat'],
+      ['Wallet Terhubung', String(walletsConfig.length), '', 'Jumlah alamat yang dipantau'],
+      ['Transaksi Masuk', String(allTxs.length), '', 'Tercatat di seluruh wallet'],
+    ].map(x => `<div class="card kpi"><div class="label">${x[0]}</div><div class="value ${x[2]}">${x[1]}</div><div class="sub">${x[3]}</div></div>`).join('');
+
+    $('walletsListWrap').innerHTML = walletsConfig.length ? walletsConfig.map(w => {
+      const res = walletResults.find(r => r.wallet.id === w.id);
+      const d = res && res.data;
+      const net = w.network.startsWith('usdt-') ? w.network.split('-')[1] : w.network;
+      const badgeClass = net==='trc20' ? 'trx' : net==='erc20' ? 'eth' : net==='bep20' ? 'bnb' : 'btc';
+      const badgeText = net==='trc20' ? 'TRX' : net==='erc20' ? 'ETH' : net==='bep20' ? 'BNB' : 'BTC';
+      return `<div class="wallet-card">
+        <div class="net"><div class="net-badge ${badgeClass}">${badgeText}</div>
+          <div><div class="strong" style="font-size:12px">${esc(w.label)}</div>
+          <div class="mono" style="font-size:10px;color:var(--faint)">${esc(w.address.slice(0,8))}…${esc(w.address.slice(-6))}<button class="addr-copy" data-copy="${esc(w.address)}">⧉ copy</button></div></div>
+        </div>
+        <div style="text-align:right">
+          <div class="mono strong">${d ? num(d.balance, d.symbol==='BTC'?6:2) + ' ' + d.symbol : (res ? 'gagal memuat' : 'memuat…')}</div>
+          <div class="sub" style="font-size:10px">${d ? money(d.balance * priceFor(d.symbol)) : ''}</div>
+        </div>
+      </div>`;
+    }).join('') : '<p style="color:var(--faint);font-size:11px">Belum ada wallet terhubung.' + (isAdmin ? ' Klik ⚙ Kelola Wallet untuk menambahkan.' : '') + '</p>';
+
+    const thead = '<thead><tr><th>Waktu</th><th>Wallet</th><th>Network</th><th>Jumlah</th><th>Nilai USD</th><th>Tx</th></tr></thead>';
+    $('walletTxTable').innerHTML = allTxs.length ? thead + '<tbody>' + allTxs.slice(0,40).map(t => `<tr>
+      <td class="mono">${new Date(t.time*1000).toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
+      <td class="strong">${esc(t.label)}</td>
+      <td>${esc(t.network.replace('usdt-','USDT ').toUpperCase())}</td>
+      <td class="mono pos">+${num(t.amount, t.symbol==='BTC'?6:2)} ${t.symbol}</td>
+      <td class="mono">${money(t.usd)}</td>
+      <td><a href="${t.url}" target="_blank" rel="noopener" style="color:var(--blue)">↗ lihat</a></td>
+    </tr>`).join('') + '</tbody>' : thead + '<tbody><tr><td class="empty" colspan="6">Belum ada transaksi masuk tercatat.</td></tr></tbody>';
+
+    drawPayoutChart(allTxs);
+    $('walletLastUpdate').textContent = walletLastFetch ? new Date(walletLastFetch).toLocaleTimeString('id-ID') : '—';
+  }
+
+  function drawPayoutChart(txsDesc){
+    const txsAsc = [...txsDesc].sort((a,b) => a.time - b.time);
+    if (!txsAsc.length){ $('payoutChart').innerHTML = '<div class="chart-empty">Belum ada data payout.</div>'; return; }
+    let cum = 0; const pts = txsAsc.map(t => { cum += t.usd; return { v: cum }; });
+    const w=700,h=260,padL=45,padR=15,padT=15,padB=25;
+    const vmax = Math.max(...pts.map(p=>p.v), 1);
+    const x = i => padL + i/(Math.max(pts.length-1,1))*(w-padL-padR);
+    const y = v => padT + (1-v/vmax)*(h-padT-padB);
+    const line = pts.map((p,i) => `${x(i)},${y(p.v)}`).join(' ');
+    const area = `${x(0)},${y(0)} ${line} ${x(pts.length-1)},${y(0)}`;
+    $('payoutChart').innerHTML = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <defs><linearGradient id="pcg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--green)" stop-opacity=".25"/><stop offset="100%" stop-color="var(--green)" stop-opacity="0"/></linearGradient></defs>
+      <polygon points="${area}" fill="url(#pcg)"/>
+      <polyline points="${line}" fill="none" stroke="var(--green)" stroke-width="2.4"/>
+      <text x="${padL}" y="16" fill="var(--faint)" font-size="10">Total: ${money(cum)}</text>
+    </svg>`;
+  }
+
+  function renderWalletsAdminList(){
+    if (!isAdmin || !$('walletAdminList')) return;
+    $('walletAdminList').innerHTML = walletsConfig.length ? walletsConfig.map((w,i) => `
+      <div class="news-item"><div class="left"><span class="t">${esc(w.label)} · ${esc(w.network)}</span><span class="m mono">${esc(w.address)}</span></div>
+      <button class="del" data-wallet-del="${i}">✕</button></div>`).join('') : '<p style="color:var(--faint);font-size:11px">Belum ada wallet.</p>';
+  }
+
+  $('walletSettingsBtn')?.addEventListener('click', () => $('walletModalOverlay').classList.add('show'));
+  $('walletModalClose')?.addEventListener('click', () => $('walletModalOverlay').classList.remove('show'));
+  $('walletModalOverlay')?.addEventListener('click', e => { if (e.target === $('walletModalOverlay')) $('walletModalOverlay').classList.remove('show'); });
+
+  $('walletAddForm')?.addEventListener('submit', e => {
+    e.preventDefault();
+    const w = {
+      id: 'w_' + Date.now(),
+      label: $('wLabel').value.trim(),
+      network: $('wNetwork').value,
+      address: $('wAddress').value.trim(),
+      apiKey: $('wApiKey').value.trim() || null,
+    };
+    const updated = [...walletsConfig, w];
+    db.collection('payoutWallets').doc('config').set({ wallets: updated, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, {merge:true})
+      .then(() => { e.target.reset(); toast('Wallet ditambahkan'); })
+      .catch(err => toast('Gagal menyimpan: ' + err.message));
+  });
+
+  $('walletAdminList')?.addEventListener('click', e => {
+    const btn = e.target.closest('[data-wallet-del]');
+    if (!btn) return;
+    const idx = Number(btn.dataset.walletDel);
+    const updated = walletsConfig.filter((_,i) => i !== idx);
+    db.collection('payoutWallets').doc('config').set({ wallets: updated }, {merge:true}).then(() => toast('Wallet dihapus'));
+  });
+
+  $('walletRefreshBtn')?.addEventListener('click', () => { toast('Memuat data wallet…'); refreshWallets(); });
+
+  document.addEventListener('click', e => {
+    const c = e.target.closest('[data-copy]');
+    if (!c) return;
+    navigator.clipboard?.writeText(c.dataset.copy).then(() => toast('Address disalin')).catch(()=>{});
+  });
+
+  applyAdminVisibility();
+  watchWalletConfig();
+  walletPollTimer = setInterval(refreshWallets, 60000);
 
   renderSessionBadge();
 })();
