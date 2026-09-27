@@ -453,7 +453,7 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
           </select>
         </div>
         <div class="info"><small>Alamat wallet (publik)</small><input id="wAddress" required class="search" style="margin-top:6px"></div>
-        <div class="info"><small>API Key explorer (khusus ERC20/BEP20 — Etherscan/BscScan, gratis di situsnya)</small><input id="wApiKey" class="search" style="margin-top:6px" placeholder="Kosongkan utk BTC/TRON"></div>
+        <div class="info"><small>API Key Etherscan (khusus ERC20/BEP20 — SATU key dari etherscan.io berlaku utk semua chain, sejak migrasi Etherscan V2)</small><input id="wApiKey" class="search" style="margin-top:6px" placeholder="Kosongkan utk BTC/TRON"></div>
         <button class="btn primary" type="submit" style="margin-top:6px">+ Tambah Wallet</button>
       </form>
       <div id="walletAdminList" style="margin-top:14px"></div>
@@ -1122,9 +1122,10 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
   // ================= PAYOUT WALLET (live crypto tracking) =================
   const isAdmin = new URLSearchParams(location.search).get('admin') === '1';
   const USDT_CONTRACTS = {
-    eth: { contract:'0xdAC17F958D2ee523a2206206994597C13D831ec', decimals:6, explorer:'https://api.etherscan.io/api', explorerName:'Etherscan', txUrl: h=>`https://etherscan.io/tx/${h}` },
-    bnb: { contract:'0x55d398326f99059fF775485246999027B3197955', decimals:18, explorer:'https://api.bscscan.com/api', explorerName:'BscScan', txUrl: h=>`https://bscscan.com/tx/${h}` },
+    eth: { contract:'0xdAC17F958D2ee523a2206206994597C13D831ec', decimals:6, chainId:1, txUrl: h=>`https://etherscan.io/tx/${h}` },
+    bnb: { contract:'0x55d398326f99059fF775485246999027B3197955', decimals:18, chainId:56, txUrl: h=>`https://bscscan.com/tx/${h}` },
   };
+  const ETHERSCAN_V2_BASE = 'https://api.etherscan.io/v2/api';
   const TRON_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
   const COINGECKO_IDS = { btc:'bitcoin' };
 
@@ -1172,11 +1173,13 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
 
   async function fetchEvmUSDT(w, chain){
     const cfg = USDT_CONTRACTS[chain];
-    if (!w.apiKey) throw new Error('API key diperlukan untuk ' + cfg.explorerName);
-    const balR = await fetch(`${cfg.explorer}?module=account&action=tokenbalance&contractaddress=${cfg.contract}&address=${w.address}&tag=latest&apikey=${w.apiKey}`);
+    if (!w.apiKey) throw new Error('API key Etherscan diperlukan (satu key berlaku utk semua chain sejak migrasi Etherscan V2)');
+    const base = `${ETHERSCAN_V2_BASE}?chainid=${cfg.chainId}&apikey=${w.apiKey}`;
+    const balR = await fetch(`${base}&module=account&action=tokenbalance&contractaddress=${cfg.contract}&address=${w.address}&tag=latest`);
     const balD = await balR.json();
-    const balance = Number(balD.result||0) / Math.pow(10, cfg.decimals);
-    const txR = await fetch(`${cfg.explorer}?module=account&action=tokentx&contractaddress=${cfg.contract}&address=${w.address}&sort=desc&page=1&offset=25&apikey=${w.apiKey}`);
+    if (!/^\d+$/.test(String(balD.result))) throw new Error(balD.result || balD.message || 'Respons Etherscan tidak valid (cek API key)');
+    const balance = Number(balD.result) / Math.pow(10, cfg.decimals);
+    const txR = await fetch(`${base}&module=account&action=tokentx&contractaddress=${cfg.contract}&address=${w.address}&sort=desc&page=1&offset=25`);
     const txD = await txR.json();
     const txs = (Array.isArray(txD.result) ? txD.result : []).filter(t => t.to.toLowerCase() === w.address.toLowerCase()).map(t => ({
       network: chain==='eth' ? 'usdt-erc20' : 'usdt-bep20', label:w.label, amount:Number(t.value)/Math.pow(10,cfg.decimals), symbol:'USDT',
@@ -1197,9 +1200,10 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:rgba(255,255,255,.018
 
   async function fetchCryptoPrices(){
     try{
-      const ids = Object.values(COINGECKO_IDS).join(',');
-      const r = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`);
-      cryptoPrices = await r.json();
+      const r = await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot');
+      const d = await r.json();
+      const amt = Number(d?.data?.amount);
+      cryptoPrices = Number.isFinite(amt) ? { bitcoin: { usd: amt } } : {};
     } catch(e){ console.warn('price fetch failed', e); }
   }
 
