@@ -334,7 +334,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
           <span class="f" style="--z:3px">FX</span><span class="b" style="--z:-3px">FX</span>
         </div>
       </div>
-      <div><h1>Command Center</h1><p>FaridFX · Funded Account Monitor · EA v4.10</p></div>
+      <div><h1>Command Center</h1><p>FaridFX · Funded Account Monitor · EA v4.11</p></div>
     </div>
     <div class="top-actions">
       <select id="accountSelect" class="sel"><option value="">Memuat akun…</option></select>
@@ -412,10 +412,10 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     </section>
 
     <section id="view-control" class="view">
-      <div class="section-head"><div><h2>Trading Control</h2><p>Kontrol EA dari jarak jauh — tanpa buka MT5. Perintah diambil EA saat polling berikutnya (±5 detik).</p></div></div>
+      <div class="section-head"><div><h2>Trading Control</h2><p>Kontrol EA dari jarak jauh — tanpa buka MT5. Butuh PIN dashboard. Perintah diambil EA saat polling berikutnya (±5 detik); perintah yang tidak diambil dalam 90 detik dibatalkan otomatis.</p></div></div>
 
       <div class="card panel">
-        <div class="panel-title"><h3>Master Switch</h3><span>EA v4.10 murni mengelola SL/TP/BE/reentry order manual — tidak ada entry otomatis</span></div>
+        <div class="panel-title"><h3>Master Switch</h3><span>EA v4.11 murni mengelola SL/TP/BE/reentry order manual — tidak ada entry otomatis</span></div>
         <div class="toolbar">
           <button class="btn primary" id="ctlEaOn">▶ Aktifkan EA</button>
           <button class="btn" id="ctlEaOff">⏸ Pause EA</button>
@@ -583,7 +583,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     <p style="color:var(--faint);font-size:9.5px;margin-top:12px;line-height:1.6">Data diambil langsung dari explorer/node publik (Blockstream, TronGrid, Etherscan, BSC RPC) di sisi browser member. Hanya alamat wallet publik yang digunakan — tidak ada private key yang pernah disimpan atau dikirim ke mana pun. Khusus wallet BEP20 (BNB Chain), riwayat transaksi masuk hanya mencakup beberapa jam terakhir karena memakai node RPC gratis; saldo live tetap akurat.</p>
   </section>
 
-  <footer class="footer">FaridFX · Firebase-powered account monitoring · EA: FaridFX_FiboManager_EA.mq5 v4.10 · Not financial advice</footer>
+  <footer class="footer">FaridFX · Firebase-powered account monitoring · EA: FaridFX_FiboManager_EA.mq5 v4.11 · Not financial advice</footer>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -597,17 +597,17 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
 
 <div class="modal-overlay" id="limitsModalOverlay">
   <div class="modal">
-    <div class="modal-head"><h3>Account Settings & Limits</h3><button class="x-close" id="limitsModalClose">✕</button></div>
+    <div class="modal-head"><h3>Parameter Akun (dari EA)</h3><button class="x-close" id="limitsModalClose">✕</button></div>
     <div class="modal-body">
       <form id="limitsForm" class="info-list" style="grid-template-columns:1fr">
-        <div class="info"><small>Account label</small><input id="cfgLabel" class="search" style="margin-top:6px;width:100%"></div>
-        <div class="info"><small>Starting balance (baseline overall loss limit)</small><input id="cfgStartBal" type="number" step="0.01" class="search" style="margin-top:6px;width:100%"></div>
-        <div class="info"><small>Daily loss limit (%)</small><input id="cfgDaily" type="number" step="0.1" class="search" style="margin-top:6px;width:100%"></div>
-        <div class="info"><small>Overall loss limit (%)</small><input id="cfgOverall" type="number" step="0.1" class="search" style="margin-top:6px;width:100%"></div>
-        <div class="info"><small>Target risk per position (%)</small><input id="cfgRiskPos" type="number" step="0.1" class="search" style="margin-top:6px;width:100%"></div>
-        <button class="btn primary" type="submit" style="margin-top:6px">Save settings</button>
+        <div class="info"><small>Account label</small><input id="cfgLabel" readonly class="search" style="margin-top:6px;width:100%"></div>
+        <div class="info"><small>Starting balance (baseline overall loss limit)</small><input id="cfgStartBal" readonly type="number" step="0.01" class="search" style="margin-top:6px;width:100%"></div>
+        <div class="info"><small>Daily loss limit (%)</small><input id="cfgDaily" readonly type="number" step="0.1" class="search" style="margin-top:6px;width:100%"></div>
+        <div class="info"><small>Overall loss limit (%)</small><input id="cfgOverall" readonly type="number" step="0.1" class="search" style="margin-top:6px;width:100%"></div>
+        <div class="info"><small>Target risk per position (%)</small><input id="cfgRiskPos" readonly type="number" step="0.1" class="search" style="margin-top:6px;width:100%"></div>
+        <button class="btn primary" type="submit" style="margin-top:6px">Tutup</button>
       </form>
-      <p style="color:var(--faint);font-size:9.5px;margin-top:10px;line-height:1.6">Catatan: daily/overall loss limit yang benar-benar dipakai EA untuk proteksi diatur lewat input <code>InpDailyLossLimitPct</code> / <code>InpOverallLossLimitPct</code> di MT5. Nilai di form ini hanya memengaruhi tampilan dashboard bila EA belum mengirim nilainya sendiri.</p>
+      <p style="color:var(--faint);font-size:9.5px;margin-top:10px;line-height:1.6">Nilai ini dikirim langsung oleh EA dan hanya bisa diubah lewat input EA di MT5 (<code>InpInitialBalance</code>, <code>InpDailyLossLimitPct</code>, <code>InpOverallLossLimitPct</code>, <code>InpRiskPerPositionPct</code>, <code>InpAccountLabel</code>).</p>
     </div>
   </div>
 </div>
@@ -631,7 +631,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
         <button class="btn primary" type="submit" style="margin-top:6px">+ Tambah Wallet</button>
       </form>
       <div id="walletAdminList" style="margin-top:14px"></div>
-      <p style="color:var(--faint);font-size:9.5px;margin-top:10px;line-height:1.6">Konfigurasi ini tersimpan di Firestore dan berlaku utk semua pengunjung dashboard. Buka panel ini hanya lewat link dgn <code>?admin=1</code> yang kamu simpan sendiri.</p>
+      <p style="color:var(--faint);font-size:9.5px;margin-top:10px;line-height:1.6">Konfigurasi ini tersimpan di Firestore dan berlaku utk semua pengunjung dashboard. Perubahan wallet meminta PIN dashboard (<code>DASHBOARD_PIN</code> di Vercel). Buka panel ini lewat link dgn <code>?admin=1</code>.</p>
     </div>
   </div>
 </div>
@@ -639,7 +639,6 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
 <!-- ======================= FIREBASE SDK ======================= -->
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 
 <script>
 (() => {
@@ -658,7 +657,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     try { firebaseConfig = JSON.parse(atob(params.get('fb'))); } catch(e) { console.warn('fb param invalid', e); }
   }
 
-  const STALE_SEC = 20, OFFLINE_SEC = 90;
+  const STALE_SEC = 45, OFFLINE_SEC = 120; // EA sync tiap ~20 dtk
   const $ = id => document.getElementById(id);
   const esc = s => String(s ?? '—').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const num = (n,d=2) => Number(n ?? 0).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -672,13 +671,49 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
   const ymd = d => d.toISOString().slice(0,10);
   function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1800)}
 
+  // ================= API server (kontrol & admin, dilindungi PIN) =================
+  const API_BASE = (params.get('api') || 'https://funded-journey-nu.vercel.app').replace(/\/+$/, '');
+  let adminPin = sessionStorage.getItem('faridfx_pin') || '';
+  function askPin(){
+    if (adminPin) return true;
+    const p = window.prompt('Masukkan PIN kontrol dashboard:');
+    if (!p) return false;
+    adminPin = p.trim(); sessionStorage.setItem('faridfx_pin', adminPin);
+    return true;
+  }
+  async function callApi(body){
+    if (!askPin()) throw new Error('PIN dibatalkan');
+    let r, j = {};
+    try {
+      r = await fetch(API_BASE + '/api/commands', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...body, pin: adminPin }) });
+      j = await r.json().catch(() => ({}));
+    } catch(e){ throw new Error('server tidak terjangkau (' + e.message + ')'); }
+    if (r.status === 401) { adminPin = ''; sessionStorage.removeItem('faridfx_pin'); throw new Error('PIN salah'); }
+    if (!r.ok || j.ok === false) throw new Error(j.error || ('HTTP ' + r.status));
+    return j;
+  }
+  const todayKey = () => currentAccount?.serverDay || ymd(new Date());
+  const marginOk = a => Number(a?.margin || 0) > 0 && a?.marginLevel != null;
+  const profitPctOf = a => a?.profitPct != null ? Number(a.profitPct)
+    : (Number(a?.startingBalance) > 0 ? (Number(a.equity || 0) - Number(a.startingBalance)) / Number(a.startingBalance) * 100 : null);
+  function calcStats(){
+    const h = historyCache, fb = (currentAccount && currentAccount.stats) || {};
+    if (!h.length) return { ...fb };
+    let net=0, gp=0, gl=0, w=0, l=0, vol=0, minT=Infinity, maxT=0;
+    h.forEach(t => {
+      const n = Number(t.netProfit || 0); net += n; vol += Number(t.volume || 0);
+      if (n > 0) { gp += n; w++; } else if (n < 0) { gl += -n; l++; }
+      const ct = Number(t.closeTime || 0); if (ct) { minT = Math.min(minT, ct); maxT = Math.max(maxT, ct); }
+    });
+    return { netProfit: net, winRate: w / h.length * 100, profitFactor: gl > 0 ? gp / gl : gp, avgWin: w ? gp / w : 0, avgLoss: l ? gl / l : 0,
+             totalTrades: h.length, totalVolume: vol, periodDays: maxT > minT ? Math.max(1, Math.round((maxT - minT) / 86400)) : 1 };
+  }
+
   // ================= FIREBASE INIT =================
-  let app, db, auth;
+  let app, db;
   try {
     app = firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
-    auth = firebase.auth();
-    auth.signInAnonymously().catch(e => console.warn('anon auth failed', e));
   } catch(e) {
     $('state').innerHTML = `<h2>Firebase config belum valid</h2><p>Cek <code>firebaseConfig</code> di dalam file ini. Error: ${esc(e.message)}</p>`;
   }
@@ -779,7 +814,9 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
   setInterval(() => { if (currentAccount) renderPositions(); }, 1000); // live min-hold countdown
 
   // ================= MASTER RENDER =================
-  function renderAll(){
+  let renderTimer = null;
+  function renderAll(){ if (renderTimer) return; renderTimer = setTimeout(() => { renderTimer = null; renderAllNow(); }, 60); }
+  function renderAllNow(){
     if (!currentAccount) return;
     renderEaStrip();
     renderOverview();
@@ -797,7 +834,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     setStatus();
   }
 
-  // ================= EA STATUS STRIP (v4.10 fields) =================
+  // ================= EA STATUS STRIP (v4.11 fields) =================
   function renderEaStrip(){
     const a = currentAccount;
     const pills = [];
@@ -833,7 +870,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
   }
 
   function renderOverview(){
-    const a=currentAccount, p=a.positions||[], o=a.pendingOrders||[], s=a.stats||{};
+    const a=currentAccount, p=a.positions||[], o=a.pendingOrders||[], s=calcStats();
     $('accLogin').textContent=a.login??'—'; $('accServer').textContent=a.server??'—';
     $('accCompany').textContent=a.company??'—'; $('accCurrency').textContent=a.currency??'—';
     $('accLev').textContent=a.leverage?'1:'+a.leverage:'—';
@@ -844,8 +881,8 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
       ['Equity',money(a.equity),valClass((a.equity??0)-(a.balance??0)),'Balance + floating P/L'],
       ['Floating P/L',money(a.floatingProfit),valClass(a.floatingProfit),'Current unrealized result'],
       ['Free Margin',money(a.marginFree),'','Available margin'],
-      ['Margin Level',a.marginLevel!=null?pct(a.marginLevel):'—','','MT5 margin level'],
-      ['Profit vs Modal',a.profitPct!=null?(a.profitPct>=0?'+':'')+pct(a.profitPct):'—',a.profitPct>=0?'pos':'neg','Target '+(a.profitTargetPct!=null?pct(a.profitTargetPct):'—')]
+      ['Margin Level',marginOk(a)?pct(a.marginLevel):'—','',marginOk(a)?'MT5 margin level':'Tidak ada posisi terbuka'],
+      ['Profit vs Modal',profitPctOf(a)!=null?(profitPctOf(a)>=0?'+':'')+pct(profitPctOf(a)):'—',(profitPctOf(a)??0)>=0?'pos':'neg','Target '+(a.profitTargetPct!=null?pct(a.profitTargetPct):'—')]
     ].map(x=>`<div class="card kpi"><div class="label">${x[0]}</div><div class="value ${x[2]}">${x[1]}</div><div class="sub">${x[3]}</div></div>`).join('');
 
     $('periodLabel').textContent = s.periodDays ? `${s.periodDays} hari` : 'periode EA';
@@ -923,8 +960,8 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
   }
 
   function positionTable(rows, full, withActions){
-    const head = `<thead><tr><th>Symbol</th><th>Type</th><th>Volume</th><th>Open</th><th>Current</th><th>SL</th><th>TP</th><th>Floating P/L</th><th>Risk</th><th>Min-Hold</th>${full?'<th>Ticket</th><th>Comment</th>':''}${withActions?'<th>Aksi</th>':''}</tr></thead>`;
-    const cols = (full?12:10) + (withActions?1:0);
+    const head = `<thead><tr><th>Symbol</th><th>Type</th><th>Volume</th><th>Open</th><th>Current</th><th>SL</th><th>TP</th><th>Floating P/L</th><th>Risk</th><th>Min-Hold</th>${full?'<th>Open Time</th><th>Ticket</th><th>Comment</th>':''}${withActions?'<th>Aksi</th>':''}</tr></thead>`;
+    const cols = (full?13:10) + (withActions?1:0);
     if(!rows.length) return head+'<tbody><tr><td class="empty" colspan="'+cols+'">Tidak ada posisi berjalan.</td></tr></tbody>';
     return head+'<tbody>'+rows.map(p=>{
       const mh = minHoldFrac(p);
@@ -935,7 +972,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
       <td class="mono ${valClass(p.profit)}">${money(p.profit)}</td>
       <td class="mono">${p.riskMoney?money(p.riskMoney)+' ('+pct(p.riskPct)+')':'—'}</td>
       <td>${mhCell}</td>
-      ${full?`<td class="mono">${esc(p.ticket)}</td><td>${esc(p.comment||'—')}</td>`:''}
+      ${full?`<td class="mono">${date(p.openTime)}</td><td class="mono">${esc(p.ticket)}</td><td>${esc(p.comment||'—')}</td>`:''}
       ${withActions?`<td><button class="btn danger" data-close-ticket="${esc(p.ticket)}" style="padding:5px 9px;font-size:10px">Close</button></td>`:''}
       </tr>`;
     }).join('')+'</tbody>';
@@ -953,7 +990,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     return head+'<tbody>'+rows.map(t=>`<tr><td class="strong">${esc(t.symbol)}</td><td>${typeTag(t.type)}</td><td class="mono">${num(t.volume)}</td><td class="mono">${esc(t.openPrice)}</td><td class="mono">${esc(t.closePrice)}</td><td class="mono">${date(t.openTime)}</td><td class="mono">${date(t.closeTime)}</td><td class="mono">${dur(t.durationSec)}</td><td class="mono ${valClass(t.profit)}">${money(t.profit)}</td><td class="mono">${money(t.swap)}</td><td class="mono">${money(t.commission)}</td><td class="mono ${valClass(t.netProfit)}">${money(t.netProfit)}</td><td class="mono">${esc(t.ticket)}</td></tr>`).join('')+'</tbody>';
   }
 
-  function renderPositions(){ if (!currentAccount) return; $('positionsTable').innerHTML = positionTable(filteredPositions(), true, true); }
+  function renderPositions(){ if (!currentAccount) return; if (armedEl && $('positionsTable').contains(armedEl)) return; $('positionsTable').innerHTML = positionTable(filteredPositions(), true, true); }
   function filteredPositions(){
     const q=($('posSearch')?.value||'').toLowerCase(), f=$('posFilter')?.value||'all';
     return (currentAccount?.positions||[]).filter(p=>(f==='all'||p.type===f)&&(!q||[p.symbol,p.ticket,p.comment,p.type].join(' ').toLowerCase().includes(q)));
@@ -963,7 +1000,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     const q=($('ordSearch')?.value||'').toLowerCase();
     return (currentAccount?.pendingOrders||[]).filter(o=>!q||[o.symbol,o.ticket,o.type,o.comment].join(' ').toLowerCase().includes(q));
   }
-  function renderHistoryTab(){ $('historyTable').innerHTML = historyRowsTable(filteredHistory()); }
+  function renderHistoryTab(){ $('historyTable').innerHTML = historyRowsTable(filteredHistory().slice(0,300)); }
   function filteredHistory(){
     const q=($('histSearch')?.value||'').toLowerCase(), f=$('histResult')?.value||'all';
     return historyCache.filter(t=>(f==='all'||(f==='win'?Number(t.netProfit)>0:Number(t.netProfit)<0))&&(!q||[t.symbol,t.ticket,t.type].join(' ').toLowerCase().includes(q)));
@@ -973,9 +1010,8 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
   // ================= CONTROL TAB =================
   function sendCommand(action, params){
     if (!currentAccountId) { toast('Pilih akun dulu'); return; }
-    db.collection('accounts').doc(currentAccountId).collection('commands').add({
-      action, params: params || [], status: 'pending', createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    }).then(() => toast(`Perintah "${action}" terkirim — EA mengambilnya dlm ±5 detik.`))
+    callApi({ accountId: currentAccountId, action, params: params || [] })
+      .then(() => toast(`Perintah "${action}" terkirim — EA mengambilnya dlm ±5 detik.`))
       .catch(e => toast('Gagal kirim perintah: ' + e.message));
   }
 
@@ -1022,16 +1058,16 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     if (!commandsCache.length) { wrap.innerHTML = head + '<tbody><tr><td class="empty" colspan="4">Belum ada perintah dikirim.</td></tr></tbody>'; $('controlPip').style.display='none'; return; }
     const rows = commandsCache.map(c => {
       const t = c.createdAt?.toMillis ? new Date(c.createdAt.toMillis()).toLocaleString('id-ID') : '—';
-      const badge = c.status==='done' ? '<span class="tag buy">done</span>' : c.status==='error' ? '<span class="tag sell">error</span>' : '<span class="tag medium">pending</span>';
+      const badge = c.status==='done' ? '<span class="tag buy">done</span>' : c.status==='error' ? '<span class="tag sell">error</span>' : c.status==='expired' ? '<span class="tag neutral">expired</span>' : c.status==='sent' ? '<span class="tag medium">dikirim</span>' : '<span class="tag medium">pending</span>';
       const paramsTxt = (c.params && c.params.length) ? ` (${esc(c.params.join(', '))})` : '';
       return `<tr><td class="mono">${t}</td><td class="strong">${esc(c.action)}${paramsTxt}</td><td>${badge}</td><td>${esc(c.message||'—')}</td></tr>`;
     }).join('');
     wrap.innerHTML = head + '<tbody>' + rows + '</tbody>';
-    $('controlPip').style.display = commandsCache.some(c=>c.status==='pending') ? 'block' : 'none';
+    $('controlPip').style.display = commandsCache.some(c=>c.status==='pending'||c.status==='sent') ? 'block' : 'none';
   }
 
   function renderAnalytics(){
-    const h=historyCache, s=currentAccount.stats||{};
+    const h=historyCache, s=calcStats();
     const wins=h.filter(x=>Number(x.netProfit)>0), losses=h.filter(x=>Number(x.netProfit)<0);
     const avgDur=h.length?h.reduce((a,x)=>a+Number(x.durationSec||0),0)/h.length:0;
     const best=h.length?Math.max(...h.map(x=>Number(x.netProfit||0))):0, worst=h.length?Math.min(...h.map(x=>Number(x.netProfit||0))):0;
@@ -1060,7 +1096,29 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     ].map(x=>`<div class="info"><small>${x[0]}</small><b>${x[1]}</b></div>`).join('');
   }
 
+
   function drawEquity(a){
+    const pts = equityCurveCache.slice(-240);
+    if (pts.length < 2) return drawEquityStatic(a);
+    const w=700, h=260, padL=46, padR=14, padT=22, padB=24;
+    const all = pts.flatMap(p => [Number(p.balance), Number(p.equity)]).concat([Number(a.balance||0), Number(a.equity||0)]).filter(Number.isFinite);
+    const vmin = Math.min(...all), vmax = Math.max(...all), span = Math.max(vmax - vmin, 1e-6);
+    const x = i => padL + i/(pts.length-1)*(w-padL-padR), y = v => padT + (1-(v-vmin)/span)*(h-padT-padB);
+    const line = k => pts.map((p,i) => `${x(i)},${y(Number(p[k]))}`).join(' ');
+    const last = pts.length - 1;
+    $('equityChart').innerHTML = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <line x1="${padL}" y1="${y(vmax)}" x2="${w-padR}" y2="${y(vmax)}" stroke="var(--line)" opacity=".6"/>
+      <line x1="${padL}" y1="${y(vmin)}" x2="${w-padR}" y2="${y(vmin)}" stroke="var(--line)" opacity=".6"/>
+      <polyline points="${line('balance')}" fill="none" stroke="var(--faint)" stroke-width="1.6" stroke-dasharray="5 5"/>
+      <polyline points="${line('equity')}" fill="none" stroke="var(--gold)" stroke-width="2.6"/>
+      <circle cx="${x(last)}" cy="${y(Number(pts[last].equity))}" r="4.5" fill="var(--gold)"/>
+      <text x="${padL}" y="14" fill="var(--faint)" font-size="10">Balance ${money(a.balance)} · max ${money(vmax)}</text>
+      <text x="${w-padR-130}" y="14" fill="var(--gold)" font-size="10">Equity ${money(a.equity)}</text>
+      <text x="${padL}" y="${h-6}" fill="var(--faint)" font-size="10">min ${money(vmin)}</text>
+    </svg>`;
+  }
+
+  function drawEquityStatic(a){
     const bal=Number(a.balance||0), eq=Number(a.equity||0), max=Math.max(Math.abs(bal),Math.abs(eq),1), min=Math.min(0,bal,eq), span=Math.max(max-min,1);
     const y=v=>235-(v-min)/span*190;
     $('equityChart').innerHTML=`<svg viewBox="0 0 700 260" preserveAspectRatio="none">
@@ -1083,7 +1141,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     const first = new Date(Date.UTC(year,month,1));
     const startWeekday = (first.getUTCDay()+6)%7;
     const daysInMonth = new Date(Date.UTC(year,month+1,0)).getUTCDate();
-    const todayStr = ymd(new Date());
+    const todayStr = todayKey();
 
     let html = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'].map(d=>`<div class="cal-head">${d}</div>`).join('') + `<div class="cal-head">Minggu</div>`;
 
@@ -1120,7 +1178,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
   $('calNext').onclick = () => { calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth()+1, 1); renderCalendar(); };
 
   function openDayModal(dateStr){
-    const trades = historyCache.filter(t => ymd(new Date(Number(t.closeTime)*1000)) === dateStr);
+    const trades = historyCache.filter(t => (t.day || ymd(new Date(Number(t.closeTime)*1000))) === dateStr);
     const agg = dailyPnlMap.get(dateStr) || {pnl:0,trades:trades.length,wins:0,losses:0};
     $('dayModalTitle').textContent = `${dateStr} · ${money(agg.pnl)} · ${agg.trades} trades`;
     $('dayModalBody').innerHTML = `<div class="table-scroll" style="max-height:50vh"><table>${historyRowsTable(trades.sort((a,b)=>a.closeTime-b.closeTime))}</table></div>`;
@@ -1136,6 +1194,12 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     let cum = start;
     const points = [{date: dates[0] || ymd(new Date()), balance: start}];
     dates.forEach(d => { cum += Number(dailyPnlMap.get(d).pnl || 0); points.push({date:d, balance:cum}); });
+    const nowBal = Number(currentAccount?.balance);
+    if (Number.isFinite(nowBal) && nowBal > 0) {
+      const last = points[points.length-1];
+      if (points.length > 1 && last.date === todayKey()) last.balance = nowBal;
+      else if (Math.abs(nowBal - last.balance) > 0.005) points.push({date: todayKey(), balance: nowBal});
+    }
     return points;
   }
 
@@ -1195,14 +1259,15 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     </svg>`;
   }
 
-  // ================= RISK MONITOR (fields langsung dari EA v4.10, fallback ke hitung lokal) =================
+  // ================= RISK MONITOR (fields langsung dari EA v4.11, fallback ke hitung lokal) =================
   function renderRisk(){
     const a = currentAccount, p = a.positions||[];
     const ml = Number(a.marginLevel||0);
-    $('marginLevel').textContent = a.marginLevel!=null?pct(ml):'—';
-    const bar = Math.max(0,Math.min(100, ml/500*100)); $('marginBar').style.width=bar+'%';
-    $('marginBar').style.background = ml<100?'var(--red)':ml<200?'var(--amber)':'var(--green)';
-    $('marginHint').textContent = ml<100?'Margin level sangat rendah — risiko tinggi.':ml<200?'Margin level perlu diperhatikan.':'Margin level saat ini berada di area relatif aman.';
+    const mOk = marginOk(a);
+    $('marginLevel').textContent = mOk ? pct(ml) : '—';
+    const bar = mOk ? Math.max(0,Math.min(100, ml/500*100)) : 0; $('marginBar').style.width=bar+'%';
+    $('marginBar').style.background = !mOk?'var(--faint)':ml<100?'var(--red)':ml<200?'var(--amber)':'var(--green)';
+    $('marginHint').textContent = !mOk?'Tidak ada posisi terbuka — margin level tidak berlaku.':ml<100?'Margin level sangat rendah — risiko tinggi.':ml<200?'Margin level perlu diperhatikan.':'Margin level saat ini berada di area relatif aman.';
 
     const hasEaFields = a.dailyLossPct != null && a.dailyRoomMoney != null;
     let dailyPct, dailyLimitPct, dailyRoom, overallPct, overallLimitPct, overallRoom;
@@ -1211,7 +1276,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
       dailyPct = Number(a.dailyLossPct||0); dailyLimitPct = Number(a.dailyLossLimitPct||0); dailyRoom = Number(a.dailyRoomMoney||0);
       overallPct = Number(a.overallLossPct||0); overallLimitPct = Number(a.overallLossLimitPct||0); overallRoom = Number(a.overallRoomMoney||0);
     } else {
-      const todayStr = ymd(new Date());
+      const todayStr = todayKey();
       const todayAgg = dailyPnlMap.get(todayStr) || {pnl:0};
       const todayPnl = Number(todayAgg.pnl||0) + Number(a.floatingProfit||0);
       const dayStartBal = Number(a.dayStartBalance || a.balance || 1);
@@ -1306,7 +1371,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     }).then(()=>{ e.target.reset(); toast('Event ditambahkan'); });
   });
 
-  // ================= ALERTS (gabungan: perhitungan lokal + status EA v4.10) =================
+  // ================= ALERTS (gabungan: perhitungan lokal + status EA v4.11) =================
   function renderAlerts(){
     if (!currentAccount) return;
     const a = currentAccount;
@@ -1324,7 +1389,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
     else if (dUse>=70) alerts.push({level:'warn', key:'daily70', text:`Daily loss limit sudah ${pct(dUse)} terpakai.`});
     if (oUse>=90) alerts.push({level:'danger', key:'overall90', text:`<b>Overall loss limit hampir tercapai</b> — ${pct(oUse)} terpakai.`});
     else if (oUse>=70) alerts.push({level:'warn', key:'overall70', text:`Overall loss limit sudah ${pct(oUse)} terpakai.`});
-    if (a.marginLevel!=null && a.marginLevel<120) alerts.push({level:'danger', key:'margin', text:`<b>Margin level rendah</b> — ${pct(a.marginLevel)}.`});
+    if (marginOk(a) && a.marginLevel<120) alerts.push({level:'danger', key:'margin', text:`<b>Margin level rendah</b> — ${pct(a.marginLevel)}.`});
     (a.positions||[]).forEach(p=>{ if (!p.sl || Number(p.sl)===0) alerts.push({level:'warn', key:'nosl'+p.ticket, text:`Posisi ${esc(p.symbol)} #${p.ticket} tidak memiliki Stop Loss.`}); });
 
     const now = Date.now();
@@ -1372,17 +1437,7 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
   };
   $('limitsModalClose').onclick = () => $('limitsModalOverlay').classList.remove('show');
   $('limitsModalOverlay').addEventListener('click', e => { if (e.target===$('limitsModalOverlay')) $('limitsModalOverlay').classList.remove('show'); });
-  $('limitsForm').addEventListener('submit', e => {
-    e.preventDefault();
-    if (!currentAccountId) return;
-    db.collection('accounts').doc(currentAccountId).set({
-      accountLabel: $('cfgLabel').value.trim(),
-      startingBalance: Number($('cfgStartBal').value)||currentAccount.startingBalance,
-      dailyLossLimitPct: Number($('cfgDaily').value),
-      overallLossLimitPct: Number($('cfgOverall').value),
-      riskPerPositionPct: Number($('cfgRiskPos').value),
-    }, {merge:true}).then(()=>{ $('limitsModalOverlay').classList.remove('show'); toast('Settings tersimpan'); });
-  });
+  $('limitsForm').addEventListener('submit', e => { e.preventDefault(); $('limitsModalOverlay').classList.remove('show'); });
 
   // ================= PAYOUT WALLET (live crypto tracking) =================
   const isAdmin = new URLSearchParams(location.search).get('admin') === '1';
@@ -1624,27 +1679,21 @@ tbody tr:hover{background:linear-gradient(90deg,rgba(243,203,120,.07),rgba(255,2
   $('walletModalClose')?.addEventListener('click', () => $('walletModalOverlay').classList.remove('show'));
   $('walletModalOverlay')?.addEventListener('click', e => { if (e.target === $('walletModalOverlay')) $('walletModalOverlay').classList.remove('show'); });
 
-  $('walletAddForm')?.addEventListener('submit', e => {
+  async function saveWallets(list, okMsg){
+    try { await callApi({ action: 'save_wallets', wallets: list }); toast(okMsg); return true; }
+    catch(err){ toast('Gagal menyimpan: ' + err.message); return false; }
+  }
+  $('walletAddForm')?.addEventListener('submit', async e => {
     e.preventDefault();
-    const w = {
-      id: 'w_' + Date.now(),
-      label: $('wLabel').value.trim(),
-      network: $('wNetwork').value,
-      address: $('wAddress').value.trim(),
-      apiKey: $('wApiKey').value.trim() || null,
-    };
-    const updated = [...walletsConfig, w];
-    db.collection('payoutWallets').doc('config').set({ wallets: updated, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, {merge:true})
-      .then(() => { e.target.reset(); toast('Wallet ditambahkan'); })
-      .catch(err => toast(err.code === 'permission-denied' ? 'Gagal: Firestore rules belum mengizinkan collection payoutWallets.' : ('Gagal menyimpan: ' + err.message)));
+    const form = e.target;
+    const w = { id: 'w_' + Date.now(), label: $('wLabel').value.trim(), network: $('wNetwork').value, address: $('wAddress').value.trim(), apiKey: $('wApiKey').value.trim() || null };
+    if (await saveWallets([...walletsConfig, w], 'Wallet ditambahkan')) form.reset();
   });
 
   $('walletAdminList')?.addEventListener('click', e => {
     const btn = e.target.closest('[data-wallet-del]');
     if (!btn) return;
-    const idx = Number(btn.dataset.walletDel);
-    const updated = walletsConfig.filter((_,i) => i !== idx);
-    db.collection('payoutWallets').doc('config').set({ wallets: updated }, {merge:true}).then(() => toast('Wallet dihapus'));
+    saveWallets(walletsConfig.filter((_,i) => i !== Number(btn.dataset.walletDel)), 'Wallet dihapus');
   });
 
   $('walletRefreshBtn')?.addEventListener('click', () => { toast('Memuat data wallet…'); refreshWallets(); });
