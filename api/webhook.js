@@ -172,6 +172,8 @@ module.exports = async (req, res) => {
     const positions = Array.isArray(body.positions) ? body.positions : [];
     const pendingOrders = Array.isArray(body.pendingOrders) ? body.pendingOrders : [];
     const exposure = Array.isArray(body.exposure) ? body.exposure : [];
+    const mtf = Array.isArray(body.mtf) ? body.mtf.slice(0, 8) : [];     // trend + fibo potensial per timeframe (EA v4.12)
+    const fibo = Array.isArray(body.fibo) ? body.fibo.slice(0, 12) : [];  // fibo aktif (grup EA)
     const stats = cleanObj(body.stats || {});
     const history = Array.isArray(body.history) ? body.history : [];
     const reason = body.reason || 'unknown';
@@ -343,6 +345,8 @@ module.exports = async (req, res) => {
         positions,
         pendingOrders,
         exposure,
+        mtf,
+        fibo,
         stats,
         lastReason: reason,
         receivedAt: new Date().toISOString(),
