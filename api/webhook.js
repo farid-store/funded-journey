@@ -11,6 +11,9 @@
 //  5. Alert Telegram memakai angka loss dari EA (sumber kebenaran), bukan hitungan ulang.
 //  6. marginLevel = null kalau tidak ada posisi (MT5 mengirim 0 -> dulu memicu alert palsu).
 //  7. Markdown Telegram di-escape + fallback teks polos (label akun ber-underscore tidak lagi gagal kirim).
+//  8. (EA v4.13) Sinyal AO + Stoch + divergence: field "sig" disimpan, setiap sinyal BARU (watch/trigger)
+//     dicatat ke accounts/{id}/signals, trigger berskor tinggi dikirim ke Telegram admin.
+//     ENV opsional: SIGNAL_TG_MIN_SCORE (default 60), SIGNAL_TG_TFS (default "M5,M15,M30,H1").
 //
 // ENV VERCEL: FIREBASE_SERVICE_ACCOUNT, EA_WEBHOOK_SECRET,
 //             TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL_ID, TELEGRAM_ADMIN_CHAT_ID (3 terakhir opsional)
@@ -25,6 +28,8 @@ const HISTORY_V = 2;
 const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TG_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
 const TG_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
+const SIG_MIN_SCORE = Number(process.env.SIGNAL_TG_MIN_SCORE || 60);
+const SIG_TG_TFS = String(process.env.SIGNAL_TG_TFS || 'M5,M15,M30,H1').split(',').map((x) => x.trim()).filter(Boolean);
 
 if (!admin.apps.length) {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
@@ -152,6 +157,23 @@ function sameTrade(old, rec) {
   );
 }
 
+// ---------------------------------------------------------------- sinyal
+function flagText(code) {
+  const [k, pts, x1, x2] = String(code).split('|');
+  switch (k) {
+    case 'STO_ZONE': return 'Stoch di zona ekstrem';
+    case 'STO_EXIT': return `Stoch baru keluar zona (${x1} bar)`;
+    case 'AO_SHIFT': return `AO berganti warna (${x1} bar lalu)`;
+    case 'AO_LIVE': return 'AO mulai berganti (bar berjalan)';
+    case 'STO_X': return `Stoch K cross D (${x1} bar lalu)`;
+    case 'DIV': return `${x1 === '0' ? 'Divergence' : 'Hidden divergence'} ${x2 === '0' ? 'AO' : 'Stoch'}`;
+    case 'OTE': return 'Harga di zona OTE fibo';
+    case 'HTF': return String(pts).startsWith('-') ? 'Melawan trend TF besar' : 'Searah trend TF besar';
+    default: return k;
+  }
+}
+const flagList = (f) => String(f || '').split(',').filter(Boolean).map(flagText);
+
 // ---------------------------------------------------------------- handler
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -172,6 +194,7 @@ module.exports = async (req, res) => {
     const positions = Array.isArray(body.positions) ? body.positions : [];
     const pendingOrders = Array.isArray(body.pendingOrders) ? body.pendingOrders : [];
     const exposure = Array.isArray(body.exposure) ? body.exposure : [];
+    const sig = Array.isArray(body.sig) ? body.sig.slice(0, 8) : [];       // sinyal AO + Stoch + divergence (EA v4.13)
     const mtf = Array.isArray(body.mtf) ? body.mtf.slice(0, 8) : [];     // trend + fibo potensial per timeframe (EA v4.12)
     const fibo = Array.isArray(body.fibo) ? body.fibo.slice(0, 12) : [];  // fibo aktif (grup EA)
     const stats = cleanObj(body.stats || {});
@@ -313,6 +336,37 @@ module.exports = async (req, res) => {
       } catch (e) { console.error('telegram alerts', e); }
     }
 
+    // --- sinyal AO + Stoch + divergence: log perubahan tahap + Telegram ------------
+    const sigLast = { ...(existing?.sigLast || {}) };
+    const sigAt = { ...(existing?.sigAt || {}) };
+    const sigEvents = [];
+    for (const t of sig) {
+      if (!t || !t.valid || !t.tf) continue;
+      for (const dir of ['buy', 'sell']) {
+        const o = t[dir] || {};
+        const stage = o.stage || 'none';
+        const key = `${t.tf}_${dir}`;
+        const prev = sigLast[key] || 'none';
+        const upgraded = stage !== prev && (stage === 'trigger' || (stage === 'watch' && prev === 'none'));
+        if (existing && upgraded && now - num(sigAt[`${key}_${stage}`]) > 120000) {
+          sigAt[`${key}_${stage}`] = now;
+          sigEvents.push({ ts: now, tf: String(t.tf), dir, stage, score: num(o.score), price: num(t.price), flags: String(o.f || ''), barTime: num(t.barTime) });
+        }
+        sigLast[key] = stage;
+      }
+    }
+    if (sigEvents.length) {
+      try { await Promise.all(sigEvents.map((ev) => accountRef.collection('signals').add(ev))); } catch (e) { console.error('signals log', e); }
+      if (TG_ADMIN_CHAT_ID) {
+        for (const ev of sigEvents) {
+          if (ev.stage !== 'trigger' || ev.score < SIG_MIN_SCORE || !SIG_TG_TFS.includes(ev.tf)) continue;
+          const reasons = flagList(ev.flags).map((x) => `• ${mdEsc(x)}`).join('\n');
+          await sendTelegram(TG_ADMIN_CHAT_ID,
+            `🎯 *SINYAL ${ev.dir === 'buy' ? '🟢 BUY' : '🔴 SELL'}* — ${ev.tf} (skor ${ev.score})\nAkun: ${mdEsc(accountLabel)}\nHarga: \`${ev.price}\`\n${reasons}`);
+        }
+      }
+    }
+
     // --- equity curve (throttle) ---------------------------------------------
     const lastEquityPointAt = existing?.lastEquityPointAt ?? 0;
     let equityPointWritten = false;
@@ -347,6 +401,9 @@ module.exports = async (req, res) => {
         exposure,
         mtf,
         fibo,
+        sig,
+        sigLast,
+        sigAt,
         stats,
         lastReason: reason,
         receivedAt: new Date().toISOString(),
