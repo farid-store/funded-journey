@@ -420,6 +420,47 @@ tr:last-child td{border-bottom:0}
 @media(max-width:900px){.fibo-grid{grid-template-columns:1fr}.lrow{grid-template-columns:64px 44px 1fr auto}}
 @media(max-width:600px){.mtf-cards{grid-template-columns:repeat(2,1fr)}}
 
+/* ================= SINYAL: AO + STOCH + DIVERGENCE ================= */
+.sig-tools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:12px 16px;margin-bottom:12px}
+.sig-tools .grp{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sig-tools label{font-size:11px;color:var(--muted);font-weight:800}
+.tfchip{border:2px solid rgba(255,255,255,.16);border-bottom-width:4px;background:#222d68;color:var(--muted);border-radius:12px;padding:5px 13px 3px;font:400 14px var(--fh);transition:transform .1s,background .15s}
+.tfchip:hover{transform:translateY(-2px)}.tfchip:active{transform:translateY(2px);border-bottom-width:2px}
+.tfchip.on{background:linear-gradient(180deg,#ffd75e,#f0a41c);color:#4d3000;border-color:rgba(255,255,255,.4);border-bottom-color:#a96c07}
+.tgl{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;color:var(--muted);cursor:pointer}
+.tgl input{accent-color:#ffd25e;width:16px;height:16px}
+.sig-min{width:64px;min-width:0;flex:none;padding:6px 8px;text-align:center}
+.sig-summary{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.sig-sum{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:99px;border:2px solid rgba(255,255,255,.14);border-bottom-width:4px;background:#222d68;font-size:11.5px;font-weight:800}
+.sig-sum b{font:400 15px var(--fh)}
+.sig-sum.buy{background:linear-gradient(180deg,#1f9c6c,#126b49);border-color:rgba(61,242,166,.55)}.sig-sum.sell{background:linear-gradient(180deg,#c43457,#85203a);border-color:rgba(255,95,126,.6)}
+.sig-sum.bw{background:linear-gradient(180deg,#2f7fb0,#1d4d73)}.sig-sum.sw{background:linear-gradient(180deg,#7a55c9,#47318a)}
+.sig-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+.sig-card{padding:14px 16px 16px;position:relative;overflow:hidden}
+.sig-card.buy{border-color:#2fe3a0}.sig-card.sell{border-color:#ff7a92}
+.sig-card.trig::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:todayGlow 1.8s ease-in-out infinite}
+.sig-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sig-tf{font:400 28px var(--fh);color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.35);min-width:58px}
+.sig-pill{font:400 13px var(--fh);padding:4px 12px 3px;border-radius:99px;border:2px solid rgba(255,255,255,.3);border-bottom-width:4px;letter-spacing:.03em}
+.sig-pill.buy{background:#128058;color:#d6ffee}.sig-pill.sell{background:#a02745;color:#ffe0e7}.sig-pill.bw{background:#276a9a;color:#d8f1ff}.sig-pill.sw{background:#5d3fae;color:#eadfff}.sig-pill.none{background:#2d3b84;color:var(--muted);border-color:var(--line2)}
+.sig-score{margin-left:auto;text-align:right;font:400 22px var(--fh);color:var(--gold);line-height:1}
+.sig-score small{display:block;font:700 9px var(--fb);color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.sig-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.sig-box{background:#10173f;border-radius:14px;padding:8px 10px 6px;box-shadow:inset 0 4px 8px rgba(0,0,0,.45);min-width:0}
+.sig-box h5{margin:0 0 4px;font:800 9.5px var(--fb);color:var(--faint);text-transform:uppercase;letter-spacing:.07em;display:flex;justify-content:space-between;gap:6px}
+.sig-box h5 em{font-style:normal;color:#fff;font-family:"JetBrains Mono",monospace;font-weight:600;letter-spacing:0;text-transform:none}
+.sig-box svg{width:100%;height:62px;display:block}
+.sig-div{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:24px}
+.div-chip{font-size:10.5px;font-weight:800;padding:3px 10px;border-radius:99px;border:2px solid transparent;border-bottom-width:3px;cursor:help}
+.div-chip.bull{background:#128058;color:#d6ffee;border-color:rgba(61,242,166,.5)}.div-chip.bear{background:#a02745;color:#ffe0e7;border-color:rgba(255,95,126,.55)}
+.div-chip.hid{opacity:.82;border-style:dashed}
+.div-none{font-size:10.5px;color:var(--faint)}
+.sig-flags{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:3px}
+.sig-flags li{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted);padding:3px 0;border-bottom:1px dashed var(--line)}
+.sig-flags li b{font-family:"JetBrains Mono",monospace;color:var(--green);font-weight:600}.sig-flags li b.neg{color:var(--red)}
+.sig-note{font-size:10.5px;color:var(--faint);margin-top:6px;line-height:1.5}
+@media(max-width:700px){.sig-cards{grid-template-columns:1fr}.sig-row{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -439,7 +480,7 @@ tr:last-child td{border-bottom:0}
       <div class="logo" aria-label="FX"><div class="coin">
         <span style="--z:-3px"></span><span style="--z:-2px"></span><span style="--z:-1px"></span><span style="--z:0px"></span><span style="--z:1px"></span><span style="--z:2px"></span>
         <span class="f" style="--z:3px">FX</span><span class="b" style="--z:-3px">FX</span></div></div>
-      <div><h1>FARIDFX</h1><p>Command Base · EA v4.12</p></div>
+      <div><h1>FARIDFX</h1><p>Command Base · EA v4.13</p></div>
     </div>
 
     <div class="ticker gpanel" id="ticker">
@@ -483,6 +524,7 @@ tr:last-child td{border-bottom:0}
     <nav class="nav">
       <button class="tab active" data-view="overview"><span class="tico" style="--c1:#ffd25e;--c2:#e08a10"><span>🏰</span></span><span>Overview</span></button>
       <button class="tab" data-view="mtf"><span class="tico" style="--c1:#9ef0ff;--c2:#2b8fd6"><span>🧭</span></span><span>Trend & Fibo</span></button>
+      <button class="tab" data-view="sig"><span class="tico" style="--c1:#ff9ad5;--c2:#c43a8c"><span>🎯</span></span><span>Sinyal</span></button>
       <button class="tab" data-view="control"><span class="tico" style="--c1:#7ad0ff;--c2:#3a7bd5"><span>🎮</span></span><span>Control</span><span id="controlPip" class="pip" style="display:none"></span></button>
       <button class="tab" data-view="positions"><span class="tico" style="--c1:#ff8aa0;--c2:#d93658"><span>⚔️</span></span><span>Positions</span></button>
       <button class="tab" data-view="orders"><span class="tico" style="--c1:#c9a0ff;--c2:#7b4fd1"><span>📜</span></span><span>Orders</span></button>
@@ -539,7 +581,7 @@ tr:last-child td{border-bottom:0}
       <div class="section-head"><div><h2>Trading Control</h2><p>Kontrol EA dari jarak jauh — tanpa buka MT5. Butuh PIN dashboard. Perintah diambil EA saat polling berikutnya (±5 detik); perintah yang tidak diambil dalam 90 detik dibatalkan otomatis.</p></div></div>
 
       <div class="card panel">
-        <div class="panel-title"><h3>Master Switch</h3><span>EA v4.12 murni mengelola SL/TP/BE/reentry order manual — tidak ada entry otomatis</span></div>
+        <div class="panel-title"><h3>Master Switch</h3><span>EA v4.13 murni mengelola SL/TP/BE/reentry order manual — tidak ada entry otomatis</span></div>
         <div class="toolbar">
           <button class="btn primary" id="ctlEaOn">▶ Aktifkan EA</button>
           <button class="btn" id="ctlEaOff">⏸ Pause EA</button>
@@ -699,6 +741,19 @@ tr:last-child td{border-bottom:0}
       <div class="section-head"><div><h2>Fibo Aktif (Terjadi)</h2><p>Grup fibo yang sedang dikelola EA untuk posisi nyata: level, BE, reentry, dan posisi harga terhadap level.</p></div></div>
       <div id="fiboActive"></div>
     </section>
+    <section id="view-sig" class="view">
+      <div class="hero" data-scene="sig"><div class="hero-info"><b>Signal Arena</b><span>Menara sinyal per timeframe: tinggi = skor konfluens. Hijau/merah = trigger BUY/SELL, biru/ungu = watch.</span><em id="hn-sig"></em></div><div class="hero-scene"></div></div>
+      <div class="section-head"><div><h2>Radar Sinyal</h2><p>BUY watch saat Stochastic ≤ 25, SELL watch saat ≥ 75. Trigger saat AO berganti warna (merah→hijau untuk BUY, hijau→merah untuk SELL) atau divergence + cross Stoch. Skor menambah konfluens: divergence, zona OTE fibo, dan trend TF besar. Dihitung EA pada candle tertutup + bar berjalan.</p></div></div>
+      <div class="card sig-tools">
+        <div class="grp"><label>Timeframe dipantau</label><span id="sigTfChips" class="grp"></span></div>
+        <div class="grp"><label class="tgl"><input type="checkbox" id="sigSound"> 🔊 Suara</label><label class="tgl"><input type="checkbox" id="sigNotif"> 🔔 Notifikasi browser</label>
+          <label>Skor min. alert</label><input type="number" id="sigMin" class="search sig-min" min="0" max="100" step="5"></div>
+      </div>
+      <div class="sig-summary" id="sigSummary"></div>
+      <div class="sig-cards" id="sigCards"></div>
+      <div class="section-head"><div><h2>Log Sinyal</h2><p>Setiap sinyal baru (watch / trigger) dicatat server. Kolom "Sejak sinyal" = pergerakan harga sejak sinyal, searah sinyal (pips) — alat sederhana untuk menilai akurasi tiap timeframe.</p></div></div>
+      <div class="card table-card"><div class="table-scroll"><table id="sigLog"></table></div></div>
+    </section>
   </main>
 
   <section id="view-wallet" class="view">
@@ -726,7 +781,7 @@ tr:last-child td{border-bottom:0}
     <p style="color:var(--faint);font-size:9.5px;margin-top:12px;line-height:1.6">Data diambil langsung dari explorer/node publik (Blockstream, TronGrid, Etherscan, BSC RPC) di sisi browser member. Hanya alamat wallet publik yang digunakan — tidak ada private key yang pernah disimpan atau dikirim ke mana pun. Khusus wallet BEP20 (BNB Chain), riwayat transaksi masuk hanya mencakup beberapa jam terakhir karena memakai node RPC gratis; saldo live tetap akurat.</p>
   </section>
 
-      <footer class="footer">FaridFX · Firebase-powered account monitoring · EA: FaridFX_FiboManager_EA.mq5 v4.12 · Harga XAU/USD: feed publik (bukan harga broker) · Not financial advice</footer>
+      <footer class="footer">FaridFX · Firebase-powered account monitoring · EA: FaridFX_FiboManager_EA.mq5 v4.13 · Harga XAU/USD: feed publik (bukan harga broker) · Not financial advice</footer>
     </div>
   </div>
 </div>
@@ -1025,7 +1080,7 @@ tr:last-child td{border-bottom:0}
     try { if (window.__FXUI) window.__FXUI.update(); } catch (e) { console.warn('ui', e); }
   }
 
-  // ================= EA STATUS STRIP (v4.12 fields) =================
+  // ================= EA STATUS STRIP (v4.13 fields) =================
   function renderEaStrip(){
     const a = currentAccount;
     const pills = [];
@@ -1450,7 +1505,7 @@ tr:last-child td{border-bottom:0}
     </svg>`;
   }
 
-  // ================= RISK MONITOR (fields langsung dari EA v4.12, fallback ke hitung lokal) =================
+  // ================= RISK MONITOR (fields langsung dari EA v4.13, fallback ke hitung lokal) =================
   function renderRisk(){
     const a = currentAccount, p = a.positions||[];
     const ml = Number(a.marginLevel||0);
@@ -1562,7 +1617,7 @@ tr:last-child td{border-bottom:0}
     }).then(()=>{ e.target.reset(); toast('Event ditambahkan'); });
   });
 
-  // ================= ALERTS (gabungan: perhitungan lokal + status EA v4.12) =================
+  // ================= ALERTS (gabungan: perhitungan lokal + status EA v4.13) =================
   function renderAlerts(){
     if (!currentAccount) return;
     const a = currentAccount;
@@ -1898,7 +1953,7 @@ tr:last-child td{border-bottom:0}
   window.__FX = {
     get account(){ return currentAccount; }, get accountId(){ return currentAccountId; }, get history(){ return historyCache; },
     get daily(){ return dailyPnlMap; }, get curve(){ return equityCurveCache; }, get news(){ return newsCache; }, get commands(){ return commandsCache; },
-    get accountsMeta(){ return accountsMeta; }, get calendarMonth(){ return calendarMonth; }, get diag(){ return diag; }, get receivedAt(){ return receivedAt; },
+    get accountsMeta(){ return accountsMeta; }, get calendarMonth(){ return calendarMonth; }, get diag(){ return diag; }, get db(){ return db; }, toast, get receivedAt(){ return receivedAt; },
     stats: calcStats, balanceCurve: buildBalanceCurve, marginOk, profitPctOf,
     walletInfo(){ return walletResults.filter(r => r.data).map(r => ({ label: r.wallet.label, net: r.wallet.network, usd: r.data.balance * priceFor(r.data.symbol) })); },
     fmt: { money, pct, num, esc, date, dur, valClass },
@@ -2001,7 +2056,7 @@ tr:last-child td{border-bottom:0}
   }
 
   const SCENES = {
-    overview: { cols: 7, rows: 3 }, mtf: { cols: 7, rows: 3 }, control: { cols: 6, rows: 3 }, positions: { cols: 8, rows: 3 }, orders: { cols: 8, rows: 3 },
+    overview: { cols: 7, rows: 3 }, mtf: { cols: 7, rows: 3 }, sig: { cols: 7, rows: 3 }, control: { cols: 6, rows: 3 }, positions: { cols: 8, rows: 3 }, orders: { cols: 8, rows: 3 },
     history: { cols: 8, rows: 2 }, analytics: { cols: 8, rows: 3 }, calendar: { cols: 7, rows: 6, tw: 56, maxH: 90 }, portfolio: { cols: 14, rows: 2, tw: 50 },
     risk: { cols: 6, rows: 3 }, wallet: { cols: 7, rows: 3 }, news: { cols: 10, rows: 2, tw: 58 }, accounts: { cols: 6, rows: 3 },
   };
@@ -2035,6 +2090,17 @@ tr:last-child td{border-bottom:0}
       iso.mtf.set(mtf.map((t, i) => ({ id: t.tf, gx: .8 + i * 1.15, gy: 1, h: t.valid ? 22 + Math.abs((+t.abovePct || 0) - (+t.belowPct || 0)) : 12, color: !t.valid ? C.gray : t.dir > 0 ? C.green : t.dir < 0 ? C.red : C.amber, label: t.tf, val: !t.valid ? 'n/a' : (t.dir > 0 ? 'UP ' + Math.round(t.abovePct) : t.dir < 0 ? 'DOWN ' + Math.round(t.belowPct) : 'NETRAL'), bob: !!(t.valid && t.dir !== 0) })));
       const v = mtf.filter(t => t.valid), up = v.filter(t => t.dir > 0).length, dn = v.filter(t => t.dir < 0).length;
       hn('mtf', v.length ? (up >= dn ? `UP ${up}/${v.length} TF` : `DOWN ${dn}/${v.length} TF`) : '');
+    },
+    sig(fx) {
+      const list = (fx.account && fx.account.sig) || [];
+      if (!list.length) return iso.sig.set([], 'Menunggu data sinyal dari EA v4.13');
+      iso.sig.set(list.map((t, i) => {
+        if (!t.valid) return { id: t.tf, gx: .7 + i * 1.0, gy: 1, h: 10, color: C.gray, label: t.tf, val: 'n/a' };
+        const b = bestSide(t), o = b.o, buy = b.dir === 'buy', trig = o.stage === 'trigger';
+        return { id: t.tf, gx: .7 + i * 1.0, gy: 1, h: o.stage === 'none' ? 10 : 18 + (+o.score || 0) * 1.0, color: o.stage === 'none' ? C.gray : trig ? (buy ? C.green : C.red) : (buy ? C.blue : C.purple), label: t.tf, val: o.stage === 'none' ? '—' : `${buy ? 'BUY' : 'SELL'} ${o.score}`, bob: trig };
+      }));
+      const trigs = list.filter(t => t.valid && ['buy', 'sell'].some(d => (t[d] || {}).stage === 'trigger')).length;
+      hn('sig', trigs ? `${trigs} TF trigger 🎯` : 'Belum ada trigger');
     },
     control(fx) {
       const a = fx.account; if (!a) return;
@@ -2244,6 +2310,7 @@ tr:last-child td{border-bottom:0}
     if (now - lastSpark > 700 && f.ticks.length > 2) { lastSpark = now; sparkline(f.ticks); }
     paintBroker();
     renderMTF();
+    renderSig();
   }
   function sparkline(t) {
     const w = 120, h = 46, mn = Math.min(...t), mx = Math.max(...t), sp = Math.max(mx - mn, 1e-6);
@@ -2253,14 +2320,14 @@ tr:last-child td{border-bottom:0}
   }
   function paintBroker() {
     const a = FX().account, e = $('tkBroker'); if (!e) return;
-    if (!a || !(+a.bid > 0)) { e.innerHTML = 'Broker (EA): menunggu bid/ask — update EA ke v4.12'; return; }
+    if (!a || !(+a.bid > 0)) { e.innerHTML = 'Broker (EA): menunggu bid/ask — update EA ke v4.13'; return; }
     const dg = +a.bid > 1000 ? 2 : 5, age = a.priceTime ? Math.max(0, Math.round(Date.now() / 1000 - a.priceTime)) : null, sp = +a.pipSize > 0 ? ((+a.ask - +a.bid) / +a.pipSize).toFixed(1) : '';
     const diff = Feed.price != null ? ` · Δ feed ${(+a.bid - Feed.price >= 0 ? '+' : '') + (+a.bid - Feed.price).toFixed(2)}` : '';
     e.innerHTML = `Broker ${a.priceSymbol || ''}: <b>${(+a.bid).toFixed(dg)}</b> / <b>${(+a.ask).toFixed(dg)}</b>${sp ? ' · spr ' + sp + 'p' : ''}${age != null ? ' · ' + (age < 90 ? age + 'd' : Math.round(age / 60) + 'm') + ' lalu' : ''}${diff}`;
   }
 
   /* ================= diagnosa (mengapa balance tidak terbaca) ================= */
-  const MUST = ['balance', 'equity', 'serverDay', 'dailyLossPct', 'overallLossPct', 'eaEnabled', 'bid'];
+  const MUST = ['balance', 'equity', 'serverDay', 'dailyLossPct', 'overallLossPct', 'eaEnabled', 'bid', 'mtf', 'sig'];
   function diagState() {
     const fx = FX(), d = fx.diag, a = fx.account, miss = a ? MUST.filter(k => a[k] === undefined || a[k] === null) : MUST;
     return { fx, d, a, miss };
@@ -2270,7 +2337,7 @@ tr:last-child td{border-bottom:0}
     if (d.error) return /permission/i.test(d.error) ? 'Firestore Rules menolak pembacaan. Deploy file firestore.rules (allow read: if true) ATAU aktifkan Authentication → Anonymous di Firebase Console.' : 'Gagal terhubung ke Firestore. Cek internet & firebaseConfig.';
     if (d.accounts === 0) return 'Koleksi "accounts" kosong: EA belum mengirim snapshot. Cek: InpWebhookSecret = EA_WEBHOOK_SECRET Vercel, URL webhook di Allow WebRequest MT5, dan tab Experts (HTTP 200?).';
     if (!a) return 'Akun belum dimuat. Tunggu beberapa detik atau pilih akun di dropdown.';
-    if (!Number.isFinite(+a.balance) || a.balance === null || a.balance === undefined) return 'Dokumen akun ada tetapi field "balance" tidak ada/bukan angka. Pastikan api/webhook.js versi baru sudah di-deploy dan EA v4.12 aktif.';
+    if (!Number.isFinite(+a.balance) || a.balance === null || a.balance === undefined) return 'Dokumen akun ada tetapi field "balance" tidak ada/bukan angka. Pastikan api/webhook.js versi baru sudah di-deploy dan EA v4.13 aktif.';
     if (miss.length) return 'Field berikut belum dikirim: ' + miss.join(', ') + '. Biasanya EA/webhook masih versi lama.';
     return '';
   }
@@ -2377,12 +2444,155 @@ tr:last-child td{border-bottom:0}
   }
   $('mtfCards')?.addEventListener('click', e => { const b = e.target.closest('[data-tf]'); if (!b) return; mtfSel = b.dataset.tf; cardsSig = ''; renderMTF(true); });
 
+  /* ================= SINYAL: AO + STOCH + DIVERGENCE ================= */
+  const SIG_TFS = ['M1', 'M3', 'M5', 'M15', 'M30', 'H1'];
+  const lsGet = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } };
+  let sigSel = new Set(lsGet('fx_sig_tfs', ['M5', 'M15', 'M30', 'H1']));
+  const sigOpt = Object.assign({ sound: true, notif: false, min: 60 }, lsGet('fx_sig_opt', {}));
+  let sigPrev = null, sigSigStr = '', sigLogs = [], sigUnsub = null, sigAcc = null, lastSigLog = 0;
+
+  function flagTxt(code) {
+    const [k, pts, x1, x2, x3] = String(code).split('|');
+    switch (k) {
+      case 'STO_ZONE': return 'Stoch di zona ekstrem (≤ level BUY / ≥ level SELL)';
+      case 'STO_EXIT': return `Stoch baru keluar zona (${x1} bar lalu)`;
+      case 'AO_SHIFT': return `AO berganti warna (${+x1 + 1} bar lalu)`;
+      case 'AO_LIVE': return 'AO mulai berganti warna (bar berjalan, belum close)';
+      case 'STO_X': return `Stoch K cross D (${+x1 + 1} bar lalu)`;
+      case 'DIV': return `${x1 === '0' ? 'Divergence reguler' : 'Hidden divergence'} ${x2 === '0' ? 'AO' : 'Stoch'} (${x3} bar lalu)`;
+      case 'OTE': return 'Harga di zona OTE fibo (rule EA)';
+      case 'HTF': return String(pts).startsWith('-') ? 'Melawan trend AO H1/H4/D1' : 'Searah trend AO H1/H4/D1';
+      default: return k;
+    }
+  }
+  const flagItems = f => String(f || '').split(',').filter(Boolean).map(c => { const pts = c.split('|')[1]; return { txt: flagTxt(c), pts: +pts }; });
+
+  function bestSide(t) {
+    const rank = o => (o.stage === 'trigger' ? 2000 : o.stage === 'watch' ? 1000 : 0) + (+o.score || 0);
+    const b = t.buy || {}, s = t.sell || {};
+    return rank(b) >= rank(s) ? { dir: 'buy', o: b } : { dir: 'sell', o: s };
+  }
+
+  function stoSvg(sto) {
+    const k = sto.kBars || [], d = sto.dBars || [], w = 160, h = 62, y = v => h - 3 - Math.max(0, Math.min(100, v)) / 100 * (h - 6);
+    if (k.length < 2) return '';
+    const x = i => i / (k.length - 1) * (w - 8) + 2, line = a => a.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    const bl = +sto.buyLv || 25, sl = +sto.sellLv || 75;
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><rect x="0" y="${y(bl)}" width="${w}" height="${h - y(bl)}" fill="rgba(61,242,166,.2)"/><rect x="0" y="0" width="${w}" height="${y(sl)}" fill="rgba(255,95,126,.2)"/>`
+      + `<line x1="0" x2="${w}" y1="${y(bl)}" y2="${y(bl)}" stroke="rgba(61,242,166,.7)" stroke-dasharray="3 3"/><line x1="0" x2="${w}" y1="${y(sl)}" y2="${y(sl)}" stroke="rgba(255,95,126,.7)" stroke-dasharray="3 3"/><line x1="0" x2="${w}" y1="${y(50)}" y2="${y(50)}" stroke="rgba(255,255,255,.12)"/>`
+      + `<polyline points="${line(d)}" fill="none" stroke="#fff" stroke-width="1.3" opacity=".75"/><polyline points="${line(k)}" fill="none" stroke="#ffd25e" stroke-width="2.2" stroke-linejoin="round"/>`
+      + `<circle cx="${x(k.length - 1)}" cy="${y(k[k.length - 1])}" r="3.5" fill="#ffd25e"/></svg>`;
+  }
+  function aoSvg(ao) {
+    const v = ao.bars || [], w = 160, h = 62;
+    if (v.length < 3) return '';
+    const mx = Math.max(1e-9, ...v.map(Math.abs)), bw = w / (v.length - 1), mid = h / 2;
+    const sh = ao.shiftAgo >= 0 ? v.length - 2 - ao.shiftAgo + 0 : -1;
+    let out = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><line x1="0" x2="${w}" y1="${mid}" y2="${mid}" stroke="rgba(255,255,255,.25)"/>`;
+    for (let i = 1; i < v.length; i++) {
+      const g = v[i] > v[i - 1], hh = Math.max(1.5, Math.abs(v[i]) / mx * (mid - 3)), yy = v[i] >= 0 ? mid - hh : mid;
+      const xx = (i - 1) * bw + 1.5, hit = i === sh;
+      out += `<rect x="${xx.toFixed(1)}" y="${yy.toFixed(1)}" width="${(bw - 3).toFixed(1)}" height="${hh.toFixed(1)}" rx="1.5" fill="${g ? '#3df2a6' : '#ff5f7e'}"${hit ? ' stroke="#fff" stroke-width="1.6"' : ''}/>`;
+    }
+    return out + '</svg>';
+  }
+
+  function sigCardHtml(t) {
+    if (!t.valid) return `<div class="card sig-card"><div class="sig-head"><span class="sig-tf">${t.tf}</span><span class="sig-pill none">menunggu data</span></div><div class="sig-note">Indikator timeframe ini belum siap di MT5 (riwayat belum dimuat).</div></div>`;
+    const bs = bestSide(t), o = bs.o, buy = bs.dir === 'buy', trig = o.stage === 'trigger', watch = o.stage === 'watch';
+    const pill = trig ? (buy ? 'buy' : 'sell') : watch ? (buy ? 'bw' : 'sw') : 'none';
+    const label = o.stage === 'none' ? 'TIDAK ADA SETUP' : `${buy ? 'BUY' : 'SELL'} ${trig ? 'TRIGGER' : 'WATCH'}`;
+    const ao = t.ao || {}, sto = t.sto || {};
+    const aoTxt = ao.liveShift ? `bar berjalan → ${ao.liveCol > 0 ? 'HIJAU' : 'MERAH'}` : ao.shiftDir ? `${ao.shiftDir > 0 ? 'merah→hijau' : 'hijau→merah'} ${ao.shiftAgo + 1} bar lalu` : '—';
+    const divs = (t.div || []).map(d => {
+      const bull = d.t > 0, tip = `${bull ? 'Bullish' : 'Bearish'} ${d.kind ? 'hidden' : 'reguler'} ${d.osc ? 'Stoch' : 'AO'}: harga ${(+d.pB).toFixed(2)} → ${(+d.pA).toFixed(2)}, osilator ${(+d.oB).toFixed(2)} → ${(+d.oA).toFixed(2)}`;
+      return `<span class="div-chip ${bull ? 'bull' : 'bear'}${d.kind ? ' hid' : ''}" title="${tip}">${bull ? '▲ Bullish' : '▼ Bearish'} ${d.kind ? 'Hidden' : 'Reguler'} · ${d.osc ? 'STO' : 'AO'} · ${d.ago} bar</span>`;
+    }).join('') || '<span class="div-none">Tidak ada divergence segar (pivot terbaru ≤ batas usia).</span>';
+    const flags = o.stage === 'none' ? '' : `<ul class="sig-flags">${flagItems(o.f).map(f => `<li><span>${f.txt}</span><b class="${f.pts < 0 ? 'neg' : ''}">${f.pts > 0 ? '+' : ''}${f.pts}</b></li>`).join('')}</ul>`;
+    const barCol = trig ? (buy ? 'var(--green)' : 'var(--red)') : watch ? 'var(--blue)' : 'var(--faint)';
+    return `<div class="card sig-card ${o.stage !== 'none' ? (buy ? 'buy' : 'sell') : ''}${trig ? ' trig' : ''}">
+      <div class="sig-head"><span class="sig-tf">${t.tf}</span><span class="sig-pill ${pill}">${label}</span><span class="sig-score"><small>skor</small>${o.stage === 'none' ? '—' : o.score}</span></div>
+      <div class="riskbar" style="margin:0 0 10px"><i style="width:${o.stage === 'none' ? 0 : o.score}%;background:${barCol}"></i></div>
+      <div class="sig-row">
+        <div class="sig-box"><h5>Stochastic <em>K ${(+sto.k).toFixed(1)} · D ${(+sto.d).toFixed(1)}</em></h5>${stoSvg(sto)}</div>
+        <div class="sig-box"><h5>AO <em>${aoTxt}</em></h5>${aoSvg(ao)}</div>
+      </div>
+      <div class="sig-div">${divs}</div>${flags}
+      <div class="sig-note">Bias trend H1/H4/D1: ${t.bias > 0 ? '▲ UP' : t.bias < 0 ? '▼ DOWN' : 'netral'} · zona Stoch ${(+sto.buyLv || 25)} / ${(+sto.sellLv || 75)}</div>
+    </div>`;
+  }
+
+  function beep() { try { const c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.setValueAtTime(.12, c.currentTime); g.gain.exponentialRampToValueAtTime(.001, c.currentTime + .4); o.start(); o.stop(c.currentTime + .42); } catch (e) { /* tanpa audio */ } }
+  function sigAlerts(list) {
+    const cur = {}; list.forEach(t => { if (!t.valid) return; ['buy', 'sell'].forEach(d => { cur[t.tf + '_' + d] = (t[d] || {}).stage || 'none'; }); });
+    if (sigPrev) list.forEach(t => {
+      if (!t.valid || !sigSel.has(t.tf)) return;
+      ['buy', 'sell'].forEach(d => {
+        const o = t[d] || {}, k = t.tf + '_' + d;
+        if (o.stage === 'trigger' && sigPrev[k] !== 'trigger' && (+o.score || 0) >= sigOpt.min) {
+          const msg = `🎯 ${t.tf} ${d === 'buy' ? 'BUY' : 'SELL'} TRIGGER · skor ${o.score}`;
+          FX().toast(msg); if (sigOpt.sound) beep();
+          if (sigOpt.notif && window.Notification && Notification.permission === 'granted') { try { new Notification('FaridFX Sinyal', { body: msg }); } catch (e) { /* abaikan */ } }
+        }
+      });
+    });
+    sigPrev = cur;
+  }
+
+  function renderSigLog() {
+    const el = $('sigLog'); if (!el) return;
+    const fx = FX(), a = fx.account, lp = livePrice().p, pip = a && +a.pipSize > 0 ? +a.pipSize : 0.1;
+    const head = '<thead><tr><th>Waktu</th><th>TF</th><th>Arah</th><th>Tahap</th><th>Skor</th><th>Harga sinyal</th><th>Sejak sinyal</th><th>Alasan</th></tr></thead>';
+    const rows = sigLogs.filter(r => sigSel.has(r.tf));
+    if (!rows.length) { el.innerHTML = head + '<tbody><tr><td class="empty" colspan="8">Belum ada sinyal tercatat untuk timeframe terpilih.</td></tr></tbody>'; return; }
+    el.innerHTML = head + '<tbody>' + rows.map(r => {
+      const buy = r.dir === 'buy', mv = lp != null && r.price ? (buy ? lp - r.price : r.price - lp) / pip : null;
+      return `<tr><td class="mono">${new Date(r.ts).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td><td class="strong">${r.tf}</td>`
+        + `<td><span class="tag ${buy ? 'buy' : 'sell'}">${buy ? 'BUY' : 'SELL'}</span></td><td><span class="tag ${r.stage === 'trigger' ? 'high' : 'low'}">${r.stage}</span></td><td class="mono">${r.score}</td><td class="mono">${r.price}</td>`
+        + `<td class="mono ${mv == null ? '' : mv >= 0 ? 'pos' : 'neg'}">${mv == null ? '—' : (mv >= 0 ? '+' : '') + mv.toFixed(1) + 'p'}</td><td style="white-space:normal;min-width:260px">${flagItems(r.flags).map(f => f.txt).join(' · ')}</td></tr>`;
+    }).join('') + '</tbody>';
+  }
+
+  function renderSig(force) {
+    if (activeView() !== 'sig') return;
+    const fx = FX(), a = fx.account, cardsEl = $('sigCards'); if (!cardsEl) return;
+    const list = (a && a.sig) || [];
+    if (!list.length) {
+      $('sigSummary').innerHTML = ''; sigSigStr = '';
+      cardsEl.innerHTML = '<div class="mtf-empty" style="grid-column:1/-1">Data sinyal belum diterima.<br>Pastikan EA sudah <b>v4.13</b> (input <code>InpEnableSig = true</code>) dan <code>api/webhook.js</code> terbaru ter-deploy. Detail: tombol 🩺 Diagnosa.</div>';
+      return;
+    }
+    const sel = list.filter(t => sigSel.has(t.tf));
+    const sum = sel.map(t => { if (!t.valid) return ''; const b = bestSide(t), o = b.o; if (o.stage === 'none') return `<span class="sig-sum"><b>${t.tf}</b> netral</span>`; const c = o.stage === 'trigger' ? (b.dir === 'buy' ? 'buy' : 'sell') : (b.dir === 'buy' ? 'bw' : 'sw'); return `<span class="sig-sum ${c}"><b>${t.tf}</b> ${b.dir === 'buy' ? 'BUY' : 'SELL'} ${o.stage === 'trigger' ? '🎯' : '👀'} ${o.score}</span>`; }).join('');
+    const sigStr = JSON.stringify(sel) + sum;
+    if (force || sigStr !== sigSigStr) { sigSigStr = sigStr; $('sigSummary').innerHTML = sum || '<span class="div-none">Pilih minimal satu timeframe.</span>'; cardsEl.innerHTML = sel.map(sigCardHtml).join(''); }
+    const now = performance.now(); if (force || now - lastSigLog > 900) { lastSigLog = now; renderSigLog(); }
+  }
+  function sigWatchLog() {
+    const fx = FX(); if (!fx.db || !fx.accountId || fx.accountId === sigAcc) return;
+    if (sigUnsub) { try { sigUnsub(); } catch (e) { /* abaikan */ } }
+    sigAcc = fx.accountId; sigLogs = [];
+    sigUnsub = fx.db.collection('accounts').doc(sigAcc).collection('signals').orderBy('ts', 'desc').limit(60)
+      .onSnapshot(s => { sigLogs = s.docs.map(d => d.data()); renderSigLog(); }, err => console.warn('signals', err));
+  }
+  (function initSigUi() {
+    const chips = $('sigTfChips'); if (!chips) return;
+    const paint = () => { chips.innerHTML = SIG_TFS.map(tf => `<button class="tfchip${sigSel.has(tf) ? ' on' : ''}" data-tf="${tf}">${tf}</button>`).join(''); };
+    paint();
+    chips.addEventListener('click', e => { const b = e.target.closest('[data-tf]'); if (!b) return; sigSel.has(b.dataset.tf) ? sigSel.delete(b.dataset.tf) : sigSel.add(b.dataset.tf); localStorage.setItem('fx_sig_tfs', JSON.stringify([...sigSel])); paint(); renderSig(true); });
+    const save = () => localStorage.setItem('fx_sig_opt', JSON.stringify(sigOpt));
+    $('sigSound').checked = sigOpt.sound; $('sigNotif').checked = sigOpt.notif; $('sigMin').value = sigOpt.min;
+    $('sigSound').addEventListener('change', e => { sigOpt.sound = e.target.checked; save(); if (sigOpt.sound) beep(); });
+    $('sigNotif').addEventListener('change', e => { sigOpt.notif = e.target.checked; save(); if (sigOpt.notif && window.Notification && Notification.permission !== 'granted') Notification.requestPermission(); });
+    $('sigMin').addEventListener('change', e => { sigOpt.min = Math.max(0, Math.min(100, +e.target.value || 0)); e.target.value = sigOpt.min; save(); });
+  })();
+
   /* ================= update menyeluruh ================= */
   function activeView() { const v = document.querySelector('.view.active'); return v ? v.id.replace('view-', '') : ''; }
   function updateHero() { const n = activeView(), fx = FX(); if (n && HERO[n] && iso[n]) { try { HERO[n](fx); } catch (e) { console.warn('hero', n, e); } } }
-  function update() { updateHud(); updateHero(); livePrice(); renderMTF(true); paintBroker(); paintBanner(); if ($('diagModalOverlay').classList.contains('show')) $('diagBody').innerHTML = diagHtml(); }
+  function update() { updateHud(); updateHero(); livePrice(); renderMTF(true); sigWatchLog(); sigAlerts((FX().account && FX().account.sig) || []); renderSig(true); paintBroker(); paintBanner(); if ($('diagModalOverlay').classList.contains('show')) $('diagBody').innerHTML = diagHtml(); }
   window.__FXUI = { update, diagChanged: () => { paintBanner(); } };
-  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => setTimeout(() => { updateHero(); renderMTF(true); kick(); }, 0)));
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => setTimeout(() => { updateHero(); renderMTF(true); renderSig(true); kick(); }, 0)));
   setInterval(() => { paintBanner(); paintBroker(); }, 3000);
 
   /* ================= parallax dunia + percikan ================= */
