@@ -385,6 +385,41 @@ tr:last-child td{border-bottom:0}
 @media(max-width:420px){.kpis{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
+/* ================= MULTI-TIMEFRAME: trend + fibo ================= */
+.mtf-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;perspective:1100px}
+.mtf-card{position:relative;text-align:center;padding:14px 10px 12px;color:#fff;border:3px solid var(--brd);border-bottom-width:8px;border-radius:20px;
+  background:linear-gradient(180deg,#2f3f94,#1a2352);box-shadow:inset 0 3px 0 rgba(255,255,255,.18);transition:transform .2s cubic-bezier(.2,.9,.3,1.4),border-color .2s}
+.mtf-card:hover{transform:translateY(-5px) rotateX(6deg)}
+.mtf-card.sel{border-color:var(--gold);box-shadow:inset 0 3px 0 rgba(255,255,255,.2),0 0 26px rgba(255,210,94,.45);transform:translateY(-4px)}
+.mtf-card.up{background:linear-gradient(180deg,#17916a,#0e4a39)}.mtf-card.down{background:linear-gradient(180deg,#b0304f,#5e1830)}
+.mtf-card.flat{background:linear-gradient(180deg,#b9801f,#5e3d0a)}.mtf-card.na{background:linear-gradient(180deg,#3a4486,#1d2552);opacity:.8}
+.mtf-tf{font:400 26px var(--fh);letter-spacing:.03em;text-shadow:0 3px 0 rgba(0,0,0,.35)}
+.mtf-arrow{font-size:30px;line-height:1.1;margin-top:2px;text-shadow:0 3px 0 rgba(0,0,0,.3);animation:bobIco 3s ease-in-out infinite}
+.mtf-dir{font:400 15px var(--fh);margin:2px 0 8px}
+.mtf-card small{display:block;margin-top:7px;font-size:10px;color:rgba(255,255,255,.8);font-weight:700}
+.mtf-card .trend-bar{margin-top:0}
+.mtf-empty{padding:30px 16px;text-align:center;color:var(--faint);font-size:12.5px;border:3px dashed var(--line2);border-radius:16px;line-height:1.7}
+.fibo-head{padding:10px 14px;border-radius:14px;background:#10173f;box-shadow:inset 0 4px 8px rgba(0,0,0,.45);font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.7}
+.fibo-head b{color:#fff}.fibo-head em{font-style:normal;color:var(--gold);font-size:10.5px}
+.fibo-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fcol h4{margin:0 0 8px;font:400 17px var(--fh)}.fcol.buy h4{color:var(--green)}.fcol.sell h4{color:var(--red)}
+.lsum{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:var(--muted);margin-bottom:8px}.lsum b{color:#fff;font-family:"JetBrains Mono",monospace;font-weight:600}
+.lad{border-radius:14px;overflow:hidden;border:2px solid rgba(255,255,255,.1);background:#10173f}
+.lrow{display:grid;grid-template-columns:76px 52px 1fr auto;gap:8px;align-items:center;padding:7px 12px;font-size:11.5px;border-bottom:1px solid var(--line);position:relative}
+.lrow:last-child{border-bottom:0}
+.lrow .ln{font-weight:900;color:#fff}.lrow .lr{font-family:"JetBrains Mono",monospace;color:var(--faint);font-size:10.5px}
+.lrow .lp{font-family:"JetBrains Mono",monospace;font-weight:600;color:#fff;text-align:right}.lrow .ld{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--muted);min-width:96px;text-align:right}
+.lrow.dim{opacity:.5}
+.lrow.sl{background:linear-gradient(90deg,rgba(255,95,126,.28),transparent)}.lrow.sl .ln{color:var(--red)}
+.lrow.tp{background:linear-gradient(90deg,rgba(61,242,166,.12),transparent)}.lrow.tp.sel{background:linear-gradient(90deg,rgba(61,242,166,.36),transparent)}.lrow.tp .ln{color:var(--green)}
+.lrow.ote{background:linear-gradient(90deg,rgba(98,207,255,.3),transparent)}.lrow.ote .ln{color:var(--blue)}
+.lrow.price{background:linear-gradient(90deg,#c9962a,#ffd25e);color:#3a2600;box-shadow:0 0 18px rgba(255,210,94,.55);z-index:1;animation:todayGlow 2s ease-in-out infinite}
+.lrow.price .ln,.lrow.price .lp,.lrow.price .ld{color:#3a2600;font-weight:900}
+.gfibo{margin-bottom:14px}
+@media(max-width:1250px){.mtf-cards{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.fibo-grid{grid-template-columns:1fr}.lrow{grid-template-columns:64px 44px 1fr auto}}
+@media(max-width:600px){.mtf-cards{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -404,7 +439,7 @@ tr:last-child td{border-bottom:0}
       <div class="logo" aria-label="FX"><div class="coin">
         <span style="--z:-3px"></span><span style="--z:-2px"></span><span style="--z:-1px"></span><span style="--z:0px"></span><span style="--z:1px"></span><span style="--z:2px"></span>
         <span class="f" style="--z:3px">FX</span><span class="b" style="--z:-3px">FX</span></div></div>
-      <div><h1>FARIDFX</h1><p>Command Base · EA v4.11</p></div>
+      <div><h1>FARIDFX</h1><p>Command Base · EA v4.12</p></div>
     </div>
 
     <div class="ticker gpanel" id="ticker">
@@ -447,6 +482,7 @@ tr:last-child td{border-bottom:0}
   <div class="layout">
     <nav class="nav">
       <button class="tab active" data-view="overview"><span class="tico" style="--c1:#ffd25e;--c2:#e08a10"><span>🏰</span></span><span>Overview</span></button>
+      <button class="tab" data-view="mtf"><span class="tico" style="--c1:#9ef0ff;--c2:#2b8fd6"><span>🧭</span></span><span>Trend & Fibo</span></button>
       <button class="tab" data-view="control"><span class="tico" style="--c1:#7ad0ff;--c2:#3a7bd5"><span>🎮</span></span><span>Control</span><span id="controlPip" class="pip" style="display:none"></span></button>
       <button class="tab" data-view="positions"><span class="tico" style="--c1:#ff8aa0;--c2:#d93658"><span>⚔️</span></span><span>Positions</span></button>
       <button class="tab" data-view="orders"><span class="tico" style="--c1:#c9a0ff;--c2:#7b4fd1"><span>📜</span></span><span>Orders</span></button>
@@ -503,7 +539,7 @@ tr:last-child td{border-bottom:0}
       <div class="section-head"><div><h2>Trading Control</h2><p>Kontrol EA dari jarak jauh — tanpa buka MT5. Butuh PIN dashboard. Perintah diambil EA saat polling berikutnya (±5 detik); perintah yang tidak diambil dalam 90 detik dibatalkan otomatis.</p></div></div>
 
       <div class="card panel">
-        <div class="panel-title"><h3>Master Switch</h3><span>EA v4.11 murni mengelola SL/TP/BE/reentry order manual — tidak ada entry otomatis</span></div>
+        <div class="panel-title"><h3>Master Switch</h3><span>EA v4.12 murni mengelola SL/TP/BE/reentry order manual — tidak ada entry otomatis</span></div>
         <div class="toolbar">
           <button class="btn primary" id="ctlEaOn">▶ Aktifkan EA</button>
           <button class="btn" id="ctlEaOff">⏸ Pause EA</button>
@@ -654,6 +690,15 @@ tr:last-child td{border-bottom:0}
       <div class="section-head"><div><h2>Account Details</h2><p>Informasi akun yang aktif dipilih</p></div></div>
       <div class="card panel"><div class="info-list" id="accountInfo"></div></div>
     </section>
+    <section id="view-mtf" class="view">
+      <div class="hero" data-scene="mtf"><div class="hero-info"><b>Radar Tower</b><span>Menara radar tren M5–D1: tinggi = kekuatan dominasi AO, hijau = UP, merah = DOWN.</span><em id="hn-mtf"></em></div><div class="hero-scene"></div></div>
+      <div class="section-head"><div><h2>Trend Multi-Timeframe</h2><p>Trend AO (dominasi candle tertutup) di M5, M15, H1, H4, D1 — dihitung EA dengan setting yang sama (lookback &amp; dominasi). Klik kartu untuk melihat fibo timeframe itu.</p></div><span id="mtfAlign" class="tag neutral"></span></div>
+      <div class="mtf-cards" id="mtfCards"></div>
+      <div class="section-head"><div><h2>Level Fibo Potensial</h2><p>Dihitung seperti posisi yang dibuka di bar berjalan: Body &amp; Wick dari candle[1] dan candle[2] sebelumnya, level = Wick + rasio × (Body − Wick), SL −0.236, OTE 0.336–0.382, TP sesuai pilihan EA (termasuk buffer &amp; TP adaptif).</p></div></div>
+      <div class="card panel" id="fiboPot"></div>
+      <div class="section-head"><div><h2>Fibo Aktif (Terjadi)</h2><p>Grup fibo yang sedang dikelola EA untuk posisi nyata: level, BE, reentry, dan posisi harga terhadap level.</p></div></div>
+      <div id="fiboActive"></div>
+    </section>
   </main>
 
   <section id="view-wallet" class="view">
@@ -681,7 +726,7 @@ tr:last-child td{border-bottom:0}
     <p style="color:var(--faint);font-size:9.5px;margin-top:12px;line-height:1.6">Data diambil langsung dari explorer/node publik (Blockstream, TronGrid, Etherscan, BSC RPC) di sisi browser member. Hanya alamat wallet publik yang digunakan — tidak ada private key yang pernah disimpan atau dikirim ke mana pun. Khusus wallet BEP20 (BNB Chain), riwayat transaksi masuk hanya mencakup beberapa jam terakhir karena memakai node RPC gratis; saldo live tetap akurat.</p>
   </section>
 
-      <footer class="footer">FaridFX · Firebase-powered account monitoring · EA: FaridFX_FiboManager_EA.mq5 v4.11 · Harga XAU/USD: feed publik (bukan harga broker) · Not financial advice</footer>
+      <footer class="footer">FaridFX · Firebase-powered account monitoring · EA: FaridFX_FiboManager_EA.mq5 v4.12 · Harga XAU/USD: feed publik (bukan harga broker) · Not financial advice</footer>
     </div>
   </div>
 </div>
@@ -980,7 +1025,7 @@ tr:last-child td{border-bottom:0}
     try { if (window.__FXUI) window.__FXUI.update(); } catch (e) { console.warn('ui', e); }
   }
 
-  // ================= EA STATUS STRIP (v4.11 fields) =================
+  // ================= EA STATUS STRIP (v4.12 fields) =================
   function renderEaStrip(){
     const a = currentAccount;
     const pills = [];
@@ -1405,7 +1450,7 @@ tr:last-child td{border-bottom:0}
     </svg>`;
   }
 
-  // ================= RISK MONITOR (fields langsung dari EA v4.11, fallback ke hitung lokal) =================
+  // ================= RISK MONITOR (fields langsung dari EA v4.12, fallback ke hitung lokal) =================
   function renderRisk(){
     const a = currentAccount, p = a.positions||[];
     const ml = Number(a.marginLevel||0);
@@ -1517,7 +1562,7 @@ tr:last-child td{border-bottom:0}
     }).then(()=>{ e.target.reset(); toast('Event ditambahkan'); });
   });
 
-  // ================= ALERTS (gabungan: perhitungan lokal + status EA v4.11) =================
+  // ================= ALERTS (gabungan: perhitungan lokal + status EA v4.12) =================
   function renderAlerts(){
     if (!currentAccount) return;
     const a = currentAccount;
@@ -1956,7 +2001,7 @@ tr:last-child td{border-bottom:0}
   }
 
   const SCENES = {
-    overview: { cols: 7, rows: 3 }, control: { cols: 6, rows: 3 }, positions: { cols: 8, rows: 3 }, orders: { cols: 8, rows: 3 },
+    overview: { cols: 7, rows: 3 }, mtf: { cols: 7, rows: 3 }, control: { cols: 6, rows: 3 }, positions: { cols: 8, rows: 3 }, orders: { cols: 8, rows: 3 },
     history: { cols: 8, rows: 2 }, analytics: { cols: 8, rows: 3 }, calendar: { cols: 7, rows: 6, tw: 56, maxH: 90 }, portfolio: { cols: 14, rows: 2, tw: 50 },
     risk: { cols: 6, rows: 3 }, wallet: { cols: 7, rows: 3 }, news: { cols: 10, rows: 2, tw: 58 }, accounts: { cols: 6, rows: 3 },
   };
@@ -1983,6 +2028,13 @@ tr:last-child td{border-bottom:0}
       iso.overview.set(it.map((x, i) => ({ id: x[0], gx: 1 + i * 1.5, gy: 1, h: scale(x[1], mn - pad * .8, mx + pad * .1, 22, 118), color: x[2], label: x[0], val: M(x[1]), bob: x[0] === 'EQUITY' })));
       const pp = FX().profitPctOf(a);
       hn('overview', pp == null ? '' : `Profit ${pp >= 0 ? '+' : ''}${P(pp)} dari modal`);
+    },
+    mtf(fx) {
+      const mtf = (fx.account && fx.account.mtf) || [];
+      if (!mtf.length) return iso.mtf.set([], 'Menunggu data multi-timeframe dari EA v4.12');
+      iso.mtf.set(mtf.map((t, i) => ({ id: t.tf, gx: .8 + i * 1.15, gy: 1, h: t.valid ? 22 + Math.abs((+t.abovePct || 0) - (+t.belowPct || 0)) : 12, color: !t.valid ? C.gray : t.dir > 0 ? C.green : t.dir < 0 ? C.red : C.amber, label: t.tf, val: !t.valid ? 'n/a' : (t.dir > 0 ? 'UP ' + Math.round(t.abovePct) : t.dir < 0 ? 'DOWN ' + Math.round(t.belowPct) : 'NETRAL'), bob: !!(t.valid && t.dir !== 0) })));
+      const v = mtf.filter(t => t.valid), up = v.filter(t => t.dir > 0).length, dn = v.filter(t => t.dir < 0).length;
+      hn('mtf', v.length ? (up >= dn ? `UP ${up}/${v.length} TF` : `DOWN ${dn}/${v.length} TF`) : '');
     },
     control(fx) {
       const a = fx.account; if (!a) return;
@@ -2191,6 +2243,7 @@ tr:last-child td{border-bottom:0}
     const now = Date.now();
     if (now - lastSpark > 700 && f.ticks.length > 2) { lastSpark = now; sparkline(f.ticks); }
     paintBroker();
+    renderMTF();
   }
   function sparkline(t) {
     const w = 120, h = 46, mn = Math.min(...t), mx = Math.max(...t), sp = Math.max(mx - mn, 1e-6);
@@ -2200,7 +2253,7 @@ tr:last-child td{border-bottom:0}
   }
   function paintBroker() {
     const a = FX().account, e = $('tkBroker'); if (!e) return;
-    if (!a || !(+a.bid > 0)) { e.innerHTML = 'Broker (EA): menunggu bid/ask — update EA ke v4.11'; return; }
+    if (!a || !(+a.bid > 0)) { e.innerHTML = 'Broker (EA): menunggu bid/ask — update EA ke v4.12'; return; }
     const dg = +a.bid > 1000 ? 2 : 5, age = a.priceTime ? Math.max(0, Math.round(Date.now() / 1000 - a.priceTime)) : null, sp = +a.pipSize > 0 ? ((+a.ask - +a.bid) / +a.pipSize).toFixed(1) : '';
     const diff = Feed.price != null ? ` · Δ feed ${(+a.bid - Feed.price >= 0 ? '+' : '') + (+a.bid - Feed.price).toFixed(2)}` : '';
     e.innerHTML = `Broker ${a.priceSymbol || ''}: <b>${(+a.bid).toFixed(dg)}</b> / <b>${(+a.ask).toFixed(dg)}</b>${sp ? ' · spr ' + sp + 'p' : ''}${age != null ? ' · ' + (age < 90 ? age + 'd' : Math.round(age / 60) + 'm') + ' lalu' : ''}${diff}`;
@@ -2217,7 +2270,7 @@ tr:last-child td{border-bottom:0}
     if (d.error) return /permission/i.test(d.error) ? 'Firestore Rules menolak pembacaan. Deploy file firestore.rules (allow read: if true) ATAU aktifkan Authentication → Anonymous di Firebase Console.' : 'Gagal terhubung ke Firestore. Cek internet & firebaseConfig.';
     if (d.accounts === 0) return 'Koleksi "accounts" kosong: EA belum mengirim snapshot. Cek: InpWebhookSecret = EA_WEBHOOK_SECRET Vercel, URL webhook di Allow WebRequest MT5, dan tab Experts (HTTP 200?).';
     if (!a) return 'Akun belum dimuat. Tunggu beberapa detik atau pilih akun di dropdown.';
-    if (!Number.isFinite(+a.balance) || a.balance === null || a.balance === undefined) return 'Dokumen akun ada tetapi field "balance" tidak ada/bukan angka. Pastikan api/webhook.js versi baru sudah di-deploy dan EA v4.11 aktif.';
+    if (!Number.isFinite(+a.balance) || a.balance === null || a.balance === undefined) return 'Dokumen akun ada tetapi field "balance" tidak ada/bukan angka. Pastikan api/webhook.js versi baru sudah di-deploy dan EA v4.12 aktif.';
     if (miss.length) return 'Field berikut belum dikirim: ' + miss.join(', ') + '. Biasanya EA/webhook masih versi lama.';
     return '';
   }
@@ -2242,12 +2295,94 @@ tr:last-child td{border-bottom:0}
   $('diagModalClose')?.addEventListener('click', () => $('diagModalOverlay').classList.remove('show'));
   $('diagModalOverlay')?.addEventListener('click', e => { if (e.target === $('diagModalOverlay')) $('diagModalOverlay').classList.remove('show'); });
 
+  /* ================= MULTI-TIMEFRAME: trend + fibo (rule EA) ================= */
+  const FN = ['SL', 'Wick', 'Entry A', 'OTE 1', 'OTE 2', 'Mid 50', 'Entry B', 'Body', 'TP1', 'TP2', 'TP3'];
+  const FR = [-0.236, 0, 0.236, 0.336, 0.382, 0.5, 0.618, 1, 1.618, 2.618, 4.236];
+  let mtfSel = 'H1', cardsSig = '', lastMtf = 0, calib = null, calibStamp = null;
+  const dgt = v => v >= 1000 ? 2 : v >= 10 ? 3 : 5;
+  const fp = v => Number(v).toLocaleString('en-US', { minimumFractionDigits: dgt(Math.abs(v)), maximumFractionDigits: dgt(Math.abs(v)) });
+  const tloc = s => s ? new Date(s * 1000).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—';
+
+  // harga acuan penanda: bid broker; di antara snapshot EA = feed live + kalibrasi selisih broker-feed
+  function livePrice() {
+    const a = FX().account;
+    if (a && +a.bid > 0) {
+      const gold = /XAU|GOLD/i.test(a.priceSymbol || '');
+      if (gold && Feed.price != null) {
+        if (a.priceTime !== calibStamp) { calibStamp = a.priceTime; calib = +a.bid - Feed.price; }
+        if (calib != null && Math.abs(calib) < 60) return { p: Feed.price + calib, src: '≈ broker (feed live + kalibrasi)' };
+      }
+      return { p: +a.bid, src: 'bid broker (update tiap snapshot EA)' };
+    }
+    return { p: Feed.price, src: 'feed publik' };
+  }
+
+  function ladderHtml(f, isBuy, price, pip) {
+    if (!f || !f.valid) return '<div class="mtf-empty">Range candle acuan = 0 atau data timeframe ini belum tersedia di MT5.</div>';
+    const key = new Set([0, 1, 3, 4, 5, 7, f.tpIdx]);
+    const rows = f.levels.map((p, i) => ({ i, p: +p })).sort((a, b) => b.p - a.p);
+    const lo = Math.min(+f.levels[3], +f.levels[4]), hi = Math.max(+f.levels[3], +f.levels[4]);
+    const has = price != null && Number.isFinite(price);
+    let out = '', placed = !has;
+    const prow = () => `<div class="lrow price"><span class="ln">HARGA</span><span class="lr"></span><span class="lp">${fp(price)}</span><span class="ld">${price >= lo && price <= hi ? 'di zona OTE ✔' : ''}</span></div>`;
+    rows.forEach(r => {
+      if (!placed && price >= r.p) { out += prow(); placed = true; }
+      const role = r.i === 0 ? 'sl' : r.i >= 8 ? (r.i === f.tpIdx ? 'tp sel' : 'tp') : (r.i === 3 || r.i === 4) ? 'ote' : 'mid';
+      let st = '';
+      if (has) { if (r.i >= 8) st = (isBuy ? price >= r.p : price <= r.p) ? ' ✔ tercapai' : ''; if (r.i === 0) st = (isBuy ? price <= r.p : price >= r.p) ? ' ✖ terkena' : ''; }
+      const d = has ? (r.p - price) / pip : null;
+      out += `<div class="lrow ${role}${key.has(r.i) ? '' : ' dim'}"><span class="ln">${FN[r.i]}</span><span class="lr">${FR[r.i]}</span><span class="lp">${fp(r.p)}</span><span class="ld">${d == null ? '' : (d >= 0 ? '+' : '') + d.toFixed(1) + 'p'}${st}</span></div>`;
+    });
+    if (!placed) out += prow();
+    const om = (+f.levels[3] + +f.levels[4]) / 2, risk = Math.abs(om - f.sl), rr = risk > 0 ? Math.abs(f.tp - om) / risk : 0;
+    return `<div class="lsum"><span>SL <b>${fp(f.sl)}</b></span><span>TP <b>${fp(f.tp)}</b> (${FN[f.tpIdx]})</span><span>OTE <b>${fp(lo)}–${fp(hi)}</b></span><span>R:R @OTE <b>${rr.toFixed(2)}</b></span></div><div class="lad">${out}</div>`;
+  }
+
+  function cardHtml(t) {
+    const cls = !t.valid ? 'na' : t.dir > 0 ? 'up' : t.dir < 0 ? 'down' : 'flat';
+    const arrow = !t.valid ? '…' : t.dir > 0 ? '▲' : t.dir < 0 ? '▼' : '●';
+    const txt = !t.valid ? 'menunggu data' : t.dir > 0 ? `UP ${Math.round(t.abovePct)}%` : t.dir < 0 ? `DOWN ${Math.round(t.belowPct)}%` : 'NETRAL';
+    return `<button class="mtf-card ${cls}${t.tf === mtfSel ? ' sel' : ''}" data-tf="${t.tf}"><div class="mtf-tf">${t.tf}</div><div class="mtf-arrow">${arrow}</div><div class="mtf-dir">${txt}</div>`
+      + (t.valid ? `<div class="trend-bar"><i style="width:${t.abovePct}%"></i></div><small>▲ ${t.above}/${t.n} · ▼ ${t.below}/${t.n} · AO ${(+t.ao).toFixed(2)}</small>` : '') + `</button>`;
+  }
+
+  function renderMTF(force) {
+    if (activeView() !== 'mtf') return;
+    const now = performance.now(); if (!force && now - lastMtf < 400) return; lastMtf = now;
+    const fx = FX(), a = fx.account, cardsEl = $('mtfCards'); if (!cardsEl) return;
+    const mtf = (a && a.mtf) || [];
+    if (!mtf.length) {
+      cardsSig = ''; $('mtfAlign').textContent = '';
+      cardsEl.innerHTML = '<div class="mtf-empty" style="grid-column:1/-1">Data multi-timeframe belum diterima.<br>Pastikan EA sudah <b>v4.12</b> (input <code>InpEnableMTF = true</code>) dan <code>api/webhook.js</code> terbaru ter-deploy. Detail: tombol 🩺 Diagnosa.</div>';
+      $('fiboPot').innerHTML = ''; $('fiboActive').innerHTML = ''; return;
+    }
+    if (!mtf.some(t => t.tf === mtfSel)) mtfSel = mtf[0].tf;
+    const sig = JSON.stringify(mtf.map(t => [t.tf, t.valid, t.dir, t.above, t.below, +(+t.ao).toFixed(3)])) + mtfSel;
+    if (sig !== cardsSig) { cardsSig = sig; cardsEl.innerHTML = mtf.map(cardHtml).join(''); }
+    const v = mtf.filter(t => t.valid), up = v.filter(t => t.dir > 0).length, dn = v.filter(t => t.dir < 0).length, al = $('mtfAlign');
+    al.textContent = !v.length ? '' : up > dn ? `Selaras UP ${up}/${v.length}` : dn > up ? `Selaras DOWN ${dn}/${v.length}` : `Campur ${up}↑ ${dn}↓`;
+    al.className = 'tag ' + (up > dn ? 'buy' : dn > up ? 'sell' : 'neutral');
+
+    const lp = livePrice(), pip = +a.pipSize > 0 ? +a.pipSize : 0.1, t = mtf.find(x => x.tf === mtfSel) || mtf[0];
+    $('fiboPot').innerHTML = `<div class="fibo-head"><b>${t.tf}</b> · candle acuan: <b>${tloc(t.c1Time)}</b> &amp; <b>${tloc(t.c2Time)}</b> · bar berjalan ${tloc(t.barTime)}<br>`
+      + `Harga penanda <b>${lp.p != null ? fp(lp.p) : '—'}</b> <em>${lp.src}</em> · trend ${t.valid ? (t.dir > 0 ? 'UP' : t.dir < 0 ? 'DOWN' : 'NETRAL') : 'n/a'}</div>`
+      + `<div class="fibo-grid"><div class="fcol buy"><h4>🟢 BUY potensial</h4>${ladderHtml(t.buy, true, lp.p, pip)}</div><div class="fcol sell"><h4>🔴 SELL potensial</h4>${ladderHtml(t.sell, false, lp.p, pip)}</div></div>`;
+
+    const gs = a.fibo || [];
+    $('fiboActive').innerHTML = gs.length ? gs.map(g => {
+      const isBuy = g.dir === 'buy';
+      return `<div class="card panel gfibo"><div class="panel-title"><h3>${isBuy ? '🟢 BUY' : '🔴 SELL'} #${g.id} · ${g.tf}</h3><span>${g.active ? 'AKTIF' : 'NONAKTIF'} · BE ${g.be ? '✔' : '—'} · reentry ${g.reentry}/${g.maxReentry} · ${g.openPositions} posisi · ${g.lot} lot · dibuat ${tloc(g.created)}</span></div>`
+        + ladderHtml({ valid: true, levels: g.levels, tpIdx: g.tpIdx, sl: g.sl, tp: g.tp }, isBuy, lp.p, pip) + `</div>`;
+    }).join('') : '<div class="mtf-empty">Belum ada fibo aktif. Muncul otomatis begitu EA mengelola posisi (rule yang sama dengan level potensial di atas).</div>';
+  }
+  $('mtfCards')?.addEventListener('click', e => { const b = e.target.closest('[data-tf]'); if (!b) return; mtfSel = b.dataset.tf; cardsSig = ''; renderMTF(true); });
+
   /* ================= update menyeluruh ================= */
   function activeView() { const v = document.querySelector('.view.active'); return v ? v.id.replace('view-', '') : ''; }
   function updateHero() { const n = activeView(), fx = FX(); if (n && HERO[n] && iso[n]) { try { HERO[n](fx); } catch (e) { console.warn('hero', n, e); } } }
-  function update() { updateHud(); updateHero(); paintBroker(); paintBanner(); if ($('diagModalOverlay').classList.contains('show')) $('diagBody').innerHTML = diagHtml(); }
+  function update() { updateHud(); updateHero(); livePrice(); renderMTF(true); paintBroker(); paintBanner(); if ($('diagModalOverlay').classList.contains('show')) $('diagBody').innerHTML = diagHtml(); }
   window.__FXUI = { update, diagChanged: () => { paintBanner(); } };
-  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => setTimeout(() => { updateHero(); kick(); }, 0)));
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => setTimeout(() => { updateHero(); renderMTF(true); kick(); }, 0)));
   setInterval(() => { paintBanner(); paintBroker(); }, 3000);
 
   /* ================= parallax dunia + percikan ================= */
