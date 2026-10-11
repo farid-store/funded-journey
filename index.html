@@ -521,7 +521,6 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
 @keyframes fu{30%{color:var(--green);text-shadow:0 0 12px var(--green)}}@keyframes fd{30%{color:var(--red);text-shadow:0 0 12px var(--red)}}
 .state::after{content:"";display:block;height:90px;margin-top:16px;border-radius:12px;background:linear-gradient(90deg,#131c38 25%,#1b2748 50%,#131c38 75%);background-size:200% 100%;animation:sk 1.2s linear infinite}
 @keyframes sk{to{background-position:-200% 0}}
-body.focus .world{display:none}body.focus .tilt{transform:none!important}body.focus *{animation-duration:.01s!important}
 @media(prefers-reduced-motion:reduce){.world .floor{animation:none}.tilt{transform:none!important}}
 /* ===== modul baru ===== */
 .xt{width:100%;border-collapse:collapse;font-size:12px}.xt th{color:var(--faint);text-align:left;font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}.xt td{padding:6px 8px;border-bottom:1px solid var(--line)}
@@ -3274,12 +3273,9 @@ const pctl = (a, p) => { if (!a.length) return 0; const s = [...a].sort((x, y) =
 const ramp = t => { t = Math.max(0, Math.min(1, t)); const S = [[0, 8, 14, 40], [.3, 30, 40, 120], [.55, 0, 170, 220], [.8, 255, 200, 60], [1, 255, 255, 255]]; for (let i = 1; i < S.length; i++) if (t <= S[i][0]) { const a = S[i - 1], b = S[i], f = (t - a[0]) / (b[0] - a[0]); return `rgb(${a[1] + (b[1] - a[1]) * f | 0},${a[2] + (b[2] - a[2]) * f | 0},${a[3] + (b[3] - a[3]) * f | 0})`; } return '#fff'; };
 
 /* ---------- Fokus, shortcut, count-up ---------- */
-const setFocus = on => { document.body.classList.toggle('focus', on); LS('ffx_focus', on ? 1 : 0); };
-$('limitsBtn')?.insertAdjacentHTML('beforebegin', '<button class="btn ghost" id="focusBtn" title="Matikan latar 3D & animasi (F)">🎯 Fokus</button>');
-$('focusBtn').onclick = () => setFocus(!document.body.classList.contains('focus')); setFocus(!!LS('ffx_focus'));
 addEventListener('keydown', e => {
   if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || e.ctrlKey || e.metaKey) return;
-  if (e.key === 'f' || e.key === 'F') $('focusBtn').click();
+  if (e.key === 'f' || e.key === 'F') $('fxBtn')?.click();
   else if (/^[1-9]$/.test(e.key)) document.querySelectorAll('.nav .tab')[+e.key - 1]?.click();
 });
 const nums = s => { const m = s.match(/-?[\d,]*\.?\d+/); return m ? { v: parseFloat(m[0].replace(/,/g, '')), i: m.index, len: m[0].length, d: (m[0].split('.')[1] || '').length } : null; };
