@@ -514,8 +514,9 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
 .gpanel::before,.card.panel::before,.card.kpi::after{opacity:.3}
 .mono,.value,td,th{font-variant-numeric:tabular-nums}
 .kpis .kpi:first-child .value{font-size:1.35em;color:var(--gold)}
-.navgrp{font-size:9px;letter-spacing:.18em;color:var(--faint);padding:8px 8px 2px;font-weight:700}
-@media(max-width:900px){.navgrp{display:none}}
+.navsep{display:block;flex:none;height:1px;margin:6px 10px;background:var(--line2);opacity:.6}
+@media(max-width:900px){.navsep{display:none}}
+.rng{display:flex;gap:4px}.rng button{background:var(--surface2);color:var(--muted);border:1px solid var(--brd);border-radius:6px;padding:2px 9px;font-size:11px}.rng .on{color:var(--gold);border-color:var(--gold)}
 .flash-up{animation:fu .8s}.flash-dn{animation:fd .8s}
 @keyframes fu{30%{color:var(--green);text-shadow:0 0 12px var(--green)}}@keyframes fd{30%{color:var(--red);text-shadow:0 0 12px var(--red)}}
 .state::after{content:"";display:block;height:90px;margin-top:16px;border-radius:12px;background:linear-gradient(90deg,#131c38 25%,#1b2748 50%,#131c38 75%);background-size:200% 100%;animation:sk 1.2s linear infinite}
@@ -532,8 +533,8 @@ body.focus .world{display:none}body.focus .tilt{transform:none!important}body.fo
 .ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
 .ctl select,.ctl input,.xin{background:var(--surface2);color:var(--text);border:1px solid var(--brd);border-radius:8px;padding:6px 8px;min-width:0}
 .ctl .on{border-color:var(--gold);color:var(--gold)}
-.bar{height:8px;border-radius:6px;background:var(--surface3);overflow:hidden;margin:4px 0 10px}.bar>div{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--cyan),var(--gold))}
-.bar.bad>div{background:linear-gradient(90deg,var(--amber),var(--red))}
+.pbar{height:8px;border-radius:6px;background:var(--surface3);overflow:hidden;margin:4px 0 10px}.pbar>div{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--cyan),var(--gold))}
+.pbar.bad>div{background:linear-gradient(90deg,var(--amber),var(--red))}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.pgrid label{font-size:11px;color:var(--faint);display:grid;gap:4px}
 .jrow{display:grid;grid-template-columns:110px 70px 80px 120px 80px 1fr;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px}
 @media(max-width:900px){.jrow{grid-template-columns:1fr 1fr}}
@@ -604,16 +605,13 @@ body.focus .world{display:none}body.focus .tilt{transform:none!important}body.fo
   <div class="layout">
     <nav class="nav">
       <button class="tab" data-view="terminal"><span class="tico" style="--c1:#35e0ff;--c2:#2461a8"><span>🖥️</span></span><span>Terminal</span></button>
-      <div class="navgrp">COMMAND</div>
       <button class="tab active" data-view="overview"><span class="tico" style="--c1:#ffd25e;--c2:#e08a10"><span>🏰</span></span><span>Overview</span></button>
-      <div class="navgrp">INTEL</div>
       <button class="tab" data-view="mtf"><span class="tico" style="--c1:#9ef0ff;--c2:#2b8fd6"><span>🧭</span></span><span>Trend</span></button>
       <button class="tab" data-view="liq"><span class="tico" style="--c1:#9ef0ff;--c2:#6a4fd1"><span>🌊</span></span><span>Liquidity</span></button>
       <button class="tab" data-view="sig"><span class="tico" style="--c1:#ff9ad5;--c2:#c43a8c"><span>🎯</span></span><span>Sinyal</span></button>
       <button class="tab" data-view="control"><span class="tico" style="--c1:#7ad0ff;--c2:#3a7bd5"><span>🎮</span></span><span>Control</span><span id="controlPip" class="pip" style="display:none"></span></button>
       <button class="tab" data-view="positions"><span class="tico" style="--c1:#ff8aa0;--c2:#d93658"><span>⚔️</span></span><span>Posisi</span></button>
       <button class="tab" data-view="orders"><span class="tico" style="--c1:#c9a0ff;--c2:#7b4fd1"><span>📜</span></span><span>Orders</span></button>
-      <div class="navgrp">REVIEW</div>
       <button class="tab" data-view="history"><span class="tico" style="--c1:#8ef0c4;--c2:#1f9c6c"><span>📖</span></span><span>History</span></button>
       <button class="tab" data-view="analytics"><span class="tico" style="--c1:#ffb86a;--c2:#e0701a"><span>📊</span></span><span>Analitik</span></button>
       <button class="tab" data-view="calendar"><span class="tico" style="--c1:#8fe0ff;--c2:#2f9bd6"><span>🗓️</span></span><span>Kalender</span></button>
@@ -621,7 +619,6 @@ body.focus .world{display:none}body.focus .tilt{transform:none!important}body.fo
       <button class="tab" data-view="edge"><span class="tico" style="--c1:#ffd25e;--c2:#e08a10"><span>🧪</span></span><span>Edge Lab</span></button>
       <button class="tab" data-view="journal"><span class="tico" style="--c1:#8ef0c4;--c2:#1f9c6c"><span>📝</span></span><span>Journal</span></button>
       <button class="tab" data-view="challenge"><span class="tico" style="--c1:#ffb86a;--c2:#e0701a"><span>🏆</span></span><span>Challenge</span></button>
-      <div class="navgrp">ADMIN</div>
       <button class="tab" data-view="risk"><span class="tico" style="--c1:#ff9a8a;--c2:#d8433a"><span>🛡️</span></span><span>Risk</span></button>
       <button class="tab" data-view="wallet"><span class="tico" style="--c1:#ffe27a;--c2:#d9a21c"><span>💰</span></span><span>Wallet</span></button>
       <button class="tab" data-view="news"><span class="tico" style="--c1:#ffd0f0;--c2:#d05aa8"><span>🔔</span></span><span>News</span></button>
@@ -650,7 +647,7 @@ body.focus .world{display:none}body.focus .tilt{transform:none!important}body.fo
 
       <div class="grid2" style="margin-top:14px">
         <div class="card panel">
-          <div class="panel-title"><h3>Equity vs Balance (live)</h3><span>Current snapshot</span></div>
+          <div class="panel-title"><h3>Equity vs Balance (live)</h3><span class="rng" id="eqRng"><button data-r="1D">1D</button><button data-r="1W">1W</button><button data-r="1M">1M</button><button data-r="ALL">ALL</button></span></div>
           <div class="chart" id="equityChart"></div>
         </div>
         <div class="card panel">
@@ -1580,6 +1577,7 @@ body.focus .world{display:none}body.focus .tilt{transform:none!important}body.fo
 
 
   function drawEquity(a){
+    if (window.__FXEQ) { try { return window.__FXEQ(a); } catch (e) { console.warn('eq', e); } }
     const pts = equityCurveCache.slice(-240);
     if (pts.length < 2) return drawEquityStatic(a);
     const w=cw('equityChart',700), h=260, padL=46, padR=14, padT=22, padB=24;
@@ -3357,7 +3355,7 @@ function loadP() { const f = FX(), a = f.account; if (!a || f.accountId === pIni
   $('pIn').innerHTML = PF.map(([k, l]) => `<label>${l}<input class="xin" type="number" step="any" data-k="${k}" value="${P[k]}"></label>`).join(''); }
 $('pIn').addEventListener('change', e => { const k = e.target.dataset.k; if (!k) return; P[k] = +e.target.value; LS('ffx_p_' + pInit, P); renderCh(); });
 $('mcN').onchange = () => renderCh();
-const bar = (l, a, b, txt, bad) => `<div>${l} <b>${txt}</b></div><div class="bar ${bad ? 'bad' : ''}"><div style="width:${Math.max(0, Math.min(100, b ? a / b * 100 : 0))}%"></div></div>`;
+const bar = (l, a, b, txt, bad) => `<div>${l} <b>${txt}</b></div><div class="pbar ${bad ? 'bad' : ''}"><div style="width:${Math.max(0, Math.min(100, b ? a / b * 100 : 0))}%"></div></div>`;
 function renderCh() {
   loadP(); const f = FX(), a = f.account; if (!a || !P.start) return; const h = f.history || [], eq = +a.equity || +a.balance || 0, S = +P.start;
   const today = new Date((Date.now() / 1000 + OFF * 3600) * 1000).toISOString().slice(0, 10), dk = t => new Date((+t.closeTime + OFF * 3600) * 1000).toISOString().slice(0, 10), days = {};
@@ -3429,6 +3427,53 @@ const setMode = m => { L.mode = m; $('lqOb').classList.toggle('on', m === 'ob');
 $('lqOb').onclick = () => setMode('ob'); $('lqLq').onclick = () => setMode('liq'); $('lqSym').onchange = () => { L.cols = []; L.bin = 0; L.liq = null; L.ev = []; L.tot = [0, 0]; $('lqFeed').innerHTML = ''; stopWs(); startWs(); tick(); };
 $('lqRg').onchange = () => { L.cols = []; L.bin = 0; tick(); }; $('lqTf').onchange = () => { L.liq = null; tick(); }; setMode('ob');
 let was = false; setInterval(() => { const on = act('liq'); if (on && !was) { startWs(); tick(); } if (!on && was) stopWs(); was = on; if (on && L.mode === 'ob') tick(); }, 2000);
+
+/* ---------- Menu: urutan & pemisah (tanpa label teks) ---------- */
+(() => { const nav = document.querySelector('.nav'); if (!nav) return; const T = v => nav.querySelector(`.tab[data-view="${v}"]`);
+  [['terminal', 'overview', 'control', 'positions', 'orders'], ['mtf', 'sig', 'liq', 'news'], ['history', 'analytics', 'edge', 'journal', 'calendar', 'portfolio', 'challenge'], ['risk', 'wallet', 'accounts']]
+    .forEach((g, i) => { if (i) nav.insertAdjacentHTML('beforeend', '<i class="navsep"></i>'); g.forEach(v => { const t = T(v); t && nav.appendChild(t); }); }); })();
+
+/* ---------- Equity vs Balance: kurva dari history trade + equity live ---------- */
+const EQ = { r: LS('ffx_eqr') || '1W', hx: null, a: null };
+const sh = v => (v < 0 ? '-' : '') + '$' + Math.abs(v).toLocaleString('en-US', { maximumFractionDigits: Math.abs(v) >= 1000 ? 0 : 2 });
+document.querySelectorAll('#eqRng button').forEach(b => { b.classList.toggle('on', b.dataset.r === EQ.r); b.onclick = () => { EQ.r = b.dataset.r; LS('ffx_eqr', EQ.r); document.querySelectorAll('#eqRng button').forEach(x => x.classList.toggle('on', x === b)); EQ.a && window.__FXEQ(EQ.a); }; });
+const eqEl = $('equityChart');
+eqEl.addEventListener('pointermove', e => { const r = eqEl.getBoundingClientRect(); EQ.hx = (e.clientX - r.left) / r.width; EQ.a && window.__FXEQ(EQ.a); });
+eqEl.addEventListener('pointerleave', () => { EQ.hx = null; EQ.a && window.__FXEQ(EQ.a); });
+window.__FXEQ = a => {
+  EQ.a = a; const f = FX(), tm = f.tms, now = Date.now(), bal = +a.balance, eqn = +a.equity;
+  const H = [...(f.history || [])].filter(t => +t.closeTime).sort((x, y) => x.closeTime - y.closeTime), tot = H.reduce((s, t) => s + (+t.netProfit || 0), 0);
+  let cum = (isFinite(bal) ? bal : 0) - tot; const B = [{ t: H.length ? tm(H[0].closeTime) - 60000 : now - 36e5, b: cum }];
+  H.forEach(t => { cum += +t.netProfit || 0; B.push({ t: tm(t.closeTime), b: cum, tr: t }); }); B.push({ t: now, b: isFinite(bal) ? bal : cum });
+  const E = (f.curve || []).map(r => ({ t: tm(r.ts), e: +r.equity })).filter(p => p.t > 0 && isFinite(p.e)).sort((x, y) => x.t - y.t); if (isFinite(eqn)) E.push({ t: now, e: eqn });
+  const span = { '1D': 864e5, '1W': 6048e5, '1M': 2592e6 }[EQ.r], t0 = span ? now - span : Math.min(B[0].t, E[0]?.t ?? Infinity), t1 = now;
+  const bAt = t => { let v = B[0].b; for (const p of B) { if (p.t <= t) v = p.b; else break; } return v; };
+  const Bp = [{ t: t0, b: bAt(t0) }, ...B.filter(p => p.t > t0)], Ep = E.filter(p => p.t >= t0), Tr = H.filter(t => tm(t.closeTime) >= t0);
+  const w = Math.max(300, eqEl.clientWidth || 700), Ht = 336, pL = 54, pR = 12, X = t => pL + (t - t0) / Math.max(1, t1 - t0) * (w - pL - pR);
+  const vs = Bp.map(p => p.b).concat(Ep.map(p => p.e)), vmin = Math.min(...vs), vmax = Math.max(...vs), pad = Math.max((vmax - vmin) * .08, 1), lo = vmin - pad, hi = vmax + pad, mT = 20, mH = 168, Y = v => mT + (1 - (v - lo) / (hi - lo)) * mH;
+  let s = `<svg viewBox="0 0 ${w} ${Ht}" width="100%" style="display:block">`;
+  for (let i = 0; i <= 4; i++) { const v = lo + (hi - lo) * i / 4; s += `<line x1="${pL}" x2="${w - pR}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" opacity=".6"/><text x="${pL - 5}" y="${Y(v) + 3}" fill="var(--faint)" font-size="9.5" text-anchor="end">${sh(v)}</text>`; }
+  const dfmt = t => { const d = new Date(t); return EQ.r === '1D' ? d.toTimeString().slice(0, 5) : `${d.getDate()}/${d.getMonth() + 1}`; };
+  for (let i = 0; i <= 4; i++) { const t = t0 + (t1 - t0) * i / 4; s += `<text x="${X(t)}" y="${Ht - 6}" fill="var(--faint)" font-size="9.5" text-anchor="${i === 0 ? 'start' : i === 4 ? 'end' : 'middle'}">${dfmt(t)}</text>`; }
+  let st = '', pb = Bp[0]; st += `${X(pb.t)},${Y(pb.b)}`; Bp.slice(1).forEach(p => { st += ` ${X(p.t)},${Y(pb.b)} ${X(p.t)},${Y(p.b)}`; pb = p; });
+  s += `<polyline points="${st}" fill="none" stroke="var(--cyan)" stroke-width="1.8"/>`;
+  if (Bp.length < 80) Bp.slice(1, -1).forEach(p => { s += `<circle cx="${X(p.t)}" cy="${Y(p.b)}" r="2.6" fill="${p.tr && +p.tr.netProfit < 0 ? 'var(--red)' : 'var(--green)'}"/>`; });
+  if (Ep.length > 1) { const ln = Ep.map(p => `${X(p.t)},${Y(p.e)}`).join(' '); s += `<polygon points="${X(Ep[0].t)},${Y(lo)} ${ln} ${X(Ep[Ep.length - 1].t)},${Y(lo)}" fill="var(--gold)" opacity=".08"/><polyline points="${ln}" fill="none" stroke="var(--gold)" stroke-width="2.2"/>`; }
+  else if (isFinite(eqn)) s += `<line x1="${X(Bp[Bp.length - 2]?.t ?? t0)}" y1="${Y(Bp[Bp.length - 2]?.b ?? bal)}" x2="${X(now)}" y2="${Y(eqn)}" stroke="var(--gold)" stroke-dasharray="4 4"/>`;
+  if (isFinite(eqn)) s += `<circle cx="${X(now)}" cy="${Y(eqn)}" r="4.5" fill="var(--gold)"><animate attributeName="r" values="4;7;4" dur="1.6s" repeatCount="indefinite"/></circle>`;
+  const fl = isFinite(eqn) && isFinite(bal) ? eqn - bal : 0;
+  s += `<text x="${pL}" y="12" fill="var(--cyan)" font-size="10">● Balance (history) ${M(bal)}</text><text x="${pL + 190}" y="12" fill="var(--gold)" font-size="10">● Equity (live) ${M(eqn)}</text><text x="${w - pR}" y="12" fill="${fl >= 0 ? 'var(--green)' : 'var(--red)'}" font-size="10" text-anchor="end">Floating ${M(fl)}</text>`;
+  const Mg = Bp.map(p => ({ t: p.t, v: p.b })).concat(Ep.map(p => ({ t: p.t, v: p.e }))).sort((x, y) => x.t - y.t); let pk = -Infinity, mdd = 0; const dd = Mg.map(p => { pk = Math.max(pk, p.v); const d = pk > 0 ? (pk - p.v) / pk * 100 : 0; mdd = Math.max(mdd, d); return { t: p.t, d }; });
+  const dT = 206, dH = 46, DY = d => dT + Math.min(d, Math.max(mdd, .5)) / Math.max(mdd, .5) * dH;
+  s += `<text x="${pL}" y="${dT - 3}" fill="var(--faint)" font-size="9.5">Drawdown dari puncak — maks ${mdd.toFixed(2)}%</text><line x1="${pL}" x2="${w - pR}" y1="${dT}" y2="${dT}" stroke="var(--line)"/><polygon points="${X(dd[0].t)},${dT} ${dd.map(p => `${X(p.t)},${DY(p.d)}`).join(' ')} ${X(dd[dd.length - 1].t)},${dT}" fill="var(--red)" opacity=".35"/>`;
+  const bT = 276, bH = 22, mx = Math.max(1, ...Tr.map(t => Math.abs(+t.netProfit || 0))), bw = Math.max(1.5, Math.min(8, (w - pL - pR) / Math.max(1, Tr.length) * .7));
+  s += `<text x="${pL}" y="${bT - 14}" fill="var(--faint)" font-size="9.5">P/L per trade (${Tr.length})</text><line x1="${pL}" x2="${w - pR}" y1="${bT}" y2="${bT}" stroke="var(--line)"/>`;
+  Tr.forEach(t => { const v = +t.netProfit || 0, hh = Math.abs(v) / mx * bH; s += `<rect x="${X(tm(t.closeTime)) - bw / 2}" y="${v >= 0 ? bT - hh : bT}" width="${bw}" height="${Math.max(1, hh)}" fill="${v >= 0 ? 'var(--green)' : 'var(--red)'}" opacity=".85"/>`; });
+  if (EQ.hx != null) { const hxp = Math.max(pL, Math.min(w - pR, EQ.hx * w)), th = t0 + (hxp - pL) / (w - pL - pR) * (t1 - t0); let eb = bAt(th), ee = null; for (const p of Ep) { if (p.t <= th) ee = p.e; else break; }
+    const L2 = [new Date(th).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }), 'Balance ' + M(eb), ee != null ? 'Equity ' + M(ee) : null].filter(Boolean), bx = hxp > w * .6 ? hxp - 132 : hxp + 8;
+    s += `<line x1="${hxp}" x2="${hxp}" y1="${mT}" y2="${bT + bH}" stroke="#fff" opacity=".35"/><rect x="${bx}" y="${mT + 4}" width="124" height="${8 + L2.length * 14}" rx="6" fill="#0d1428" stroke="var(--line2)"/>` + L2.map((x, i) => `<text x="${bx + 8}" y="${mT + 18 + i * 14}" fill="var(--text)" font-size="10.5">${x}</text>`).join(''); }
+  eqEl.innerHTML = s + '</svg>';
+};
 
 /* ---------- hook ke render utama ---------- */
 function renderAdv() { loadJ(); watchSig(); if (act('edge')) renderEdge(); if (act('journal')) renderJ(); if (act('challenge')) renderCh(); }
