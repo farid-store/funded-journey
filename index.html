@@ -209,7 +209,7 @@ input[type=datetime-local]{color-scheme:dark}
 @keyframes viewIn{from{opacity:0;transform:perspective(1100px) translateY(18px) rotateX(5deg)}to{opacity:1;transform:none}}
 
 /* ================= ARENA 3D (WebGL) ================= */
-.arena{position:relative;height:clamp(340px,50vh,500px);margin-bottom:14px;overflow:hidden;padding:0;
+.arena{position:relative;height:clamp(400px,58vh,560px);margin-bottom:14px;overflow:hidden;padding:0;
   background:radial-gradient(90% 120% at 50% 110%,#1a2a58 0%,#0a1230 55%,#060a18 100%)}
 .arena canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
 .arena canvas:active{cursor:grabbing}
@@ -499,7 +499,7 @@ tr:last-child td{border-bottom:0}
   .toast{bottom:104px}.fibo-grid{grid-template-columns:1fr}.lrow{grid-template-columns:64px 44px 1fr auto}
   .cal-grid{gap:4px}.cal-cell{padding:5px}.cal-cell .t{display:none}.cal-cell .p{font-size:11px}
 }
-@media(max-width:700px){.app{padding:10px 10px 110px}.kpis{grid-template-columns:repeat(2,1fr)}.account-strip{gap:10px}.info-list{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}.kpi .value{font-size:18px}.news-form{grid-template-columns:1fr 1fr}.sig-cards{grid-template-columns:1fr}.sig-row{grid-template-columns:1fr}.mtf-cards{grid-template-columns:repeat(2,1fr)}.res{grid-template-columns:repeat(2,1fr)}.arena{height:300px}.arena-hud{max-width:70%}.integrity{grid-template-columns:auto 1fr}.integrity .btn{grid-column:1/-1}.cal-grid{grid-template-columns:repeat(7,minmax(0,1fr))}.cal-week{display:none}.cal-wk{display:none}.tk-price{font-size:30px}}
+@media(max-width:700px){.app{padding:10px 10px 110px}.kpis{grid-template-columns:repeat(2,1fr)}.account-strip{gap:10px}.info-list{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}.kpi .value{font-size:18px}.news-form{grid-template-columns:1fr 1fr}.sig-cards{grid-template-columns:1fr}.sig-row{grid-template-columns:1fr}.mtf-cards{grid-template-columns:repeat(2,1fr)}.res{grid-template-columns:repeat(2,1fr)}.arena{height:360px}.arena-hud{max-width:70%}.integrity{grid-template-columns:auto 1fr}.integrity .btn{grid-column:1/-1}.cal-grid{grid-template-columns:repeat(7,minmax(0,1fr))}.cal-week{display:none}.cal-wk{display:none}.tk-price{font-size:30px}}
 @media(max-width:420px){.kpis{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{animation:none!important}
@@ -3101,7 +3101,7 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
     function resize() {
       if (!ready) return; W = wrap.clientWidth; Hh = wrap.clientHeight; if (!W || !Hh) return;
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, low ? 1 : 1.75)); renderer.setSize(W, Hh, false);
-      camera.aspect = W / Hh; camera.updateProjectionMatrix(); dist = clamp(19 / Math.min(1, camera.aspect * .7 + .2), 19, 32); wake();
+      camera.aspect = W / Hh; camera.updateProjectionMatrix(); dist = clamp(24 / Math.min(1, camera.aspect * .7 + .2), 24, 36); wake();
     }
     function hit(e) {
       const r = canvas.getBoundingClientRect(); mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
