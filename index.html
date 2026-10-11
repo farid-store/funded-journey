@@ -537,6 +537,8 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
 .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.pgrid label{font-size:11px;color:var(--faint);display:grid;gap:4px}
 .jrow{display:grid;grid-template-columns:110px 70px 80px 120px 80px 1fr;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px}
 @media(max-width:900px){.jrow{grid-template-columns:1fr 1fr}}
+.kp{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px}.kp small{display:block;color:var(--faint);font-size:10px;margin-bottom:4px}.kp b{font-size:15px}
+.ctl label{display:flex;gap:5px;align-items:center}.ctl input[type=checkbox]{padding:0;min-width:0}
 .lg{height:10px;border-radius:6px;background:linear-gradient(90deg,#1e2878,#00aadc,#ffc83c,#fff);margin:6px 0;max-width:260px}
 </style>
 </head>
@@ -899,6 +901,16 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
     <canvas id="lqCv" class="cv" height="440"></canvas><div class="lg"></div>
     <div class="note" id="lqInfo"></div>
   </div>
+  <div class="card panel" style="margin-top:14px"><div class="panel-title"><h3>Derivatif Binance</h3><span id="dvSt">—</span></div>
+    <div class="pgrid" id="dvKpi"></div>
+    <div class="grid2" style="margin-top:12px"><div><div class="note" style="margin:0 0 4px">Open Interest (USDT) · 4 jam, per 5 menit</div><canvas id="dvOi" class="cv" height="90"></canvas></div><div><div class="note" style="margin:0 0 4px">Taker buy/sell ratio · 4 jam (garis putus = 1,0)</div><canvas id="dvTk" class="cv" height="90"></canvas></div></div>
+    <div class="note">Cara baca: OI naik + funding positif tinggi = long ramai (rawan long squeeze). OI turun saat harga bergerak = posisi ditutup, bukan tren baru. Ratio taker &gt; 1 = pembeli agresif.</div></div>
+  <div class="card panel" style="margin-top:14px"><div class="panel-title"><h3>Alert Likuiditas</h3><span id="alSt">Mati</span></div>
+    <div class="ctl"><button class="btn ghost" id="alTog">🔔 Aktifkan</button>
+    <label class="note" style="margin:0">Jarak ≤ <input id="alDist" class="xin" type="number" step="0.01" min="0.01" style="width:72px"> %</label>
+    <label class="note" style="margin:0"><input type="checkbox" id="alWall"> Dinding order book</label><label class="note" style="margin:0"><input type="checkbox" id="alLiq"> Klaster likuidasi</label><label class="note" style="margin:0"><input type="checkbox" id="alSnd"> Suara</label></div>
+    <div class="ctl"><input id="alPx" class="xin" type="number" step="any" placeholder="level manual, mis. 4100"><button class="btn ghost" id="alAdd">+ Level</button><span id="alMan"></span></div>
+    <div id="alLog"></div><div class="note">Alert berjalan selama halaman ini terbuka (tidak perlu di tab Liquidity), cek tiap 6 detik, jeda 15 menit per level. Level likuidasi memakai model estimasi, bukan data resmi.</div></div>
   <div class="grid2" style="margin-top:14px">
     <div class="card panel"><div class="panel-title"><h3>Level Terkuat</h3><span id="lqPx">—</span></div><div id="lqTop"></div></div>
     <div class="card panel"><div class="panel-title"><h3>Likuidasi Real-time</h3><span id="lqTot">—</span></div><div id="lqFeed"></div></div>
@@ -3398,13 +3410,14 @@ function drawOB() {
   $('lqInfo').textContent = 'Terang = banyak order menunggu di level itu. Dinding yang menghilang saat harga mendekat sering berarti spoofing/order ditarik. Binance XAUUSDT = kontrak perpetual emas, harganya bisa berbeda tipis dari XAUUSD broker.';
 }
 function axis(c, w, h, lo, hi, A) { c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; for (let i = 0; i <= 6; i++) { const p = hi - (hi - lo) * i / 6; c.fillText(p.toFixed(2), w - A + 6, Math.min(h - 3, Math.max(10, h * i / 6 + 3))); } }
-async function loadLiq() {
+async function loadLiq() { L.liq = await buildLiq(); drawLiq(); }
+async function buildLiq() {
   const sym = $('lqSym').value, tf = $('lqTf').value, k = await (await fetch(`${B}klines?symbol=${sym}&interval=${tf}&limit=500`)).json(); if (!Array.isArray(k)) throw new Error(k.msg || 'klines gagal');
   const tiers = [[10, .15], [25, .3], [50, .3], [100, .25]], mm = .004, n = k.length, o = k.map(x => ({ h: +x[2], l: +x[3], c: +x[4], qv: +x[7], ls: +x[7] ? +x[10] / +x[7] : .5 }));
   const lo = Math.min(...o.map(x => x.l)) * .99, hi = Math.max(...o.map(x => x.h)) * 1.01, R = 150, g = new Float32Array(R * n), row = p => Math.floor((hi - p) / (hi - lo) * R);
   o.forEach((x, i) => { const ep = (x.h + x.l + x.c) / 3; tiers.forEach(([lv, wt]) => [[ep * (1 - 1 / lv + mm), x.qv * x.ls * wt, 0], [ep * (1 + 1 / lv - mm), x.qv * (1 - x.ls) * wt, 1]].forEach(([p, wv, sh]) => {
     let j = i + 1; while (j < n && (sh ? o[j].h < p : o[j].l > p)) j++; const r = row(p); if (r < 0 || r >= R) return; for (let t = i; t < j; t++) g[r * n + t] += wv; })); });
-  L.liq = { g, R, n, lo, hi, o, sym }; drawLiq();
+  return { g, R, n, lo, hi, o, sym };
 }
 function drawLiq() {
   const q = L.liq; if (!q) return; const { c, w, h } = cv($('lqCv'), 440), A = 58, cw = (w - A) / q.n, rh = h / q.R, v = []; for (let i = 0; i < q.g.length; i += 7) if (q.g[i] > 0) v.push(q.g[i]); const vm = pctl(v, .98) || 1;
@@ -3420,9 +3433,9 @@ function startWs() { try { L.ws = new WebSocket(`wss://fstream.binance.com/ws/${
 function stopWs() { try { L.ws && L.ws.close(); } catch (e) { } L.ws = null; }
 async function tick() { if (L.busy) return; L.busy = 1; try { L.mode === 'ob' ? await pollOB() : (L.liq && L.liq.sym === $('lqSym').value ? 0 : await loadLiq()); } catch (e) { st('Gagal: ' + e.message + ' (cek koneksi/blokir Binance, atau simbol tidak ada di Futures)'); } L.busy = 0; }
 const setMode = m => { L.mode = m; $('lqOb').classList.toggle('on', m === 'ob'); $('lqLq').classList.toggle('on', m === 'liq'); $('lqTf').style.display = m === 'liq' ? '' : 'none'; $('lqRg').style.display = m === 'ob' ? '' : 'none'; L.liq = null; if (m === 'ob') L.cols.length = 0, L.bin = 0; tick(); };
-$('lqOb').onclick = () => setMode('ob'); $('lqLq').onclick = () => setMode('liq'); $('lqSym').onchange = () => { L.cols = []; L.bin = 0; L.liq = null; L.ev = []; L.tot = [0, 0]; $('lqFeed').innerHTML = ''; stopWs(); startWs(); tick(); };
+$('lqOb').onclick = () => setMode('ob'); $('lqLq').onclick = () => setMode('liq'); $('lqSym').onchange = () => { L.cols = []; L.bin = 0; L.liq = null; L.ev = []; L.tot = [0, 0]; $('lqFeed').innerHTML = ''; stopWs(); startWs(); tick(); loadDv(); };
 $('lqRg').onchange = () => { L.cols = []; L.bin = 0; tick(); }; $('lqTf').onchange = () => { L.liq = null; tick(); }; setMode('ob');
-let was = false; setInterval(() => { const on = act('liq'); if (on && !was) { startWs(); tick(); } if (!on && was) stopWs(); was = on; if (on && L.mode === 'ob') tick(); }, 2000);
+let was = false; setInterval(() => { const on = act('liq'); if (on && !was) { startWs(); tick(); loadDv(); } if (!on && was) stopWs(); was = on; if (on && L.mode === 'ob') tick(); }, 2000);
 
 /* ---------- Menu: urutan & pemisah (tanpa label teks) ---------- */
 (() => { const nav = document.querySelector('.nav'); if (!nav) return; const T = v => nav.querySelector(`.tab[data-view="${v}"]`);
@@ -3470,6 +3483,59 @@ window.__FXEQ = a => {
     s += `<line x1="${hxp}" x2="${hxp}" y1="${mT}" y2="${bT + bH}" stroke="#fff" opacity=".35"/><rect x="${bx}" y="${mT + 4}" width="124" height="${8 + L2.length * 14}" rx="6" fill="#0d1428" stroke="var(--line2)"/>` + L2.map((x, i) => `<text x="${bx + 8}" y="${mT + 18 + i * 14}" fill="var(--text)" font-size="10.5">${x}</text>`).join(''); }
   eqEl.innerHTML = s + '</svg>';
 };
+
+/* ---------- #5 Derivatif Binance: funding, OI, taker ratio ---------- */
+const FD = 'https://fapi.binance.com/futures/data/';
+const jf = async u => { const d = await (await fetch(u)).json(); if (d && d.code && d.msg) throw new Error(d.msg); return d; };
+const kp = (l, v, sub, c) => `<div class="kp"><small>${l}</small><b class="${c || ''}">${v}</b><div class="note" style="margin:2px 0 0">${sub || ''}</div></div>`;
+const NA = 'n/a — tidak didukung untuk simbol ini';
+function spark(el, a, col, ref) { const { c, w, h } = cv(el, 90); if (a.length < 2) return; const lo = Math.min(...a, ref ?? Infinity), hi = Math.max(...a, ref ?? -Infinity), sp = hi - lo || 1, Y = v => h - 8 - (v - lo) / sp * (h - 16);
+  if (ref != null) { c.strokeStyle = 'rgba(167,182,220,.35)'; c.setLineDash([4, 4]); c.beginPath(); c.moveTo(0, Y(ref)); c.lineTo(w, Y(ref)); c.stroke(); c.setLineDash([]); }
+  c.strokeStyle = col; c.lineWidth = 1.7; c.beginPath(); a.forEach((v, i) => { const x = i / (a.length - 1) * (w - 6) + 3; i ? c.lineTo(x, Y(v)) : c.moveTo(x, Y(v)); }); c.stroke();
+  c.fillStyle = '#7384b4'; c.font = '9px sans-serif'; const f = v => Math.abs(v) >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : v >= 100 ? v.toFixed(0) : v.toFixed(2); c.fillText(f(hi), 4, 9); c.fillText(f(lo), 4, h - 1); }
+async function loadDv() {
+  const s = $('lqSym').value, [pi, oi, oh, tk] = await Promise.allSettled([jf(`${B}premiumIndex?symbol=${s}`), jf(`${B}openInterest?symbol=${s}`), jf(`${FD}openInterestHist?symbol=${s}&period=5m&limit=48`), jf(`${FD}takerlongshortRatio?symbol=${s}&period=5m&limit=48`)]);
+  const k = []; let ok = 0;
+  if (pi.status === 'fulfilled') { ok++; const p = pi.value, fr = +p.lastFundingRate * 100, prem = (+p.markPrice - +p.indexPrice) / +p.indexPrice * 100, mins = Math.max(0, Math.round((+p.nextFundingTime - Date.now()) / 6e4));
+    k.push(kp('Funding rate', fr.toFixed(4) + '%', fr > 0 ? 'Long bayar short · long ramai' : fr < 0 ? 'Short bayar long · short ramai' : 'Netral', fr > 0 ? 'pos' : fr < 0 ? 'neg' : '')); k.push(kp('Berikutnya', `${Math.floor(mins / 60)}j ${mins % 60}m`, `Mark ${(+p.markPrice).toFixed(2)}`));
+    k.push(kp('Premium mark vs index', prem.toFixed(3) + '%', 'Positif = kontrak lebih mahal dari spot', prem > 0 ? 'pos' : 'neg')); } else k.push(kp('Funding rate', 'n/a', NA));
+  const mk = pi.status === 'fulfilled' ? +pi.value.markPrice : 0; let oiArr = [];
+  if (oh.status === 'fulfilled' && Array.isArray(oh.value) && oh.value.length > 13) { oiArr = oh.value.map(x => +x.sumOpenInterestValue); const a = oiArr[oiArr.length - 1], b = oiArr[oiArr.length - 13], ch = (a - b) / b * 100; ok++;
+    k.push(kp('Open interest', M(a), `${ch >= 0 ? '+' : ''}${ch.toFixed(2)}% dalam 1 jam`, ch >= 0 ? 'pos' : 'neg')); }
+  else if (oi.status === 'fulfilled') { ok++; k.push(kp('Open interest', M(+oi.value.openInterest * mk), 'Riwayat tidak tersedia')); } else k.push(kp('Open interest', 'n/a', NA));
+  let tkArr = [];
+  if (tk.status === 'fulfilled' && Array.isArray(tk.value) && tk.value.length > 12) { tkArr = tk.value.map(x => +x.buySellRatio); const now = tkArr[tkArr.length - 1], avg = tkArr.slice(-12).reduce((a, b) => a + b, 0) / 12; ok++;
+    k.push(kp('Taker buy/sell', now.toFixed(2), `Rata-rata 1 jam ${avg.toFixed(2)} · ${avg > 1.1 ? 'pembeli agresif' : avg < .9 ? 'penjual agresif' : 'seimbang'}`, now > 1 ? 'pos' : 'neg')); } else k.push(kp('Taker buy/sell', 'n/a', NA));
+  $('dvKpi').innerHTML = k.join(''); spark($('dvOi'), oiArr, '#35e0ff'); spark($('dvTk'), tkArr, '#ffc94a', 1);
+  $('dvSt').textContent = ok ? `diperbarui ${new Date().toLocaleTimeString('id-ID')}` : 'gagal memuat (cek koneksi atau simbol)';
+}
+
+/* ---------- #6 Alert level likuiditas ---------- */
+const S = Object.assign({ on: 0, dist: .15, wall: 1, liq: 1, snd: 1, man: [] }, LS('ffx_al') || {}), AL = { fired: {}, log: LS('ffx_allog') || [], liq: null, liqT: 0, busy: 0, ctx: null };
+const saveS = () => LS('ffx_al', S);
+function paintAl() { $('alTog').textContent = S.on ? '🔕 Matikan' : '🔔 Aktifkan'; $('alTog').classList.toggle('on', !!S.on); $('alDist').value = S.dist; $('alWall').checked = !!S.wall; $('alLiq').checked = !!S.liq; $('alSnd').checked = !!S.snd; if (!S.on) $('alSt').textContent = 'Mati';
+  $('alMan').innerHTML = S.man.map((p, i) => `<span class="btn ghost" style="cursor:pointer" data-i="${i}" title="klik untuk hapus">${p} ✕</span>`).join(' ');
+  $('alLog').innerHTML = AL.log.length ? '<table class="xt">' + AL.log.map(e => `<tr><td>${esc(e.t)}</td><td>${esc(e.m)}</td></tr>`).join('') + '</table>' : '<div class="note">Belum ada alert.</div>'; }
+const beep = () => { try { const c = AL.ctx, o = c.createOscillator(), g = c.createGain(); o.frequency.value = 880; g.gain.value = .08; o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + .25); } catch (e) { } };
+function fire(m) { FX().toast('🔔 ' + m); AL.log.unshift({ t: new Date().toLocaleTimeString('id-ID'), m }); AL.log.length = Math.min(AL.log.length, 25); LS('ffx_allog', AL.log); paintAl();
+  try { if (window.Notification && Notification.permission === 'granted') new Notification('FaridFX Liquidity', { body: m }); } catch (e) { } if (S.snd) beep(); }
+$('alTog').onclick = () => { S.on = S.on ? 0 : 1; saveS(); if (S.on) { try { AL.ctx = AL.ctx || new (window.AudioContext || window.webkitAudioContext)(); AL.ctx.resume(); } catch (e) { } try { window.Notification && Notification.permission === 'default' && Notification.requestPermission(); } catch (e) { } alTick(); } paintAl(); };
+$('alDist').onchange = e => { S.dist = Math.max(.01, +e.target.value || .15); saveS(); }; [['alWall', 'wall'], ['alLiq', 'liq'], ['alSnd', 'snd']].forEach(([id, k]) => $(id).onchange = e => { S[k] = e.target.checked ? 1 : 0; saveS(); });
+$('alAdd').onclick = () => { const p = +$('alPx').value; if (p > 0) { S.man.push(p); saveS(); $('alPx').value = ''; paintAl(); } }; $('alMan').onclick = e => { const i = e.target.dataset.i; if (i != null) { S.man.splice(+i, 1); saveS(); paintAl(); } };
+function wall(arr, mid) { const w = mid * .0005, m = new Map(); arr.forEach(([p, q]) => { const k = Math.round(+p / w); m.set(k, (m.get(k) || 0) + p * q); }); const v = [...m.entries()]; if (v.length < 8) return null; const avg = v.reduce((s, x) => s + x[1], 0) / v.length, b = v.sort((x, y) => y[1] - x[1])[0]; return b[1] >= 3 * avg ? { k: b[0], p: b[0] * w, v: b[1] } : null; }
+function liqTop(q) { const v = []; for (let i = 0; i < q.g.length; i += 7) if (q.g[i] > 0) v.push(q.g[i]); const vm = pctl(v, .98) || 1, cur = q.o[q.n - 1].c, rows = [];
+  for (let r = 0; r < q.R; r++) rows.push({ p: q.hi - (r + .5) / q.R * (q.hi - q.lo), s: q.g[r * q.n + q.n - 1] / vm }); const top = up => rows.filter(r => (up ? r.p > cur : r.p <= cur) && r.s >= .6).sort((a, b) => b.s - a.s).slice(0, 3); return { up: top(1), dn: top(0), step: (q.hi - q.lo) / q.R }; }
+async function alTick() {
+  if (!S.on || AL.busy) return; AL.busy = 1;
+  try { const sym = $('lqSym').value, d = await jf(`${B}depth?symbol=${sym}&limit=500`), mid = (+d.bids[0][0] + +d.asks[0][0]) / 2, lv = [];
+    if (S.wall) { const b = wall(d.bids, mid), a = wall(d.asks, mid); b && lv.push({ k: 'wb' + b.k, p: b.p, t: `Dinding BID ${M(b.v)} @` }); a && lv.push({ k: 'wa' + a.k, p: a.p, t: `Dinding ASK ${M(a.v)} @` }); }
+    if (S.liq) { if (!AL.liq || AL.liq.sym !== sym || Date.now() - AL.liqT > 3e5) { AL.liq = await buildLiq(); AL.liqT = Date.now(); } const c = liqTop(AL.liq); c.up.forEach(r => lv.push({ k: 'lu' + Math.round(r.p / (mid * .0015)), p: r.p, t: 'Klaster SHORT-liq (di atas) @' })); c.dn.forEach(r => lv.push({ k: 'ld' + Math.round(r.p / (mid * .0015)), p: r.p, t: 'Klaster LONG-liq (di bawah) @' })); }
+    S.man.forEach(p => lv.push({ k: 'm' + p, p, t: 'Level manual @' }));
+    lv.forEach(x => { const ds = Math.abs(mid - x.p) / mid * 100; if (ds <= S.dist && (!AL.fired[x.k] || Date.now() - AL.fired[x.k] > 9e5)) { AL.fired[x.k] = Date.now(); fire(`${sym}: ${x.t} ${x.p.toFixed(2)} — jarak ${ds.toFixed(2)}%, harga ${mid.toFixed(2)}`); } });
+    $('alSt').textContent = `Aktif · harga ${mid.toFixed(2)} · ${lv.length} level dipantau`; } catch (e) { $('alSt').textContent = 'Error: ' + e.message; }
+  AL.busy = 0; }
+paintAl(); setInterval(alTick, 6000); if (S.on) setTimeout(alTick, 1500);
+let dvN = 0; setInterval(() => { if (act('liq') && ++dvN % 15 === 0) loadDv(); }, 2000);
 
 /* ---------- hook ke render utama ---------- */
 function renderAdv() { loadJ(); watchSig(); if (act('edge')) renderEdge(); if (act('journal')) renderJ(); if (act('challenge')) renderCh(); }
