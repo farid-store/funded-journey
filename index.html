@@ -609,6 +609,7 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
       <button class="tab active" data-view="overview"><span class="tico" style="--c1:#ffd25e;--c2:#e08a10"><span>🏰</span></span><span>Overview</span></button>
       <button class="tab" data-view="mtf"><span class="tico" style="--c1:#9ef0ff;--c2:#2b8fd6"><span>🧭</span></span><span>Trend</span></button>
       <button class="tab" data-view="liq"><span class="tico" style="--c1:#9ef0ff;--c2:#6a4fd1"><span>🌊</span></span><span>Liquidity</span></button>
+      <button class="tab" data-view="kl"><span class="tico" style="--c1:#ffd25e;--c2:#a87b10"><span>🏛️</span></span><span>Key Levels</span></button>
       <button class="tab" data-view="sig"><span class="tico" style="--c1:#ff9ad5;--c2:#c43a8c"><span>🎯</span></span><span>Sinyal</span></button>
       <button class="tab" data-view="control"><span class="tico" style="--c1:#7ad0ff;--c2:#3a7bd5"><span>🎮</span></span><span>Control</span><span id="controlPip" class="pip" style="display:none"></span></button>
       <button class="tab" data-view="positions"><span class="tico" style="--c1:#ff8aa0;--c2:#d93658"><span>⚔️</span></span><span>Posisi</span></button>
@@ -890,6 +891,13 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
     <div class="card panel"><div class="panel-title"><h3>Monte Carlo</h3><span><input id="mcN" class="xin" type="number" value="100" min="20" max="500" style="width:70px"> trade × 1000 simulasi</span></div><canvas id="mcCv" class="cv" height="220"></canvas><div id="mcTxt" class="note"></div></div>
   </div>
 </section>
+<section id="view-kl" class="view">
+  <div class="section-head"><div><h2>Key Levels</h2><p>Level acuan yang dipantau trader institusi &amp; algo, dihitung realtime dari harga Binance. Ini bukan data order institusi sebenarnya (pasar spot XAU tidak punya data terpusat).</p></div></div>
+  <div class="card panel"><div class="ctl"><select id="klSym"><option>XAUUSDT</option><option>XAUTUSDT</option><option>PAXGUSDT</option></select><span id="klSt" class="note" style="margin:0">—</span></div>
+    <canvas id="klCv" class="cv" height="560"></canvas>
+    <div class="note"><span style="color:#35e0ff">■ Open D/W/M</span> · <span style="color:#ffc94a">■ Prev H/L/C (hari/minggu/bulan)</span> · <span style="color:#a98bff">■ VWAP</span> · <span style="color:#5aa8ff">■ High/Low sesi</span> · <span style="color:#ff9d2e">■ POC/VAH/VAL 24j</span> · <span style="color:#2df5a3">■ FVG/OB bullish</span> · <span style="color:#ff4b6e">■ FVG/OB bearish</span> · garis putus-putus = angka bulat $25/$50/$100 · band emas ★ = zona konfluensi (skor makin tinggi = makin banyak level bertumpuk). Volume memakai data Binance sebagai proxy, bukan volume pasar spot global.</div></div>
+  <div class="card panel" style="margin-top:14px"><div class="panel-title"><h3>Zona Konfluensi Terdekat</h3><span id="klPx">—</span></div><div id="klTbl"></div></div>
+</section>
 <section id="view-liq" class="view">
   <div class="section-head"><div><h2>Liquidity Heatmap</h2><p>Data publik Binance Futures (tanpa API key). Order book = akumulasi sejak tab dibuka. Liquidation = estimasi model, bukan data resmi Coinglass.</p></div></div>
   <div class="card panel">
@@ -908,7 +916,7 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
   <div class="card panel" style="margin-top:14px"><div class="panel-title"><h3>Alert Likuiditas</h3><span id="alSt">Mati</span></div>
     <div class="ctl"><button class="btn ghost" id="alTog">🔔 Aktifkan</button>
     <label class="note" style="margin:0">Jarak ≤ <input id="alDist" class="xin" type="number" step="0.01" min="0.01" style="width:72px"> %</label>
-    <label class="note" style="margin:0"><input type="checkbox" id="alWall"> Dinding order book</label><label class="note" style="margin:0"><input type="checkbox" id="alLiq"> Klaster likuidasi</label><label class="note" style="margin:0"><input type="checkbox" id="alSnd"> Suara</label></div>
+    <label class="note" style="margin:0"><input type="checkbox" id="alWall"> Dinding order book</label><label class="note" style="margin:0"><input type="checkbox" id="alLiq"> Klaster likuidasi</label><label class="note" style="margin:0"><input type="checkbox" id="alKl"> Zona konfluensi (Key Levels)</label><label class="note" style="margin:0"><input type="checkbox" id="alSnd"> Suara</label></div>
     <div class="ctl"><input id="alPx" class="xin" type="number" step="any" placeholder="level manual, mis. 4100"><button class="btn ghost" id="alAdd">+ Level</button><span id="alMan"></span></div>
     <div id="alLog"></div><div class="note">Alert berjalan selama halaman ini terbuka (tidak perlu di tab Liquidity), cek tiap 6 detik, jeda 15 menit per level. Level likuidasi memakai model estimasi, bukan data resmi.</div></div>
   <div class="grid2" style="margin-top:14px">
@@ -3439,7 +3447,7 @@ let was = false; setInterval(() => { const on = act('liq'); if (on && !was) { st
 
 /* ---------- Menu: urutan & pemisah (tanpa label teks) ---------- */
 (() => { const nav = document.querySelector('.nav'); if (!nav) return; const T = v => nav.querySelector(`.tab[data-view="${v}"]`);
-  [['terminal', 'overview', 'control', 'positions', 'orders'], ['mtf', 'sig', 'liq', 'news'], ['history', 'analytics', 'edge', 'journal', 'calendar', 'portfolio', 'challenge'], ['risk', 'wallet', 'accounts']]
+  [['terminal', 'overview', 'control', 'positions', 'orders'], ['mtf', 'sig', 'liq', 'kl', 'news'], ['history', 'analytics', 'edge', 'journal', 'calendar', 'portfolio', 'challenge'], ['risk', 'wallet', 'accounts']]
     .forEach((g, i) => { if (i) nav.insertAdjacentHTML('beforeend', '<i class="navsep"></i>'); g.forEach(v => { const t = T(v); t && nav.appendChild(t); }); }); })();
 
 /* ---------- Equity vs Balance: kurva dari history trade + equity live ---------- */
@@ -3511,16 +3519,16 @@ async function loadDv() {
 }
 
 /* ---------- #6 Alert level likuiditas ---------- */
-const S = Object.assign({ on: 0, dist: .15, wall: 1, liq: 1, snd: 1, man: [] }, LS('ffx_al') || {}), AL = { fired: {}, log: LS('ffx_allog') || [], liq: null, liqT: 0, busy: 0, ctx: null };
+const S = Object.assign({ on: 0, dist: .15, wall: 1, liq: 1, snd: 1, kl: 0, man: [] }, LS('ffx_al') || {}), AL = { fired: {}, log: LS('ffx_allog') || [], liq: null, liqT: 0, busy: 0, ctx: null };
 const saveS = () => LS('ffx_al', S);
-function paintAl() { $('alTog').textContent = S.on ? '🔕 Matikan' : '🔔 Aktifkan'; $('alTog').classList.toggle('on', !!S.on); $('alDist').value = S.dist; $('alWall').checked = !!S.wall; $('alLiq').checked = !!S.liq; $('alSnd').checked = !!S.snd; if (!S.on) $('alSt').textContent = 'Mati';
+function paintAl() { $('alTog').textContent = S.on ? '🔕 Matikan' : '🔔 Aktifkan'; $('alTog').classList.toggle('on', !!S.on); $('alDist').value = S.dist; $('alWall').checked = !!S.wall; $('alLiq').checked = !!S.liq; $('alSnd').checked = !!S.snd; $('alKl').checked = !!S.kl; if (!S.on) $('alSt').textContent = 'Mati';
   $('alMan').innerHTML = S.man.map((p, i) => `<span class="btn ghost" style="cursor:pointer" data-i="${i}" title="klik untuk hapus">${p} ✕</span>`).join(' ');
   $('alLog').innerHTML = AL.log.length ? '<table class="xt">' + AL.log.map(e => `<tr><td>${esc(e.t)}</td><td>${esc(e.m)}</td></tr>`).join('') + '</table>' : '<div class="note">Belum ada alert.</div>'; }
 const beep = () => { try { const c = AL.ctx, o = c.createOscillator(), g = c.createGain(); o.frequency.value = 880; g.gain.value = .08; o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + .25); } catch (e) { } };
 function fire(m) { FX().toast('🔔 ' + m); AL.log.unshift({ t: new Date().toLocaleTimeString('id-ID'), m }); AL.log.length = Math.min(AL.log.length, 25); LS('ffx_allog', AL.log); paintAl();
   try { if (window.Notification && Notification.permission === 'granted') new Notification('FaridFX Liquidity', { body: m }); } catch (e) { } if (S.snd) beep(); }
 $('alTog').onclick = () => { S.on = S.on ? 0 : 1; saveS(); if (S.on) { try { AL.ctx = AL.ctx || new (window.AudioContext || window.webkitAudioContext)(); AL.ctx.resume(); } catch (e) { } try { window.Notification && Notification.permission === 'default' && Notification.requestPermission(); } catch (e) { } alTick(); } paintAl(); };
-$('alDist').onchange = e => { S.dist = Math.max(.01, +e.target.value || .15); saveS(); }; [['alWall', 'wall'], ['alLiq', 'liq'], ['alSnd', 'snd']].forEach(([id, k]) => $(id).onchange = e => { S[k] = e.target.checked ? 1 : 0; saveS(); });
+$('alDist').onchange = e => { S.dist = Math.max(.01, +e.target.value || .15); saveS(); }; [['alWall', 'wall'], ['alLiq', 'liq'], ['alSnd', 'snd'], ['alKl', 'kl']].forEach(([id, k]) => $(id).onchange = e => { S[k] = e.target.checked ? 1 : 0; saveS(); });
 $('alAdd').onclick = () => { const p = +$('alPx').value; if (p > 0) { S.man.push(p); saveS(); $('alPx').value = ''; paintAl(); } }; $('alMan').onclick = e => { const i = e.target.dataset.i; if (i != null) { S.man.splice(+i, 1); saveS(); paintAl(); } };
 function wall(arr, mid) { const w = mid * .0005, m = new Map(); arr.forEach(([p, q]) => { const k = Math.round(+p / w); m.set(k, (m.get(k) || 0) + p * q); }); const v = [...m.entries()]; if (v.length < 8) return null; const avg = v.reduce((s, x) => s + x[1], 0) / v.length, b = v.sort((x, y) => y[1] - x[1])[0]; return b[1] >= 3 * avg ? { k: b[0], p: b[0] * w, v: b[1] } : null; }
 function liqTop(q) { const v = []; for (let i = 0; i < q.g.length; i += 7) if (q.g[i] > 0) v.push(q.g[i]); const vm = pctl(v, .98) || 1, cur = q.o[q.n - 1].c, rows = [];
@@ -3531,11 +3539,64 @@ async function alTick() {
     if (S.wall) { const b = wall(d.bids, mid), a = wall(d.asks, mid); b && lv.push({ k: 'wb' + b.k, p: b.p, t: `Dinding BID ${M(b.v)} @` }); a && lv.push({ k: 'wa' + a.k, p: a.p, t: `Dinding ASK ${M(a.v)} @` }); }
     if (S.liq) { if (!AL.liq || AL.liq.sym !== sym || Date.now() - AL.liqT > 3e5) { AL.liq = await buildLiq(); AL.liqT = Date.now(); } const c = liqTop(AL.liq); c.up.forEach(r => lv.push({ k: 'lu' + Math.round(r.p / (mid * .0015)), p: r.p, t: 'Klaster SHORT-liq (di atas) @' })); c.dn.forEach(r => lv.push({ k: 'ld' + Math.round(r.p / (mid * .0015)), p: r.p, t: 'Klaster LONG-liq (di bawah) @' })); }
     S.man.forEach(p => lv.push({ k: 'm' + p, p, t: 'Level manual @' }));
+    if (S.kl && KL.sym === sym) KL.z.filter(z => z.s >= 5).forEach(z => lv.push({ k: 'kz' + Math.round(z.c / (mid * .0015)), p: z.c, t: `Zona konfluensi skor ${z.s.toFixed(1)} (${z.m.slice(0, 3).join(', ')}) @` }));
     lv.forEach(x => { const ds = Math.abs(mid - x.p) / mid * 100; if (ds <= S.dist && (!AL.fired[x.k] || Date.now() - AL.fired[x.k] > 9e5)) { AL.fired[x.k] = Date.now(); fire(`${sym}: ${x.t} ${x.p.toFixed(2)} — jarak ${ds.toFixed(2)}%, harga ${mid.toFixed(2)}`); } });
     $('alSt').textContent = `Aktif · harga ${mid.toFixed(2)} · ${lv.length} level dipantau`; } catch (e) { $('alSt').textContent = 'Error: ' + e.message; }
   AL.busy = 0; }
 paintAl(); setInterval(alTick, 6000); if (S.on) setTimeout(alTick, 1500);
 let dvN = 0; setInterval(() => { if (act('liq') && ++dvN % 15 === 0) loadDv(); }, 2000);
+
+/* ---------- Key Levels: level acuan "institusional" (proxy, hitung dari harga Binance) ---------- */
+const KL = { lv: [], z: [], px: 0, ws: null, busy: 0, was: 0 };
+const KCOL = { open: '#35e0ff', pv: '#ffc94a', vwap: '#a98bff', ses: '#5aa8ff', vp: '#ff9d2e', rd: 'rgba(167,182,220,.7)', fvgU: '#2df5a3', fvgD: '#ff4b6e', obU: '#2df5a3', obD: '#ff4b6e' };
+function klCompute(D, W, Mo, Q, H) {
+  const px = Q[Q.length - 1].c, lv = [], add = (p, type, label, w, hi) => lv.push({ p, hi: hi ?? p, type, label, w }), ds = D[D.length - 1].t;
+  if (D.length > 1) { const p = D[D.length - 2]; add(p.h, 'pv', 'PDH', 3); add(p.l, 'pv', 'PDL', 3); add(p.c, 'pv', 'PDC', 1.2); } add(D[D.length - 1].o, 'open', 'Daily Open', 3);
+  if (W.length > 1) { const p = W[W.length - 2]; add(p.h, 'pv', 'PWH', 4); add(p.l, 'pv', 'PWL', 4); } add(W[W.length - 1].o, 'open', 'Weekly Open', 3);
+  if (Mo.length > 1) { const p = Mo[Mo.length - 2]; add(p.h, 'pv', 'PMH', 4); add(p.l, 'pv', 'PML', 4); } add(Mo[Mo.length - 1].o, 'open', 'Monthly Open', 3);
+  const vw = t0 => { const x = Q.filter(k => k.t >= t0); let a = 0, b = 0; x.forEach(k => { a += (k.h + k.l + k.c) / 3 * k.v; b += k.v; }); return b ? a / b : null; };
+  const vd = vw(ds), vwk = vw(W[W.length - 1].t); vd && add(vd, 'vwap', 'VWAP harian', 2); vwk && add(vwk, 'vwap', 'VWAP mingguan', 2.2);
+  const ses = (a, b) => { const x = Q.filter(k => k.t >= a && k.t < b); return x.length ? { h: Math.max(...x.map(k => k.h)), l: Math.min(...x.map(k => k.l)) } : null; };
+  [[0, 7, 'Asia'], [7, 13, 'London'], [13, 21, 'NY']].forEach(([a, b, n]) => [[ds, 'hari ini', 2], [ds - 864e5, 'kemarin', 1.4]].forEach(([base, lab, wt]) => { const s = ses(base + a * 36e5, base + b * 36e5); if (s) { add(s.h, 'ses', `${n} H ${lab}`, wt); add(s.l, 'ses', `${n} L ${lab}`, wt); } }));
+  const R = Q.slice(-96), bs = nice(px * .00025), vp = new Map(); let tv = 0;
+  R.forEach(k => { const a = Math.floor(k.l / bs), b = Math.floor(k.h / bs), n = b - a + 1; for (let i = a; i <= b; i++) vp.set(i, (vp.get(i) || 0) + k.v / n); tv += k.v; });
+  const keys = [...vp.keys()]; if (keys.length) { let poc = keys[0]; keys.forEach(i => { if (vp.get(i) > vp.get(poc)) poc = i; }); let lo = poc, hi = poc, acc = vp.get(poc);
+    while (acc < .7 * tv && (vp.has(lo - 1) || vp.has(hi + 1))) { const dn = vp.get(lo - 1) || 0, up = vp.get(hi + 1) || 0; if (up >= dn) { hi++; acc += up; } else { lo--; acc += dn; } }
+    add((poc + .5) * bs, 'vp', 'POC 24j', 3); add((hi + 1) * bs, 'vp', 'VAH 24j', 2); add(lo * bs, 'vp', 'VAL 24j', 2); }
+  for (let p = Math.ceil(px * .98 / 25) * 25; p <= px * 1.02; p += 25) add(p, 'rd', p % 100 === 0 ? `$${p} (100)` : p % 50 === 0 ? `$${p} (50)` : `$${p} (25)`, p % 100 === 0 ? 2.2 : p % 50 === 0 ? 1.6 : 1);
+  const dist = z => px < z.lo ? z.lo - px : px > z.hi ? px - z.hi : 0, pick = (a, up) => a.filter(z => z.up === up && z.hi >= px * .975 && z.lo <= px * 1.025).sort((x, y) => dist(x) - dist(y)).slice(0, up ? 4 : 4);
+  const fv = []; for (let i = 2; i < H.length; i++) { const a = H[i - 2], c = H[i];
+    if (c.l > a.h && c.l - a.h >= px * .0004) { let m = 0; for (let j = i + 1; j < H.length; j++) if (H[j].l <= a.h) { m = 1; break; } if (!m) fv.push({ lo: a.h, hi: c.l, up: 1 }); }
+    if (c.h < a.l && a.l - c.h >= px * .0004) { let m = 0; for (let j = i + 1; j < H.length; j++) if (H[j].h >= a.l) { m = 1; break; } if (!m) fv.push({ lo: c.h, hi: a.l, up: 0 }); } }
+  [1, 0].forEach(u => pick(fv, u).forEach(z => add(z.lo, u ? 'fvgU' : 'fvgD', u ? 'FVG ▲ H1' : 'FVG ▼ H1', 1.6, z.hi)));
+  const ob = []; for (let i = 21; i < H.length; i++) { const k = H[i], body = Math.abs(k.c - k.o); let av = 0; for (let j = i - 20; j < i; j++) av += Math.abs(H[j].c - H[j].o); av /= 20; if (body < 1.8 * av || body < px * .0012) continue; const up = k.c > k.o;
+    for (let j = i - 1; j >= Math.max(0, i - 5); j--) { const o = H[j]; if (up ? o.c < o.o : o.c > o.o) { const lo = Math.min(o.o, o.c), hi = Math.max(o.o, o.c); let m = 0; for (let t = i + 1; t < H.length; t++) if (up ? H[t].l <= hi : H[t].h >= lo) { m = 1; break; } if (!m) ob.push({ lo, hi, up: up ? 1 : 0 }); break; } } }
+  [1, 0].forEach(u => pick(ob, u).slice(0, 3).forEach(z => add(z.lo, u ? 'obU' : 'obD', u ? 'OB ▲ demand H1' : 'OB ▼ supply H1', 2.4, z.hi)));
+  const tol = px * .0005, S2 = lv.map(x => ({ ...x, c: (x.p + x.hi) / 2 })).sort((a, b) => a.c - b.c), g = [];
+  S2.forEach(x => { const G = g[g.length - 1]; if (G && x.c - G.last <= tol) { G.m.push(x); G.last = x.c; } else g.push({ m: [x], last: x.c }); });
+  const z = g.map(G => { const s = G.m.reduce((a, x) => a + x.w, 0); return { lo: Math.min(...G.m.map(x => x.p)), hi: Math.max(...G.m.map(x => x.hi)), c: G.m.reduce((a, x) => a + x.c * x.w, 0) / s, s, m: G.m.map(x => x.label) }; }).filter(q => q.s >= 3);
+  return { lv, z, px };
+}
+async function loadKl() {
+  if (KL.busy) return; KL.busy = 1; const sym = $('klSym').value, q = (i, n) => jf(`${B}klines?symbol=${sym}&interval=${i}&limit=${n}`), P = k => ({ t: +k[0], o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5] });
+  try { const [d, w, mo, m15, h1] = await Promise.all([q('1d', 3), q('1w', 3), q('1M', 3), q('15m', 500), q('1h', 300)]); const r = klCompute(d.map(P), w.map(P), mo.map(P), m15.map(P), h1.map(P)); KL.lv = r.lv; KL.z = r.z; KL.px = KL.live || r.px; KL.sym = sym; KL.t = Date.now(); $('klSt').textContent = `level dihitung ${new Date().toLocaleTimeString('id-ID')} · ${r.lv.length} level · ${r.z.length} zona`; drawKl(); }
+  catch (e) { $('klSt').textContent = 'Gagal: ' + e.message; } KL.busy = 0; }
+function drawKl() {
+  const { c, w, h } = cv($('klCv'), 560), px = KL.px; if (!px || !KL.lv.length) return; const lo = px * .985, hi = px * 1.015, Y = p => (hi - p) / (hi - lo) * h, pL = 58, pR = 210, W2 = w - pR;
+  c.font = '10px sans-serif'; c.fillStyle = '#7384b4'; for (let i = 0; i <= 6; i++) { const p = hi - (hi - lo) * i / 6; c.fillText(p.toFixed(1), 4, Math.min(h - 3, Math.max(10, Y(p) + 3))); c.strokeStyle = 'rgba(130,165,255,.08)'; c.beginPath(); c.moveTo(pL, Y(p)); c.lineTo(W2, Y(p)); c.stroke(); }
+  KL.z.filter(z => z.hi >= lo && z.lo <= hi).forEach(z => { const y1 = Y(Math.max(z.hi, z.c + px * .0002)), y2 = Y(Math.min(z.lo, z.c - px * .0002)); c.fillStyle = `rgba(255,201,74,${Math.min(.28, .05 + z.s / 60)})`; c.fillRect(pL, y1, W2 - pL, Math.max(3, y2 - y1)); c.fillStyle = '#ffc94a'; c.fillText('★' + z.s.toFixed(1), pL + 4, y1 + 10); });
+  KL.lv.filter(x => x.p >= lo && x.hi <= hi + 1e-9 || x.hi >= lo && x.p <= hi).forEach(x => { const col = KCOL[x.type]; if (x.hi > x.p) { c.fillStyle = col; c.globalAlpha = .22; c.fillRect(pL, Y(x.hi), W2 - pL, Math.max(2, Y(x.p) - Y(x.hi))); c.globalAlpha = 1; } else { c.strokeStyle = col; c.globalAlpha = x.type === 'rd' ? .45 : .9; c.setLineDash(x.type === 'rd' ? [3, 4] : []); c.beginPath(); c.moveTo(pL, Y(x.p)); c.lineTo(W2, Y(x.p)); c.stroke(); c.setLineDash([]); c.globalAlpha = 1; } });
+  const L2 = KL.lv.filter(x => (x.p + x.hi) / 2 >= lo && (x.p + x.hi) / 2 <= hi).sort((a, b) => b.p - a.p); let prev = -99;
+  L2.forEach(x => { const y0 = Y((x.p + x.hi) / 2), y = Math.max(y0, prev + 11); prev = y; if (y > h - 2) return; c.strokeStyle = 'rgba(167,182,220,.2)'; c.beginPath(); c.moveTo(W2, y0); c.lineTo(W2 + 8, y); c.stroke(); c.fillStyle = KCOL[x.type]; c.fillText(`${x.label} ${x.hi > x.p ? x.p.toFixed(1) + '–' + x.hi.toFixed(1) : x.p.toFixed(1)}`, W2 + 10, y + 3); });
+  c.strokeStyle = '#fff'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(pL, Y(px)); c.lineTo(W2, Y(px)); c.stroke(); c.lineWidth = 1; c.fillStyle = '#fff'; c.fillRect(0, Y(px) - 8, pL - 4, 16); c.fillStyle = '#04060d'; c.font = 'bold 10px sans-serif'; c.fillText(px.toFixed(2), 3, Y(px) + 4);
+  const dst = z => z.c - px, rows = a => a.map(z => `<tr><td class="${dst(z) > 0 ? 'neg' : 'pos'}">${dst(z) > 0 ? '▲ resisten' : '▼ support'}</td><td class="mono">${z.lo.toFixed(2)}${z.hi - z.lo > .01 ? '–' + z.hi.toFixed(2) : ''}</td><td><b>${z.s.toFixed(1)}</b> ${z.s >= 8 ? 'kuat' : z.s >= 5 ? 'sedang' : 'ringan'}</td><td class="mono">${Math.abs(dst(z)).toFixed(2)} (${(Math.abs(dst(z)) / px * 100).toFixed(2)}%)</td><td>${esc(z.m.join(' · '))}</td></tr>`).join('');
+  const up = KL.z.filter(z => z.c > px).sort((a, b) => a.c - b.c).slice(0, 5).reverse(), dn = KL.z.filter(z => z.c <= px).sort((a, b) => b.c - a.c).slice(0, 5);
+  $('klTbl').innerHTML = `<table class="xt"><tr><th>Posisi</th><th>Zona</th><th>Skor</th><th>Jarak</th><th>Level yang bertumpuk</th></tr>${rows(up)}${rows(dn)}</table>`; $('klPx').textContent = `harga ${px.toFixed(2)}`;
+}
+function startKlWs() { try { KL.ws = new WebSocket(`wss://fstream.binance.com/ws/${$('klSym').value.toLowerCase()}@markPrice@1s`); KL.ws.onmessage = m => { const p = +JSON.parse(m.data).p; if (p > 0) { KL.live = p; KL.px = p; drawKl(); } }; } catch (e) { } }
+function stopKlWs() { try { KL.ws && KL.ws.close(); } catch (e) { } KL.ws = null; KL.live = 0; }
+$('klSym').onchange = () => { KL.lv = []; KL.z = []; stopKlWs(); startKlWs(); loadKl(); };
+let kn = 0; setInterval(() => { const on = act('kl'); if (on && !KL.was) { startKlWs(); loadKl(); } if (!on && KL.was) stopKlWs(); KL.was = on; if ((on || S.kl) && ++kn % 30 === 0) loadKl(); }, 2000); if (S.kl) setTimeout(loadKl, 2500);
 
 /* ---------- hook ke render utama ---------- */
 function renderAdv() { loadJ(); watchSig(); if (act('edge')) renderEdge(); if (act('journal')) renderJ(); if (act('challenge')) renderCh(); }
