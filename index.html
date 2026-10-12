@@ -539,6 +539,7 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
 .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.pgrid label{font-size:11px;color:var(--faint);display:grid;gap:4px}
 .jrow{display:grid;grid-template-columns:110px 70px 80px 120px 80px 1fr;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px}
 @media(max-width:900px){.jrow{grid-template-columns:1fr 1fr}}
+button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
 .kp{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px}.kp small{display:block;color:var(--faint);font-size:10px;margin-bottom:4px}.kp b{font-size:15px}
 .ctl label{display:flex;gap:5px;align-items:center}.ctl input[type=checkbox]{padding:0;min-width:0}
 .lg{height:10px;border-radius:6px;background:linear-gradient(90deg,#1e2878,#00aadc,#ffc83c,#fff);margin:6px 0;max-width:260px}
@@ -612,6 +613,8 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
       <button class="tab" data-view="mtf"><span class="tico" style="--c1:#9ef0ff;--c2:#2b8fd6"><span>🧭</span></span><span>Trend</span></button>
       <button class="tab" data-view="liq"><span class="tico" style="--c1:#9ef0ff;--c2:#6a4fd1"><span>🌊</span></span><span>Liquidity</span></button>
       <button class="tab" data-view="kl"><span class="tico" style="--c1:#ffd25e;--c2:#a87b10"><span>🏛️</span></span><span>Key Levels</span></button>
+      <button class="tab" data-view="share"><span class="tico" style="--c1:#7dffb3;--c2:#1f9c6c"><span>📤</span></span><span>Share</span></button>
+      <button class="tab" data-view="compliance"><span class="tico" style="--c1:#9ec5ff;--c2:#3a63d8"><span>🛡️</span></span><span>Compliance</span></button>
       <button class="tab" data-view="sig"><span class="tico" style="--c1:#ff9ad5;--c2:#c43a8c"><span>🎯</span></span><span>Sinyal</span></button>
       <button class="tab" data-view="control"><span class="tico" style="--c1:#7ad0ff;--c2:#3a7bd5"><span>🎮</span></span><span>Control</span><span id="controlPip" class="pip" style="display:none"></span></button>
       <button class="tab" data-view="positions"><span class="tico" style="--c1:#ff8aa0;--c2:#d93658"><span>⚔️</span></span><span>Posisi</span></button>
@@ -893,9 +896,28 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
     <div class="card panel"><div class="panel-title"><h3>Monte Carlo</h3><span><input id="mcN" class="xin" type="number" value="100" min="20" max="500" style="width:70px"> trade × 1000 simulasi</span></div><canvas id="mcCv" class="cv" height="220"></canvas><div id="mcTxt" class="note"></div></div>
   </div>
 </section>
+<section id="view-compliance" class="view">
+  <div class="section-head"><div><h2>Compliance Auditor</h2><p>Audit realtime dari catatan yang dikirim EA (history & posisi live). Pelanggaran baru langsung memunculkan peringatan.</p></div></div>
+  <div class="pgrid" id="cpHead"></div>
+  <div class="card panel" style="margin-top:14px"><div class="panel-title"><h3>Hasil Pemeriksaan</h3><span class="ctl" style="margin:0"><input id="cpName" class="xin" placeholder="Nama di sertifikat"><button class="btn" id="cpCert">🎖️ Sertifikat PNG</button></span></div><div id="cpTbl" style="overflow-x:auto"></div></div>
+  <div class="card panel" style="margin-top:14px"><div class="panel-title"><h3>Ambang Aturan</h3><span>disimpan per akun · aturan loss mengikuti tab Challenge</span></div><div class="pgrid" id="cpIn"></div></div>
+</section>
+<section id="view-share" class="view">
+  <div class="section-head"><div><h2>Share Center</h2><p>Buat teks siap kirim ke grup WhatsApp member. Teks bisa diedit sebelum dikirim.</p></div></div>
+  <div class="card panel"><div class="ctl"><label class="note" style="margin:0"><input type="checkbox" id="shHide" checked> Sembunyikan nominal akun (tampilkan % saja)</label></div>
+  <div class="pgrid">
+    <button class="kp" data-share="kl" style="text-align:left;cursor:pointer"><small>Level institusional</small><b>🏛️ Key Levels</b></button>
+    <button class="kp" data-share="lq" style="text-align:left;cursor:pointer"><small>Klaster likuidasi & funding</small><b>🌊 Liquidity Map</b></button>
+    <button class="kp" data-share="fibo" style="text-align:left;cursor:pointer"><small>OTE, SL, TP per timeframe</small><b>📐 Fibo Zone</b></button>
+    <button class="kp" data-share="mtf" style="text-align:left;cursor:pointer"><small>Arah tiap timeframe</small><b>🧭 Trend MTF</b></button>
+    <button class="kp" data-share="day" style="text-align:left;cursor:pointer"><small>Hasil trading hari ini</small><b>📅 Rekap Harian</b></button>
+    <button class="kp" data-share="cp" style="text-align:left;cursor:pointer"><small>Skor & status aturan</small><b>🛡️ Compliance</b></button>
+    <button class="kp" data-share="all" style="text-align:left;cursor:pointer"><small>Key Levels + Liquidity + Fibo + Trend</small><b>📦 Paket Lengkap</b></button>
+  </div></div>
+</section>
 <section id="view-kl" class="view">
   <div class="section-head"><div><h2>Key Levels</h2><p>Level acuan yang dipantau trader institusi &amp; algo, dihitung realtime dari harga Binance. Ini bukan data order institusi sebenarnya (pasar spot XAU tidak punya data terpusat).</p></div></div>
-  <div class="card panel"><div class="ctl"><select id="klSym"><option>XAUUSDT</option><option>XAUTUSDT</option><option>PAXGUSDT</option></select><span id="klSt" class="note" style="margin:0">—</span></div>
+  <div class="card panel"><div class="ctl"><select id="klSym"><option>XAUUSDT</option><option>XAUTUSDT</option><option>PAXGUSDT</option></select><button class="btn ghost" id="klShare">📤 Bagikan ke WA</button><span id="klSt" class="note" style="margin:0">—</span></div>
     <canvas id="klCv" class="cv" height="560"></canvas>
     <div class="note"><span style="color:#35e0ff">■ Open D/W/M</span> · <span style="color:#ffc94a">■ Prev H/L/C (hari/minggu/bulan)</span> · <span style="color:#a98bff">■ VWAP</span> · <span style="color:#5aa8ff">■ High/Low sesi</span> · <span style="color:#ff9d2e">■ POC/VAH/VAL 24j</span> · <span style="color:#2df5a3">■ FVG/OB bullish</span> · <span style="color:#ff4b6e">■ FVG/OB bearish</span> · garis putus-putus = angka bulat $25/$50/$100 · band emas ★ = zona konfluensi (skor makin tinggi = makin banyak level bertumpuk). Volume memakai data Binance sebagai proxy, bukan volume pasar spot global.</div></div>
   <div class="card panel" style="margin-top:14px"><div class="panel-title"><h3>Zona Konfluensi Terdekat</h3><span id="klPx">—</span></div><div id="klTbl"></div></div>
@@ -904,10 +926,10 @@ body.lowfx .world .floor,body.lowfx .sparks,body.lowfx .coin,body.lowfx .gb{anim
   <div class="section-head"><div><h2>Liquidity Heatmap</h2><p>Data publik Binance Futures (tanpa API key). Order book = akumulasi sejak tab dibuka. Liquidation = estimasi model, bukan data resmi Coinglass.</p></div></div>
   <div class="card panel">
     <div class="ctl"><select id="lqSym"><option>XAUUSDT</option><option>XAUTUSDT</option><option>PAXGUSDT</option></select>
-    <button class="btn ghost on" id="lqOb">Order Book</button><button class="btn ghost" id="lqLq">Liquidation</button>
+    <button class="btn ghost" id="lqOb">Order Book</button><button class="btn ghost on" id="lqLq">Liquidity Heatmap</button>
     <select id="lqRg"><option value="0.5">±0.5%</option><option value="1" selected>±1%</option><option value="2">±2%</option><option value="4">±4%</option></select>
     <select id="lqTf"><option value="15m">15m (5 hari)</option><option value="1h" selected>1h (21 hari)</option><option value="4h">4h (83 hari)</option></select>
-    <span id="lqSt" class="note" style="margin:0">—</span></div>
+    <button class="btn ghost" id="lqShare">📤 Bagikan ke WA</button><span id="lqSt" class="note" style="margin:0">—</span></div>
     <canvas id="lqCv" class="cv" height="440"></canvas><div class="lg"></div>
     <div class="note" id="lqInfo"></div>
   </div>
@@ -3398,7 +3420,7 @@ function mc(r, eq, S) {
 }
 
 /* ---------- Liquidity Heatmap (Binance Futures publik) ---------- */
-const B = 'https://fapi.binance.com/fapi/v1/', L = { mode: 'ob', cols: [], bin: 1, mid: 0, tm: null, ws: null, busy: 0, liq: null, ev: [], tot: [0, 0] };
+const B = 'https://fapi.binance.com/fapi/v1/', L = { mode: 'liq', cols: [], bin: 1, mid: 0, tm: null, ws: null, busy: 0, liq: null, ev: [], tot: [0, 0] };
 const nice = x => [.01, .02, .05, .1, .2, .5, 1, 2, 5, 10, 20, 50, 100].find(v => v >= x) || 100;
 const st = t => $('lqSt').textContent = t, rg = () => +$('lqRg').value;
 function reset() { L.cols = []; L.liq = null; L.bin = 0; stopWs(); startWs(); tick(); }
@@ -3444,12 +3466,12 @@ function stopWs() { try { L.ws && L.ws.close(); } catch (e) { } L.ws = null; }
 async function tick() { if (L.busy) return; L.busy = 1; try { L.mode === 'ob' ? await pollOB() : (L.liq && L.liq.sym === $('lqSym').value ? 0 : await loadLiq()); } catch (e) { st('Gagal: ' + e.message + ' (cek koneksi/blokir Binance, atau simbol tidak ada di Futures)'); } L.busy = 0; }
 const setMode = m => { L.mode = m; $('lqOb').classList.toggle('on', m === 'ob'); $('lqLq').classList.toggle('on', m === 'liq'); $('lqTf').style.display = m === 'liq' ? '' : 'none'; $('lqRg').style.display = m === 'ob' ? '' : 'none'; L.liq = null; if (m === 'ob') L.cols.length = 0, L.bin = 0; tick(); };
 $('lqOb').onclick = () => setMode('ob'); $('lqLq').onclick = () => setMode('liq'); $('lqSym').onchange = () => { L.cols = []; L.bin = 0; L.liq = null; L.ev = []; L.tot = [0, 0]; $('lqFeed').innerHTML = ''; stopWs(); startWs(); tick(); loadDv(); };
-$('lqRg').onchange = () => { L.cols = []; L.bin = 0; tick(); }; $('lqTf').onchange = () => { L.liq = null; tick(); }; setMode('ob');
-let was = false; setInterval(() => { const on = act('liq'); if (on && !was) { startWs(); tick(); loadDv(); } if (!on && was) stopWs(); was = on; if (on && L.mode === 'ob') tick(); }, 2000);
+$('lqRg').onchange = () => { L.cols = []; L.bin = 0; tick(); }; $('lqTf').onchange = () => { L.liq = null; tick(); }; setMode('liq');
+let was = false; setInterval(() => { const on = act('liq'); if (on && !was) { startWs(); tick(); loadDv(); L.mode === 'liq' && drawLiq(); } if (!on && was) stopWs(); was = on; if (on && L.mode === 'ob') tick(); }, 2000);
 
 /* ---------- Menu: urutan & pemisah (tanpa label teks) ---------- */
 (() => { const nav = document.querySelector('.nav'); if (!nav) return; const T = v => nav.querySelector(`.tab[data-view="${v}"]`);
-  [['terminal', 'overview', 'control', 'positions', 'orders'], ['mtf', 'sig', 'liq', 'kl', 'news'], ['history', 'analytics', 'edge', 'journal', 'calendar', 'portfolio', 'challenge'], ['risk', 'wallet', 'accounts']]
+  [['terminal', 'overview', 'control', 'positions', 'orders'], ['mtf', 'sig', 'liq', 'kl', 'share', 'news'], ['history', 'analytics', 'edge', 'journal', 'calendar', 'portfolio', 'challenge'], ['risk', 'compliance', 'wallet', 'accounts']]
     .forEach((g, i) => { if (i) nav.insertAdjacentHTML('beforeend', '<i class="navsep"></i>'); g.forEach(v => { const t = T(v); t && nav.appendChild(t); }); }); })();
 
 /* ---------- Equity vs Balance: kurva dari history trade + equity live ---------- */
@@ -3600,8 +3622,117 @@ function stopKlWs() { try { KL.ws && KL.ws.close(); } catch (e) { } KL.ws = null
 $('klSym').onchange = () => { KL.lv = []; KL.z = []; stopKlWs(); startKlWs(); loadKl(); };
 let kn = 0; setInterval(() => { const on = act('kl'); if (on && !KL.was) { startKlWs(); loadKl(); } if (!on && KL.was) stopKlWs(); KL.was = on; if ((on || S.kl) && ++kn % 30 === 0) loadKl(); }, 2000); if (S.kl) setTimeout(loadKl, 2500);
 
+/* ---------- Compliance Auditor (realtime dari catatan EA) ---------- */
+let nws = [], nAcc = null, nUn = null;
+function watchNews() { const f = FX(); if (!f.db || !f.accountId || f.accountId === nAcc) return; nUn && nUn(); nAcc = f.accountId; nws = [];
+  nUn = f.db.collection('accounts').doc(nAcc).collection('newsEvents').onSnapshot(s => { nws = s.docs.map(d => d.data()); }, e => console.warn('news', e)); }
+const CP = { prev: {}, acc: null, S: null }, CPL = [['hold', 'Durasi min. (detik)'], ['pct', 'Batas trade cepat (%)'], ['lot', 'Lot maks (× median)'], ['rep', 'Lonjakan lot setelah loss (×)'], ['nw', 'Jendela news (± menit)'], ['risk', 'Batas risiko terbuka (%)']];
+function cpSet() { const f = FX(); if (CP.acc !== f.accountId) { CP.acc = f.accountId; CP.prev = {}; CP.S = Object.assign({ hold: 60, pct: 20, lot: 3, rep: 1.5, nw: 3, risk: 3 }, LS('ffx_cs_' + CP.acc) || {});
+  $('cpIn').innerHTML = CPL.map(([k, l]) => `<label>${l}<input class="xin" type="number" step="any" data-k="${k}" value="${CP.S[k]}"></label>`).join(''); $('cpName').value = LS('ffx_cname') || (f.account && f.account.name) || ''; } return CP.S; }
+$('cpIn').addEventListener('change', e => { const k = e.target.dataset.k; if (!k) return; CP.S[k] = +e.target.value; LS('ffx_cs_' + CP.acc, CP.S); cpTick(); });
+$('cpName').onchange = e => { LS('ffx_cname', e.target.value.trim()); };
+const dirOf = t => /sell/i.test(String(t.type)) ? 'S' : 'B', durOf = t => Number.isFinite(+t.durationSec) && t.durationSec !== '' && t.durationSec != null ? +t.durationSec : (t.closeTime - t.openTime);
+function cpEval() {
+  const f = FX(), a = f.account; if (!a) return null; const S = cpSet(), POS = a.positions || [], C = [], now = Date.now(), tk = t => '#' + t.ticket;
+  const H = [...(f.history || [])].filter(t => +t.closeTime && +t.openTime).sort((x, y) => x.openTime - y.openTime);
+  const add = (id, name, st, txt, ev) => C.push({ id, name, st, txt, ev: ev || [] });
+  const sc = H.filter(t => durOf(t) < S.hold), pc = H.length ? sc.length / H.length * 100 : 0;
+  add('hold', `Durasi trade ≥ ${S.hold} dtk`, !sc.length ? 'ok' : pc > S.pct ? 'fail' : 'warn', sc.length ? `${sc.length}/${H.length} trade (${pc.toFixed(0)}%) ditutup lebih cepat` : 'Tidak ada trade terlalu cepat', sc.slice(-6).map(t => `${tk(t)} ${durOf(t)}s`));
+  const med = pctl(H.map(t => +t.volume), .5), big = H.filter(t => med > 0 && +t.volume > S.lot * med);
+  add('lot', `Konsistensi lot (≤ ${S.lot}× median)`, !big.length ? 'ok' : big.length > 3 ? 'fail' : 'warn', big.length ? `${big.length} trade melebihi (median ${med.toFixed(2)} lot)` : `Lot konsisten (median ${med.toFixed(2)})`, big.slice(-6).map(t => `${tk(t)} ${(+t.volume).toFixed(2)} lot`));
+  const byC = [...H].sort((x, y) => x.closeTime - y.closeTime); let run = 0, mx = 0, ev = []; byC.forEach((t, i) => { const p = byC[i - 1]; if (p && +p.netProfit < 0 && +t.volume >= S.rep * +p.volume) { run++; ev.push(`${tk(t)} ${(+p.volume).toFixed(2)}→${(+t.volume).toFixed(2)}`); mx = Math.max(mx, run); } else run = 0; });
+  add('mart', 'Tanpa martingale / lot naik setelah loss', mx >= 3 ? 'fail' : ev.length >= 2 ? 'warn' : 'ok', ev.length ? `${ev.length} kali lot naik ≥${S.rep}× setelah loss (beruntun maks ${mx})` : 'Tidak terdeteksi', ev.slice(-5));
+  const R = H.slice(-300), hd = []; for (let i = 0; i < R.length; i++) for (let j = i + 1; j < R.length && R[j].openTime < R[i].closeTime; j++) if (R[i].symbol === R[j].symbol && dirOf(R[i]) !== dirOf(R[j])) hd.push(`${tk(R[i])}↔${tk(R[j])}`);
+  const liveH = [...new Set(POS.map(p => p.symbol))].filter(s => POS.some(p => p.symbol === s && dirOf(p) === 'B') && POS.some(p => p.symbol === s && dirOf(p) === 'S'));
+  add('hedge', 'Tanpa hedging (buy & sell bersamaan)', liveH.length ? 'fail' : hd.length ? 'warn' : 'ok', liveH.length ? `Posisi buy & sell terbuka bersamaan: ${liveH.join(', ')}` : hd.length ? `${hd.length} pasang trade berlawanan saling tumpang tindih` : 'Tidak terdeteksi', hd.slice(-5));
+  const hi = nws.filter(n => /high/i.test(n.impact)).map(n => n.time && n.time.toMillis ? n.time.toMillis() : +n.time).filter(Boolean), w = S.nw * 6e4;
+  const nt = hi.length ? H.filter(t => hi.some(x => Math.abs(t.openTime * 1000 - x) <= w || Math.abs(t.closeTime * 1000 - x) <= w)) : [];
+  add('news', `Tidak trading ±${S.nw} mnt dari news high-impact`, !hi.length ? 'na' : !nt.length ? 'ok' : nt.length > 2 ? 'fail' : 'warn', !hi.length ? 'Belum ada event high-impact di tab News' : nt.length ? `${nt.length} trade di sekitar news` : `${hi.length} event dicek, bersih`, nt.slice(-5).map(tk));
+  const pr = LS('ffx_p_' + CP.acc) || {}, net = H.reduce((s, t) => s + (+t.netProfit || 0), 0), st0 = +pr.start || Math.round(+a.startingBalance || (+a.balance - net)) || 0, ddp = +pr.dd || 5, tot = +pr.tot || 10, eq = +a.equity || +a.balance || 0, flo = eq - (+a.balance || eq);
+  const today = new Date().toISOString().slice(0, 10), dk = t => new Date(t.closeTime * 1000).toISOString().slice(0, 10), dl = st0 * ddp / 100, dpl = H.filter(t => dk(t) === today).reduce((s, t) => s + (+t.netProfit || 0), 0) + flo, du = Math.max(0, -dpl);
+  add('dloss', `Daily loss ≤ ${ddp}%`, !st0 ? 'na' : du >= dl ? 'fail' : du >= .7 * dl ? 'warn' : 'ok', st0 ? `Terpakai ${(du / st0 * 100).toFixed(2)}% dari ${ddp}%${pr.dd ? '' : ' (default, atur di tab Challenge)'}` : 'Modal awal belum diketahui');
+  const tl = st0 * tot / 100, tu = Math.max(0, st0 - eq); add('tloss', `Total loss ≤ ${tot}%`, !st0 ? 'na' : tu >= tl ? 'fail' : tu >= .7 * tl ? 'warn' : 'ok', st0 ? `Drawdown dari modal ${(tu / st0 * 100).toFixed(2)}% dari ${tot}%` : 'Modal awal belum diketahui');
+  const ns = POS.filter(p => !(+p.sl > 0)); add('sl', 'Semua posisi memakai Stop Loss', !POS.length ? 'ok' : ns.length ? 'fail' : 'ok', !POS.length ? 'Tidak ada posisi terbuka' : ns.length ? `${ns.length} posisi tanpa SL` : `${POS.length} posisi terlindungi SL`, ns.map(p => '#' + p.ticket));
+  const d = new Date(), wk = POS.length && (d.getUTCDay() === 5 && d.getUTCHours() >= 20 || d.getUTCDay() === 6 || d.getUTCDay() === 0 && d.getUTCHours() < 22);
+  add('wknd', 'Tidak menahan posisi saat akhir pekan', wk ? 'warn' : 'ok', wk ? `${POS.length} posisi masih terbuka menjelang/saat pasar tutup (risiko gap)` : 'Aman');
+  const rk = POS.reduce((s, p) => s + (+p.riskPct || 0), 0); add('risk', `Risiko terbuka ≤ ${S.risk}%`, rk > S.risk ? 'fail' : rk > .7 * S.risk ? 'warn' : 'ok', `${rk.toFixed(2)}% dari modal (${POS.length} posisi)`);
+  const days = {}; H.forEach(t => { const k = dk(t); days[k] = (days[k] || 0) + (+t.netProfit || 0); }); const best = Math.max(0, ...Object.values(days)), cons = +pr.cons || 30, share = net > 0 ? best / net * 100 : 0;
+  add('cons', `Konsistensi: hari terbaik ≤ ${cons}% profit`, net <= 0 ? 'na' : share > cons ? 'fail' : share > .8 * cons ? 'warn' : 'ok', net > 0 ? `Hari terbaik = ${share.toFixed(0)}% dari total profit` : 'Belum ada profit bersih');
+  const act2 = C.filter(x => x.st !== 'na'), fails = act2.filter(x => x.st === 'fail').length, warns = act2.filter(x => x.st === 'warn').length, score = Math.max(0, 100 - fails * 14 - warns * 5);
+  return { checks: C, n: act2.length, fails, warns, pass: act2.length - fails - warns, score, trades: H.length, first: H[0] ? H[0].openTime : null, status: fails ? 'NOT COMPLIANT' : warns ? 'COMPLIANT · WITH NOTES' : 'FULLY COMPLIANT' };
+}
+const SY = { ok: ['✓', 'pos'], warn: ['!', 'amber'], fail: ['✗', 'neg'], na: ['–', ''] };
+function renderCp(R) {
+  const a = FX().account, age = a.updatedAt && a.updatedAt.toMillis ? Math.round((Date.now() - a.updatedAt.toMillis()) / 1000) + ' dtk lalu' : 'live';
+  $('cpHead').innerHTML = kp('Skor kepatuhan', `${R.score}/100`, 'dihitung realtime', R.fails ? 'neg' : R.warns ? 'amber' : 'pos') + kp('Status', R.status, `snapshot EA: ${age}`, R.fails ? 'neg' : R.warns ? 'amber' : 'pos') + kp('Lulus', `${R.pass}/${R.n}`, `${R.warns} catatan · ${R.fails} pelanggaran`) + kp('Trade diaudit', R.trades, 'dari history yang dikirim EA');
+  $('cpTbl').innerHTML = '<table class="xt"><tr><th></th><th>Aturan</th><th>Hasil</th><th>Bukti</th></tr>' + R.checks.map(x => `<tr><td class="${SY[x.st][1]}"><b>${SY[x.st][0]}</b></td><td>${esc(x.name)}</td><td>${esc(x.txt)}</td><td class="note" style="margin:0">${esc(x.ev.join(' · '))}</td></tr>`).join('') + '</table>'; }
+function cpTick() { const R = cpEval(); if (!R) return; R.checks.forEach(x => { const p = CP.prev[x.id]; if (p && p !== 'fail' && x.st === 'fail') FX().toast('🚨 Compliance: ' + x.name + ' — ' + x.txt); CP.prev[x.id] = x.st; }); if (act('compliance')) renderCp(R); }
+
+/* ---------- Sertifikat PNG ---------- */
+const fl = document.createElement('link'); fl.rel = 'stylesheet'; fl.href = 'https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap'; document.head.appendChild(fl);
+const loadFonts = () => Promise.all(['120px "Mrs Saint Delafield"', '700 40px "Cormorant Garamond"', 'italic 500 26px "Cormorant Garamond"'].map(x => document.fonts.load(x))).catch(() => { });
+const wib = (d = new Date()) => d.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB';
+async function drawCert() {
+  await loadFonts(); const R = cpEval(); if (!R) return null; const a = FX().account, W = 1600, Ht = 1200, k = document.createElement('canvas'); k.width = W; k.height = Ht; const c = k.getContext('2d'), NAVY = '#0b1633', GOLD = '#a67c1f', INK = '#2b3550', ok = !R.fails, SER = '"Cormorant Garamond",Georgia,serif';
+  let g = c.createLinearGradient(0, 0, W, Ht); g.addColorStop(0, '#fffef9'); g.addColorStop(1, '#f3ecd9'); c.fillStyle = g; c.fillRect(0, 0, W, Ht);
+  const gg = c.createLinearGradient(0, 0, W, 0); gg.addColorStop(0, '#8a6420'); gg.addColorStop(.5, '#e6c25a'); gg.addColorStop(1, '#8a6420');
+  c.strokeStyle = NAVY; c.lineWidth = 8; c.strokeRect(26, 26, W - 52, Ht - 52); c.strokeStyle = gg; c.lineWidth = 3; c.strokeRect(46, 46, W - 92, Ht - 92); c.lineWidth = 1; c.strokeRect(58, 58, W - 116, Ht - 116);
+  const T = (s, x, y, font, col, al, ls) => { c.font = font; c.fillStyle = col; c.textAlign = al || 'center'; try { c.letterSpacing = (ls || 0) + 'px'; } catch (e) { } c.fillText(s, x, y); try { c.letterSpacing = '0px'; } catch (e) { } };
+  g = c.createRadialGradient(800, 120, 6, 800, 130, 50); g.addColorStop(0, '#f6dd8a'); g.addColorStop(1, '#a67c1f'); c.fillStyle = g; c.beginPath(); c.arc(800, 130, 46, 0, 7); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 2; c.beginPath(); c.arc(800, 130, 38, 0, 7); c.stroke(); T('FGK', 800, 141, `700 30px ${SER}`, NAVY);
+  T('FARID GOLD KILLER', 800, 205, `700 26px ${SER}`, NAVY, 'center', 9); T(ok ? 'CERTIFICATE OF COMPLIANCE' : 'COMPLIANCE REPORT', 800, 290, `700 68px ${SER}`, NAVY, 'center', 4); T('TRADING RISK & PROP-FIRM RULE AUDIT', 800, 330, '600 18px sans-serif', GOLD, 'center', 6);
+  T(ok ? 'This is to certify that' : 'Audit result for', 800, 392, `italic 500 28px ${SER}`, INK);
+  const nm = ($('cpName').value || a.name || 'Trader').trim(); let fs = 88; c.font = `700 ${fs}px ${SER}`; while (c.measureText(nm).width > 1000 && fs > 40) { fs -= 4; c.font = `700 ${fs}px ${SER}`; } T(nm, 800, 472, `700 ${fs}px ${SER}`, NAVY);
+  c.strokeStyle = gg; c.lineWidth = 2; c.beginPath(); c.moveTo(400, 494); c.lineTo(1200, 494); c.stroke();
+  const lg = String(a.login || ''), acct = `Account •••• ${lg.slice(-4)}  ·  ${a.company || a.server || 'MT5'}  ·  ${a.currency || 'USD'}`; T(acct, 800, 532, '500 19px sans-serif', INK);
+  T(ok ? `has maintained trading activity audited against ${R.n} risk-management and prop-firm compliance rules,` : `trading activity was audited against ${R.n} risk-management and prop-firm compliance rules,`, 800, 578, `italic 500 26px ${SER}`, INK);
+  T(ok ? (R.warns ? `recording no rule violations and ${R.warns} advisory note(s) at the time of issue.` : 'recording no rule violations at the time of issue.') : `with ${R.fails} rule violation(s) detected at the time of issue.`, 800, 610, `italic 500 26px ${SER}`, INK);
+  const days = R.first ? Math.max(1, Math.round((Date.now() / 1000 - R.first) / 86400)) : 0, M4 = [['COMPLIANCE SCORE', `${R.score}/100`], ['CHECKS PASSED', `${R.pass}/${R.n}`], ['TRADES AUDITED', String(R.trades)], ['PERIOD', `${days} days`]];
+  M4.forEach(([l, v], i) => { const x = 155 + i * 330; c.fillStyle = 'rgba(11,22,51,.045)'; c.fillRect(x, 650, 300, 100); c.strokeStyle = GOLD; c.lineWidth = 1.5; c.strokeRect(x, 650, 300, 100); T(l, x + 150, 678, '600 14px sans-serif', GOLD, 'center', 3); T(v, x + 150, 726, `700 48px ${SER}`, NAVY); });
+  const col = { ok: '#1f8f5f', warn: '#b7791f', fail: '#c0392b', na: '#8b93a8' }; R.checks.forEach((x, i) => { const cx = i < 6 ? 170 : 860, y = 800 + (i % 6) * 28; T(SY[x.st][0], cx, y, 'bold 20px sans-serif', col[x.st], 'left'); T(x.name, cx + 30, y, '500 18px sans-serif', INK, 'left'); });
+  T('DATE ISSUED', 160, 1018, '600 13px sans-serif', GOLD, 'left', 3); T(wib(), 160, 1046, `600 24px ${SER}`, NAVY, 'left'); let h = 5381; const sd = `${a.login}|${R.score}|${R.trades}|${new Date().toISOString().slice(0, 10)}`; for (const ch of sd) h = ((h << 5) + h + ch.charCodeAt(0)) >>> 0;
+  T('CERTIFICATE ID', 160, 1084, '600 13px sans-serif', GOLD, 'left', 3); T('FGK-' + h.toString(16).toUpperCase().padStart(8, '0') + '-' + R.score, 160, 1110, '600 22px "JetBrains Mono",monospace', NAVY, 'left');
+  g = c.createRadialGradient(780, 1010, 6, 800, 1030, 80); g.addColorStop(0, '#f6dd8a'); g.addColorStop(1, '#a67c1f'); c.fillStyle = g; c.beginPath(); c.arc(800, 1040, 74, 0, 7); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 2.5; c.beginPath(); c.arc(800, 1040, 62, 0, 7); c.stroke();
+  T('COMPLIANCE', 800, 1006, '700 11px sans-serif', NAVY, 'center', 1); T(String(R.score), 800, 1056, `700 48px ${SER}`, NAVY); T('SCORE', 800, 1076, '700 12px sans-serif', NAVY, 'center', 3);
+  let sf = 124; c.font = `${sf}px "Mrs Saint Delafield",cursive`; while (c.measureText('Farid Siddiq').width > 330 && sf > 40) { sf -= 6; c.font = `${sf}px "Mrs Saint Delafield",cursive`; } c.save(); c.translate(1190, 1034); c.rotate(-.06); T('Farid Siddiq', 0, 0, `${sf}px "Mrs Saint Delafield",cursive`, NAVY); c.restore(); c.strokeStyle = NAVY; c.lineWidth = 1.5; c.beginPath(); c.moveTo(1010, 1056); c.lineTo(1370, 1056); c.stroke();
+  T('Farid Siddiq', 1190, 1086, `700 28px ${SER}`, NAVY); T('Chief Executive Officer · Farid Gold Killer', 1190, 1108, '500 16px sans-serif', INK);
+  T(`Generated automatically from live MT5 EA records on ${wib()}. Self-reported compliance audit; not an independent third-party certification.`, 800, 1148, '500 13px sans-serif', '#6b7390'); return k.toDataURL('image/png');
+}
+const modal = (id, inner) => { document.body.insertAdjacentHTML('beforeend', `<div id="${id}" style="position:fixed;inset:0;z-index:9999;background:rgba(3,6,14,.95);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:12px">${inner}</div>`); return $(id); };
+const cm = modal('certModal', '<div class="ctl" style="margin:0"><button class="btn" id="certDl">⬇ Unduh PNG</button><button class="btn ghost" id="certFs">⛶ Layar penuh</button><button class="btn ghost" id="certX">✕ Tutup</button></div><img id="certImg" alt="Sertifikat" style="max-width:96vw;max-height:84vh;border-radius:4px;box-shadow:0 20px 60px #000"><div class="note" style="margin:0">Screenshot langsung dari layar ini, atau unduh PNG (1600×1200).</div>');
+async function showCert() { FX().toast('Menyusun sertifikat…'); const u = await drawCert(); if (!u) return; $('certImg').src = u; cm.style.display = 'flex'; }
+$('certDl').onclick = () => { const a = document.createElement('a'); a.href = $('certImg').src; a.download = `FaridFX-Compliance-${new Date().toISOString().slice(0, 10)}.png`; a.click(); };
+$('certFs').onclick = () => { cm.requestFullscreen ? cm.requestFullscreen().catch(() => { }) : 0; }; $('certX').onclick = () => { cm.style.display = 'none'; document.fullscreenElement && document.exitFullscreen(); };
+$('cpCert').onclick = showCert; addEventListener('keydown', e => { if (e.key === 'Escape') { cm.style.display = 'none'; sm.style.display = 'none'; } });
+
+/* ---------- Share Center (teks WhatsApp) ---------- */
+const sm = modal('shModal', '<div style="width:min(720px,96vw)" class="card panel"><div class="panel-title"><h3 id="shTt">Bagikan</h3><span id="shLen"></span></div><textarea id="shTx" class="xin" style="width:100%;height:46vh;font-family:inherit;line-height:1.5"></textarea><div class="ctl" style="margin-top:10px"><button class="btn" id="shWa">💬 Kirim ke WhatsApp</button><button class="btn ghost" id="shCp">📋 Salin</button><button class="btn ghost" id="shNs">↗ Bagikan…</button><button class="btn ghost" id="shX">✕ Tutup</button></div><div class="note" id="shNote">WhatsApp akan terbuka dan kamu tinggal memilih grup.</div></div>');
+function openShare(t, txt) { $('shTt').textContent = t; $('shTx').value = txt; upSh(); sm.style.display = 'flex'; }
+const upSh = () => { const n = $('shTx').value.length; $('shLen').textContent = n + ' karakter'; $('shWa').disabled = n > 3200; $('shNote').textContent = n > 3200 ? 'Teks terlalu panjang untuk tautan WhatsApp — pakai Salin lalu tempel di grup.' : 'WhatsApp akan terbuka dan kamu tinggal memilih grup.'; };
+$('shTx').oninput = upSh; $('shX').onclick = () => { sm.style.display = 'none'; }; $('shWa').onclick = () => window.open('https://wa.me/?text=' + encodeURIComponent($('shTx').value), '_blank');
+$('shCp').onclick = () => navigator.clipboard.writeText($('shTx').value).then(() => FX().toast('Teks disalin'), () => { $('shTx').select(); document.execCommand('copy'); FX().toast('Teks disalin'); }); $('shNs').onclick = () => navigator.share ? navigator.share({ text: $('shTx').value }).catch(() => { }) : FX().toast('Fitur bagikan tidak didukung browser ini');
+const hd = (t) => `*${t}*\n_${wib()}_\n`, ft = '\n⚠️ _Bukan saran finansial. Trading berisiko._\n— Farid Gold Killer', f2 = v => (+v).toFixed(2), sgn = v => (v >= 0 ? '+' : '') + v.toFixed(2);
+async function shKL() { if (!KL.lv.length || Date.now() - KL.t > 3e5) await loadKl(); if (!KL.z.length) return 'Data Key Levels belum tersedia.'; const px = KL.px, up = KL.z.filter(z => z.c > px).sort((a, b) => a.c - b.c).slice(0, 3), dn = KL.z.filter(z => z.c <= px).sort((a, b) => b.c - a.c).slice(0, 3), zl = z => `• ${f2(z.lo)}${z.hi - z.lo > .01 ? '–' + f2(z.hi) : ''} | skor ${z.s.toFixed(1)} (${z.m.slice(0, 3).join(', ')})`;
+  const pick = ['Daily Open', 'PDH', 'PDL', 'Weekly Open', 'PWH', 'PWL', 'VWAP harian', 'POC 24j'].map(l => { const x = KL.lv.find(v => v.label === l); return x ? `${l} ${f2(x.p)}` : null; }).filter(Boolean);
+  return hd('🏛️ KEY LEVELS XAU') + `Harga: *${f2(px)}* (Binance ${KL.sym})\n\n▲ *Resisten terdekat*\n${up.map(zl).join('\n') || '-'}\n\n▼ *Support terdekat*\n${dn.map(zl).join('\n') || '-'}\n\n📌 ${pick.join(' · ')}\n_Skor = jumlah level yang bertumpuk di zona itu._` + ft; }
+async function shLQ() { const sym = $('lqSym').value; if (!L.liq || L.liq.sym !== sym) L.liq = await buildLiq(); const q = L.liq, c = liqTop(q), cur = q.o[q.n - 1].c, lab = s => s >= .85 ? 'kuat' : s >= .7 ? 'sedang' : 'ringan';
+  const [pi, tk] = await Promise.allSettled([jf(`${B}premiumIndex?symbol=${sym}`), jf(`${FD}takerlongshortRatio?symbol=${sym}&period=5m&limit=12`)]); let d = '';
+  if (pi.status === 'fulfilled') d += `Funding ${(+pi.value.lastFundingRate * 100).toFixed(4)}%`; if (tk.status === 'fulfilled' && tk.value.length) d += ` · Taker buy/sell ${f2(tk.value.reduce((s, x) => s + +x.buySellRatio, 0) / tk.value.length)}`;
+  return hd('🌊 LIQUIDITY MAP XAU') + `Harga: *${f2(cur)}* (Binance ${sym})\n\n▲ *Klaster short-liquidation (di atas)*\n${c.up.map(r => `• ${f2(r.p)} (${lab(r.s)})`).join('\n') || '-'}\n\n▼ *Klaster long-liquidation (di bawah)*\n${c.dn.map(r => `• ${f2(r.p)} (${lab(r.s)})`).join('\n') || '-'}\n\n${d ? '📊 ' + d + '\n' : ''}_Estimasi model dari volume & leverage, bukan data likuidasi resmi._` + ft; }
+const mtfOf = () => (FX().account && FX().account.mtf || []).filter(t => t.valid);
+function shFibo() { const a = FX().account, m = mtfOf(); if (!m.length) return 'Data fibo/MTF belum diterima dari EA.'; const z = (f, e) => { if (!f || !f.valid) return null; const o = [+f.levels[3], +f.levels[4]].sort((x, y) => x - y); return `${e} OTE ${f2(o[0])}–${f2(o[1])} | SL ${f2(f.sl)} | TP ${f2(f.tp)}`; };
+  const rows = m.map(t => `*${t.tf}* — trend ${t.dir > 0 ? 'UP ↑' : t.dir < 0 ? 'DOWN ↓' : 'NETRAL'}\n${[z(t.buy, '🟢 BUY'), z(t.sell, '🔴 SELL')].filter(Boolean).join('\n')}`).join('\n\n'), g = (a.fibo || []).filter(x => x.active);
+  return hd(`📐 FIBO ZONE ${a.priceSymbol || 'XAUUSD'}`) + rows + (g.length ? `\n\n🎯 *Grid aktif:* ${g.map(x => `${x.dir === 'buy' ? '🟢' : '🔴'} ${x.tf} (${x.openPositions} posisi)`).join(', ')}` : '') + '\n_OTE = zona entry retracement; level dari EA FaridFX._' + ft; }
+function shMTF() { const m = mtfOf(); if (!m.length) return 'Data MTF belum diterima dari EA.'; const up = m.filter(t => t.dir > 0).length, dn = m.filter(t => t.dir < 0).length; return hd('🧭 TREND MULTI-TIMEFRAME') + m.map(t => `${t.dir > 0 ? '🟢' : t.dir < 0 ? '🔴' : '⚪'} ${t.tf}: ${t.dir > 0 ? 'UP' : t.dir < 0 ? 'DOWN' : 'NETRAL'}`).join('\n') + `\n\nKesimpulan: ${up > dn ? `selaras UP (${up}/${m.length})` : dn > up ? `selaras DOWN (${dn}/${m.length})` : 'campur / belum searah'}` + ft; }
+function shDay() { const f = FX(), a = f.account, tz = t => new Date((+t.closeTime + 7 * 3600) * 1000).toISOString().slice(0, 10), td = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10), H = (f.history || []).filter(t => tz(t) === td), net = H.reduce((s, t) => s + (+t.netProfit || 0), 0), w = H.filter(t => +t.netProfit > 0).length, P2 = a.positions || [];
+  const hide = $('shHide').checked, bal = +a.balance || 0, pct = bal - net > 0 ? net / (bal - net) * 100 : 0; return hd('📅 REKAP HARI INI') + `Trade tertutup: ${H.length} (${w} win / ${H.length - w} loss)\nWin rate: ${H.length ? (w / H.length * 100).toFixed(0) : 0}%\nHasil: *${hide ? sgn(pct) + '%' : sgn(net) + ' ' + (a.currency || 'USD')}*\nPosisi terbuka: ${P2.length}${P2.length ? ` (BUY ${P2.filter(p => dirOf(p) === 'B').length} / SELL ${P2.filter(p => dirOf(p) === 'S').length})` : ''}` + ft; }
+function shCP() { const R = cpEval(); if (!R) return 'Data belum tersedia.'; return hd('🛡️ STATUS COMPLIANCE') + `Skor: *${R.score}/100* — ${R.status}\nLulus ${R.pass}/${R.n} aturan · ${R.warns} catatan · ${R.fails} pelanggaran\nTrade diaudit: ${R.trades}\n\n` + R.checks.filter(x => x.st !== 'na').map(x => `${x.st === 'ok' ? '✅' : x.st === 'warn' ? '⚠️' : '❌'} ${x.name}`).join('\n') + '\n_Audit otomatis dari catatan EA; bukan sertifikasi pihak ketiga._' + ft; }
+const SH = { kl: ['Key Levels', shKL], lq: ['Liquidity Map', shLQ], fibo: ['Fibo Zone', shFibo], mtf: ['Trend MTF', shMTF], day: ['Rekap Hari Ini', shDay], cp: ['Status Compliance', shCP] };
+async function doShare(k) { try { if (k === 'all') { const parts = []; for (const x of ['kl', 'lq', 'fibo', 'mtf']) parts.push(await SH[x][1]()); return openShare('Paket Lengkap', parts.join('\n\n━━━━━━━━━━\n\n')); } openShare(SH[k][0], 'Menyiapkan data…'); openShare(SH[k][0], await SH[k][1]()); } catch (e) { openShare('Gagal', 'Gagal mengambil data: ' + e.message); } }
+document.querySelectorAll('[data-share]').forEach(b => b.onclick = () => doShare(b.dataset.share)); $('klShare')?.addEventListener('click', () => doShare('kl')); $('lqShare')?.addEventListener('click', () => doShare('lq'));
+$('mtfAlign')?.insertAdjacentHTML('afterend', '<button class="btn ghost" id="mtfShare" style="margin-left:8px">📤 Bagikan Fibo</button>'); $('mtfShare')?.addEventListener('click', () => doShare('fibo'));
+
 /* ---------- hook ke render utama ---------- */
-function renderAdv() { loadJ(); watchSig(); if (act('edge')) renderEdge(); if (act('journal')) renderJ(); if (act('challenge')) renderCh(); }
+function renderAdv() { loadJ(); watchSig(); watchNews(); cpTick(); if (act('edge')) renderEdge(); if (act('journal')) renderJ(); if (act('challenge')) renderCh(); }
 if (window.__FXUI) { const u = window.__FXUI.update; window.__FXUI.update = () => { try { u(); } catch (e) { console.warn(e); } try { renderAdv(); } catch (e) { console.warn('adv', e); } }; }
 })();
 </script>
