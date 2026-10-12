@@ -1,4 +1,4 @@
-// api/webhook.js  (v2 - sinkron dengan EA v4.11)
+// api/webhook.js  (v2.1 - sinkron dengan EA v4.14, + mode hemat kuota Firestore)
 // Menerima snapshot dari FaridFX_FiboManager_EA (POST) dan menulisnya ke Firestore.
 //
 // YANG DIPERBAIKI DIBANDING VERSI LAMA
@@ -19,13 +19,22 @@
 //
 // ENV VERCEL: FIREBASE_SERVICE_ACCOUNT, EA_WEBHOOK_SECRET,
 //             TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL_ID, TELEGRAM_ADMIN_CHAT_ID (3 terakhir opsional)
+//
+// MODE HEMAT KUOTA FIRESTORE (v2.1) - perilaku normal tidak berubah saat pasar buka
+//  A. Snapshot "periodic" yang IDENTIK dengan sebelumnya (harga EA beku = pasar tutup / tidak ada tick; balance, equity,
+//     posisi, order pending sama; tidak ada event sinyal) TIDAK ditulis ulang. Hanya heartbeat tiap FROZEN_HEARTBEAT_SEC
+//     (default 60 dtk; 0 = fitur dimatikan). Jika instance Vercel masih hangat, keputusan dibuat dari memori: 0 baca, 0 tulis.
+//  B. Titik equityCurve: interval bisa diatur EQUITY_POINT_INTERVAL_SEC (default 300) dan, bila balance & equity tidak berubah
+//     sejak titik terakhir, titik baru hanya ditambah tiap 6x interval (kurva tetap utuh, dokumen jauh lebih sedikit).
+//  ENV opsional: FROZEN_HEARTBEAT_SEC, EQUITY_POINT_INTERVAL_SEC.
 
 const admin = require('firebase-admin');
 
 const SHARED_TOKEN = process.env.EA_WEBHOOK_SECRET;
-const EQUITY_POINT_INTERVAL_MS = 5 * 60 * 1000;
+const EQUITY_POINT_INTERVAL_MS = Math.max(60, Number(process.env.EQUITY_POINT_INTERVAL_SEC || 300)) * 1000;
+const FROZEN_HEARTBEAT_MS = Math.max(0, Number(process.env.FROZEN_HEARTBEAT_SEC ?? 60)) * 1000;
 const BATCH_CHUNK = 400;
-const HISTORY_V = 3; // naikkan angka ini = paksa backfill SEKALI (semua trade yg dikirim EA ditulis ulang bila belum ada)
+const HISTORY_V = 2;
 
 const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TG_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
@@ -55,6 +64,19 @@ function cleanObj(o) {
     else if (typeof v === 'string' || typeof v === 'boolean') out[k] = v;
   }
   return out;
+}
+
+// ---- hemat kuota: deteksi snapshot periodic yang tidak membawa perubahan ----
+const posSig = (arr) => JSON.stringify((Array.isArray(arr) ? arr : []).map((p) => [String(p.ticket), p.sl, p.tp, p.volume]));
+const ordSig = (arr) => JSON.stringify((Array.isArray(arr) ? arr : []).map((o) => [String(o.ticket), o.price, o.sl, o.tp, o.volume]));
+const lastSeen = new Map(); // memori instance serverless yang masih hangat (hilang saat cold start: aman)
+
+function isFrozen(prev, cur, now) {
+  if (!FROZEN_HEARTBEAT_MS || !prev || cur.reason !== 'periodic' || cur.hasEvents) return false;
+  if (!(cur.priceTime > 0) || cur.priceTime !== prev.priceTime) return false;          // harga masih bergerak -> tulis
+  if (cur.balance !== prev.balance || cur.equity !== prev.equity || cur.serverDay !== prev.serverDay) return false;
+  if (cur.pos !== prev.pos || cur.pend !== prev.pend) return false;
+  return now - prev.at < FROZEN_HEARTBEAT_MS;
 }
 
 async function commitInChunks(ops) {
@@ -223,9 +245,26 @@ module.exports = async (req, res) => {
     const serverDay = typeof account.serverDay === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(account.serverDay)
       ? account.serverDay : utcDateStr(Math.floor(now / 1000));
 
+    // --- hemat kuota: snapshot periodic identik (pasar tutup) tidak perlu ditulis ulang ---
+    const cur = {
+      reason, priceTime: num(account.priceTime), balance: num(account.balance), equity: num(account.equity), serverDay,
+      pos: posSig(positions), pend: ordSig(pendingOrders),
+      hasEvents: (Array.isArray(body.sigEv) && body.sigEv.length > 0) || (Array.isArray(body.sigOut) && body.sigOut.length > 0),
+    };
+    if (isFrozen(lastSeen.get(accountId), cur, now)) {
+      return res.status(200).json({ ok: true, skipped: 'unchanged-periodic', newTrades: 0, newSignals: 0, changedDays: 0, equityPointWritten: false });
+    }
+
     const accountRef = db.collection('accounts').doc(accountId);
     const existingSnap = await accountRef.get();
     const existing = existingSnap.exists ? existingSnap.data() : null;
+    if (existing && !lastSeen.has(accountId)) {   // cold start: pakai dokumen yang baru dibaca
+      const prev = { priceTime: num(existing.priceTime), balance: num(existing.balance), equity: num(existing.equity), serverDay: existing.serverDay, pos: posSig(existing.positions), pend: ordSig(existing.pendingOrders), at: Date.parse(existing.receivedAt) || 0 };
+      if (isFrozen(prev, cur, now)) {
+        lastSeen.set(accountId, { ...cur, at: prev.at });
+        return res.status(200).json({ ok: true, skipped: 'unchanged-periodic', newTrades: 0, newSignals: 0, changedDays: 0, equityPointWritten: false });
+      }
+    }
 
     // --- baseline: percayai EA --------------------------------------------
     const eaStart = num(account.startingBalance);
@@ -390,7 +429,9 @@ module.exports = async (req, res) => {
     // --- equity curve (throttle) ---------------------------------------------
     const lastEquityPointAt = existing?.lastEquityPointAt ?? 0;
     let equityPointWritten = false;
-    if (now - lastEquityPointAt >= EQUITY_POINT_INTERVAL_MS || !existing) {
+    const ptAge = now - lastEquityPointAt;
+    const ptUnchanged = existing && num(existing.lastEquityPointBalance, NaN) === num(account.balance) && num(existing.lastEquityPointEquity, NaN) === equity;
+    if (!existing || (ptAge >= EQUITY_POINT_INTERVAL_MS && (!ptUnchanged || ptAge >= EQUITY_POINT_INTERVAL_MS * 6))) {
       await accountRef.collection('equityCurve').add({ ts: now, balance: num(account.balance), equity, date: serverDay });
       equityPointWritten = true;
     }
@@ -414,6 +455,8 @@ module.exports = async (req, res) => {
         historyV: HISTORY_V,
         lastHistorySync: maxCloseTime,
         lastEquityPointAt: equityPointWritten ? now : lastEquityPointAt,
+        lastEquityPointBalance: equityPointWritten ? num(account.balance) : num(existing?.lastEquityPointBalance, num(account.balance)),
+        lastEquityPointEquity: equityPointWritten ? equity : num(existing?.lastEquityPointEquity, equity),
         lastDailyAlertTier: dailyTier,
         lastOverallAlertTier: overallTier,
         positions,
@@ -432,6 +475,7 @@ module.exports = async (req, res) => {
       { merge: false }
     );
 
+    lastSeen.set(accountId, { ...cur, at: now });
     return res.status(200).json({ ok: true, newTrades: newTrades.length, newSignals: sigNew, changedDays: affectedDays.size, equityPointWritten });
   } catch (e) {
     console.error(e);
