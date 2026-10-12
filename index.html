@@ -2988,6 +2988,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
     sigUnsub = fx.db.collection('accounts').doc(sigAcc).collection('signals').orderBy('ts', 'desc').limit(2000)
       .onSnapshot(s => { sigLogs = s.docs.map(d => { const x = d.data(); x.ts = tms2(x.ts); return x; }); renderSigLog(); }, err => console.warn('signals', err));
   }
+  window.__SIGLOGS = () => sigLogs;
   $('sigMore')?.addEventListener('click', () => { sigRowLimit += 80; renderSigLog(); });
   (function initSigUi() {
     const chips = $('sigTfChips'); if (!chips) return;
@@ -3355,10 +3356,9 @@ function renderEdge() {
 }
 $('segSel').onchange = renderEdge;
 let sig = [], sigAcc = null, sigUn = null;
-function watchSig() { const f = FX(); if (!f.db || !f.accountId || f.accountId === sigAcc) return; sigUn && sigUn(); sigAcc = f.accountId; sig = [];
-  sigUn = f.db.collection('accounts').doc(sigAcc).collection('signals').orderBy('ts', 'desc').limit(2000).onSnapshot(s => { sig = s.docs.map(d => d.data()); if (act('edge')) drawMM(); }, e => console.warn('sig', e)); }
+function watchSig() { }
 function drawMM() {
-  const d = sig.filter(x => x.res && isFinite(x.mfe) && isFinite(x.mae) && x.mfe !== null), { c, w, h } = cv($('mmCv'), 260);
+  sig = window.__SIGLOGS ? window.__SIGLOGS() : []; const d = sig.filter(x => x.res && isFinite(x.mfe) && isFinite(x.mae) && x.mfe !== null), { c, w, h } = cv($('mmCv'), 260);
   if (!d.length) { $('mmTxt').textContent = 'Belum ada data. MAE/MFE dikirim EA di sigOut; pastikan webhook menyimpan field mfe & mae pada koleksi signals. Ini hasil pelacakan sinyal EA, bukan trade yang benar-benar dieksekusi.'; return; }
   const mxX = Math.max(1.2, pctl(d.map(x => +x.mae), .97)), mxY = Math.max(1.5, pctl(d.map(x => +x.mfe), .97)), P = 30;
   c.strokeStyle = 'rgba(130,165,255,.2)'; c.fillStyle = '#7384b4'; c.font = '10px sans-serif'; c.strokeRect(P, 6, w - P - 8, h - P - 6);
@@ -3664,7 +3664,7 @@ function cpEval() {
 const SY = { ok: ['✓', 'pos'], warn: ['!', 'amber'], fail: ['✗', 'neg'], na: ['–', ''] };
 function renderCp(R) {
   const a = FX().account, age = a.updatedAt && a.updatedAt.toMillis ? Math.round((Date.now() - a.updatedAt.toMillis()) / 1000) + ' dtk lalu' : 'live';
-  $('cpHead').innerHTML = kp('Skor kepatuhan', `${R.score}/100`, 'dihitung realtime', R.fails ? 'neg' : R.warns ? 'amber' : 'pos') + kp('Status', R.status, `snapshot EA: ${age}`, R.fails ? 'neg' : R.warns ? 'amber' : 'pos') + kp('Lulus', `${R.pass}/${R.n}`, `${R.warns} catatan · ${R.fails} pelanggaran`) + kp('Trade diaudit', R.trades, 'dari history yang dikirim EA');
+  $('cpHead').innerHTML = kp('Skor kepatuhan', `${R.score}/100`, 'dihitung realtime', R.fails ? 'neg' : R.warns ? 'amber' : 'pos') + kp('Status', R.status, `snapshot EA: ${age}`, R.fails ? 'neg' : R.warns ? 'amber' : 'pos') + kp('Lulus', `${R.pass}/${R.n}`, `${R.warns} catatan · ${R.fails} pelanggaran`) + kp('Trade diaudit', R.trades, `${(FX().history || []).length} trade diterima dashboard dari Firestore`);
   $('cpTbl').innerHTML = '<table class="xt"><tr><th></th><th>Aturan</th><th>Hasil</th><th>Bukti</th></tr>' + R.checks.map(x => `<tr><td class="${SY[x.st][1]}"><b>${SY[x.st][0]}</b></td><td>${esc(x.name)}</td><td>${esc(x.txt)}</td><td class="note" style="margin:0">${esc(x.ev.join(' · '))}</td></tr>`).join('') + '</table>'; }
 function cpTick() { const R = cpEval(); if (!R) return; R.checks.forEach(x => { const p = CP.prev[x.id]; if (p && p !== 'fail' && x.st === 'fail') FX().toast('🚨 Compliance: ' + x.name + ' — ' + x.txt); CP.prev[x.id] = x.st; }); if (act('compliance')) renderCp(R); }
 
