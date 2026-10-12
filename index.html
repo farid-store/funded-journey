@@ -1298,7 +1298,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
       renderAll();
     }, err => console.warn('dailyPnl listener', err)));
 
-    activeUnsubs.push(db.collection('accounts').doc(id).collection('equityCurve').orderBy('ts','asc').limitToLast(2000).onSnapshot(snap => {
+    activeUnsubs.push(db.collection('accounts').doc(id).collection('equityCurve').orderBy('ts','asc').limitToLast(1000).onSnapshot(snap => {
       equityCurveCache = cleanCurve(snap.docs.map(d => d.data()));
       renderAll();
     }, err => console.warn('equityCurve listener', err)));
@@ -1885,6 +1885,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
   }
 
   // ================= NEWS / CALENDAR FILTER =================
+  window.__NEWS = () => newsCache;
   function renderNews(){
     if (!newsCache.length){ $('newsList').innerHTML = '<p style="color:var(--faint);font-size:11px;padding:14px 0">Belum ada event tercatat.</p>'; return; }
     const now = Date.now();
@@ -2985,7 +2986,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
     const fx = FX(); if (!fx.db || !fx.accountId || fx.accountId === sigAcc) return;
     if (sigUnsub) { try { sigUnsub(); } catch (e) { /* abaikan */ } }
     sigAcc = fx.accountId; sigLogs = [];
-    sigUnsub = fx.db.collection('accounts').doc(sigAcc).collection('signals').orderBy('ts', 'desc').limit(2000)
+    sigUnsub = fx.db.collection('accounts').doc(sigAcc).collection('signals').orderBy('ts', 'desc').limit(600)
       .onSnapshot(s => { sigLogs = s.docs.map(d => { const x = d.data(); x.ts = tms2(x.ts); return x; }); renderSigLog(); }, err => console.warn('signals', err));
   }
   window.__SIGLOGS = () => sigLogs;
@@ -3624,8 +3625,7 @@ let kn = 0; setInterval(() => { const on = act('kl'); if (on && !KL.was) { start
 
 /* ---------- Compliance Auditor (realtime dari catatan EA) ---------- */
 let nws = [], nAcc = null, nUn = null;
-function watchNews() { const f = FX(); if (!f.db || !f.accountId || f.accountId === nAcc) return; nUn && nUn(); nAcc = f.accountId; nws = [];
-  nUn = f.db.collection('accounts').doc(nAcc).collection('newsEvents').onSnapshot(s => { nws = s.docs.map(d => d.data()); }, e => console.warn('news', e)); }
+function watchNews() { }
 const CP = { prev: {}, acc: null, S: null }, CPL = [['hold', 'Durasi min. (detik)'], ['pct', 'Batas trade cepat (%)'], ['lot', 'Lot maks (× median)'], ['rep', 'Lonjakan lot setelah loss (×)'], ['nw', 'Jendela news (± menit)'], ['risk', 'Batas risiko terbuka (%)']];
 function cpSet() { const f = FX(); if (CP.acc !== f.accountId) { CP.acc = f.accountId; CP.prev = {}; CP.S = Object.assign({ hold: 60, pct: 20, lot: 3, rep: 1.5, nw: 3, risk: 3 }, LS('ffx_cs_' + CP.acc) || {});
   $('cpIn').innerHTML = CPL.map(([k, l]) => `<label>${l}<input class="xin" type="number" step="any" data-k="${k}" value="${CP.S[k]}"></label>`).join(''); $('cpName').value = LS('ffx_cname') || (f.account && f.account.name) || ''; } return CP.S; }
@@ -3633,7 +3633,7 @@ $('cpIn').addEventListener('change', e => { const k = e.target.dataset.k; if (!k
 $('cpName').onchange = e => { LS('ffx_cname', e.target.value.trim()); };
 const dirOf = t => /sell/i.test(String(t.type)) ? 'S' : 'B', durOf = t => Number.isFinite(+t.durationSec) && t.durationSec !== '' && t.durationSec != null ? +t.durationSec : (t.closeTime - t.openTime);
 function cpEval() {
-  const f = FX(), a = f.account; if (!a) return null; const S = cpSet(), POS = a.positions || [], C = [], now = Date.now(), tk = t => '#' + t.ticket;
+  const f = FX(), a = f.account; if (!a) return null; nws = window.__NEWS ? window.__NEWS() : []; const S = cpSet(), POS = a.positions || [], C = [], now = Date.now(), tk = t => '#' + t.ticket;
   const H = [...(f.history || [])].filter(t => +t.closeTime && +t.openTime).sort((x, y) => x.openTime - y.openTime);
   const add = (id, name, st, txt, ev) => C.push({ id, name, st, txt, ev: ev || [] });
   const sc = H.filter(t => durOf(t) < S.hold), pc = H.length ? sc.length / H.length * 100 : 0;
