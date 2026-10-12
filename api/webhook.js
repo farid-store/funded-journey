@@ -25,7 +25,7 @@ const admin = require('firebase-admin');
 const SHARED_TOKEN = process.env.EA_WEBHOOK_SECRET;
 const EQUITY_POINT_INTERVAL_MS = 5 * 60 * 1000;
 const BATCH_CHUNK = 400;
-const HISTORY_V = 2;
+const HISTORY_V = 3; // naikkan angka ini = paksa backfill SEKALI (semua trade yg dikirim EA ditulis ulang bila belum ada)
 
 const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TG_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
