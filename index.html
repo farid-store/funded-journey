@@ -222,6 +222,8 @@ input[type=datetime-local]{color-scheme:dark}
 .arena-leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .arena-tools{position:absolute;right:10px;top:10px;z-index:3;display:flex;gap:6px}
 .arena-tools .btn{padding:5px 10px;font-size:10.5px}
+.arena-tools .on{border-color:var(--gold);color:var(--gold)}.arena-tools select{max-width:96px}
+.bf-log{position:absolute;left:14px;bottom:12px;z-index:2;max-width:46%;font:600 10.5px var(--fm);color:var(--muted);display:flex;flex-direction:column;gap:3px;pointer-events:none}.bf-log div{background:rgba(3,6,16,.66);padding:3px 8px;border-radius:6px;border-left:2px solid var(--gold)}
 .arena-tip{position:absolute;z-index:4;pointer-events:none;background:rgba(3,6,16,.92);border:1px solid var(--gold);border-radius:8px;padding:7px 10px;font:600 11px var(--fm);color:#fff;white-space:nowrap;opacity:0;transform:translate(-50%,-130%);transition:opacity .12s}
 .arena-tip.show{opacity:1}
 .arena-fallback{position:absolute;inset:0;display:none;place-items:center;text-align:center;color:var(--faint);padding:20px;font-size:12px;line-height:1.7}
@@ -642,9 +644,11 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
       <div class="arena card" id="arena">
         <canvas id="arenaCanvas" aria-label="Arena 3D: pilar = trade terakhir, orb = posisi terbuka, koin = equity"></canvas>
         <div class="arena-fallback" id="arenaFb">Memuat scene 3D…</div>
-        <div class="arena-hud"><b>CITADEL ARENA</b><span>Pilar = 24 trade tertutup terakhir (hijau profit, merah loss). Orb melayang = posisi terbuka. Koin emas = equity; busur emas = progres ke target profit. Seret untuk memutar.</span><em id="arenaInfo"></em></div>
+        <div class="arena-hud"><b>CITADEL ARENA</b><span>Pilar = 24 trade tertutup terakhir (hijau profit, merah loss). Orb melayang = posisi terbuka. Koin emas = equity; busur emas = progres ke target profit. Seret untuk memutar.</span><em id="arenaInfo"></em><em id="bfStat"></em></div>
         <div class="arena-leg"><span><i style="background:#2df5a3"></i>profit</span><span><i style="background:#ff4b6e"></i>loss</span><span><i style="background:#ffc94a"></i>target</span></div>
         <div class="arena-tip" id="arenaTip"></div>
+        <div class="arena-tools" id="bfBar"><select id="bfSym" class="xin" style="padding:4px 6px;font-size:10.5px"><option>XAUUSDT</option><option>XAUTUSDT</option><option>PAXGUSDT</option></select><button class="btn ghost" data-bf="mode" title="Medan perang XAU realtime (data Binance)">⚔️ Medan</button><button class="btn ghost" data-bf="wall" title="Benteng: dinding order book">🧱</button><button class="btn ghost" data-bf="mine" title="Ranjau: klaster likuidasi (estimasi)">💣</button><button class="btn ghost" data-bf="flag" title="Bendera: zona Key Levels">🚩</button><button class="btn ghost" data-bf="unit" title="Unit kamu: posisi XAU terbuka">🪖</button><button class="btn ghost" data-zoom="-2" title="Perbesar">＋</button><button class="btn ghost" data-zoom="2" title="Perkecil">－</button></div>
+        <div class="bf-log" id="bfLog"></div>
       </div>
       <div id="integrityCard"></div>
       <div class="section-head" style="margin-top:6px"><div><h2>Quest Board</h2><p>Target permainan berdasarkan data akun (ambang acuan, bukan aturan firm).</p></div></div>
@@ -3107,8 +3111,8 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
   /* ================= ARENA 3D (Three.js) ================= */
   const Arena = (() => {
     let T = null, ready = false, failed = false, loading = false, renderer, scene, camera, coinG, sideM, halo, label, progG, progKey = '', wrap, canvas, tipEl, ro, io;
-    const N = 24, R = 5.4, pillars = [], beacons = [];
-    let W = 0, Hh = 0, az = .6, azT = .6, el = .5, dist = 19, lastInteract = 0, drag = null, raf = 0, lastT = 0, visible = false, low = lowfx, needs = true, ray = null, mouse = null, labelKey = '', hover = -1;
+    const N = 24, R = 5.4, pillars = [], beacons = [], hooks = [];
+    let W = 0, Hh = 0, az = .6, azT = .6, el = .5, dist = 19, lastInteract = 0, drag = null, raf = 0, lastT = 0, visible = false, low = lowfx, needs = true, ray = null, mouse = null, labelKey = '', hover = -1, extraHit = null;
 
     const loadThree = () => new Promise((res, rej) => {
       if (window.THREE) return res();
@@ -3218,6 +3222,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
       const dt = Math.min(.06, (ts - lastT) / 1000 || .016); lastT = ts;
       let moving = false;
       pillars.forEach(p => { const u = p.userData; if (!p.visible) return; const d = u.tgt - u.cur; if (Math.abs(d) > .004) { u.cur += d * Math.min(1, dt * 6); moving = true; p.scale.y = Math.max(.01, u.cur); p.position.y = u.cur / 2; } });
+      hooks.forEach(f => { try { if (f(ts, dt, low)) moving = true; } catch (e) { /* abaikan */ } });
       if (!low) {
         if (!drag && ts - lastInteract > 3500) azT += dt * .13;
         coinG.rotation.y += dt * .9; halo.rotation.x += dt * .4;
@@ -3242,7 +3247,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
       canvas.addEventListener('pointermove', e => {
         if (drag) { azT = drag.az - (e.clientX - drag.x) * .008; el = clamp(drag.el + (e.clientY - drag.y) * .004, .22, 1.05); lastInteract = performance.now(); wake(); return; }
         const o = hit(e), t = o && o.userData.trade;
-        if (t) { const r = wrap.getBoundingClientRect(); tipEl.textContent = `${t.symbol} ${String(t.type).toUpperCase()} ${(+t.volume || 0).toFixed(2)} lot · ${M(t.netProfit)}`; tipEl.style.left = (e.clientX - r.left) + 'px'; tipEl.style.top = (e.clientY - r.top) + 'px'; tipEl.classList.add('show'); } else tipEl.classList.remove('show');
+        if (t) { const r = wrap.getBoundingClientRect(); tipEl.textContent = `${t.symbol} ${String(t.type).toUpperCase()} ${(+t.volume || 0).toFixed(2)} lot · ${M(t.netProfit)}`; tipEl.style.left = (e.clientX - r.left) + 'px'; tipEl.style.top = (e.clientY - r.top) + 'px'; tipEl.classList.add('show'); } else { const x = extraHit && extraHit(e); if (x) { const r = wrap.getBoundingClientRect(); tipEl.textContent = x; tipEl.style.left = (e.clientX - r.left) + 'px'; tipEl.style.top = (e.clientY - r.top) + 'px'; tipEl.classList.add('show'); } else tipEl.classList.remove('show'); }
       });
       const end = () => { drag = null; wake(); };
       canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end); canvas.addEventListener('pointerleave', () => tipEl.classList.remove('show'));
@@ -3261,7 +3266,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
       } catch (e) { failed = true; wrap.classList.add('nogl'); const f = $('arenaFb'); if (f) f.textContent = 'Scene 3D tidak bisa dimuat (' + (e.message || e) + '). Semua data tetap tersedia di tab lain.'; console.warn('arena', e); }
       loading = false;
     }
-    return { init, sync, wake, setLow(v) { low = v; if (ready) { resize(); wake(); } }, get ready() { return ready; }, get failed() { return failed; } };
+    return { init, sync, wake, api() { return ready ? { T, scene, camera, canvas, wrap, pillars, beacons, ray, mouse, wake, hook: f => hooks.push(f), setHit: f => { extraHit = f; } } : null; }, zoom(d) { dist = clamp(dist + d, 11, 40); wake(); }, setLow(v) { low = v; if (ready) { resize(); wake(); } }, get ready() { return ready; }, get failed() { return failed; } };
   })();
 
   /* ================= tombol FX & notifikasi ================= */
@@ -3280,7 +3285,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
   const base = window.__FXUI.update;
   window.__FXUI.update = function () { base(); try { updateGame(); renderQuests(); renderIntegrity(); Arena.sync(); } catch (e) { console.warn('ui3', e); } };
   document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => setTimeout(() => { Arena.wake(); }, 60)));
-  applyLow(); Arena.init(); window.__FXUI.update();
+  window.__ARENA = Arena; applyLow(); Arena.init(); window.__FXUI.update();
 })();
 
 </script>
@@ -3444,8 +3449,8 @@ function drawOB() {
 }
 function axis(c, w, h, lo, hi, A) { c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; for (let i = 0; i <= 6; i++) { const p = hi - (hi - lo) * i / 6; c.fillText(p.toFixed(2), w - A + 6, Math.min(h - 3, Math.max(10, h * i / 6 + 3))); } }
 async function loadLiq() { L.liq = await buildLiq(); drawLiq(); }
-async function buildLiq() {
-  const sym = $('lqSym').value, tf = $('lqTf').value, k = await (await fetch(`${B}klines?symbol=${sym}&interval=${tf}&limit=500`)).json(); if (!Array.isArray(k)) throw new Error(k.msg || 'klines gagal');
+async function buildLiq(symArg) {
+  const sym = symArg || $('lqSym').value, tf = $('lqTf').value, k = await (await fetch(`${B}klines?symbol=${sym}&interval=${tf}&limit=500`)).json(); if (!Array.isArray(k)) throw new Error(k.msg || 'klines gagal');
   const tiers = [[10, .15], [25, .3], [50, .3], [100, .25]], mm = .004, n = k.length, o = k.map(x => ({ h: +x[2], l: +x[3], c: +x[4], qv: +x[7], ls: +x[7] ? +x[10] / +x[7] : .5 }));
   const lo = Math.min(...o.map(x => x.l)) * .99, hi = Math.max(...o.map(x => x.h)) * 1.01, R = 150, g = new Float32Array(R * n), row = p => Math.floor((hi - p) / (hi - lo) * R);
   o.forEach((x, i) => { const ep = (x.h + x.l + x.c) / 3; tiers.forEach(([lv, wt]) => [[ep * (1 - 1 / lv + mm), x.qv * x.ls * wt, 0], [ep * (1 + 1 / lv - mm), x.qv * (1 - x.ls) * wt, 1]].forEach(([p, wv, sh]) => {
@@ -3730,6 +3735,81 @@ const SH = { kl: ['Key Levels', shKL], lq: ['Liquidity Map', shLQ], fibo: ['Fibo
 async function doShare(k) { try { if (k === 'all') { const parts = []; for (const x of ['kl', 'lq', 'fibo', 'mtf']) parts.push(await SH[x][1]()); return openShare('Paket Lengkap', parts.join('\n\n━━━━━━━━━━\n\n')); } openShare(SH[k][0], 'Menyiapkan data…'); openShare(SH[k][0], await SH[k][1]()); } catch (e) { openShare('Gagal', 'Gagal mengambil data: ' + e.message); } }
 document.querySelectorAll('[data-share]').forEach(b => b.onclick = () => doShare(b.dataset.share)); $('klShare')?.addEventListener('click', () => doShare('kl')); $('lqShare')?.addEventListener('click', () => doShare('lq'));
 $('mtfAlign')?.insertAdjacentHTML('afterend', '<button class="btn ghost" id="mtfShare" style="margin-left:8px">📤 Bagikan Fibo</button>'); $('mtfShare')?.addEventListener('click', () => doShare('fibo'));
+
+/* ---------- XAU Battlefield di Citadel Arena (menara tetap di tengah) ---------- */
+const BF = { on: LS('ffx_bf') !== 0, sym: LS('ffx_bfsym') || 'XAUUSDT', lay: Object.assign({ wall: 1, mine: 1, flag: 1, unit: 1 }, LS('ffx_bflay') || {}), px: 0, mid: 0, hist: [], walls: null, kl: null, liq: null, tk: 1, imb: .5, ws: null, log: [], side: {}, t: { d: 0, k: 0, t: 0 }, api: null, buy: .5, bk: '' };
+const bfActive = () => BF.on && act('overview') && !document.hidden && BF.api;
+const bfLog = m => { BF.log.unshift(m); BF.log.length = Math.min(BF.log.length, 5); $('bfLog').innerHTML = BF.log.map(x => `<div>${esc(x)}</div>`).join(''); };
+const RMIN = 4.0, RMAX = 7.6, SPAN = .012, rad = d => RMIN + Math.sqrt(Math.min(1, Math.abs(d) / ((BF.px || 1) * SPAN))) * (RMAX - RMIN), sesOf = () => { const u = new Date().getUTCHours(); return u < 7 ? ['Asia', 0x5aa8ff] : u < 13 ? ['London', 0xffc94a] : u < 21 ? ['New York', 0xff7a3d] : ['Sesi sepi', 0x6b7390]; };
+async function bfDepth() { const d = await jf(`${B}depth?symbol=${BF.sym}&limit=1000`); BF.mid = (+d.bids[0][0] + +d.asks[0][0]) / 2; if (!BF.px) BF.px = BF.mid; const w = BF.mid * .0004;
+  const agg = a => { const m = new Map(); a.forEach(([p, q]) => { const k = Math.round(+p / w), o = m.get(k) || { n: 0, p: k * w }; o.n += p * q; m.set(k, o); }); return [...m.values()].sort((x, y) => y.n - x.n).slice(0, 3); };
+  const nb = agg(d.bids), na = agg(d.asks), sum = a => a.reduce((s, [p, q]) => s + p * q, 0), sb = sum(d.bids), sa = sum(d.asks); BF.imb = sb / (sb + sa || 1);
+  const key = (nb[0] ? Math.round(nb[0].p / w) : '') + '|' + (na[0] ? Math.round(na[0].p / w) : ''); if (BF.bk && key !== BF.bk) bfLog(`🧱 Dinding utama berubah: BID ${nb[0] ? nb[0].p.toFixed(2) : '-'} · ASK ${na[0] ? na[0].p.toFixed(2) : '-'}`); BF.bk = key; BF.walls = { bids: nb, asks: na }; }
+async function bfSlow() { const s = BF.sym, q = (i, n) => jf(`${B}klines?symbol=${s}&interval=${i}&limit=${n}`), P = k => ({ t: +k[0], o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5] });
+  const [d, w, mo, m15, h1] = await Promise.all([q('1d', 3), q('1w', 3), q('1M', 3), q('15m', 500), q('1h', 300)]); BF.kl = klCompute(d.map(P), w.map(P), mo.map(P), m15.map(P), h1.map(P)); BF.liq = await buildLiq(s); }
+async function bfTaker() { const t = await jf(`${FD}takerlongshortRatio?symbol=${BF.sym}&period=5m&limit=12`); if (Array.isArray(t) && t.length) BF.tk = t.reduce((a, x) => a + +x.buySellRatio, 0) / t.length; }
+async function bfTick() { if (!bfActive() || BF.busy) return; BF.busy = 1; const n = Date.now();
+  try { await bfDepth(); if (n - BF.t.k > 3e5) { BF.t.k = n; await bfSlow(); } if (n - BF.t.t > 6e4) { BF.t.t = n; await bfTaker(); } bfLayout(); } catch (e) { $('bfStat').textContent = 'Data Binance gagal: ' + e.message; } BF.busy = 0; }
+function bfWs(on) { try { BF.ws && BF.ws.close(); } catch (e) { } BF.ws = null; if (!on) return; const s = BF.sym.toLowerCase();
+  BF.ws = new WebSocket(`wss://fstream.binance.com/stream?streams=${s}@markPrice@1s/${s}@forceOrder`); BF.ws.onmessage = m => { const d = JSON.parse(m.data).data || {};
+    if (d.e === 'markPriceUpdate') { BF.px = +d.p; BF.hist.push({ t: Date.now(), p: BF.px }); if (BF.hist.length > 120) BF.hist.shift(); bfLayout(); }
+    else if (d.e === 'forceOrder' && d.o) { const o = d.o, v = +o.ap * +o.z, long = o.S === 'SELL'; bfBoom(+o.ap, v, long); bfLog(`💥 ${long ? 'LONG' : 'SHORT'} terlikuidasi ${M(v)} @ ${(+o.ap).toFixed(2)}`); } }; }
+
+/* --- objek 3D --- */
+const BO = { walls: [], mines: [], flags: [], units: [], ex: [], pick: [], t: null };
+function bfBuild(api) { const { T, scene } = api, g = new T.Group(); scene.add(g); BO.g = g, BO.T = T;
+  const mat = (c, e) => new T.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: e ?? .35, metalness: .4, roughness: .45, flatShading: true }), add = (m, info) => { m.visible = false; m.userData.info = null; g.add(m); BO.pick.push(m); return m; };
+  for (let i = 0; i < 6; i++) BO.walls.push(add(new T.Mesh(new T.BoxGeometry(.75, 1, .75), mat(0x2df5a3))));
+  for (let i = 0; i < 6; i++) BO.mines.push(add(new T.Mesh(new T.ConeGeometry(.3, .8, 6), mat(0xffa21c, .6))));
+  for (let i = 0; i < 6; i++) { const pole = new T.Mesh(new T.CylinderGeometry(.03, .03, 1, 6), mat(0xcfd8f0, .15)), cloth = new T.Mesh(new T.BoxGeometry(.6, .36, .03), mat(0x2df5a3, .5)); pole.visible = cloth.visible = false; g.add(pole); g.add(cloth); BO.pick.push(cloth); BO.flags.push({ pole, cloth }); }
+  for (let i = 0; i < 8; i++) { const body = new T.Mesh(new T.ConeGeometry(.3, .7, 4), mat(0x35e0ff, .5)), sl = new T.Mesh(new T.BoxGeometry(.22, .22, .22), mat(0xff4b6e, .7)), tp = new T.Mesh(new T.BoxGeometry(.22, .22, .22), mat(0x2df5a3, .7)); [body, sl, tp].forEach(m => { m.visible = false; g.add(m); }); BO.pick.push(body); BO.units.push({ body, sl, tp }); }
+  for (let i = 0; i < 12; i++) { const s = new T.Mesh(new T.SphereGeometry(.5, 14, 10), new T.MeshBasicMaterial({ color: 0xffd25e, transparent: true, opacity: 0 })), r = new T.Mesh(new T.RingGeometry(.6, .8, 32), new T.MeshBasicMaterial({ color: 0xff6a3d, transparent: true, opacity: 0, side: T.DoubleSide })); r.rotation.x = -Math.PI / 2; s.visible = r.visible = false; g.add(s); g.add(r); BO.ex.push({ s, r, t0: 0, on: 0 }); }
+  const mk = (rad2, col, tube) => { const m = new T.Mesh(new T.TorusGeometry(rad2, tube, 8, 128), new T.MeshBasicMaterial({ color: col, transparent: true, opacity: .8 })); m.rotation.x = Math.PI / 2; m.position.y = .05; g.add(m); return m; };
+  BO.front = mk(2.75, 0x8895b8, .04); BO.sess = mk(8.5, 0x6b7390, .07); BO.fg = new T.Group(); g.add(BO.fg); BO.fkey = '';
+  const lc = document.createElement('canvas'); lc.width = 512; lc.height = 160; BO.lc = lc; BO.lt = new T.CanvasTexture(lc); const sp = new T.Sprite(new T.SpriteMaterial({ map: BO.lt, transparent: true, depthTest: false })); sp.scale.set(4.2, 1.3, 1); sp.position.set(0, 6.7, 0); sp.renderOrder = 10; g.add(sp); BO.sp = sp; BO.lk = '';
+  api.hook(bfFrame); api.setHit(bfHit); BF.api = api; }
+const vis = o => { for (let n = o; n; n = n.parent) if (!n.visible) return false; return true; };
+function bfHit(e) { if (!BF.on) return null; const a = BF.api, r = a.canvas.getBoundingClientRect(); a.mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); a.ray.setFromCamera(a.mouse, a.camera);
+  const h = a.ray.intersectObjects(BO.pick.filter(o => vis(o) && o.userData.info), false); return h.length ? h[0].object.userData.info : null; }
+const arc = (c, n, i, step) => c + (i - (n - 1) / 2) * step, SIDE = d => d > 0 ? -Math.PI / 2 : Math.PI / 2;
+function put(o, d, ang, y) { const r = rad(d); o.position.set(Math.cos(ang) * r, y, Math.sin(ang) * r); }
+function bfBoom(price, v, long) { if (!BF.on || !BF.api || !BF.px) return; const e = BO.ex.find(x => !x.on) || BO.ex[0], d = price - BF.px, ang = (d > 0 ? -Math.PI / 2 : Math.PI / 2) + (Math.random() - .5) * 1.6;
+  e.on = 1; e.t0 = performance.now(); e.size = .5 + Math.log10(Math.max(10, v)) * .35; e.long = long; e.d = d; e.ang = ang; e.s.visible = e.r.visible = true; e.s.material.color.setHex(long ? 0xff5a3d : 0x35e0ff); put(e.s, d, ang, .5); put(e.r, d, ang, .08); BF.api.wake && BF.api.wake(); }
+function bfLayout() { const px = BF.px; if (!BF.api || !px) return; const lay = BF.lay, a = FX().account, W = BF.walls;
+  const wl = W ? [...W.bids.map(x => ({ ...x, bid: 1 })), ...W.asks.map(x => ({ ...x, bid: 0 }))] : [], mxN = Math.max(1, ...wl.map(x => x.n)); const by = { up: [], dn: [] }; wl.forEach(x => (x.p > px ? by.up : by.dn).push(x));
+  BO.walls.forEach(m => { m.visible = false; }); let wi = 0; [by.up, by.dn].forEach(arr => arr.sort((x, y) => Math.abs(x.p - px) - Math.abs(y.p - px)).forEach((x, i) => { const m = BO.walls[wi++]; if (!m) return; const d = x.p - px; put(m, d, arc(SIDE(d), arr.length, i, .3), 0); m.userData.tgt = .35 + Math.sqrt(x.n / mxN) * 2.8; if (m.userData.cur == null) m.userData.cur = m.userData.tgt; m.material.color.setHex(d > 0 ? 0xff4b6e : 0x2df5a3); m.material.emissive.setHex(d > 0 ? 0xff4b6e : 0x2df5a3); m.visible = !!lay.wall;
+    m.userData.info = `🧱 Dinding ${d > 0 ? 'ASK (resisten)' : 'BID (support)'} ${x.p.toFixed(2)} · ${M(x.n)} · ${Math.abs(d).toFixed(2)} dari harga`; }));
+  BO.mines.forEach(m => { m.visible = false; }); let mi = 0; if (BF.liq) { const c = liqTop(BF.liq); [c.up, c.dn].forEach(arr => arr.forEach((x, i) => { const m = BO.mines[mi++]; if (!m) return; const d = x.p - px; put(m, d, arc(SIDE(d) + .95, arr.length, i, .25), .4); m.userData.s = x.s; m.scale.setScalar(.7 + x.s * .8); m.visible = !!lay.mine;
+    m.userData.info = `💣 Klaster ${d > 0 ? 'short' : 'long'}-liquidation ${x.p.toFixed(2)} · intensitas ${(x.s * 100).toFixed(0)}% (estimasi model)`; })); }
+  BO.flags.forEach(f => { f.pole.visible = f.cloth.visible = false; }); let fi = 0; if (BF.kl) { const z = BF.kl.z.filter(q => q.s >= 3), fu = z.filter(q => q.c > px).sort((x, y) => x.c - y.c).slice(0, 3), fd = z.filter(q => q.c <= px).sort((x, y) => y.c - x.c).slice(0, 3);
+    [fu, fd].forEach(arr => arr.forEach((q, i) => { const f = BO.flags[fi++]; if (!f) return; const d = q.c - px, h = Math.min(3.4, .8 + q.s * .18), ang = arc(SIDE(d) - .95, arr.length, i, .25), key = Math.round(q.c / (px * .0005)), sd = d > 0 ? 'up' : 'dn';
+      if (BF.side[key] && BF.side[key] !== sd) bfLog(`🚩 ${sd === 'dn' ? 'BULL merebut' : 'BEAR merebut'} zona ${q.c.toFixed(2)} (skor ${q.s.toFixed(1)})`); BF.side[key] = sd;
+      put(f.pole, d, ang, h / 2); f.pole.scale.y = h; put(f.cloth, d, ang, h - .2); f.cloth.position.x += Math.cos(ang) * .3; f.cloth.position.z += Math.sin(ang) * .3; f.cloth.material.color.setHex(d > 0 ? 0xff4b6e : 0x2df5a3); f.cloth.material.emissive.setHex(d > 0 ? 0xff4b6e : 0x2df5a3); f.pole.visible = f.cloth.visible = !!lay.flag;
+      f.cloth.userData.info = `🚩 Zona ${q.lo.toFixed(2)}${q.hi - q.lo > .01 ? '–' + q.hi.toFixed(2) : ''} · skor ${q.s.toFixed(1)} · ${q.m.slice(0, 4).join(', ')}`; })); }
+  BO.units.forEach(u => { u.body.visible = u.sl.visible = u.tp.visible = false; }); const pos = ((a && a.positions) || []).filter(p => /XAU|GOLD/i.test(p.symbol)).slice(0, 8), ref = +(a && a.bid) || px;
+  pos.forEach((p, i) => { const u = BO.units[i], buy = dirOf(p) === 'B', ang = (buy ? 0 : Math.PI) + (i % 2 ? .18 : -.18), pr = +p.profit || 0; put(u.body, (+p.priceOpen || ref) - ref, ang, .35); u.body.material.color.setHex(pr >= 0 ? 0x2df5a3 : 0xff4b6e); u.body.material.emissive.setHex(pr >= 0 ? 0x2df5a3 : 0xff4b6e); u.body.visible = !!lay.unit;
+    if (+p.sl > 0) { put(u.sl, +p.sl - ref, ang, .15); u.sl.visible = !!lay.unit; } if (+p.tp > 0) { put(u.tp, +p.tp - ref, ang, .15); u.tp.visible = !!lay.unit; } u.body.userData.info = `🪖 ${buy ? 'BUY' : 'SELL'} ${(+p.volume).toFixed(2)} lot · entry ${p.priceOpen} · SL ${p.sl || '-'} · TP ${p.tp || '-'} · P/L ${M(pr)}`; });
+  const r1 = BF.tk / (1 + BF.tk), buy = .5 * r1 + .5 * BF.imb, k = buy.toFixed(2); if (k !== BO.fkey) { BO.fkey = k; BF.buy = buy; const T = BO.T, g = BO.fg; while (g.children.length) { const o = g.children.pop(); o.geometry.dispose(); o.material.dispose(); }
+    [[0, buy * Math.PI * 2, 0x2df5a3], [buy * Math.PI * 2, (1 - buy) * Math.PI * 2, 0xff4b6e]].forEach(([s, l, c]) => { if (l < .02) return; const m = new T.Mesh(new T.RingGeometry(3.1, 3.32, 64, 1, s, l), new T.MeshBasicMaterial({ color: c, transparent: true, opacity: .85, side: T.DoubleSide })); m.rotation.x = -Math.PI / 2; m.position.y = .06; g.add(m); }); }
+  const h0 = BF.hist.find(x => Date.now() - x.t <= 60000) || BF.hist[0], ch = h0 ? px - h0.p : 0, sn = sesOf(); BO.front.material.color.setHex(ch > .05 ? 0x2df5a3 : ch < -.05 ? 0xff4b6e : 0x8895b8); BO.sess.material.color.setHex(sn[1]);
+  $('bfStat').textContent = `Bull ${(buy * 100).toFixed(0)}% · Bear ${((1 - buy) * 100).toFixed(0)}% · ${sn[0]}`; const lk = px.toFixed(2) + sgn(ch); if (lk !== BO.lk) { BO.lk = lk; const c = BO.lc.getContext('2d'); c.clearRect(0, 0, 512, 160); c.fillStyle = 'rgba(3,6,16,.72)'; c.strokeStyle = ch >= 0 ? '#2df5a3' : '#ff4b6e'; c.lineWidth = 3; c.fillRect(8, 10, 496, 140); c.strokeRect(8, 10, 496, 140); c.textAlign = 'center'; c.fillStyle = '#7384b4'; c.font = '700 26px "Chakra Petch",Arial'; c.fillText(BF.sym + ' · LIVE', 256, 48); c.fillStyle = '#fff'; c.font = '700 60px "JetBrains Mono",monospace'; c.fillText(px.toFixed(2), 256, 110); c.fillStyle = ch >= 0 ? '#2df5a3' : '#ff6b87'; c.font = '600 24px "JetBrains Mono",monospace'; c.fillText(`${sgn(ch)} / 60 dtk`, 256, 140); BO.lt.needsUpdate = true; }
+  BF.api.wake && BF.api.wake(); }
+function bfFrame(ts, dt, low) { const g = BO.g; if (!g) return false; g.visible = !!BF.on; if (!BF.on) return false; BF.api.pillars.forEach(p => { p.visible = false; }); BF.api.beacons.forEach(b => { b.visible = false; }); let mv = false;
+  BO.walls.forEach(m => { if (!m.visible || m.userData.cur == null) return; const d = m.userData.tgt - m.userData.cur; if (Math.abs(d) > .004) { m.userData.cur += d * Math.min(1, dt * 5); mv = true; } m.scale.y = Math.max(.05, m.userData.cur); m.position.y = m.scale.y / 2; });
+  if (!low) { BO.mines.forEach((m, i) => { if (m.visible) { m.material.emissiveIntensity = .45 + .3 * Math.sin(ts / 220 + i); m.rotation.y += dt; } }); BO.flags.forEach((f, i) => { f.cloth.rotation.y = Math.sin(ts / 400 + i) * .25; }); BO.front.scale.setScalar(1 + .025 * Math.sin(ts / 300)); BO.sess.rotation.z += dt * .08; }
+  BO.ex.forEach(e => { if (!e.on) return; const k = (performance.now() - e.t0) / 1400; if (k >= 1) { e.on = 0; e.s.visible = e.r.visible = false; return; } mv = true; const sz = e.size * (.3 + k * 1.6); e.s.scale.setScalar(sz); e.s.material.opacity = .9 * (1 - k); e.r.scale.setScalar(.5 + k * e.size * 1.6); e.r.material.opacity = .8 * (1 - k); e.s.visible = !low; });
+  return mv; }
+
+/* --- kontrol & siklus --- */
+const bfPaint = () => { document.querySelectorAll('#bfBar [data-bf]').forEach(b => { const k = b.dataset.bf; b.classList.toggle('on', k === 'mode' ? !!BF.on : !!BF.lay[k]); });
+  const hud = document.querySelector('.arena-hud span'), lg = document.querySelector('.arena-leg'); if (BF.h0 == null) { BF.h0 = hud.innerHTML; BF.l0 = lg.innerHTML; }
+  hud.innerHTML = BF.on ? 'Menara emas di tengah = harga XAU live. <b style="color:#ff6b87">Sisi merah</b> = di atas harga (resisten), <b style="color:#2df5a3">sisi hijau</b> = di bawah (support). Makin jauh dari menara = makin jauh dari harga. Arahkan kursor ke objek untuk detail.' : BF.h0;
+  lg.innerHTML = BF.on ? '<span><i style="background:#ff4b6e"></i>dinding ask</span><span><i style="background:#2df5a3"></i>dinding bid</span><span><i style="background:#ffa21c"></i>ranjau likuidasi</span><span><i style="background:#cfd8f0"></i>bendera zona</span><span><i style="background:#35e0ff"></i>unit kamu</span>' : BF.l0; $('bfStat').style.display = BF.on ? '' : 'none'; $('bfLog').style.display = BF.on ? '' : 'none'; };
+document.querySelectorAll('#bfBar [data-bf]').forEach(b => b.onclick = () => { const k = b.dataset.bf; if (k === 'mode') { BF.on = BF.on ? 0 : 1; LS('ffx_bf', BF.on); if (!BF.on) window.__FXUI.update(); else { BF.t = { d: 0, k: 0, t: 0 }; bfTick(); } } else { BF.lay[k] = BF.lay[k] ? 0 : 1; LS('ffx_bflay', BF.lay); } bfPaint(); bfLayout(); });
+document.querySelectorAll('#bfBar [data-zoom]').forEach(b => b.onclick = () => window.__ARENA && window.__ARENA.zoom(+b.dataset.zoom));
+$('bfSym').value = BF.sym; $('bfSym').onchange = e => { BF.sym = e.target.value; LS('ffx_bfsym', BF.sym); Object.assign(BF, { px: 0, hist: [], walls: null, kl: null, liq: null, side: {}, bk: '', t: { d: 0, k: 0, t: 0 } }); bfWs(false); };
+bfPaint(); let bfWas = 0; setInterval(() => { const on = !!bfActive(); if (on && !bfWas) { BF.t = { d: 0, k: 0, t: 0 }; bfWs(true); bfTick(); } if (!on && bfWas) bfWs(false); if (on && !BF.ws) bfWs(true); bfWas = on; if (on) bfTick(); }, 3000);
+const bfWait = setInterval(() => { const A = window.__ARENA, api = A && A.api(); if (api) { clearInterval(bfWait); bfBuild(api); bfPaint(); } }, 600); setTimeout(() => clearInterval(bfWait), 90000);
 
 /* ---------- hook ke render utama ---------- */
 function renderAdv() { loadJ(); watchSig(); watchNews(); cpTick(); if (act('edge')) renderEdge(); if (act('journal')) renderJ(); if (act('challenge')) renderCh(); }
