@@ -4355,7 +4355,53 @@ function drawTradeCard(t){
  x.fillStyle='rgba(255,255,255,.035)';x.beginPath();x.roundRect(72,825,1056,195,14);x.fill();x.strokeStyle='rgba(255,255,255,.08)';x.stroke();
  T('ACCOUNT SNAPSHOT',96,858,13,'#d8bd79','700');
  const acc=[['TRADER',a.name||a.displayName||a.accountLabel||'Farid Siddiq'],['ACCOUNT LOGIN',a.login??a.account??fxData().accountId??'—'],['PROP FIRM',a.propFirm||a.propFirmName||'Not specified'],['BROKER / COMPANY',a.company||a.broker||'—'],['SERVER',a.server||'—'],['CURRENCY',cur],['STARTING BALANCE',fmtMoney(a.startingBalance??a.initialBalance,cur)],['BALANCE',fmtMoney(a.balance,cur)],['EQUITY',fmtMoney(a.equity,cur)],['LEVERAGE',a.leverage?`1:${a.leverage}`:'—'],['MARGIN LEVEL',has(a.marginLevel)?`${n(a.marginLevel).toFixed(1)}%`:'—'],['ACCOUNT TYPE',a.accountType||a.tradeMode||'—']];
- acc.forEach((r,i)=>{const col=i%4,row=Math.floor(i/4),xx=96+col*255,yy=886+row*43;T(r[0],xx,yy,9,'#8190ad','600');T(String(r[1]),xx,yy+20,13,'#f1f4fb','600')});
+
+// Account snapshot — 3 kolom, teks otomatis diperkecil
+acc.forEach((r, i) => {
+  const col = i % 3;
+  const row = Math.floor(i / 3);
+
+  const xx = 96 + col * 340;
+  const yy = 886 + row * 36;
+  const maxWidth = 310;
+
+  // Label
+  x.fillStyle = '#8190ad';
+  x.font = '600 9px Arial';
+  x.textAlign = 'left';
+  x.fillText(String(r[0]), xx, yy);
+
+  // Nilai: perkecil font jika terlalu panjang
+  let value = String(r[1] ?? '—');
+  let fontSize = 13;
+
+  x.font = `600 ${fontSize}px Arial`;
+
+  while (
+    x.measureText(value).width > maxWidth &&
+    fontSize > 9
+  ) {
+    fontSize--;
+    x.font = `600 ${fontSize}px Arial`;
+  }
+
+  // Potong jika masih terlalu panjang setelah font diperkecil
+  while (
+    value.length > 1 &&
+    x.measureText(value + '…').width > maxWidth
+  ) {
+    value = value.slice(0, -1);
+  }
+
+  if (value !== String(r[1] ?? '—')) {
+    value += '…';
+  }
+
+  x.fillStyle = '#f1f4fb';
+  x.font = `600 ${fontSize}px Arial`;
+  x.fillText(value, xx, yy + 18, maxWidth);
+});
+
  T('TRADE DETAILS',72,1055,15,'#d8bd79','700');
  const entry=t.openPrice??t.priceOpen??t.entry,exit=t.closePrice??t.priceClose??t.exit,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
  const rows=[
