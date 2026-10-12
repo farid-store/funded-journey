@@ -544,6 +544,21 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
 .ctl label{display:flex;gap:5px;align-items:center}.ctl input[type=checkbox]{padding:0;min-width:0}
 .lg{height:10px;border-radius:6px;background:linear-gradient(90deg,#1e2878,#00aadc,#ffc83c,#fff);margin:6px 0;max-width:260px}
 </style>
+
+<style>
+.intel-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.intel-card{border:1px solid var(--line2);border-radius:12px;background:linear-gradient(145deg,rgba(20,31,59,.92),rgba(8,13,28,.96));padding:14px;min-width:0}
+.intel-card small{display:block;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px}
+.intel-card strong{font-family:var(--fm);font-size:clamp(17px,2vw,25px);overflow-wrap:anywhere}
+.intel-card p{color:var(--muted);font-size:11px;line-height:1.6;margin:8px 0 0}
+.intel-status{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 8px;font-size:10px;font-weight:700;border:1px solid var(--line2)}
+.intel-status.ok{color:var(--green);background:var(--green-soft)}.intel-status.warn{color:var(--amber);background:var(--amber-soft)}.intel-status.bad{color:var(--red);background:var(--red-soft)}
+.intel-meter{height:6px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px}.intel-meter i{display:block;height:100%;border-radius:9px;background:var(--cyan)}
+.intel-table{width:100%;border-collapse:collapse;font-size:11px}.intel-table th,.intel-table td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}.intel-table th{color:var(--muted);font-size:10px;text-transform:uppercase}.intel-table td:last-child{text-align:right;font-family:var(--fm)}
+.intel-replay{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.intel-replay div{padding:10px;border-radius:9px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.intel-replay small{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}.intel-replay b{font-family:var(--fm);overflow-wrap:anywhere}
+@media(max-width:900px){.intel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.intel-replay{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.intel-grid{grid-template-columns:1fr}.intel-replay{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
 </head>
 <body>
 <div class="world" aria-hidden="true">
@@ -630,6 +645,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
       <button class="tab" data-view="wallet"><span class="tico" style="--c1:#ffe27a;--c2:#d9a21c"><span>💰</span></span><span>Wallet</span></button>
       <button class="tab" data-view="news"><span class="tico" style="--c1:#ffd0f0;--c2:#d05aa8"><span>🔔</span></span><span>News</span></button>
       <button class="tab" data-view="accounts"><span class="tico" style="--c1:#b5b8ff;--c2:#5b61d6"><span>🏯</span></span><span>Akun</span></button>
+      <button class="tab" data-view="intel"><span class="tico" style="--c1:#7ce8ff;--c2:#6656e8"><span>🧠</span></span><span>Command Intel</span></button>
       
     </nav>
     <div class="stage">
@@ -948,6 +964,23 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
     <div class="card panel"><div class="panel-title"><h3>Likuidasi Real-time</h3><span id="lqTot">—</span></div><div id="lqFeed"></div></div>
   </div>
 </section>
+
+    <section id="view-intel" class="view">
+      <div class="hero" data-scene="intel"><div class="hero-info"><b>COMMAND INTELLIGENCE</b><span>Integritas data → survival akun → konfluensi setup → performa → replay trade. Semua berbasis data yang tersedia di dashboard; tidak membuat sinyal atau harga fiktif.</span><em id="intelStamp">Menunggu snapshot…</em></div><div class="hero-scene"></div></div>
+      <div class="section-head"><div><h2>01 · Data Integrity Guardian</h2><p>Memeriksa status koneksi dan kelengkapan data yang diterima.</p></div><button class="btn ghost" id="intelDiagBtn">🩺 Diagnosa</button></div>
+      <div id="intelIntegrity" class="intel-grid"></div>
+      <div class="section-head"><div><h2>02 · Prop Firm Survival</h2><p>Ruang aman akun berdasarkan batas yang dikirim EA. Ini monitor, bukan jaminan pemblokiran order.</p></div><span class="tag neutral">LIVE DATA</span></div>
+      <div id="intelSurvival" class="intel-grid"></div>
+      <div class="section-head"><div><h2>04 · Market Alignment Scanner</h2><p>Konfluensi multi-timeframe dan sinyal yang tersedia. TF tanpa data ditandai belum tersedia, bukan dianggap netral.</p></div></div>
+      <div id="intelAlignment" class="card panel" style="padding:12px"></div>
+      <div class="section-head"><div><h2>05 · Performance Intelligence</h2><p>Ringkasan hasil historis berdasarkan trade yang tersimpan.</p></div></div>
+      <div id="intelPerformance" class="intel-grid"></div>
+      <div class="section-head"><div><h2>07 · Market Replay / Trade Review</h2><p>Pilih trade tersimpan untuk meninjau data transaksi. Ini review histori, bukan replay candle tick-by-tick.</p></div></div>
+      <div class="card panel" style="padding:14px">
+        <div class="toolbar" style="margin-bottom:12px"><label class="note" for="intelReplaySelect">Pilih trade</label><select id="intelReplaySelect" class="search" style="max-width:460px;min-width:220px"></select><button class="btn ghost" id="intelReplayRefresh">↻ Muat ulang</button></div>
+        <div id="intelReplayDetail"></div>
+      </div>
+    </section>
 </main>
 
   <section id="view-wallet" class="view">
@@ -3734,6 +3767,64 @@ $('mtfAlign')?.insertAdjacentHTML('afterend', '<button class="btn ghost" id="mtf
 /* ---------- hook ke render utama ---------- */
 function renderAdv() { loadJ(); watchSig(); watchNews(); cpTick(); if (act('edge')) renderEdge(); if (act('journal')) renderJ(); if (act('challenge')) renderCh(); }
 if (window.__FXUI) { const u = window.__FXUI.update; window.__FXUI.update = () => { try { u(); } catch (e) { console.warn(e); } try { renderAdv(); } catch (e) { console.warn('adv', e); } }; }
+})();
+</script>
+
+
+<script>
+(() => {
+  const $i = id => document.getElementById(id);
+  const escI = v => String(v ?? '—').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const numI = v => Number.isFinite(Number(v)) ? Number(v) : 0;
+  const moneyI = v => { try { const a=window.__FX?.account; return new Intl.NumberFormat('id-ID',{style:'currency',currency:(a?.currency||'USD'),maximumFractionDigits:2}).format(numI(v)); } catch(e) { return numI(v).toFixed(2); } };
+  const pctI = v => `${numI(v).toFixed(2)}%`;
+  const dateI = v => { let n=Number(v||0); if(n && n<1e12)n*=1000; return n?new Date(n).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}):'Waktu tidak tersedia'; };
+  const statusI = (kind,txt) => `<span class="intel-status ${kind}">${escI(txt)}</span>`;
+  const cardI = (label,value,sub,kind='ok',ratio=null) => `<div class="intel-card"><small>${label}</small><strong>${value}</strong><p>${sub||''}</p>${ratio===null?'':`<div class="intel-meter"><i style="width:${Math.max(0,Math.min(100,ratio*100))}%;background:${kind==='bad'?'var(--red)':kind==='warn'?'var(--amber)':'var(--green)'}"></i></div>`}</div>`;
+  function renderIntel(){
+    const fx=window.__FX, a=fx?.account; if(!fx||!a)return;
+    const ageText=$i('lastSnapshot')?.textContent||'—';
+    if($i('intelStamp'))$i('intelStamp').textContent='Snapshot terakhir: '+ageText;
+    const status=$i('status')?.textContent||'Belum diketahui', c=fx.coverage?.()||{}, s=fx.stats?.()||{}, h=Array.isArray(fx.history)?fx.history:[], pos=Array.isArray(a.positions)?a.positions:[];
+    let statusKind=status.toLowerCase().includes('live')?'ok':status.toLowerCase().includes('stale')?'warn':'bad';
+    const mismatch=(c.gap!=null&&!c.ok);
+    $i('intelIntegrity').innerHTML=[
+      cardI('Koneksi EA / Firestore',status,statusKind==='ok'?'Snapshot sedang terbarui.':statusKind==='warn'?'Snapshot melewati ambang live; cek EA dan webhook.':'Tidak ada koneksi live yang terkonfirmasi.',statusKind),
+      cardI('Kelengkapan histori',c.trades==null?'—':`${c.trades} trade`,c.days!=null?`${c.days} hari tercatat · mulai ${c.firstDay||'—'}`:'Belum cukup data untuk memverifikasi rentang histori.',c.trades? (mismatch?'warn':'ok'):'warn'),
+      cardI('Konsistensi modal awal',c.gap==null?'Belum terverifikasi':(mismatch?'Perlu pemeriksaan':'Cocok'),c.gap==null?'Modal acuan atau histori rekonstruksi belum tersedia.':`Selisih rekonstruksi: ${moneyI(c.gap)}. Deposit/withdrawal dapat memengaruhi rekonstruksi.`,c.gap==null||mismatch?'warn':'ok')
+    ].join('');
+    const dLim=numI(a.dailyLossLimitPct), oLim=numI(a.overallLossLimitPct), dUse=dLim>0?numI(a.dailyLossPct)/dLim:0, oUse=oLim>0?numI(a.overallLossPct)/oLim:0;
+    const dRoom=a.dailyRoomMoney, oRoom=a.overallRoomMoney;
+    const riskOpen=pos.reduce((sum,p)=>sum+Math.max(0,numI(p.riskMoney??p.riskAmount)),0);
+    $i('intelSurvival').innerHTML=[
+      cardI('Daily drawdown',pctI(a.dailyLossPct),dLim?`Batas ${pctI(dLim)} · ruang tersisa ${dRoom==null?'—':moneyI(dRoom)}`:'Batas daily belum dikirim EA.',dLim&&dUse>=.8?'bad':dLim&&dUse>=.6?'warn':'ok',dLim?dUse:null),
+      cardI('Overall drawdown',pctI(a.overallLossPct),oLim?`Batas ${pctI(oLim)} · ruang tersisa ${oRoom==null?'—':moneyI(oRoom)}`:'Batas overall belum dikirim EA.',oLim&&oUse>=.8?'bad':oLim&&oUse>=.6?'warn':'ok',oLim?oUse:null),
+      cardI('Eksposur berjalan',`${pos.length} posisi`,`Floating P/L ${moneyI(pos.reduce((sum,p)=>sum+numI(p.profit??p.netProfit),0))}. Risk per posisi hanya dijumlahkan jika field risiko tersedia.`,pos.length?'warn':'ok')
+    ].join('');
+    const mtf=Array.isArray(a.mtf)?a.mtf:[], sig=Array.isArray(a.sig)?a.sig:[];
+    const tfOrder=['M5','M15','M30','H1','H4','D1','W1'];
+    const rows=tfOrder.map(tf=>{const t=mtf.find(x=>String(x.tf).toUpperCase()===tf);if(!t)return `<tr><td>${tf}</td><td colspan="3">Belum ada data dari EA</td></tr>`;const dir=numI(t.dir), label=dir>0?'BULLISH':dir<0?'BEARISH':'NETRAL';const cnt=sig.filter(x=>String(x.tf).toUpperCase()===tf&&x.valid).length;return `<tr><td>${tf}</td><td>${statusI(dir>0?'ok':dir<0?'bad':'warn',label)}</td><td>${t.buy?.valid?'BUY setup':t.sell?.valid?'SELL setup':'—'}</td><td>${cnt||'—'}</td></tr>`}).join('');
+    const dirs=mtf.filter(t=>t&&t.valid!==false&&numI(t.dir)!==0), bull=dirs.filter(t=>numI(t.dir)>0).length,bear=dirs.filter(t=>numI(t.dir)<0).length;
+    $i('intelAlignment').innerHTML=`<div class="intel-grid" style="margin-bottom:12px">${cardI('Bullish TF',bull,`Dari ${dirs.length} timeframe directional`,bull>bear?'ok':'warn')}${cardI('Bearish TF',bear,`Dari ${dirs.length} timeframe directional`,bear>bull?'bad':'warn')}${cardI('Sinyal tercatat',sig.length,`Sinyal valid: ${sig.filter(x=>x.valid).length}. Tidak mengeksekusi order.`,sig.length?'ok':'warn')}</div><div class="table-scroll"><table class="intel-table"><thead><tr><th>Timeframe</th><th>Arah</th><th>Setup</th><th>Sinyal</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">Scanner ini membaca field MTF/sinyal yang dikirim EA; konfluensi tidak otomatis berarti entry valid. Validasi engulfing break, divergence AO/Stoch, dan Fibonacci tetap mengikuti aturan setup Anda.</p>`;
+    const wins=h.filter(t=>numI(t.netProfit)>0), losses=h.filter(t=>numI(t.netProfit)<0), net=h.reduce((sum,t)=>sum+numI(t.netProfit),0), grossWin=wins.reduce((sum,t)=>sum+numI(t.netProfit),0), grossLoss=Math.abs(losses.reduce((sum,t)=>sum+numI(t.netProfit),0)), pf=grossLoss?grossWin/grossLoss:(grossWin?Infinity:0), avg=h.length?net/h.length:0, wr=h.length?wins.length/h.length*100:0;
+    const best=Math.max(0,...h.map(t=>numI(t.netProfit))), worst=Math.min(0,...h.map(t=>numI(t.netProfit)));
+    $i('intelPerformance').innerHTML=[cardI('Net P/L',moneyI(net),`${h.length} trade tersimpan`,net>=0?'ok':'bad'),cardI('Win rate',pctI(wr),`${wins.length} profit · ${losses.length} loss`,wr>=50?'ok':'warn'),cardI('Profit factor',grossLoss?pf.toFixed(2):(grossWin?'∞':'—'),'Gross profit ÷ gross loss',pf>=1.5?'ok':pf>=1?'warn':'bad'),cardI('Expectancy / trade',moneyI(avg),'R-multiple tidak dihitung jika risiko awal tidak tersedia.',avg>=0?'ok':'bad'),cardI('Trade terbaik',moneyI(best),'Berdasarkan histori yang tersedia','ok'),cardI('Trade terburuk',moneyI(worst),'Berdasarkan histori yang tersedia',worst<0?'bad':'ok')].join('');
+    const sel=$i('intelReplaySelect'), old=sel.value;
+    const sorted=[...h].sort((x,y)=>{const tx=Number(x.closeTime||x.time||0),ty=Number(y.closeTime||y.time||0);return ty-tx;}).slice(0,200);
+    const key=t=>String(t.ticket??t.positionId??t.id??`${t.symbol||''}_${t.closeTime||t.time||''}_${t.netProfit||0}`);
+    sel.innerHTML=sorted.length?sorted.map((t,i)=>`<option value="${escI(key(t))}">${escI(dateI(t.closeTime||t.time))} · ${escI(t.symbol||'Symbol —')} · ${escI(String(t.type||'trade').toUpperCase())} · ${escI(moneyI(t.netProfit))}</option>`).join(''):'<option value="">Belum ada trade history</option>';
+    if(sorted.some(t=>key(t)===old))sel.value=old;
+    const picked=sorted.find(t=>key(t)===sel.value)||sorted[0];
+    if(!picked){$i('intelReplayDetail').innerHTML='<p class="note">Tidak ada histori untuk direview. Pastikan EA mengirim riwayat trade ke Firestore.</p>';return;}
+    const pl=numI(picked.netProfit), fields=[['Symbol',picked.symbol],['Arah / tipe',picked.type],['Volume',picked.volume??picked.lots],['Waktu close',dateI(picked.closeTime||picked.time)],['Harga open',picked.openPrice??picked.priceOpen],['Harga close',picked.closePrice??picked.priceClose],['Komisi',picked.commission],['Swap',picked.swap],['Net P/L',moneyI(pl)],['Ticket / ID',picked.ticket??picked.positionId??picked.id]];
+    $i('intelReplayDetail').innerHTML=`<div class="intel-replay">${fields.map(([k,v])=>`<div><small>${escI(k)}</small><b>${escI(v==null?'—':(k==='Komisi'||k==='Swap'?moneyI(v):v))}</b></div>`).join('')}</div><p class="note" style="margin-top:10px">${pl>0?'Trade profit':pl<0?'Trade loss':'Trade impas'} · Data entry/exit dan hasil ditampilkan jika dikirim oleh sumber histori. Candle replay, screenshot setup, AO/Stoch saat entry, serta level Fibonacci historis belum dapat direkonstruksi tanpa data candle dan snapshot setup tersimpan.</p>`;
+  }
+  document.addEventListener('click',e=>{if(e.target.closest('#intelDiagBtn'))$i('diagBtn')?.click();if(e.target.closest('#intelReplayRefresh'))renderIntel();});
+  $i('intelReplaySelect')?.addEventListener('change',renderIntel);
+  document.querySelector('.tab[data-view="intel"]')?.addEventListener('click',()=>setTimeout(renderIntel,80));
+  const prior=window.__FXUI?.update;
+  if(window.__FXUI&&typeof prior==='function')window.__FXUI.update=function(){try{prior.apply(this,arguments)}finally{try{if(document.getElementById('view-intel')?.classList.contains('active'))renderIntel()}catch(e){console.warn('intel render',e)}}};
+  setInterval(()=>{if(document.getElementById('view-intel')?.classList.contains('active'))renderIntel()},5000);
 })();
 </script>
 
