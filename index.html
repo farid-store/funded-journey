@@ -543,6 +543,14 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
 .kp{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px}.kp small{display:block;color:var(--faint);font-size:10px;margin-bottom:4px}.kp b{font-size:15px}
 .ctl label{display:flex;gap:5px;align-items:center}.ctl input[type=checkbox]{padding:0;min-width:0}
 .lg{height:10px;border-radius:6px;background:linear-gradient(90deg,#1e2878,#00aadc,#ffc83c,#fff);margin:6px 0;max-width:260px}
+
+/* Market Replay share assets — additive only */
+.mr-share{margin-top:16px;border-top:1px solid var(--line2);padding-top:16px}
+.mr-share .mr-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+.mr-share .mr-preview{display:flex;justify-content:center;background:#050912;border:1px solid var(--line);border-radius:12px;padding:12px;overflow:auto}
+.mr-share canvas{display:block;width:min(100%,720px);height:auto;border-radius:8px}
+.mr-share .mr-note{font-size:11px;color:var(--muted);line-height:1.6;margin:8px 0}
+
 </style>
 
 <style>
@@ -982,6 +990,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
       <div class="card panel" style="padding:14px">
         <div class="toolbar" style="margin-bottom:12px"><label class="note" for="intelReplaySelect">Pilih trade</label><select id="intelReplaySelect" class="search" style="max-width:460px;min-width:220px"></select><button class="btn ghost" id="intelReplayRefresh">↻ Muat ulang</button></div>
         <div id="intelReplayDetail"></div>
+        <div id="marketReplayShare" class="mr-share"></div>
       </div>
     </section>
 </main>
@@ -4191,6 +4200,82 @@ if (window.__FXUI) { const u = window.__FXUI.update; window.__FXUI.update = () =
   const prior=window.__FXUI?.update;
   if(window.__FXUI&&typeof prior==='function')window.__FXUI.update=function(){try{prior.apply(this,arguments)}finally{try{if(document.getElementById('view-intel')?.classList.contains('active'))renderIntel()}catch(e){console.warn('intel render',e)}}};
   setInterval(()=>{if(document.getElementById('view-intel')?.classList.contains('active'))renderIntel()},5000);
+})();
+</script>
+
+
+<script>
+/* Add-on: Market Replay PnL card + target achievement certificate.
+   Does not replace or mutate existing dashboard calculations or trade records. */
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '—').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const n = v => {const x=Number(v);return Number.isFinite(x)?x:0};
+const fmtMoney = (v, cur) => {try{return new Intl.NumberFormat('en-US',{style:'currency',currency:cur||'USD',maximumFractionDigits:2}).format(n(v))}catch(e){return (cur||'$')+' '+n(v).toFixed(2)}};
+const dt = v => {if(v==null||v==='')return '—';let x=Number(v);if(x>0&&x<1e12)x*=1000;const d=new Date(Number.isFinite(x)?x:v);return isNaN(d)?String(v):d.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',dateStyle:'medium',timeStyle:'short'})+' WIB'};
+function pickedTrade(){
+ const fx=window.__FX, sel=$('intelReplaySelect'); if(!fx||!Array.isArray(fx.history))return null;
+ const key=t=>String(t.ticket??t.positionId??t.id??`${t.symbol||''}_${t.closeTime||t.time||''}_${t.netProfit||0}`);
+ return [...fx.history].sort((a,b)=>n(b.closeTime||b.time)-n(a.closeTime||a.time)).find(t=>key(t)===sel?.value) || [...fx.history].sort((a,b)=>n(b.closeTime||b.time)-n(a.closeTime||a.time))[0] || null;
+}
+function drawTradeCard(t){
+ const c=document.createElement('canvas');c.width=1200;c.height=1400;const x=c.getContext('2d'),a=window.__FX?.account||{},cur=a.currency||'USD',pl=n(t.netProfit),buy=String(t.type||'').toLowerCase().includes('buy')||String(t.type||'').toLowerCase()==='0';
+ const bg=x.createLinearGradient(0,0,1200,1400);bg.addColorStop(0,'#101b34');bg.addColorStop(.55,'#080e1d');bg.addColorStop(1,'#11172a');x.fillStyle=bg;x.fillRect(0,0,1200,1400);
+ x.strokeStyle='#c9a85a';x.lineWidth=3;x.strokeRect(28,28,1144,1344);x.strokeStyle='rgba(201,168,90,.35)';x.lineWidth=1;x.strokeRect(43,43,1114,1314);
+ const text=(s,xx,yy,size,color='#f4f6fb',weight='500',align='left')=>{x.fillStyle=color;x.font=`${weight} ${size}px Arial`;x.textAlign=align;x.fillText(String(s),xx,yy)};
+ text('FARIDFX',75,105,30,'#e8c66d','700');text('TRADE PERFORMANCE',1125,105,18,'#8d9bb7','600','right');x.strokeStyle='rgba(201,168,90,.4)';x.beginPath();x.moveTo(75,135);x.lineTo(1125,135);x.stroke();
+ text(t.symbol||'SYMBOL',75,205,42,'#fff','700');const side=String(t.type||'TRADE').toUpperCase();x.fillStyle=buy?'#0c624c':'#672b3c';x.beginPath();x.roundRect(75,230,180,48,10);x.fill();text(side,165,261,22,buy?'#91f4cf':'#ffc1ce','700','center');
+ text('NET PROFIT / LOSS',75,350,19,'#9caac5','600');text((pl>0?'+':'')+fmtMoney(pl,cur),75,430,64,pl>=0?'#45e2a2':'#ff6c87','700');
+ const entry=t.openPrice??t.priceOpen,exit=t.closePrice??t.priceClose,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
+ // Candlestick illustration, deliberately labelled illustrative because historical OHLC is not stored.
+ x.fillStyle='#0a1122';x.beginPath();x.roundRect(75,485,1050,365,18);x.fill();text('TRADE MAP',105,530,17,'#c9a85a','700');text('Illustration • not historical candle data',1095,530,13,'#7f8eac','500','right');
+ for(let i=0;i<12;i++){const xx=140+i*78,base=690+Math.sin(i*1.15)*48+(i>6?-20:0),up=[0,2,3,6,8,10].includes(i),col=up?'#36d6a0':'#ff617e';x.strokeStyle=col;x.lineWidth=4;x.beginPath();x.moveTo(xx,base-48);x.lineTo(xx,base+45);x.stroke();x.fillStyle=col;x.fillRect(xx-17,base-(up?30:8),34,up?52:48);}
+ const levels=[['TP',tp,'#42e0a1'],['ENTRY',entry,'#e8c66d'],['SL',sl,'#ff647d']];
+ levels.forEach((r,i)=>{if(r[1]==null||r[1]==='')return;const yy=575+i*78;x.strokeStyle=r[2];x.setLineDash([10,7]);x.beginPath();x.moveTo(110,yy);x.lineTo(1090,yy);x.stroke();x.setLineDash([]);text(r[0]+'  '+r[1],1090,yy-9,15,r[2],'700','right')});
+ const fields=[
+ ['ENTRY PRICE',entry],['EXIT PRICE',exit],['VOLUME',t.volume??t.lots],['OPEN TIME',dt(t.openTime??t.timeOpen??t.open_time)],['CLOSE TIME',dt(t.closeTime??t.time)],['COMMISSION',fmtMoney(t.commission,cur)],['SWAP',fmtMoney(t.swap,cur)],['TICKET / ID',t.ticket??t.positionId??t.id],['ACCOUNT',a.login??a.account??'—'],['BROKER / PROP FIRM',a.company??a.broker??a.server??'—']
+ ];
+ fields.forEach((r,i)=>{const col=i%2,row=Math.floor(i/2),xx=75+col*535,yy=910+row*72;text(r[0],xx,yy,13,'#8190ad','600');text(String(r[1]??'—'),xx,yy+31,19,'#f1f4fb','600')});
+ x.strokeStyle='rgba(201,168,90,.4)';x.beginPath();x.moveTo(75,1270);x.lineTo(1125,1270);x.stroke();text('MARKET REPLAY  •  TRADE RECORD',75,1315,14,'#c9a85a','700');text('FaridFX · '+dt(t.closeTime??t.time),1125,1315,13,'#9caac5','500','right');
+ return c;
+}
+function certificateCanvas(){
+ const fx=window.__FX,a=fx?.account;if(!a)return null;
+ const start=n(a.startingBalance||a.initialBalance||a.balance),equity=n(a.equity||a.balance),hist=Array.isArray(fx.history)?fx.history:[],net=hist.reduce((s,t)=>s+n(t.netProfit),0);
+ let p={};try{p=JSON.parse(localStorage.getItem('ffx_p_'+(fx.accountId||''))||'{}')}catch(e){}
+ const target=n(p.target||a.profitTargetPct||10),base=n(p.start||start),profit=equity-base,pct=base?profit/base*100:0;
+ if(!(target>0&&pct>=target))return {reached:false,pct,target,base,profit,a};
+ const c=document.createElement('canvas');c.width=1600;c.height=1120;const x=c.getContext('2d');x.fillStyle='#f7f3e8';x.fillRect(0,0,1600,1120);x.strokeStyle='#102343';x.lineWidth=10;x.strokeRect(28,28,1544,1064);x.strokeStyle='#bd9946';x.lineWidth=3;x.strokeRect(48,48,1504,1024);
+ const T=(s,y,size,color='#102343',weight='600')=>{x.fillStyle=color;x.font=`${weight} ${size}px Georgia`;x.textAlign='center';x.fillText(s,800,y)};
+ T('FARIDFX  •  PROP CHALLENGE',135,27,'#a17b28','700');T('CERTIFICATE OF TARGET ACHIEVEMENT',250,54);T('This certificate recognizes the recorded account performance of',330,27,'#4b5870','400');T(a.name||a.displayName||'TRADER',425,66,'#102343','700');x.strokeStyle='#bd9946';x.lineWidth=2;x.beginPath();x.moveTo(350,460);x.lineTo(1250,460);x.stroke();
+ const rows=[['PROP FIRM / BROKER',a.company||a.broker||a.server||'Not provided'],['ACCOUNT ID',a.login??a.account??'Not provided'],['SERVER',a.server||'Not provided'],['ACCOUNT CURRENCY',a.currency||'USD'],['STARTING BALANCE',fmtMoney(base,a.currency)],['CURRENT EQUITY',fmtMoney(equity,a.currency)],['NET PROFIT',fmtMoney(profit,a.currency)],['PROFIT TARGET',target+'%  •  ACHIEVED '+pct.toFixed(2)+'%'],['TRADES RECORDED',String(hist.length)],['ISSUED',dt(Date.now())]];
+ rows.forEach((r,i)=>{let col=i%2,row=Math.floor(i/2),xx=250+col*570,yy=535+row*86;x.textAlign='left';x.fillStyle='#9b7b32';x.font='600 15px Arial';x.fillText(r[0],xx,yy);x.fillStyle='#182640';x.font='600 23px Arial';x.fillText(String(r[1]),xx,yy+32)});
+ T('Achievement based on dashboard records; not an official prop-firm payout confirmation.',1015,19,'#6e7788','400');T('CERTIFICATE ID  FFX-'+Date.now().toString(36).toUpperCase(),1060,17,'#a17b28','600');
+ return {reached:true,canvas:c,pct,target,base,profit,a};
+}
+function download(c,name){const a=document.createElement('a');a.download=name;a.href=c.toDataURL('image/png');a.click()}
+function render(){
+ const host=$('marketReplayShare');if(!host)return;
+ const t=pickedTrade(),cert=certificateCanvas();
+ host.innerHTML=`<div class="panel-title"><h3>Share P/L Card</h3><span>PNG · siap diunduh / screenshot</span></div>
+ <p class="mr-note">Kartu menampilkan detail transaksi yang tersedia. Ilustrasi candlestick bersifat ilustratif—histori OHLC, SL/TP, dan screenshot chart tidak akan direka jika tidak tersimpan dari EA.</p>
+ <div class="mr-actions"><button class="btn primary" id="mrDownload">⬇ Download P/L Card PNG</button><button class="btn" id="mrOpen">↗ Buka kartu untuk screenshot</button></div>
+ <div class="mr-preview" id="mrPreview"></div>
+ <div class="section-head"><div><h2>Target Profit & Payout Certificate</h2><p>Sertifikat muncul saat equity mencapai target challenge yang tersimpan. Nama prop firm memakai field company/broker/server yang tersedia.</p></div></div>
+ ${cert?.reached?`<div class="mr-actions"><button class="btn primary" id="mrCertDownload">🏅 Download Certificate PNG</button><button class="btn" id="mrCertOpen">↗ Buka sertifikat untuk screenshot</button></div><div class="mr-preview" id="mrCertPreview"></div><p class="mr-note">Catatan: ini sertifikat pencapaian target internal berdasarkan data dashboard, bukan bukti payout resmi dari prop firm.</p>`:`<div class="intel-card"><small>PROFIT TARGET</small><strong>${cert?cert.pct.toFixed(2)+'% / '+cert.target+'%':'Menunggu akun'}</strong><p>${cert?`Progress ${cert.pct.toFixed(2)}%. Sertifikat aktif setelah target tercapai.`:'Pilih akun yang terhubung untuk menghitung progress.'}</p></div>`}`;
+ if(!t){host.querySelector('#mrPreview').textContent='Belum ada trade untuk dibuatkan card.';return}
+ const card=drawTradeCard(t);host.querySelector('#mrPreview').appendChild(card);
+ $('mrDownload').onclick=()=>download(card,'FaridFX-PnL-'+String(t.symbol||'trade')+'.png');
+ $('mrOpen').onclick=()=>openCanvas(card,'FaridFX PnL Card');
+ if(cert?.reached){host.querySelector('#mrCertPreview').appendChild(cert.canvas);$('mrCertDownload').onclick=()=>download(cert.canvas,'FaridFX-Target-Achievement-Certificate.png');$('mrCertOpen').onclick=()=>openCanvas(cert.canvas,'FaridFX Target Achievement Certificate')}
+}
+function openCanvas(canvas,title){const w=window.open('','_blank');if(!w){alert('Popup diblokir. Gunakan Download PNG atau screenshot preview.');return}w.document.write('<!doctype html><title>'+title+'</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;background:#070b14;display:grid;place-items:start center;padding:16px}img{width:min(100%,900px);height:auto}</style><img alt="'+title+'" src="'+canvas.toDataURL('image/png')+'">');w.document.close()}
+document.addEventListener('click',e=>{if(e.target.closest('#intelReplayRefresh')||e.target.closest('.tab[data-view="intel"]'))setTimeout(render,180)});
+$('intelReplaySelect')?.addEventListener('change',()=>setTimeout(render,80));
+const prior=window.__FXUI?.update;if(window.__FXUI&&typeof prior==='function')window.__FXUI.update=function(){try{prior.apply(this,arguments)}finally{setTimeout(render,0)}};
+setInterval(()=>{if($('view-intel')?.classList.contains('active'))render()},5000);
+document.addEventListener('DOMContentLoaded',()=>setTimeout(render,400));
 })();
 </script>
 
