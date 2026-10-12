@@ -607,6 +607,43 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
 }
 </style>
 
+
+<style id="marketReplayStudioPolish">
+#marketReplayShare{min-width:0;width:100%;color:var(--text)}
+#marketReplayShare .mr-studio-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:4px 0 16px}
+#marketReplayShare .mr-studio-head h3{margin:4px 0 5px;font-size:clamp(18px,2vw,24px);letter-spacing:-.025em}
+#marketReplayShare .mr-studio-head p,#marketReplayShare .mr-toolbar p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+#marketReplayShare .mr-eyebrow{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--gold,#d5b56d)}
+#marketReplayShare .mr-live-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--line2);border-radius:999px;color:var(--muted);font-size:10px;white-space:nowrap}
+#marketReplayShare .mr-live-pill i{width:7px;height:7px;border-radius:50%;background:#39d6a0;box-shadow:0 0 10px rgba(57,214,160,.45)}
+#marketReplayShare .mr-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0 20px}
+#marketReplayShare .mr-overview-item{padding:12px;border:1px solid var(--line2);border-radius:11px;background:linear-gradient(145deg,rgba(24,35,60,.72),rgba(9,15,29,.72));min-width:0}
+#marketReplayShare .mr-overview-item small{display:block;color:var(--muted);font-size:9px;letter-spacing:.09em;margin-bottom:7px}
+#marketReplayShare .mr-overview-item b{display:block;font-size:clamp(11px,1.2vw,15px);overflow-wrap:anywhere;line-height:1.4}
+#marketReplayShare .mr-overview-item .positive{color:#45e2a2}#marketReplayShare .mr-overview-item .negative{color:#ff6c87}
+#marketReplayShare .mr-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:8px 0 12px}
+#marketReplayShare .mr-toolbar h4{font-size:15px;margin:0 0 4px}
+#marketReplayShare .mr-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+#marketReplayShare .mr-actions .btn{min-width:150px;min-height:40px}
+#marketReplayShare .mr-preview{display:flex;justify-content:center;align-items:flex-start;width:100%;min-width:0;overflow:hidden;background:radial-gradient(ellipse at top,rgba(40,59,94,.35),transparent 65%),#060a13;border:1px solid var(--line);border-radius:14px;padding:clamp(8px,1.5vw,16px)}
+#marketReplayShare .mr-preview canvas{display:block;width:min(100%,680px);height:auto;max-width:100%;border-radius:7px;box-shadow:0 16px 45px rgba(0,0,0,.28)}
+#marketReplayShare .mr-note{font-size:11px;color:var(--muted);line-height:1.6;margin:9px 0 18px}
+#marketReplayShare .mr-cert-section{border-top:1px solid var(--line2);padding-top:20px;margin-top:22px}
+#marketReplayShare .mr-cert-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+#marketReplayShare .mr-cert-controls label{display:grid;gap:6px;color:var(--muted);font-size:11px;min-width:0}
+#marketReplayShare .mr-cert-controls select,#marketReplayShare .mr-cert-controls input{width:100%;min-width:0;max-width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--line2);border-radius:9px;padding:10px 11px;font:inherit;font-size:12px;outline:none}
+#marketReplayShare .mr-cert-controls select:focus,#marketReplayShare .mr-cert-controls input:focus{border-color:var(--gold,#d5b56d)}
+#marketReplayShare .mr-target-panel{border:1px solid var(--line2);border-radius:12px;padding:16px;background:linear-gradient(135deg,rgba(24,35,60,.7),rgba(8,14,27,.85));margin-top:12px}
+#marketReplayShare .mr-target-panel small{display:block;color:var(--muted);font-size:10px;letter-spacing:.1em;margin-bottom:6px}
+#marketReplayShare .mr-target-panel strong{font-size:clamp(20px,3vw,30px);font-family:var(--fm);overflow-wrap:anywhere}
+#marketReplayShare .mr-target-panel p{font-size:12px;line-height:1.55;color:var(--muted);margin:7px 0 0}
+#marketReplayShare .mr-target-track{height:7px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:14px}
+#marketReplayShare .mr-target-track i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#35d5a0,#d7b96d)}
+#marketReplayShare .mr-empty{display:grid;gap:7px;text-align:center;padding:42px 16px;color:var(--muted);font-size:12px}
+#marketReplayShare .mr-empty b{color:var(--text);font-size:14px}
+@media(max-width:760px){#marketReplayShare .mr-overview{grid-template-columns:repeat(2,minmax(0,1fr))}#marketReplayShare .mr-cert-controls{grid-template-columns:1fr}#marketReplayShare .mr-toolbar{align-items:stretch}#marketReplayShare .mr-toolbar>div{width:100%}#marketReplayShare .mr-actions{display:grid;grid-template-columns:minmax(0,1fr);width:100%}#marketReplayShare .mr-actions .btn{width:100%;min-width:0;white-space:normal;line-height:1.35}#marketReplayShare .mr-preview{padding:5px;border-radius:10px}#marketReplayShare .mr-studio-head{gap:9px}}
+@media(max-width:380px){#marketReplayShare .mr-overview-item{padding:9px}#marketReplayShare .mr-overview-item small{font-size:8px}#marketReplayShare .mr-overview-item b{font-size:11px}}
+</style>
 </head>
 <body>
 <div class="world" aria-hidden="true">
@@ -4245,72 +4282,145 @@ if (window.__FXUI) { const u = window.__FXUI.update; window.__FXUI.update = () =
 
 
 <script>
-/* Add-on: Market Replay PnL card + target achievement certificate.
-   Does not replace or mutate existing dashboard calculations or trade records. */
+/* Market Replay Studio — additive UI layer. Keeps existing dashboard/trading logic untouched. */
 (function(){
 'use strict';
 const $ = id => document.getElementById(id);
 const esc = v => String(v ?? '—').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const n = v => {const x=Number(v);return Number.isFinite(x)?x:0};
-const fmtMoney = (v, cur) => {try{return new Intl.NumberFormat('en-US',{style:'currency',currency:cur||'USD',maximumFractionDigits:2}).format(n(v))}catch(e){return (cur||'$')+' '+n(v).toFixed(2)}};
-const dt = v => {if(v==null||v==='')return '—';let x=Number(v);if(x>0&&x<1e12)x*=1000;const d=new Date(Number.isFinite(x)?x:v);return isNaN(d)?String(v):d.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',dateStyle:'medium',timeStyle:'short'})+' WIB'};
+const n = v => { const x=Number(v); return Number.isFinite(x)?x:0; };
+const has = v => v!==undefined && v!==null && v!=='';
+const fmtMoney = (v,cur) => { try { return new Intl.NumberFormat('en-US',{style:'currency',currency:cur||'USD',maximumFractionDigits:2}).format(n(v)); } catch(e) { return `${cur||'USD'} ${n(v).toFixed(2)}`; } };
+const fmtPrice = v => has(v) ? Number(v).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:5}) : '—';
+const dt = v => { if(!has(v))return '—'; let x=Number(v); if(x>0&&x<1e12)x*=1000; const d=new Date(Number.isFinite(x)?x:v); return isNaN(d)?String(v):d.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',dateStyle:'medium',timeStyle:'short'})+' WIB'; };
+const account = () => window.__FX?.account || {};
+const fxData = () => window.__FX || {};
 function pickedTrade(){
- const fx=window.__FX, sel=$('intelReplaySelect'); if(!fx||!Array.isArray(fx.history))return null;
+ const fx=fxData(),sel=$('intelReplaySelect'); if(!Array.isArray(fx.history))return null;
  const key=t=>String(t.ticket??t.positionId??t.id??`${t.symbol||''}_${t.closeTime||t.time||''}_${t.netProfit||0}`);
- return [...fx.history].sort((a,b)=>n(b.closeTime||b.time)-n(a.closeTime||a.time)).find(t=>key(t)===sel?.value) || [...fx.history].sort((a,b)=>n(b.closeTime||b.time)-n(a.closeTime||a.time))[0] || null;
+ const sorted=[...fx.history].sort((a,b)=>n(b.closeTime||b.time)-n(a.closeTime||a.time));
+ return sorted.find(t=>key(t)===sel?.value)||sorted[0]||null;
+}
+function readConfig(){
+ const a=account(),fx=fxData(); let p={};
+ try{p=JSON.parse(localStorage.getItem('ffx_p_'+(fx.accountId||a.login||''))||'{}')}catch(e){}
+ let custom={};try{custom=JSON.parse(localStorage.getItem('ffx_share_profile_'+(fx.accountId||a.login||''))||'{}')}catch(e){}
+ return {p,custom};
+}
+function normalizeCandles(t){
+ const fx=fxData();
+ const raw=t?.candles||t?.ohlc||t?.chartCandles||t?.bars||fx.candles||fx.ohlc||fx.chartCandles||[];
+ if(!Array.isArray(raw))return [];
+ return raw.map(q=>({time:q.time??q.ts??q.t??q.date,open:n(q.open??q.o),high:n(q.high??q.h),low:n(q.low??q.l),close:n(q.close??q.c)}))
+ .filter(q=>q.open||q.high||q.low||q.close).slice(-48);
+}
+function drawChart(x,t,box){
+ const {x:bx,y:by,w:bw,h:bh}=box, candles=normalizeCandles(t);
+ x.fillStyle='#07101f';x.beginPath();x.roundRect(bx,by,bw,bh,18);x.fill();
+ x.strokeStyle='rgba(125,151,190,.12)';x.lineWidth=1;
+ for(let i=0;i<=5;i++){let yy=by+32+(bh-76)*i/5;x.beginPath();x.moveTo(bx+28,yy);x.lineTo(bx+bw-28,yy);x.stroke()}
+ for(let i=0;i<=6;i++){let xx=bx+28+(bw-56)*i/6;x.beginPath();x.moveTo(xx,by+24);x.lineTo(xx,by+bh-28);x.stroke()}
+ const title=(s,xx,yy,size,color,weight='600',align='left')=>{x.fillStyle=color;x.font=`${weight} ${size}px Arial`;x.textAlign=align;x.fillText(String(s),xx,yy)};
+ title('PRICE ACTION',bx+30,by+31,14,'#d8bd79','700');
+ const entry=t.openPrice??t.priceOpen,exit=t.closePrice??t.priceClose,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
+ if(!candles.length){
+   title('HISTORICAL OHLC NOT RECEIVED',bx+bw/2,by+bh/2-8,23,'#e7edf8','700','center');
+   title('Chart asli akan aktif setelah data candle MT5 dihubungkan',bx+bw/2,by+bh/2+28,14,'#8d9bb8','500','center');
+   title('Entry / SL / TP tetap ditampilkan pada detail transaksi di bawah',bx+bw/2,by+bh/2+54,12,'#687995','400','center');
+   return false;
+ }
+ const lows=candles.map(q=>q.low), highs=candles.map(q=>q.high), all=[...lows,...highs,entry,exit,sl,tp].filter(v=>has(v)&&Number.isFinite(Number(v))).map(Number);
+ let min=Math.min(...all),max=Math.max(...all); if(!(max>min)){min-=1;max+=1} const pad=(max-min)*.12;min-=pad;max+=pad;
+ const left=bx+50,right=bx+bw-32,top=by+55,bottom=by+bh-42,plotH=bottom-top,plotW=right-left;
+ const py=v=>bottom-((Number(v)-min)/(max-min))*plotH;
+ // right-side price labels
+ x.font='12px Arial';x.textAlign='right';x.fillStyle='#8292ad';
+ for(let i=0;i<=5;i++){const val=max-(max-min)*i/5,yy=top+plotH*i/5;x.fillText(fmtPrice(val),bx+bw-10,yy+4)}
+ const step=plotW/candles.length,cw=Math.max(4,Math.min(19,step*.56));
+ candles.forEach((q,i)=>{const xx=left+step*i+step/2,up=q.close>=q.open,col=up?'#36d6a0':'#ff6681';x.strokeStyle=col;x.lineWidth=2;x.beginPath();x.moveTo(xx,py(q.high));x.lineTo(xx,py(q.low));x.stroke();x.fillStyle=col;const y=Math.min(py(q.open),py(q.close)),h=Math.max(2,Math.abs(py(q.open)-py(q.close)));x.fillRect(xx-cw/2,y,cw,h)});
+ const levels=[['TP',tp,'#36d6a0'],['ENTRY',entry,'#e7c66d'],['EXIT',exit,'#9cb4ff'],['SL',sl,'#ff6681']];
+ levels.forEach(([label,val,color])=>{if(!has(val)||!Number.isFinite(Number(val)))return;const yy=py(val);if(yy<top||yy>bottom)return;x.save();x.strokeStyle=color;x.lineWidth=2;x.setLineDash([8,6]);x.beginPath();x.moveTo(left,yy);x.lineTo(right,yy);x.stroke();x.setLineDash([]);x.fillStyle=color;x.font='700 11px Arial';x.textAlign='left';x.fillText(`${label} ${fmtPrice(val)}`,left+8,Math.max(top+12,yy-6));x.restore()});
+ title(`${candles.length} candles · ${t.timeframe||t.tf||fxData().timeframe||'TF belum tersedia'}`,bx+30,by+bh-10,11,'#8292ad','500');return true;
 }
 function drawTradeCard(t){
- const c=document.createElement('canvas');c.width=1200;c.height=1400;const x=c.getContext('2d'),a=window.__FX?.account||{},cur=a.currency||'USD',pl=n(t.netProfit),buy=String(t.type||'').toLowerCase().includes('buy')||String(t.type||'').toLowerCase()==='0';
- const bg=x.createLinearGradient(0,0,1200,1400);bg.addColorStop(0,'#101b34');bg.addColorStop(.55,'#080e1d');bg.addColorStop(1,'#11172a');x.fillStyle=bg;x.fillRect(0,0,1200,1400);
- x.strokeStyle='#c9a85a';x.lineWidth=3;x.strokeRect(28,28,1144,1344);x.strokeStyle='rgba(201,168,90,.35)';x.lineWidth=1;x.strokeRect(43,43,1114,1314);
- const text=(s,xx,yy,size,color='#f4f6fb',weight='500',align='left')=>{x.fillStyle=color;x.font=`${weight} ${size}px Arial`;x.textAlign=align;x.fillText(String(s),xx,yy)};
- text('FARIDFX',75,105,30,'#e8c66d','700');text('TRADE PERFORMANCE',1125,105,18,'#8d9bb7','600','right');x.strokeStyle='rgba(201,168,90,.4)';x.beginPath();x.moveTo(75,135);x.lineTo(1125,135);x.stroke();
- text(t.symbol||'SYMBOL',75,205,42,'#fff','700');const side=String(t.type||'TRADE').toUpperCase();x.fillStyle=buy?'#0c624c':'#672b3c';x.beginPath();x.roundRect(75,230,180,48,10);x.fill();text(side,165,261,22,buy?'#91f4cf':'#ffc1ce','700','center');
- text('NET PROFIT / LOSS',75,350,19,'#9caac5','600');text((pl>0?'+':'')+fmtMoney(pl,cur),75,430,64,pl>=0?'#45e2a2':'#ff6c87','700');
- const entry=t.openPrice??t.priceOpen,exit=t.closePrice??t.priceClose,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
- // Candlestick illustration, deliberately labelled illustrative because historical OHLC is not stored.
- x.fillStyle='#0a1122';x.beginPath();x.roundRect(75,485,1050,365,18);x.fill();text('TRADE MAP',105,530,17,'#c9a85a','700');text('Illustration • not historical candle data',1095,530,13,'#7f8eac','500','right');
- for(let i=0;i<12;i++){const xx=140+i*78,base=690+Math.sin(i*1.15)*48+(i>6?-20:0),up=[0,2,3,6,8,10].includes(i),col=up?'#36d6a0':'#ff617e';x.strokeStyle=col;x.lineWidth=4;x.beginPath();x.moveTo(xx,base-48);x.lineTo(xx,base+45);x.stroke();x.fillStyle=col;x.fillRect(xx-17,base-(up?30:8),34,up?52:48);}
- const levels=[['TP',tp,'#42e0a1'],['ENTRY',entry,'#e8c66d'],['SL',sl,'#ff647d']];
- levels.forEach((r,i)=>{if(r[1]==null||r[1]==='')return;const yy=575+i*78;x.strokeStyle=r[2];x.setLineDash([10,7]);x.beginPath();x.moveTo(110,yy);x.lineTo(1090,yy);x.stroke();x.setLineDash([]);text(r[0]+'  '+r[1],1090,yy-9,15,r[2],'700','right')});
- const fields=[
- ['ENTRY PRICE',entry],['EXIT PRICE',exit],['VOLUME',t.volume??t.lots],['OPEN TIME',dt(t.openTime??t.timeOpen??t.open_time)],['CLOSE TIME',dt(t.closeTime??t.time)],['COMMISSION',fmtMoney(t.commission,cur)],['SWAP',fmtMoney(t.swap,cur)],['TICKET / ID',t.ticket??t.positionId??t.id],['ACCOUNT',a.login??a.account??'—'],['BROKER / PROP FIRM',a.company??a.broker??a.server??'—']
+ const c=document.createElement('canvas');c.width=1200;c.height=1740;const x=c.getContext('2d'),a=account(),cur=a.currency||'USD',pl=n(t.netProfit??t.profit),buy=String(t.type??t.side??'').toLowerCase().includes('buy')||String(t.type)==='0';
+ const grad=x.createLinearGradient(0,0,1200,1740);grad.addColorStop(0,'#101b32');grad.addColorStop(.55,'#080e1a');grad.addColorStop(1,'#111a2d');x.fillStyle=grad;x.fillRect(0,0,1200,1740);
+ x.strokeStyle='#c8a75a';x.lineWidth=3;x.strokeRect(26,26,1148,1688);x.strokeStyle='rgba(200,167,90,.26)';x.lineWidth=1;x.strokeRect(42,42,1116,1660);
+ const T=(s,xx,yy,size,color='#f4f6fb',weight='500',align='left')=>{x.fillStyle=color;x.font=`${weight} ${size}px Arial`;x.textAlign=align;x.fillText(String(s??'—'),xx,yy)};
+ T('FARIDFX',72,100,31,'#e8c66d','700');T('MARKET REPLAY  /  VERIFIED TRADE DATA',1128,98,14,'#8d9bb7','600','right');x.strokeStyle='rgba(200,167,90,.35)';x.beginPath();x.moveTo(72,126);x.lineTo(1128,126);x.stroke();
+ T(t.symbol||'SYMBOL',72,192,42,'#fff','700');const side=String(t.type??t.side??'TRADE').toUpperCase();x.fillStyle=buy?'#0c624c':'#672b3c';x.beginPath();x.roundRect(72,215,180,43,9);x.fill();T(side,162,243,19,buy?'#91f4cf':'#ffc1ce','700','center');
+ T('NET PROFIT / LOSS',72,315,15,'#9caac5','700');T((pl>0?'+':'')+fmtMoney(pl,cur),72,382,58,pl>=0?'#45e2a2':'#ff6c87','700');
+ const tradeDate=dt(t.closeTime??t.time??t.closeTimeMs);T('CLOSED',1128,316,12,'#9caac5','700','right');T(tradeDate,1128,344,15,'#f1f4fb','600','right');
+ drawChart(x,t,{x:72,y:420,w:1056,h:380});
+ // Account strip
+ x.fillStyle='rgba(255,255,255,.035)';x.beginPath();x.roundRect(72,825,1056,195,14);x.fill();x.strokeStyle='rgba(255,255,255,.08)';x.stroke();
+ T('ACCOUNT SNAPSHOT',96,858,13,'#d8bd79','700');
+ const acc=[['TRADER',a.name||a.displayName||a.accountLabel||'Farid Siddiq'],['ACCOUNT LOGIN',a.login??a.account??fxData().accountId??'—'],['PROP FIRM',a.propFirm||a.propFirmName||'Not specified'],['BROKER / COMPANY',a.company||a.broker||'—'],['SERVER',a.server||'—'],['CURRENCY',cur],['STARTING BALANCE',fmtMoney(a.startingBalance??a.initialBalance,cur)],['BALANCE',fmtMoney(a.balance,cur)],['EQUITY',fmtMoney(a.equity,cur)],['LEVERAGE',a.leverage?`1:${a.leverage}`:'—'],['MARGIN LEVEL',has(a.marginLevel)?`${n(a.marginLevel).toFixed(1)}%`:'—'],['ACCOUNT TYPE',a.accountType||a.tradeMode||'—']];
+ acc.forEach((r,i)=>{const col=i%4,row=Math.floor(i/4),xx=96+col*255,yy=886+row*43;T(r[0],xx,yy,9,'#8190ad','600');T(String(r[1]),xx,yy+20,13,'#f1f4fb','600')});
+ T('TRADE DETAILS',72,1055,15,'#d8bd79','700');
+ const entry=t.openPrice??t.priceOpen??t.entry,exit=t.closePrice??t.priceClose??t.exit,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
+ const rows=[
+  ['DIRECTION',side],['SYMBOL',t.symbol],['TICKET / POSITION ID',t.ticket??t.positionId??t.id],['VOLUME',has(t.volume)?`${t.volume} lot`:t.lots??'—'],
+  ['ENTRY PRICE',fmtPrice(entry)],['EXIT PRICE',fmtPrice(exit)],['STOP LOSS',fmtPrice(sl)],['TAKE PROFIT',fmtPrice(tp)],
+  ['OPEN TIME',dt(t.openTime??t.timeOpen??t.open_time)],['CLOSE TIME',dt(t.closeTime??t.time)],['DURATION',has(t.durationSec)?formatDuration(t.durationSec):'—'],['GROSS PROFIT',fmtMoney(t.profit,cur)],
+  ['COMMISSION',fmtMoney(t.commission,cur)],['SWAP',fmtMoney(t.swap,cur)],['NET P/L',fmtMoney(pl,cur)],['COMMENT',t.comment||t.reason||'—']
  ];
- fields.forEach((r,i)=>{const col=i%2,row=Math.floor(i/2),xx=75+col*535,yy=910+row*72;text(r[0],xx,yy,13,'#8190ad','600');text(String(r[1]??'—'),xx,yy+31,19,'#f1f4fb','600')});
- x.strokeStyle='rgba(201,168,90,.4)';x.beginPath();x.moveTo(75,1270);x.lineTo(1125,1270);x.stroke();text('MARKET REPLAY  •  TRADE RECORD',75,1315,14,'#c9a85a','700');text('FaridFX · '+dt(t.closeTime??t.time),1125,1315,13,'#9caac5','500','right');
+ rows.forEach((r,i)=>{const col=i%2,row=Math.floor(i/2),xx=72+col*535,yy=1092+row*63;x.fillStyle='rgba(255,255,255,.035)';x.beginPath();x.roundRect(xx,yy,510,51,7);x.fill();T(r[0],xx+13,yy+18,10,'#8190ad','600');T(String(r[1]??'—'),xx+13,yy+38,15,r[0]==='NET P/L'?(pl>=0?'#45e2a2':'#ff6c87'):'#f1f4fb','600')});
+ x.strokeStyle='rgba(200,167,90,.35)';x.beginPath();x.moveTo(72,1610);x.lineTo(1128,1610);x.stroke();T('FARIDFX  ·  TRADE PERFORMANCE RECORD',72,1650,13,'#c9a85a','700');T(`Account ${a.login??a.account??'—'}  •  ${t.ticket??t.positionId??t.id??'Trade'}`,1128,1650,12,'#9caac5','500','right');T('Performance card generated from dashboard records; not a broker statement.',72,1687,11,'#71809a','400');
  return c;
 }
-function certificateCanvas(){
- const fx=window.__FX,a=fx?.account;if(!a)return null;
- const start=n(a.startingBalance||a.initialBalance||a.balance),equity=n(a.equity||a.balance),hist=Array.isArray(fx.history)?fx.history:[],net=hist.reduce((s,t)=>s+n(t.netProfit),0);
- let p={};try{p=JSON.parse(localStorage.getItem('ffx_p_'+(fx.accountId||''))||'{}')}catch(e){}
- const target=n(p.target||a.profitTargetPct||10),base=n(p.start||start),profit=equity-base,pct=base?profit/base*100:0;
- if(!(target>0&&pct>=target))return {reached:false,pct,target,base,profit,a};
- const c=document.createElement('canvas');c.width=1600;c.height=1120;const x=c.getContext('2d');x.fillStyle='#f7f3e8';x.fillRect(0,0,1600,1120);x.strokeStyle='#102343';x.lineWidth=10;x.strokeRect(28,28,1544,1064);x.strokeStyle='#bd9946';x.lineWidth=3;x.strokeRect(48,48,1504,1024);
- const T=(s,y,size,color='#102343',weight='600')=>{x.fillStyle=color;x.font=`${weight} ${size}px Georgia`;x.textAlign='center';x.fillText(s,800,y)};
- T('FARIDFX  •  PROP CHALLENGE',135,27,'#a17b28','700');T('CERTIFICATE OF TARGET ACHIEVEMENT',250,54);T('This certificate recognizes the recorded account performance of',330,27,'#4b5870','400');T(a.name||a.displayName||'TRADER',425,66,'#102343','700');x.strokeStyle='#bd9946';x.lineWidth=2;x.beginPath();x.moveTo(350,460);x.lineTo(1250,460);x.stroke();
- const rows=[['PROP FIRM / BROKER',a.company||a.broker||a.server||'Not provided'],['ACCOUNT ID',a.login??a.account??'Not provided'],['SERVER',a.server||'Not provided'],['ACCOUNT CURRENCY',a.currency||'USD'],['STARTING BALANCE',fmtMoney(base,a.currency)],['CURRENT EQUITY',fmtMoney(equity,a.currency)],['NET PROFIT',fmtMoney(profit,a.currency)],['PROFIT TARGET',target+'%  •  ACHIEVED '+pct.toFixed(2)+'%'],['TRADES RECORDED',String(hist.length)],['ISSUED',dt(Date.now())]];
- rows.forEach((r,i)=>{let col=i%2,row=Math.floor(i/2),xx=250+col*570,yy=535+row*86;x.textAlign='left';x.fillStyle='#9b7b32';x.font='600 15px Arial';x.fillText(r[0],xx,yy);x.fillStyle='#182640';x.font='600 23px Arial';x.fillText(String(r[1]),xx,yy+32)});
- T('Achievement based on dashboard records; not an official prop-firm payout confirmation.',1015,19,'#6e7788','400');T('CERTIFICATE ID  FFX-'+Date.now().toString(36).toUpperCase(),1060,17,'#a17b28','600');
- return {reached:true,canvas:c,pct,target,base,profit,a};
+function formatDuration(v){const s=Math.max(0,Math.floor(n(v)));if(s<60)return `${s}s`;if(s<3600)return `${Math.floor(s/60)}m ${s%60}s`;if(s<86400)return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;return `${Math.floor(s/86400)}d ${Math.floor((s%86400)/3600)}h`}
+const CERT_FORMATS={landscape:{label:'Landscape 16:9',w:1600,h:900},portrait:{label:'Portrait A4',w:1200,h:1697},square:{label:'Square 1:1',w:1200,h:1200},portrait34:{label:'Portrait 3:4',w:1200,h:1600},classic43:{label:'Landscape 4:3',w:1600,h:1200}};
+function certificateData(){
+ const fx=fxData(),a=account(),hist=Array.isArray(fx.history)?fx.history:[],{p,custom}=readConfig();
+ const start=n(p.start||a.startingBalance||a.initialBalance||a.balance),equity=n(a.equity??a.balance),target=n(p.target||a.profitTargetPct||10),profit=equity-start,pct=start?profit/start*100:0;
+ return {fx,a,hist,p,custom,start,equity,target,profit,pct,reached:target>0&&pct>=target};
 }
-function download(c,name){const a=document.createElement('a');a.download=name;a.href=c.toDataURL('image/png');a.click()}
+function certCanvas(formatKey){
+ const d=certificateData();if(!d.a||!d.reached)return { ...d,canvas:null };
+ const f=CERT_FORMATS[formatKey]||CERT_FORMATS.landscape,c=document.createElement('canvas');c.width=f.w;c.height=f.h;const x=c.getContext('2d'),w=f.w,h=f.h,portrait=h>w,square=h===w;
+ const bg=x.createLinearGradient(0,0,w,h);bg.addColorStop(0,'#f8f5ed');bg.addColorStop(1,'#e9e3d4');x.fillStyle=bg;x.fillRect(0,0,w,h);x.fillStyle='#10213c';x.fillRect(0,0,w,Math.max(22,h*.025));
+ x.strokeStyle='#132744';x.lineWidth=Math.max(5,w*.005);x.strokeRect(w*.025,h*.03,w*.95,h*.94);x.strokeStyle='#b99850';x.lineWidth=Math.max(2,w*.0018);x.strokeRect(w*.04,h*.045,w*.92,h*.91);
+ const cx=w/2,margin=w*.09;const T=(s,y,size,color='#142744',weight='600',align='center')=>{x.fillStyle=color;x.font=`${weight} ${Math.round(size)}px Georgia`;x.textAlign=align;x.fillText(String(s),align==='left'?margin:align==='right'?w-margin:cx,y)};
+ const fit=(s,maxWidth,size,weight='600')=>{let z=size;x.font=`${weight} ${z}px Georgia`;while(x.measureText(String(s)).width>maxWidth&&z>12){z-=1;x.font=`${weight} ${z}px Georgia`}return z};
+ const titleY=h*(portrait?.15:.19);T('FARIDFX  •  PERFORMANCE SERIES',h*.095,w*.016,'#a17c2f','700');
+ T('CERTIFICATE OF',titleY,w*(portrait?.043:.036),'#132744','600');T('TARGET ACHIEVEMENT',titleY+h*.055,w*(portrait?.052:.043),'#132744','700');
+ T('This certificate recognizes the recorded trading performance of',titleY+h*.105,w*.017,'#647087','400');
+ const trader=d.custom.trader||d.a.name||d.a.displayName||d.a.accountLabel||'TRADER';T(trader,titleY+h*.17,fit(trader,w*.78,w*(portrait?.052:.047),'700'),'#10213c','700');
+ x.strokeStyle='#b99850';x.lineWidth=2;x.beginPath();x.moveTo(w*.27,h*(portrait?.32:.38));x.lineTo(w*.73,h*(portrait?.32:.38));x.stroke();
+ const firm=d.custom.firm||d.a.propFirm||d.a.propFirmName||d.a.company||d.a.broker||'PROP FIRM NOT SPECIFIED';
+ const data=[['PROP FIRM',firm],['ACCOUNT LOGIN',d.a.login??d.a.account??d.fx.accountId??'—'],['BROKER / COMPANY',d.a.company||d.a.broker||'—'],['SERVER',d.a.server||'—'],['ACCOUNT CURRENCY',d.a.currency||'USD'],['STARTING BALANCE',fmtMoney(d.start,d.a.currency)],['CURRENT EQUITY',fmtMoney(d.equity,d.a.currency)],['NET PROFIT',fmtMoney(d.profit,d.a.currency)],['PROFIT TARGET',`${d.target}%`],['ACHIEVED RETURN',`${d.pct.toFixed(2)}%`],['CLOSED TRADES',String(d.hist.length)],['ISSUED DATE',dt(Date.now())]];
+ const top=h*(portrait?.37:.44),bottom=h*.79,cols=portrait?1:2,rows=Math.ceil(data.length/cols),cellW=(w-margin*2)/cols,cellH=(bottom-top)/rows;
+ data.forEach((r,i)=>{const col=i%cols,row=Math.floor(i/cols),xx=margin+col*cellW,yy=top+row*cellH;x.fillStyle='rgba(16,33,60,.035)';x.beginPath();x.roundRect(xx,yy,cellW-12,cellH-10,8);x.fill();x.textAlign='left';x.fillStyle='#a17c2f';x.font=`700 ${Math.max(11,w*.009)}px Arial`;x.fillText(r[0],xx+14,yy+cellH*.38);let val=String(r[1]);const maxW=cellW-32;let fs=Math.max(12,Math.min(w*.017,cellH*.27));x.font=`600 ${fs}px Arial`;while(x.measureText(val).width>maxW&&fs>11){fs-=1;x.font=`600 ${fs}px Arial`}x.fillStyle='#142744';x.fillText(val,xx+14,yy+cellH*.7)});
+ const footerY=h*.865;T('ACHIEVEMENT BASED ON DASHBOARD RECORDS',footerY,w*.012,'#647087','600');T('Not an official prop-firm payout confirmation',footerY+h*.026,w*.011,'#647087','400');
+ const certId='FFX-'+String(d.a.login??d.fx.accountId??'ACCOUNT')+'-'+new Date().toISOString().slice(0,10).replace(/-/g,'');T('CERTIFICATE ID  '+certId,h*.94,w*.011,'#a17c2f','600');
+ return {...d,canvas:c,format:f,certId};
+}
+function download(c,name){if(!c)return;const a=document.createElement('a');a.download=name;a.href=c.toDataURL('image/png');a.click()}
+function openCanvas(canvas,title){if(!canvas)return;const w=window.open('','_blank');if(!w){alert('Popup diblokir. Gunakan Download PNG atau screenshot preview.');return}w.document.write('<!doctype html><title>'+title+'</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;background:#070b14;display:grid;place-items:start center;padding:16px}img{width:min(100%,1000px);height:auto;object-fit:contain}</style><img alt="'+title+'" src="'+canvas.toDataURL('image/png')+'">');w.document.close()}
 function render(){
  const host=$('marketReplayShare');if(!host)return;
- const t=pickedTrade(),cert=certificateCanvas();
- host.innerHTML=`<div class="panel-title"><h3>Share P/L Card</h3><span>PNG · siap diunduh / screenshot</span></div>
- <p class="mr-note">Kartu menampilkan detail transaksi yang tersedia. Ilustrasi candlestick bersifat ilustratif—histori OHLC, SL/TP, dan screenshot chart tidak akan direka jika tidak tersimpan dari EA.</p>
- <div class="mr-actions"><button class="btn primary" id="mrDownload">⬇ Download P/L Card PNG</button><button class="btn" id="mrOpen">↗ Buka kartu untuk screenshot</button></div>
+ const existingTrader=$('mrTraderName')?.value,existingFirm=$('mrFirmName')?.value,existingFormat=$('mrCertFormat')?.value;
+ if(existingTrader!==undefined||existingFirm!==undefined){const fx=fxData();try{localStorage.setItem('ffx_share_profile_'+(fx.accountId||account().login||''),JSON.stringify({trader:existingTrader??'',firm:existingFirm??''}))}catch(e){}}
+ const t=pickedTrade(),d=certificateData(),cfg=readConfig();
+ const fmtKey=existingFormat||'landscape';
+ host.innerHTML=`
+ <div class="mr-studio-head"><div><div class="mr-eyebrow">FARIDFX · MARKET REPLAY STUDIO</div><h3>Trade Performance Card</h3><p>Detail transaksi, akun, dan hasil trading dalam satu kartu siap dibagikan.</p></div><span class="mr-live-pill"><i></i> Data dashboard</span></div>
+ <div class="mr-overview">${[
+  ['SELECTED TRADE',t?(t.symbol||'Trade')+' · '+String(t.type||'').toUpperCase():'No trade selected'],['ACCOUNT',account().accountLabel||account().login||account().account||'Waiting for account'],['NET P/L',t?fmtMoney(t.netProfit??t.profit,account().currency):'—'],['CLOSED AT',t?dt(t.closeTime??t.time):'—']
+ ].map((r,i)=>`<div class="mr-overview-item"><small>${r[0]}</small><b class="${i===2&&t?(n(t.netProfit??t.profit)>=0?'positive':'negative'):''}">${esc(r[1])}</b></div>`).join('')}</div>
+ <div class="mr-toolbar"><div><h4>Share card</h4><p>High-resolution PNG · optimised for mobile and desktop</p></div><div class="mr-actions"><button class="btn primary" id="mrDownload">↓ Download P/L Card</button><button class="btn" id="mrOpen">↗ Open for screenshot</button></div></div>
  <div class="mr-preview" id="mrPreview"></div>
- <div class="section-head"><div><h2>Target Profit & Payout Certificate</h2><p>Sertifikat muncul saat equity mencapai target challenge yang tersimpan. Nama prop firm memakai field company/broker/server yang tersedia.</p></div></div>
- ${cert?.reached?`<div class="mr-actions"><button class="btn primary" id="mrCertDownload">🏅 Download Certificate PNG</button><button class="btn" id="mrCertOpen">↗ Buka sertifikat untuk screenshot</button></div><div class="mr-preview" id="mrCertPreview"></div><p class="mr-note">Catatan: ini sertifikat pencapaian target internal berdasarkan data dashboard, bukan bukti payout resmi dari prop firm.</p>`:`<div class="intel-card"><small>PROFIT TARGET</small><strong>${cert?cert.pct.toFixed(2)+'% / '+cert.target+'%':'Menunggu akun'}</strong><p>${cert?`Progress ${cert.pct.toFixed(2)}%. Sertifikat aktif setelah target tercapai.`:'Pilih akun yang terhubung untuk menghitung progress.'}</p></div>`}`;
- if(!t){host.querySelector('#mrPreview').textContent='Belum ada trade untuk dibuatkan card.';return}
- const card=drawTradeCard(t);host.querySelector('#mrPreview').appendChild(card);
- $('mrDownload').onclick=()=>download(card,'FaridFX-PnL-'+String(t.symbol||'trade')+'.png');
- $('mrOpen').onclick=()=>openCanvas(card,'FaridFX PnL Card');
- if(cert?.reached){host.querySelector('#mrCertPreview').appendChild(cert.canvas);$('mrCertDownload').onclick=()=>download(cert.canvas,'FaridFX-Target-Achievement-Certificate.png');$('mrCertOpen').onclick=()=>openCanvas(cert.canvas,'FaridFX Target Achievement Certificate')}
+ <p class="mr-note">Chart akan menampilkan candlestick historis hanya saat data OHLC tersedia. Sebelum EA mengirim data tersebut, area chart menampilkan status data secara eksplisit—tidak ada candle sintetis yang disamarkan sebagai harga asli.</p>
+ <div class="mr-cert-section"><div class="mr-studio-head"><div><div class="mr-eyebrow">CHALLENGE MILESTONE</div><h3>Achievement Certificate</h3><p>Sertifikat pencapaian target berdasarkan data akun yang tercatat.</p></div><span class="intel-status ${d.reached?'ok':'warn'}">${d.reached?'TARGET ACHIEVED':'IN PROGRESS'}</span></div>
+ <div class="mr-cert-controls"><label>Format sertifikat<select id="mrCertFormat">${Object.entries(CERT_FORMATS).map(([k,v])=>`<option value="${k}" ${k===fmtKey?'selected':''}>${v.label} · ${v.w}×${v.h}</option>`).join('')}</select></label><label>Nama trader<input id="mrTraderName" maxlength="64" value="${esc(cfg.custom.trader||account().name||account().displayName||account().accountLabel||'Farid Siddiq')}" placeholder="Nama trader"></label><label>Nama prop firm<input id="mrFirmName" maxlength="80" value="${esc(cfg.custom.firm||account().propFirm||account().propFirmName||'')}" placeholder="Nama prop firm"></label></div>
+ ${d.reached?`<div class="mr-actions"><button class="btn primary" id="mrCertDownload">↓ Download Certificate PNG</button><button class="btn" id="mrCertOpen">↗ Open for screenshot</button></div><div class="mr-preview mr-cert-preview" id="mrCertPreview"></div><p class="mr-note">Ini sertifikat pencapaian target internal, bukan bukti payout resmi. Bukti payout harus berasal dari prop firm atau catatan pembayaran yang valid.</p>`:`<div class="mr-target-panel"><div><small>PROFIT TARGET</small><strong>${d.a?`${d.pct.toFixed(2)}% / ${d.target}%`:'Menunggu data akun'}</strong><p>${d.a?`Profit bersih terhadap baseline: ${fmtMoney(d.profit,d.a.currency)}. Sertifikat aktif ketika return mencapai target.`:'Pilih akun yang terhubung agar progress challenge dapat dihitung.'}</p></div><div class="mr-target-track"><i style="width:${Math.max(0,Math.min(100,d.target>0?d.pct/d.target*100:0))}%"></i></div></div>`}
+ </div>`;
+ if(t){const card=drawTradeCard(t);host.querySelector('#mrPreview').appendChild(card);$('mrDownload').onclick=()=>download(card,`FaridFX-PnL-${String(t.symbol||'trade').replace(/[^a-z0-9_-]/gi,'_')}-${t.ticket??t.id??'record'}.png`);$('mrOpen').onclick=()=>openCanvas(card,'FaridFX Trade Performance Card')}else{host.querySelector('#mrPreview').innerHTML='<div class="mr-empty"><b>No closed trade available</b><span>Pilih transaksi pada dropdown Market Replay untuk membuat P/L Card.</span></div>';}
+ if(d.reached){const cert=certCanvas(fmtKey);if(cert.canvas){host.querySelector('#mrCertPreview').appendChild(cert.canvas);$('mrCertDownload').onclick=()=>download(cert.canvas,`FaridFX-Certificate-${fmtKey}.png`);$('mrCertOpen').onclick=()=>openCanvas(cert.canvas,'FaridFX Achievement Certificate')}}
+ $('mrCertFormat')?.addEventListener('change',()=>render());
+ const saveProfile=()=>{const fx=fxData();try{localStorage.setItem('ffx_share_profile_'+(fx.accountId||account().login||''),JSON.stringify({trader:$('mrTraderName')?.value||'',firm:$('mrFirmName')?.value||''}))}catch(e){}};
+ $('mrTraderName')?.addEventListener('change',saveProfile);$('mrFirmName')?.addEventListener('change',saveProfile);
 }
-function openCanvas(canvas,title){const w=window.open('','_blank');if(!w){alert('Popup diblokir. Gunakan Download PNG atau screenshot preview.');return}w.document.write('<!doctype html><title>'+title+'</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;background:#070b14;display:grid;place-items:start center;padding:16px}img{width:min(100%,900px);height:auto}</style><img alt="'+title+'" src="'+canvas.toDataURL('image/png')+'">');w.document.close()}
 document.addEventListener('click',e=>{if(e.target.closest('#intelReplayRefresh')||e.target.closest('.tab[data-view="intel"]'))setTimeout(render,180)});
 $('intelReplaySelect')?.addEventListener('change',()=>setTimeout(render,80));
 const prior=window.__FXUI?.update;if(window.__FXUI&&typeof prior==='function')window.__FXUI.update=function(){try{prior.apply(this,arguments)}finally{setTimeout(render,0)}};
