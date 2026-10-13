@@ -1084,14 +1084,29 @@ module.exports = async (req, res) => {
       { merge: false }
     );
 
-    return res.status(200).json({
-      ok: true,
-      newTrades: newTrades.length,
-      newSignals: sigNew,
-      changedDays: affectedDays.size,
-      equityPointWritten,
-      marketBarsWritten,
-    });
+   
+console.log(
+  `[WebSync] account=${accountId}` +
+  ` reason=${reason}` +
+  ` OHLC_received=${marketBarsRaw.length}` +
+  ` OHLC_valid=${validBars.length}` +
+  ` OHLC_written=${marketBarsWritten}`
+);
+
+return res.status(200).json({
+  ok: true,
+  service: 'faridfx-webhook',
+  accountId,
+  reason,
+  newTrades: newTrades.length,
+  newSignals: sigNew,
+  changedDays: affectedDays.size,
+  equityPointWritten,
+  marketBarsReceived: marketBarsRaw.length,
+  marketBarsValid: validBars.length,
+  marketBarsWritten,
+});
+
   } catch (e) {
     console.error(e);
 
