@@ -1669,7 +1669,7 @@ img,canvas,svg,video{max-width:100%}
     // Ambil candle OHLC yang disimpan webhook di accounts/{login}/marketBars.
     // Query dibatasi agar P/L Card tidak membaca seluruh koleksi tanpa batas.
     activeUnsubs.push(ECO.watch(
-      () => db.collection('accounts').doc(id).collection('marketBars').orderBy('time', 'desc').limit(250),
+      () => db.collection('accounts').doc(id).collection('marketBars').orderBy('time', 'desc').limit(60),
       'slow',
       snap => {
         marketBarsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }))
@@ -2633,7 +2633,7 @@ img,canvas,svg,video{max-width:100%}
       const ref = db.collection('accounts').doc(currentAccountId).collection('marketBars');
       const f0 = Math.floor(fromSec), t0 = Math.ceil(toSec), rows = s => s.docs.map(d => ({ id:d.id, ...d.data() }));
       const attempts = [
-        () => ref.where('time','>=',f0).where('time','<=',t0).orderBy('time','asc').limit(500).get(),
+        () => ref.where('time','>=',f0).where('time','<=',t0).orderBy('time','asc').limit(300).get(),
         () => ref.where('time','>=',f0).where('time','<=',t0).orderBy('time','asc').limit(250).get(),
         () => ref.orderBy('time','desc').limit(250).get()          // sama dengan listener lama (pasti diizinkan rules)
       ];
@@ -4541,7 +4541,7 @@ function selectCandles(m, extra){
 }
 function ensureBars(m){
   const k = keyOf(m.t), cur = barState.get(k);
-  if(cur && (cur.state === 'loading' || (Date.now() - cur.at < 90000 && cur.state !== 'error') || (cur.state === 'error' && Date.now() - cur.at < 20000))) return cur;
+  if(cur && (cur.state === 'loading' || (cur.state === 'ok' && Date.now() - cur.at < 1800000) || (cur.state === 'empty' && Date.now() - cur.at < 300000) || (cur.state === 'unsupported') || (cur.state === 'error' && Date.now() - cur.at < 120000))) return cur;
   const fx = fxData();
   if(typeof fx.fetchBarsRange !== 'function') { const st = { state:'unsupported', bars:[], at:Date.now() }; barState.set(k, st); return st; }
   const w = tradeWindow(m), padS = Math.max(3600, Math.min(86400*2, (w.c - w.o)*0.6));
