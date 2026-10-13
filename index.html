@@ -1346,6 +1346,8 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
   let currentAccountId = null;
   let currentAccount = null;
   let historyCache = [];
+  // OHLC historis yang ditulis webhook dari payload chartBars EA.
+  let marketBarsCache = [];
   let dailyPnlMap = new Map();
   let equityCurveCache = [];
   let newsCache = [];
@@ -1543,7 +1545,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
     currentAccountId = id;
     localStorage.setItem('faridfx_last_account', id);
     clearAccountListeners();
-    historyCache = []; dailyPnlMap = new Map(); equityCurveCache = []; newsCache = []; commandsCache = [];
+    historyCache = []; marketBarsCache = []; dailyPnlMap = new Map(); equityCurveCache = []; newsCache = []; commandsCache = [];
     currentAccount = null; receivedAt = 0; histLimit = 300;           // jangan menampilkan data akun lama pada akun baru
     { const st = $('state'), ct = $('content'); if (st) { st.style.display = 'block'; st.innerHTML = '<h2>Memuat akun ' + esc(id) + '…</h2><p>Menunggu snapshot terbaru dari EA.</p>'; } if (ct) ct.style.display = 'none'; }
     if (window.__FXUI) window.__FXUI.update();
@@ -1579,6 +1581,21 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
       renderNews();
       renderAlerts();
     }, err => console.warn('news listener', err)));
+
+    // Ambil candle OHLC yang disimpan webhook di accounts/{login}/marketBars.
+    // Query dibatasi agar P/L Card tidak membaca seluruh koleksi tanpa batas.
+    activeUnsubs.push(ECO.watch(
+      () => db.collection('accounts').doc(id).collection('marketBars').orderBy('time', 'desc').limit(250),
+      'slow',
+      snap => {
+        marketBarsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .filter(b => Number(b.time) > 0 && [b.open,b.high,b.low,b.close].every(v => Number.isFinite(Number(v))))
+          .sort((a,b) => Number(a.time) - Number(b.time));
+        renderAll();
+      },
+      err => console.warn('marketBars OHLC listener', err),
+      'marketBars'
+    ));
 
     activeUnsubs.push(db.collection('accounts').doc(id).collection('commands').orderBy('createdAt','desc').limit(15).onSnapshot(snap => {
       commandsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -2523,6 +2540,7 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
 
   window.__FX = {
     get account(){ return currentAccount; }, get accountId(){ return currentAccountId; }, get history(){ return historyCache; },
+    get marketBars(){ return marketBarsCache; },
     get daily(){ return dayMap(); }, get curve(){ return equityCurveCache; }, get news(){ return newsCache; }, get commands(){ return commandsCache; },
     get accountsMeta(){ return accountsMeta; }, get calendarMonth(){ return calendarMonth; }, get diag(){ return diag; }, get db(){ return db; }, toast, get receivedAt(){ return receivedAt; },
     stats: calcStats, balanceCurve: buildBalanceCurve, marginOk, profitPctOf, dayMap, coverage, tradingDays: tradingDaysCount, guard: guardInfo, guardPin, get tms(){ return tms; }, get eco(){ return ECO; },
@@ -4308,10 +4326,19 @@ function readConfig(){
 }
 function normalizeCandles(t){
  const fx=fxData();
- const raw=t?.candles||t?.ohlc||t?.chartCandles||t?.bars||fx.candles||fx.ohlc||fx.chartCandles||[];
+ const symbol=String(t?.symbol||'').trim().toUpperCase();
+ const tradeCandles=[t?.candles,t?.ohlc,t?.chartCandles,t?.bars].find(a=>Array.isArray(a)&&a.length);
+ let raw=tradeCandles||fx.candles||fx.ohlc||fx.chartCandles||[];
+ // Fallback utama: OHLC historis asli yang diterima dari koleksi Firestore marketBars.
+ // Jangan memakai candle simbol lain untuk menghindari chart yang menyesatkan.
+ if(!Array.isArray(raw)||!raw.length){
+   const bars=Array.isArray(fx.marketBars)?fx.marketBars:[];
+   raw=bars.filter(b=>!symbol||String(b.symbol||'').trim().toUpperCase()===symbol);
+ }
  if(!Array.isArray(raw))return [];
- return raw.map(q=>({time:q.time??q.ts??q.t??q.date,open:n(q.open??q.o),high:n(q.high??q.h),low:n(q.low??q.l),close:n(q.close??q.c)}))
- .filter(q=>q.open||q.high||q.low||q.close).slice(-48);
+ return raw.map(q=>({time:q.time??q.ts??q.t??q.date,open:n(q.open??q.o),high:n(q.high??q.h),low:n(q.low??q.l),close:n(q.close??q.c),symbol:q.symbol,timeframe:q.timeframe??q.tf}))
+ .filter(q=>Number(q.time)>0&&[q.open,q.high,q.low,q.close].every(Number.isFinite)&&q.high>=Math.max(q.open,q.close,q.low)&&q.low<=Math.min(q.open,q.close,q.high))
+ .sort((a,b)=>Number(a.time)-Number(b.time)).slice(-48);
 }
 function drawChart(x,t,box){
  const {x:bx,y:by,w:bw,h:bh}=box, candles=normalizeCandles(t);
@@ -4323,9 +4350,12 @@ function drawChart(x,t,box){
  title('PRICE ACTION',bx+30,by+31,14,'#d8bd79','700');
  const entry=t.openPrice??t.priceOpen,exit=t.closePrice??t.priceClose,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
  if(!candles.length){
-   title('HISTORICAL OHLC NOT RECEIVED',bx+bw/2,by+bh/2-8,23,'#e7edf8','700','center');
-   title('Chart asli akan aktif setelah data candle MT5 dihubungkan',bx+bw/2,by+bh/2+28,14,'#8d9bb8','500','center');
-   title('Entry / SL / TP tetap ditampilkan pada detail transaksi di bawah',bx+bw/2,by+bh/2+54,12,'#687995','400','center');
+   const bars=Array.isArray(fxData().marketBars)?fxData().marketBars:[];
+   const tradeSymbol=String(t?.symbol||'').toUpperCase();
+   const symbolBars=bars.filter(b=>String(b.symbol||'').toUpperCase()===tradeSymbol);
+   title('HISTORICAL OHLC NOT RECEIVED',bx+bw/2,by+bh/2-18,21,'#e7edf8','700','center');
+   title(symbolBars.length?'Data candle ditemukan tetapi formatnya tidak valid':'Belum ada candle untuk simbol '+(tradeSymbol||'transaksi ini'),bx+bw/2,by+bh/2+12,13,'#8d9bb8','500','center');
+   title('Pastikan EA mengirim chartBars dan webhook menulis accounts/{login}/marketBars',bx+bw/2,by+bh/2+38,11,'#687995','400','center');
    return false;
  }
  const lows=candles.map(q=>q.low), highs=candles.map(q=>q.high), all=[...lows,...highs,entry,exit,sl,tp].filter(v=>has(v)&&Number.isFinite(Number(v))).map(Number);
@@ -4355,53 +4385,7 @@ function drawTradeCard(t){
  x.fillStyle='rgba(255,255,255,.035)';x.beginPath();x.roundRect(72,825,1056,195,14);x.fill();x.strokeStyle='rgba(255,255,255,.08)';x.stroke();
  T('ACCOUNT SNAPSHOT',96,858,13,'#d8bd79','700');
  const acc=[['TRADER',a.name||a.displayName||a.accountLabel||'Farid Siddiq'],['ACCOUNT LOGIN',a.login??a.account??fxData().accountId??'—'],['PROP FIRM',a.propFirm||a.propFirmName||'Not specified'],['BROKER / COMPANY',a.company||a.broker||'—'],['SERVER',a.server||'—'],['CURRENCY',cur],['STARTING BALANCE',fmtMoney(a.startingBalance??a.initialBalance,cur)],['BALANCE',fmtMoney(a.balance,cur)],['EQUITY',fmtMoney(a.equity,cur)],['LEVERAGE',a.leverage?`1:${a.leverage}`:'—'],['MARGIN LEVEL',has(a.marginLevel)?`${n(a.marginLevel).toFixed(1)}%`:'—'],['ACCOUNT TYPE',a.accountType||a.tradeMode||'—']];
-
-// Account snapshot — 3 kolom, teks otomatis diperkecil
-acc.forEach((r, i) => {
-  const col = i % 3;
-  const row = Math.floor(i / 3);
-
-  const xx = 96 + col * 340;
-  const yy = 886 + row * 36;
-  const maxWidth = 310;
-
-  // Label
-  x.fillStyle = '#8190ad';
-  x.font = '600 9px Arial';
-  x.textAlign = 'left';
-  x.fillText(String(r[0]), xx, yy);
-
-  // Nilai: perkecil font jika terlalu panjang
-  let value = String(r[1] ?? '—');
-  let fontSize = 13;
-
-  x.font = `600 ${fontSize}px Arial`;
-
-  while (
-    x.measureText(value).width > maxWidth &&
-    fontSize > 9
-  ) {
-    fontSize--;
-    x.font = `600 ${fontSize}px Arial`;
-  }
-
-  // Potong jika masih terlalu panjang setelah font diperkecil
-  while (
-    value.length > 1 &&
-    x.measureText(value + '…').width > maxWidth
-  ) {
-    value = value.slice(0, -1);
-  }
-
-  if (value !== String(r[1] ?? '—')) {
-    value += '…';
-  }
-
-  x.fillStyle = '#f1f4fb';
-  x.font = `600 ${fontSize}px Arial`;
-  x.fillText(value, xx, yy + 18, maxWidth);
-});
-
+ acc.forEach((r,i)=>{const col=i%4,row=Math.floor(i/4),xx=96+col*255,yy=886+row*43;T(r[0],xx,yy,9,'#8190ad','600');T(String(r[1]),xx,yy+20,13,'#f1f4fb','600')});
  T('TRADE DETAILS',72,1055,15,'#d8bd79','700');
  const entry=t.openPrice??t.priceOpen??t.entry,exit=t.closePrice??t.priceClose??t.exit,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
  const rows=[
