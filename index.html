@@ -551,6 +551,21 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
 .mr-share canvas{display:block;width:min(100%,720px);height:auto;border-radius:8px}
 .mr-share .mr-note{font-size:11px;color:var(--muted);line-height:1.6;margin:8px 0}
 
+
+/* ===== INTEGRATION PATCH: readable cards, no text collision ===== */
+.card,.panel,.intel-card,.mr-overview-item,.mr-target-panel,.mr-cert-section,.mr-preview{min-width:0;}
+.card,.panel,.intel-card,.mr-overview-item,.mr-target-panel{overflow-wrap:anywhere;}
+.card p,.panel p,.intel-card p,.mr-note,.mr-studio-head p{line-height:1.55;overflow-wrap:anywhere;}
+.kpi .value,.kpi .sub,.intel-card strong,.mr-overview-item b,.mr-target-panel strong{overflow-wrap:anywhere;word-break:normal;line-height:1.35;}
+.pgrid label,.info,.info-list,.mr-cert-controls label{min-width:0;}
+.pgrid input[readonly]{opacity:.82;border-style:dashed;cursor:not-allowed;}
+#marketReplayShare .mr-overview-item b{display:block;white-space:normal;overflow-wrap:anywhere;line-height:1.4;}
+#marketReplayShare .mr-target-panel{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;}
+#marketReplayShare .mr-target-panel strong{display:block;margin-top:5px;font-size:clamp(18px,2.4vw,28px);}
+#marketReplayShare .mr-cert-preview canvas{max-width:100%;height:auto;object-fit:contain;}
+#marketReplayShare .mr-cert-controls select,#marketReplayShare .mr-cert-controls input{white-space:normal;overflow-wrap:anywhere;}
+@media(max-width:760px){.kpi .value{font-size:clamp(15px,4vw,19px);letter-spacing:-.02em}.kpi .label{font-size:9px;line-height:1.4;letter-spacing:.08em}.kpi .sub{font-size:10px;line-height:1.45}#marketReplayShare .mr-studio-head{align-items:flex-start;flex-wrap:wrap}#marketReplayShare .mr-live-pill,#marketReplayShare .intel-status{max-width:100%;white-space:normal;overflow-wrap:anywhere}}
+
 </style>
 
 <style>
@@ -3891,13 +3906,32 @@ $('jList').addEventListener('change', e => { const r = e.target.closest('.jrow')
   FX().db?.collection('accounts').doc(jAcc).collection('journal').doc(k).set(J[k], { merge: true }).catch(() => { if (!warned++) FX().toast('Journal tersimpan lokal (Firestore menolak tulis)'); }); });
 
 /* ---------- Challenge + Monte Carlo ---------- */
-const PF = [['start', 'Modal awal ($)'], ['target', 'Target profit (%)'], ['dd', 'Max daily loss (%)'], ['tot', 'Max total loss (%)'], ['days', 'Min hari trading'], ['cons', 'Best day ≤ % profit']];
+const PF = [['start', 'Modal awal ($) · EA'], ['target', 'Target profit (%) · EA'], ['dd', 'Max daily loss (%) · EA'], ['tot', 'Max total loss (%) · EA'], ['days', 'Min hari trading'], ['cons', 'Best day ≤ % profit']];
+const EA_LOCKED_CHALLENGE_FIELDS = new Set(['start','target','dd','tot']);
 let P = {}, pInit = null;
-function loadP() { const f = FX(), a = f.account; if (!a || f.accountId === pInit) return; pInit = f.accountId;
-  const net = (f.history || []).reduce((s, t) => s + (+t.netProfit || 0), 0);
-  P = LS('ffx_p_' + pInit) || { start: Math.round(a.startingBalance || (a.balance - net) || 0), target: 10, dd: 5, tot: 10, days: 4, cons: 30 };
-  $('pIn').innerHTML = PF.map(([k, l]) => `<label>${l}<input class="xin" type="number" step="any" data-k="${k}" value="${P[k]}"></label>`).join(''); }
-$('pIn').addEventListener('change', e => { const k = e.target.dataset.k; if (!k) return; P[k] = +e.target.value; LS('ffx_p_' + pInit, P); renderCh(); });
+function loadP() {
+  const f = FX(), a = f.account; if (!a) return;
+  if (f.accountId !== pInit) {
+    pInit = f.accountId;
+    const net = (f.history || []).reduce((s, t) => s + (+t.netProfit || 0), 0);
+    const saved = LS('ffx_p_' + pInit) || {};
+    P = { start: Math.round(a.startingBalance || a.initialBalance || (a.balance - net) || 0), target: 10, dd: 5, tot: 10, days: 4, cons: 30, ...saved };
+    // These fields are configuration from MT5; localStorage must never override them.
+    if ($('pIn')) $('pIn').innerHTML = PF.map(([k, l]) => `<label>${l}<input class="xin" type="number" step="any" data-k="${k}" value="${P[k] ?? ''}" ${EA_LOCKED_CHALLENGE_FIELDS.has(k) ? 'readonly aria-readonly="true" title="Diambil langsung dari input EA MT5"' : ''}></label>`).join('');
+  }
+  if (a.startingBalance != null && Number.isFinite(+a.startingBalance) && +a.startingBalance > 0) P.start = +a.startingBalance;
+  else if (a.initialBalance != null && Number.isFinite(+a.initialBalance) && +a.initialBalance > 0) P.start = +a.initialBalance;
+  if (a.profitTargetPct != null && Number.isFinite(+a.profitTargetPct)) P.target = +a.profitTargetPct;
+  if (a.dailyLossLimitPct != null && Number.isFinite(+a.dailyLossLimitPct)) P.dd = +a.dailyLossLimitPct;
+  if (a.overallLossLimitPct != null && Number.isFinite(+a.overallLossLimitPct)) P.tot = +a.overallLossLimitPct;
+  // Update visible fields on every render so the UI follows the newest EA snapshot.
+  if ($('pIn')) $('pIn').querySelectorAll('[data-k]').forEach(el => { const k = el.dataset.k; if (k in P) el.value = P[k]; });
+}
+$('pIn').addEventListener('change', e => {
+  const k = e.target.dataset.k; if (!k) return;
+  if (EA_LOCKED_CHALLENGE_FIELDS.has(k)) { loadP(); toast('Nilai ini mengikuti input EA MT5; ubah dari tab Inputs EA.'); return; }
+  P[k] = +e.target.value; LS('ffx_p_' + pInit, P); renderCh();
+});
 $('mcN').onchange = () => renderCh();
 const bar = (l, a, b, txt, bad) => `<div>${l} <b>${txt}</b></div><div class="pbar ${bad ? 'bad' : ''}"><div style="width:${Math.max(0, Math.min(100, b ? a / b * 100 : 0))}%"></div></div>`;
 function renderCh() {
@@ -4376,6 +4410,7 @@ function drawTradeCard(t){
  const grad=x.createLinearGradient(0,0,1200,1740);grad.addColorStop(0,'#101b32');grad.addColorStop(.55,'#080e1a');grad.addColorStop(1,'#111a2d');x.fillStyle=grad;x.fillRect(0,0,1200,1740);
  x.strokeStyle='#c8a75a';x.lineWidth=3;x.strokeRect(26,26,1148,1688);x.strokeStyle='rgba(200,167,90,.26)';x.lineWidth=1;x.strokeRect(42,42,1116,1660);
  const T=(s,xx,yy,size,color='#f4f6fb',weight='500',align='left')=>{x.fillStyle=color;x.font=`${weight} ${size}px Arial`;x.textAlign=align;x.fillText(String(s??'—'),xx,yy)};
+ const wrap=(value,maxWidth,font,maxLines=2)=>{x.font=font;const words=String(value??'—').split(/\s+/);const lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(x.measureText(test).width<=maxWidth||!line){line=test}else{lines.push(line);line=word;if(lines.length>=maxLines-1)break}}if(line)lines.push(line);let result=lines.slice(0,maxLines);if(words.join(' ')!==result.join(' ')&&result.length){let last=result.length-1;while(result[last].length&&x.measureText(result[last]+'…').width>maxWidth)result[last]=result[last].slice(0,-1);result[last]+='…'}return result};
  T('FARIDFX',72,100,31,'#e8c66d','700');T('MARKET REPLAY  /  VERIFIED TRADE DATA',1128,98,14,'#8d9bb7','600','right');x.strokeStyle='rgba(200,167,90,.35)';x.beginPath();x.moveTo(72,126);x.lineTo(1128,126);x.stroke();
  T(t.symbol||'SYMBOL',72,192,42,'#fff','700');const side=String(t.type??t.side??'TRADE').toUpperCase();x.fillStyle=buy?'#0c624c':'#672b3c';x.beginPath();x.roundRect(72,215,180,43,9);x.fill();T(side,162,243,19,buy?'#91f4cf':'#ffc1ce','700','center');
  T('NET PROFIT / LOSS',72,315,15,'#9caac5','700');T((pl>0?'+':'')+fmtMoney(pl,cur),72,382,58,pl>=0?'#45e2a2':'#ff6c87','700');
@@ -4385,7 +4420,7 @@ function drawTradeCard(t){
  x.fillStyle='rgba(255,255,255,.035)';x.beginPath();x.roundRect(72,825,1056,195,14);x.fill();x.strokeStyle='rgba(255,255,255,.08)';x.stroke();
  T('ACCOUNT SNAPSHOT',96,858,13,'#d8bd79','700');
  const acc=[['TRADER',a.name||a.displayName||a.accountLabel||'Farid Siddiq'],['ACCOUNT LOGIN',a.login??a.account??fxData().accountId??'—'],['PROP FIRM',a.propFirm||a.propFirmName||'Not specified'],['BROKER / COMPANY',a.company||a.broker||'—'],['SERVER',a.server||'—'],['CURRENCY',cur],['STARTING BALANCE',fmtMoney(a.startingBalance??a.initialBalance,cur)],['BALANCE',fmtMoney(a.balance,cur)],['EQUITY',fmtMoney(a.equity,cur)],['LEVERAGE',a.leverage?`1:${a.leverage}`:'—'],['MARGIN LEVEL',has(a.marginLevel)?`${n(a.marginLevel).toFixed(1)}%`:'—'],['ACCOUNT TYPE',a.accountType||a.tradeMode||'—']];
- acc.forEach((r,i)=>{const col=i%4,row=Math.floor(i/4),xx=96+col*255,yy=886+row*43;T(r[0],xx,yy,9,'#8190ad','600');T(String(r[1]),xx,yy+20,13,'#f1f4fb','600')});
+ acc.forEach((r,i)=>{const col=i%4,row=Math.floor(i/4),xx=96+col*255,yy=886+row*43;T(r[0],xx,yy,9,'#8190ad','600');const fs=12,font=`600 ${fs}px Arial`,lines=wrap(r[1],224,font,2);lines.forEach((line,j)=>T(line,xx,yy+18+j*13,fs,'#f1f4fb','600'))});
  T('TRADE DETAILS',72,1055,15,'#d8bd79','700');
  const entry=t.openPrice??t.priceOpen??t.entry,exit=t.closePrice??t.priceClose??t.exit,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
  const rows=[
@@ -4394,7 +4429,7 @@ function drawTradeCard(t){
   ['OPEN TIME',dt(t.openTime??t.timeOpen??t.open_time)],['CLOSE TIME',dt(t.closeTime??t.time)],['DURATION',has(t.durationSec)?formatDuration(t.durationSec):'—'],['GROSS PROFIT',fmtMoney(t.profit,cur)],
   ['COMMISSION',fmtMoney(t.commission,cur)],['SWAP',fmtMoney(t.swap,cur)],['NET P/L',fmtMoney(pl,cur)],['COMMENT',t.comment||t.reason||'—']
  ];
- rows.forEach((r,i)=>{const col=i%2,row=Math.floor(i/2),xx=72+col*535,yy=1092+row*63;x.fillStyle='rgba(255,255,255,.035)';x.beginPath();x.roundRect(xx,yy,510,51,7);x.fill();T(r[0],xx+13,yy+18,10,'#8190ad','600');T(String(r[1]??'—'),xx+13,yy+38,15,r[0]==='NET P/L'?(pl>=0?'#45e2a2':'#ff6c87'):'#f1f4fb','600')});
+ rows.forEach((r,i)=>{const col=i%2,row=Math.floor(i/2),xx=72+col*535,yy=1092+row*63;x.fillStyle='rgba(255,255,255,.035)';x.beginPath();x.roundRect(xx,yy,510,51,7);x.fill();T(r[0],xx+13,yy+16,9.5,'#8190ad','600');const isPL=r[0]==='NET P/L',fs=isPL?14:12,font=`600 ${fs}px Arial`,lines=wrap(r[1]??'—',478,font,2);lines.forEach((line,j)=>T(line,xx+13,yy+32+j*13,fs,isPL?(pl>=0?'#45e2a2':'#ff6c87'):'#f1f4fb','600'))});
  x.strokeStyle='rgba(200,167,90,.35)';x.beginPath();x.moveTo(72,1610);x.lineTo(1128,1610);x.stroke();T('FARIDFX  ·  TRADE PERFORMANCE RECORD',72,1650,13,'#c9a85a','700');T(`Account ${a.login??a.account??'—'}  •  ${t.ticket??t.positionId??t.id??'Trade'}`,1128,1650,12,'#9caac5','500','right');T('Performance card generated from dashboard records; not a broker statement.',72,1687,11,'#71809a','400');
  return c;
 }
@@ -4402,7 +4437,7 @@ function formatDuration(v){const s=Math.max(0,Math.floor(n(v)));if(s<60)return `
 const CERT_FORMATS={landscape:{label:'Landscape 16:9',w:1600,h:900},portrait:{label:'Portrait A4',w:1200,h:1697},square:{label:'Square 1:1',w:1200,h:1200},portrait34:{label:'Portrait 3:4',w:1200,h:1600},classic43:{label:'Landscape 4:3',w:1600,h:1200}};
 function certificateData(){
  const fx=fxData(),a=account(),hist=Array.isArray(fx.history)?fx.history:[],{p,custom}=readConfig();
- const start=n(p.start||a.startingBalance||a.initialBalance||a.balance),equity=n(a.equity??a.balance),target=n(p.target||a.profitTargetPct||10),profit=equity-start,pct=start?profit/start*100:0;
+ const start=n(a.startingBalance??a.initialBalance??p.start??a.balance),equity=n(a.equity??a.balance),target=n(a.profitTargetPct??p.target??10),profit=equity-start,pct=start?profit/start*100:0;
  return {fx,a,hist,p,custom,start,equity,target,profit,pct,reached:target>0&&pct>=target};
 }
 function certCanvas(formatKey){
@@ -4412,6 +4447,7 @@ function certCanvas(formatKey){
  x.strokeStyle='#132744';x.lineWidth=Math.max(5,w*.005);x.strokeRect(w*.025,h*.03,w*.95,h*.94);x.strokeStyle='#b99850';x.lineWidth=Math.max(2,w*.0018);x.strokeRect(w*.04,h*.045,w*.92,h*.91);
  const cx=w/2,margin=w*.09;const T=(s,y,size,color='#142744',weight='600',align='center')=>{x.fillStyle=color;x.font=`${weight} ${Math.round(size)}px Georgia`;x.textAlign=align;x.fillText(String(s),align==='left'?margin:align==='right'?w-margin:cx,y)};
  const fit=(s,maxWidth,size,weight='600')=>{let z=size;x.font=`${weight} ${z}px Georgia`;while(x.measureText(String(s)).width>maxWidth&&z>12){z-=1;x.font=`${weight} ${z}px Georgia`}return z};
+ const wrapCert=(value,maxWidth,font,maxLines=2)=>{x.font=font;const words=String(value??'—').split(/\s+/);const lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(x.measureText(test).width<=maxWidth||!line){line=test}else{lines.push(line);line=word;if(lines.length>=maxLines-1)break}}if(line)lines.push(line);const out=lines.slice(0,maxLines);if(words.join(' ')!==out.join(' ')&&out.length){const i=out.length-1;while(out[i].length&&x.measureText(out[i]+'…').width>maxWidth)out[i]=out[i].slice(0,-1);out[i]+='…'}return out};
  const titleY=h*(portrait?.15:.19);T('FARIDFX  •  PERFORMANCE SERIES',h*.095,w*.016,'#a17c2f','700');
  T('CERTIFICATE OF',titleY,w*(portrait?.043:.036),'#132744','600');T('TARGET ACHIEVEMENT',titleY+h*.055,w*(portrait?.052:.043),'#132744','700');
  T('This certificate recognizes the recorded trading performance of',titleY+h*.105,w*.017,'#647087','400');
@@ -4420,7 +4456,7 @@ function certCanvas(formatKey){
  const firm=d.custom.firm||d.a.propFirm||d.a.propFirmName||d.a.company||d.a.broker||'PROP FIRM NOT SPECIFIED';
  const data=[['PROP FIRM',firm],['ACCOUNT LOGIN',d.a.login??d.a.account??d.fx.accountId??'—'],['BROKER / COMPANY',d.a.company||d.a.broker||'—'],['SERVER',d.a.server||'—'],['ACCOUNT CURRENCY',d.a.currency||'USD'],['STARTING BALANCE',fmtMoney(d.start,d.a.currency)],['CURRENT EQUITY',fmtMoney(d.equity,d.a.currency)],['NET PROFIT',fmtMoney(d.profit,d.a.currency)],['PROFIT TARGET',`${d.target}%`],['ACHIEVED RETURN',`${d.pct.toFixed(2)}%`],['CLOSED TRADES',String(d.hist.length)],['ISSUED DATE',dt(Date.now())]];
  const top=h*(portrait?.37:.44),bottom=h*.79,cols=portrait?1:2,rows=Math.ceil(data.length/cols),cellW=(w-margin*2)/cols,cellH=(bottom-top)/rows;
- data.forEach((r,i)=>{const col=i%cols,row=Math.floor(i/cols),xx=margin+col*cellW,yy=top+row*cellH;x.fillStyle='rgba(16,33,60,.035)';x.beginPath();x.roundRect(xx,yy,cellW-12,cellH-10,8);x.fill();x.textAlign='left';x.fillStyle='#a17c2f';x.font=`700 ${Math.max(11,w*.009)}px Arial`;x.fillText(r[0],xx+14,yy+cellH*.38);let val=String(r[1]);const maxW=cellW-32;let fs=Math.max(12,Math.min(w*.017,cellH*.27));x.font=`600 ${fs}px Arial`;while(x.measureText(val).width>maxW&&fs>11){fs-=1;x.font=`600 ${fs}px Arial`}x.fillStyle='#142744';x.fillText(val,xx+14,yy+cellH*.7)});
+ data.forEach((r,i)=>{const col=i%cols,row=Math.floor(i/cols),xx=margin+col*cellW,yy=top+row*cellH,cardW=cellW-12,cardH=cellH-10;x.fillStyle='rgba(16,33,60,.035)';x.beginPath();x.roundRect(xx,yy,cardW,cardH,8);x.fill();x.textAlign='left';x.fillStyle='#a17c2f';const labelFs=Math.max(10,Math.min(14,w*.009));x.font=`700 ${labelFs}px Arial`;x.fillText(r[0],xx+14,yy+Math.min(cardH*.34,22));const val=String(r[1]??'—'),maxW=cardW-28;let fs=Math.max(10,Math.min(w*.017,cellH*.25));let font=`600 ${fs}px Arial`;let lines=wrapCert(val,maxW,font,2);while(lines.some(line=>{x.font=font;return x.measureText(line).width>maxW})&&fs>10){fs-=1;font=`600 ${fs}px Arial`;lines=wrapCert(val,maxW,font,2)}x.fillStyle='#142744';lines.forEach((line,j)=>{x.font=font;x.fillText(line,xx+14,yy+Math.min(cardH*.56,27)+j*(fs+2))})});
  const footerY=h*.865;T('ACHIEVEMENT BASED ON DASHBOARD RECORDS',footerY,w*.012,'#647087','600');T('Not an official prop-firm payout confirmation',footerY+h*.026,w*.011,'#647087','400');
  const certId='FFX-'+String(d.a.login??d.fx.accountId??'ACCOUNT')+'-'+new Date().toISOString().slice(0,10).replace(/-/g,'');T('CERTIFICATE ID  '+certId,h*.94,w*.011,'#a17c2f','600');
  return {...d,canvas:c,format:f,certId};
