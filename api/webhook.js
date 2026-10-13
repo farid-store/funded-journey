@@ -7,7 +7,7 @@ const SHARED_TOKEN = process.env.EA_WEBHOOK_SECRET;
 const EQUITY_POINT_INTERVAL_MS = 5 * 60 * 1000;
 const BATCH_CHUNK = 400;
 const HISTORY_V = 3;
-const MAX_MARKET_BARS_PER_SYNC = 300;
+const MAX_MARKET_BARS_PER_SYNC = 900; // chart simbol + candle per-trade (EA kirim maks ~600/sync)
 
 const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TG_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
@@ -1084,29 +1084,14 @@ module.exports = async (req, res) => {
       { merge: false }
     );
 
-   
-console.log(
-  `[WebSync] account=${accountId}` +
-  ` reason=${reason}` +
-  ` OHLC_received=${marketBarsRaw.length}` +
-  ` OHLC_valid=${validBars.length}` +
-  ` OHLC_written=${marketBarsWritten}`
-);
-
-return res.status(200).json({
-  ok: true,
-  service: 'faridfx-webhook',
-  accountId,
-  reason,
-  newTrades: newTrades.length,
-  newSignals: sigNew,
-  changedDays: affectedDays.size,
-  equityPointWritten,
-  marketBarsReceived: marketBarsRaw.length,
-  marketBarsValid: validBars.length,
-  marketBarsWritten,
-});
-
+    return res.status(200).json({
+      ok: true,
+      newTrades: newTrades.length,
+      newSignals: sigNew,
+      changedDays: affectedDays.size,
+      equityPointWritten,
+      marketBarsWritten,
+    });
   } catch (e) {
     console.error(e);
 
