@@ -2630,11 +2630,22 @@ img,canvas,svg,video{max-width:100%}
     // Ambil candle OHLC (marketBars) untuk rentang waktu tertentu — dipakai Kartu P/L & Sertifikat per-trade.
     async fetchBarsRange(fromSec, toSec){
       if(!db || !currentAccountId) return [];
-      const snap = await db.collection('accounts').doc(currentAccountId).collection('marketBars')
-        .where('time','>=',Math.floor(fromSec)).where('time','<=',Math.ceil(toSec)).orderBy('time','asc').limit(2000).get();
-      return snap.docs.map(d => ({ id:d.id, ...d.data() }));
+      const ref = db.collection('accounts').doc(currentAccountId).collection('marketBars');
+      const f0 = Math.floor(fromSec), t0 = Math.ceil(toSec), rows = s => s.docs.map(d => ({ id:d.id, ...d.data() }));
+      const attempts = [
+        () => ref.where('time','>=',f0).where('time','<=',t0).orderBy('time','asc').limit(500).get(),
+        () => ref.where('time','>=',f0).where('time','<=',t0).orderBy('time','asc').limit(250).get(),
+        () => ref.orderBy('time','desc').limit(250).get()          // sama dengan listener lama (pasti diizinkan rules)
+      ];
+      let lastErr = null;
+      for(const run of attempts){
+        try { const out = rows(await run()); if(out.length || run === attempts[attempts.length-1]) return out; }
+        catch(e){ lastErr = e; console.warn('fetchBarsRange percobaan gagal:', e && (e.code || e.message)); }
+      }
+      if(lastErr) throw lastErr;
+      return [];
     },
-    toast, get receivedAt(){ return receivedAt; },
+        toast, get receivedAt(){ return receivedAt; },
     stats: calcStats, balanceCurve: buildBalanceCurve, marginOk, profitPctOf, dayMap, coverage, tradingDays: tradingDaysCount, guard: guardInfo, guardPin, get tms(){ return tms; }, get eco(){ return ECO; },
     walletInfo(){ return walletResults.filter(r => r.data).map(r => ({ label: r.wallet.label, net: r.wallet.network, usd: r.data.balance * priceFor(r.data.symbol) })); },
     fmt: { money, pct, num, esc, date, dur, valClass },
@@ -4734,7 +4745,7 @@ function chartFor(x, box, m, opt){
   const st = barState.get(keyOf(m.t));
   let msg;
   if(st?.state === 'unsupported') msg = 'Dashboard belum bisa membaca koleksi candle (marketBars).';
-  else if(st?.state === 'error') msg = 'Gagal membaca candle dari database. Cek koneksi/aturan Firestore lalu muat ulang.';
+  else if(st?.state === 'error') msg = 'Gagal membaca candle: ' + (st.err || 'tidak diketahui') + '. Cek aturan Firestore untuk koleksi marketBars.';
   else if(sel.candles.length) msg = 'Candle yang tersimpan terlalu sedikit untuk membentuk grafik trade ini.';
   else msg = 'Candle disimpan oleh EA saat trade ditutup. Trade lama (sebelum EA terbaru) tidak punya candle — perbarui EA & webhook, candle akan terisi otomatis.';
   drawLadder(x, box, m, { loading:st?.state === 'loading', msg }, opt);
