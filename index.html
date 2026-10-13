@@ -658,6 +658,75 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
 #marketReplayShare .mr-empty b{color:var(--text);font-size:14px}
 @media(max-width:760px){#marketReplayShare .mr-overview{grid-template-columns:repeat(2,minmax(0,1fr))}#marketReplayShare .mr-cert-controls{grid-template-columns:1fr}#marketReplayShare .mr-toolbar{align-items:stretch}#marketReplayShare .mr-toolbar>div{width:100%}#marketReplayShare .mr-actions{display:grid;grid-template-columns:minmax(0,1fr);width:100%}#marketReplayShare .mr-actions .btn{width:100%;min-width:0;white-space:normal;line-height:1.35}#marketReplayShare .mr-preview{padding:5px;border-radius:10px}#marketReplayShare .mr-studio-head{gap:9px}}
 @media(max-width:380px){#marketReplayShare .mr-overview-item{padding:9px}#marketReplayShare .mr-overview-item small{font-size:8px}#marketReplayShare .mr-overview-item b{font-size:11px}}
+
+/* ===== Trade Studio v2 (kartu P/L + sertifikat) ===== */
+#marketReplayShare .mr2{display:grid;gap:14px;min-width:0}
+#marketReplayShare .mr2-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#marketReplayShare .mr2-head>div{min-width:0;flex:1 1 240px}
+#marketReplayShare .mr2-head h3{margin:4px 0 5px;font-size:clamp(18px,2vw,24px);letter-spacing:-.02em;line-height:1.2}
+#marketReplayShare .mr2-head p,#marketReplayShare .mr2-bar p{margin:0;color:var(--muted);font-size:12px;line-height:1.55;overflow-wrap:anywhere}
+#marketReplayShare .mr2-eyebrow{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--gold,#d5b56d)}
+#marketReplayShare .mr2-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--line2);border-radius:999px;color:var(--muted);font-size:10px;white-space:nowrap}
+#marketReplayShare .mr2-pill i{width:7px;height:7px;border-radius:50%;background:#39d6a0;box-shadow:0 0 10px rgba(57,214,160,.45)}
+#marketReplayShare .mr2-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#marketReplayShare .mr2-meta-i{padding:11px 12px;border:1px solid var(--line2);border-radius:11px;background:linear-gradient(145deg,rgba(24,35,60,.72),rgba(9,15,29,.72));min-width:0}
+#marketReplayShare .mr2-meta-i small{display:block;color:var(--muted);font-size:9px;letter-spacing:.09em;margin-bottom:6px}
+#marketReplayShare .mr2-meta-i b{display:block;font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+#marketReplayShare .mr2-meta-i b.pos{color:#45e2a2}#marketReplayShare .mr2-meta-i b.neg{color:#ff6c87}
+#marketReplayShare .mr2-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#marketReplayShare .mr2-bar-txt{min-width:0;flex:1 1 260px}
+#marketReplayShare .mr2-bar h4{margin:0 0 4px;font-size:15px}
+#marketReplayShare .mr2-actions{display:flex;gap:8px;flex-wrap:wrap}
+#marketReplayShare .mr2-actions .btn{min-height:40px;white-space:nowrap}
+#marketReplayShare .mr2-stage{display:flex;justify-content:center;width:100%;min-width:0;padding:12px;border:1px solid var(--line2);border-radius:14px;background:radial-gradient(ellipse at top,rgba(40,59,94,.35),transparent 60%),#050912;overflow:hidden}
+#marketReplayShare .mr2-stage canvas{display:block;width:100%;max-width:560px;height:auto;border-radius:8px;box-shadow:0 16px 45px rgba(0,0,0,.35)}
+#marketReplayShare .mr2-stage-cert canvas{max-width:920px}
+#marketReplayShare .mr2-empty{display:grid;gap:7px;text-align:center;padding:40px 16px;color:var(--muted);font-size:12px}
+#marketReplayShare .mr2-empty b{color:var(--text);font-size:14px}
+#marketReplayShare .mr2-cert{display:grid;gap:14px;border-top:1px solid var(--line2);padding-top:20px;margin-top:6px}
+#marketReplayShare .mr2-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#marketReplayShare .mr2-controls label{display:grid;gap:6px;color:var(--muted);font-size:11px;min-width:0}
+#marketReplayShare .mr2-controls select,#marketReplayShare .mr2-controls input{width:100%;min-width:0;max-width:100%;min-height:42px;box-sizing:border-box;background:var(--surface2);color:var(--text);border:1px solid var(--line2);border-radius:9px;padding:0 11px;font:inherit;font-size:14px;outline:none}
+#marketReplayShare .mr2-controls select:focus,#marketReplayShare .mr2-controls input:focus{border-color:var(--gold,#d5b56d)}
+#marketReplayShare .mr2-target{border:1px solid var(--line2);border-radius:12px;padding:16px;background:linear-gradient(135deg,rgba(24,35,60,.7),rgba(8,14,27,.85))}
+#marketReplayShare .mr2-target small{display:block;color:var(--muted);font-size:10px;letter-spacing:.1em;margin-bottom:6px}
+#marketReplayShare .mr2-target strong{display:block;font-size:clamp(20px,3vw,30px);font-family:var(--fm);overflow-wrap:anywhere}
+#marketReplayShare .mr2-target p{font-size:12px;line-height:1.55;color:var(--muted);margin:7px 0 0}
+#marketReplayShare .mr2-track{height:7px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:14px}
+#marketReplayShare .mr2-track i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#35d5a0,#d7b96d)}
+.mr2-viewer{position:fixed;inset:0;z-index:2147483000;background:rgba(3,6,12,.94);display:flex;flex-direction:column;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.mr2-viewer[hidden]{display:none}
+.mr2-vbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:max(10px,env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line2,#2a3558)}
+.mr2-vbar b{font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mr2-vbar span{display:flex;gap:8px;flex-shrink:0}
+.mr2-vscroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;align-items:flex-start;justify-content:center;padding:14px}
+.mr2-vscroll img{display:block;max-width:100%;height:auto;border-radius:6px;box-shadow:0 20px 60px #000;touch-action:pinch-zoom}
+.mr2-vhint{padding:8px 14px max(10px,env(safe-area-inset-bottom));text-align:center;font-size:11px;color:var(--muted,#a7b6dc)}
+html.mr2-lock,html.mr2-lock body{overflow:hidden}
+@media(max-width:760px){
+ #marketReplayShare .mr2-meta{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #marketReplayShare .mr2-controls{grid-template-columns:1fr}
+ #marketReplayShare .mr2-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+ #marketReplayShare .mr2-actions .btn:first-child{grid-column:1/-1}
+ #marketReplayShare .mr2-actions .btn{width:100%;min-width:0;white-space:normal;line-height:1.3}
+ #marketReplayShare .mr2-stage{padding:6px;border-radius:11px}
+ #marketReplayShare .mr2-pill{white-space:normal}
+}
+@media(max-width:380px){#marketReplayShare .mr2-meta-i{padding:9px}#marketReplayShare .mr2-meta-i b{font-size:12px}}
+
+
+/* ===== Mobile hardening v2 ===== */
+html,body{max-width:100%;overflow-x:clip}
+img,canvas,svg,video{max-width:100%}
+@media(max-width:700px){
+ .lbl,.val{display:none}
+ #walletKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .news-form>*{min-width:0;width:100%;box-sizing:border-box}
+ .cal-cell{aspect-ratio:auto;min-height:56px;padding:4px 3px}
+ .cal-cell .d{font-size:9px}
+ .cal-cell .p{font-size:9.5px;margin-top:3px;letter-spacing:-.05em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .toast{max-width:calc(100vw - 24px);left:12px;right:12px;text-align:center}
+}
 </style>
 </head>
 <body>
@@ -2557,7 +2626,15 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
     get account(){ return currentAccount; }, get accountId(){ return currentAccountId; }, get history(){ return historyCache; },
     get marketBars(){ return marketBarsCache; },
     get daily(){ return dayMap(); }, get curve(){ return equityCurveCache; }, get news(){ return newsCache; }, get commands(){ return commandsCache; },
-    get accountsMeta(){ return accountsMeta; }, get calendarMonth(){ return calendarMonth; }, get diag(){ return diag; }, get db(){ return db; }, toast, get receivedAt(){ return receivedAt; },
+    get accountsMeta(){ return accountsMeta; }, get calendarMonth(){ return calendarMonth; }, get diag(){ return diag; }, get db(){ return db; },
+    // Ambil candle OHLC (marketBars) untuk rentang waktu tertentu — dipakai Kartu P/L & Sertifikat per-trade.
+    async fetchBarsRange(fromSec, toSec){
+      if(!db || !currentAccountId) return [];
+      const snap = await db.collection('accounts').doc(currentAccountId).collection('marketBars')
+        .where('time','>=',Math.floor(fromSec)).where('time','<=',Math.ceil(toSec)).orderBy('time','asc').limit(2000).get();
+      return snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    },
+    toast, get receivedAt(){ return receivedAt; },
     stats: calcStats, balanceCurve: buildBalanceCurve, marginOk, profitPctOf, dayMap, coverage, tradingDays: tradingDaysCount, guard: guardInfo, guardPin, get tms(){ return tms; }, get eco(){ return ECO; },
     walletInfo(){ return walletResults.filter(r => r.data).map(r => ({ label: r.wallet.label, net: r.wallet.network, usd: r.data.balance * priceFor(r.data.symbol) })); },
     fmt: { money, pct, num, esc, date, dur, valClass },
@@ -4029,7 +4106,7 @@ window.__FXEQ = a => {
   const bAt = t => { let v = B[0].b; for (const p of B) { if (p.t <= t) v = p.b; else break; } return v; };
   const Bp = [{ t: t0, b: bAt(t0) }, ...B.filter(p => p.t > t0)], Ep = E.filter(p => p.t >= t0), Tr = H.filter(t => tm(t.closeTime) >= t0);
   const w = Math.max(300, eqEl.clientWidth || 700), Ht = 336, pL = 54, pR = 12, X = t => pL + (t - t0) / Math.max(1, t1 - t0) * (w - pL - pR);
-  const vs = Bp.map(p => p.b).concat(Ep.map(p => p.e)), vmin = Math.min(...vs), vmax = Math.max(...vs), pad = Math.max((vmax - vmin) * .08, 1), lo = vmin - pad, hi = vmax + pad, mT = 20, mH = 168, Y = v => mT + (1 - (v - lo) / (hi - lo)) * mH;
+  const vs = Bp.map(p => p.b).concat(Ep.map(p => p.e)), vmin = Math.min(...vs), vmax = Math.max(...vs), pad = Math.max((vmax - vmin) * .08, 1), lo = vmin - pad, hi = vmax + pad, mT = w < 560 ? 38 : 20, mH = 168, Y = v => mT + (1 - (v - lo) / (hi - lo)) * mH;
   let s = `<svg viewBox="0 0 ${w} ${Ht}" width="100%" style="display:block">`;
   for (let i = 0; i <= 4; i++) { const v = lo + (hi - lo) * i / 4; s += `<line x1="${pL}" x2="${w - pR}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" opacity=".6"/><text x="${pL - 5}" y="${Y(v) + 3}" fill="var(--faint)" font-size="9.5" text-anchor="end">${sh(v)}</text>`; }
   const dfmt = t => { const d = new Date(t); return EQ.r === '1D' ? d.toTimeString().slice(0, 5) : `${d.getDate()}/${d.getMonth() + 1}`; };
@@ -4041,7 +4118,7 @@ window.__FXEQ = a => {
   else if (isFinite(eqn)) s += `<line x1="${X(Bp[Bp.length - 2]?.t ?? t0)}" y1="${Y(Bp[Bp.length - 2]?.b ?? bal)}" x2="${X(now)}" y2="${Y(eqn)}" stroke="var(--gold)" stroke-dasharray="4 4"/>`;
   if (isFinite(eqn)) s += `<circle cx="${X(now)}" cy="${Y(eqn)}" r="4.5" fill="var(--gold)"><animate attributeName="r" values="4;7;4" dur="1.6s" repeatCount="indefinite"/></circle>`;
   const fl = isFinite(eqn) && isFinite(bal) ? eqn - bal : 0;
-  s += `<text x="${pL}" y="12" fill="var(--cyan)" font-size="10">● Balance (history) ${M(bal)}</text><text x="${pL + 190}" y="12" fill="var(--gold)" font-size="10">● Equity (live) ${M(eqn)}</text><text x="${w - pR}" y="12" fill="${fl >= 0 ? 'var(--green)' : 'var(--red)'}" font-size="10" text-anchor="end">Floating ${M(fl)}</text>`;
+  s += `<text x="${pL}" y="12" fill="var(--cyan)" font-size="10">● Balance (history) ${M(bal)}</text><text x="${w < 560 ? pL : pL + 190}" y="${w < 560 ? 28 : 12}" fill="var(--gold)" font-size="10">● Equity (live) ${M(eqn)}</text><text x="${w - pR}" y="${w < 560 ? 28 : 12}" fill="${fl >= 0 ? 'var(--green)' : 'var(--red)'}" font-size="10" text-anchor="end">Floating ${M(fl)}</text>`;
   const Mg = Bp.map(p => ({ t: p.t, v: p.b })).concat(Ep.map(p => ({ t: p.t, v: p.e }))).sort((x, y) => x.t - y.t); let pk = -Infinity, mdd = 0; const dd = Mg.map(p => { pk = Math.max(pk, p.v); const d = pk > 0 ? (pk - p.v) / pk * 100 : 0; mdd = Math.max(mdd, d); return { t: p.t, d }; });
   const dT = 206, dH = 46, DY = d => dT + Math.min(d, Math.max(mdd, .5)) / Math.max(mdd, .5) * dH;
   s += `<text x="${pL}" y="${dT - 3}" fill="var(--faint)" font-size="9.5">Drawdown dari puncak — maks ${mdd.toFixed(2)}%</text><line x1="${pL}" x2="${w - pR}" y1="${dT}" y2="${dT}" stroke="var(--line)"/><polygon points="${X(dd[0].t)},${dT} ${dd.map(p => `${X(p.t)},${DY(p.d)}`).join(' ')} ${X(dd[dd.length - 1].t)},${dT}" fill="var(--red)" opacity=".35"/>`;
@@ -4334,165 +4411,572 @@ if (window.__FXUI) { const u = window.__FXUI.update; window.__FXUI.update = () =
 
 
 <script>
-/* Market Replay Studio — additive UI layer. Keeps existing dashboard/trading logic untouched. */
+/* FaridFX Trade Card & Certificate Studio v2
+   - Kartu P/L: layout grid presisi, tanpa teks bertimpa (semua teks diukur + dipotong/diperkecil otomatis)
+   - OHLC: candle diambil per-trade dari Firestore (marketBars) berdasarkan simbol + jendela waktu trade
+   - Sertifikat: layout per-format, panel chart (OHLC trade terbaik / kurva saldo), tanpa data sintetis */
 (function(){
 'use strict';
 const $ = id => document.getElementById(id);
-const esc = v => String(v ?? '—').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const n = v => { const x=Number(v); return Number.isFinite(x)?x:0; };
-const has = v => v!==undefined && v!==null && v!=='';
-const fmtMoney = (v,cur) => { try { return new Intl.NumberFormat('en-US',{style:'currency',currency:cur||'USD',maximumFractionDigits:2}).format(n(v)); } catch(e) { return `${cur||'USD'} ${n(v).toFixed(2)}`; } };
-const fmtPrice = v => has(v) ? Number(v).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:5}) : '—';
-const dt = v => { if(!has(v))return '—'; let x=Number(v); if(x>0&&x<1e12)x*=1000; const d=new Date(Number.isFinite(x)?x:v); return isNaN(d)?String(v):d.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',dateStyle:'medium',timeStyle:'short'})+' WIB'; };
-const account = () => window.__FX?.account || {};
+const FONT = '"Chakra Petch","Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+const MONO = '"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
+const SERIF = '"Cormorant Garamond",Georgia,"Times New Roman",serif';
+const MONTHS = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const n = v => { const x = Number(v); return Number.isFinite(x) ? x : 0; };
+const has = v => v !== undefined && v !== null && v !== '' && !(typeof v === 'number' && !Number.isFinite(v));
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const posNum = v => { const x = Number(v); return Number.isFinite(x) && x > 0 ? x : null; };
 const fxData = () => window.__FX || {};
+const account = () => fxData().account || {};
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+/* ---------- format ---------- */
+function toSec(v){
+  if(!has(v)) return NaN;
+  let x = Number(v);
+  if(!Number.isFinite(x)){ const d = Date.parse(v); return Number.isFinite(d) ? Math.floor(d/1000) : NaN; }
+  return x > 1e12 ? Math.floor(x/1000) : x;
+}
+function wib(sec){            // UTC epoch detik -> komponen WIB (UTC+7), tanpa ketergantungan locale
+  if(!Number.isFinite(sec)) return null;
+  const d = new Date((sec + 7*3600)*1000), p = v => String(v).padStart(2,'0');
+  return { d:`${p(d.getUTCDate())} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`, t:`${p(d.getUTCHours())}:${p(d.getUTCMinutes())}`, day:`${p(d.getUTCDate())} ${MONTHS[d.getUTCMonth()]}`, key:`${d.getUTCFullYear()}-${d.getUTCMonth()}-${d.getUTCDate()}` };
+}
+const dtFull = sec => { const w = wib(sec); return w ? `${w.d} · ${w.t} WIB` : '—'; };
+function fmtMoney(v, cur, signed){
+  const x = n(v), c = cur || 'USD';
+  let s;
+  try { s = new Intl.NumberFormat('en-US',{style:'currency',currency:c,maximumFractionDigits:2}).format(Math.abs(x)); }
+  catch(e){ s = `${c} ${Math.abs(x).toFixed(2)}`; }
+  return (x < 0 ? '-' : (signed && x > 0 ? '+' : '')) + s;
+}
+function decimalsOf(v){ if(!Number.isFinite(v)) return 0; const s = v.toFixed(5).replace(/0+$/,''); const i = s.indexOf('.'); return i < 0 ? 0 : s.length - i - 1; }
+function priceFmtFor(vals, sym){
+  let d = Math.max(0, ...vals.filter(v => v != null && Number.isFinite(Number(v))).map(v => decimalsOf(Number(v))));
+  if(!d) d = /XAU|XAG|JPY|BTC|ETH|US30|NAS|SPX|GER|DJ/i.test(sym||'') ? 2 : 5;
+  d = clamp(d, 2, 5);
+  return v => Number.isFinite(Number(v)) ? Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
+}
+function fmtDur(s){ s = Math.max(0, Math.floor(n(s))); if(s < 60) return `${s}d`; if(s < 3600) return `${Math.floor(s/60)}m ${s%60}d`; if(s < 86400) return `${Math.floor(s/3600)}j ${Math.floor(s%3600/60)}m`; return `${Math.floor(s/86400)}h ${Math.floor(s%86400/3600)}j`; }
+
+/* ---------- trade model ---------- */
+const keyOf = t => String(t.ticket ?? t.positionId ?? t.id ?? `${t.symbol||''}_${t.closeTime||t.time||''}_${t.netProfit||0}`);
 function pickedTrade(){
- const fx=fxData(),sel=$('intelReplaySelect'); if(!Array.isArray(fx.history))return null;
- const key=t=>String(t.ticket??t.positionId??t.id??`${t.symbol||''}_${t.closeTime||t.time||''}_${t.netProfit||0}`);
- const sorted=[...fx.history].sort((a,b)=>n(b.closeTime||b.time)-n(a.closeTime||a.time));
- return sorted.find(t=>key(t)===sel?.value)||sorted[0]||null;
+  const fx = fxData(), sel = $('intelReplaySelect');
+  if(!Array.isArray(fx.history) || !fx.history.length) return null;
+  const sorted = [...fx.history].sort((a,b) => n(b.closeTime||b.time) - n(a.closeTime||a.time));
+  return sorted.find(t => keyOf(t) === sel?.value) || sorted[0] || null;
 }
-function readConfig(){
- const a=account(),fx=fxData(); let p={};
- try{p=JSON.parse(localStorage.getItem('ffx_p_'+(fx.accountId||a.login||''))||'{}')}catch(e){}
- let custom={};try{custom=JSON.parse(localStorage.getItem('ffx_share_profile_'+(fx.accountId||a.login||''))||'{}')}catch(e){}
- return {p,custom};
+function model(t){
+  const a = account(), s = String(t.type ?? t.side ?? '').toLowerCase();
+  const side = s.includes('buy') || s === '0' ? 'BUY' : (s.includes('sell') || s === '1' ? 'SELL' : String(t.type || 'TRADE').toUpperCase());
+  const entry = posNum(t.openPrice ?? t.priceOpen ?? t.entry), exit = posNum(t.closePrice ?? t.priceClose ?? t.exit);
+  const sl = posNum(t.sl ?? t.stopLoss), tp = posNum(t.tp ?? t.takeProfit);
+  const closeS = toSec(t.closeTime ?? t.time ?? t.closeTimeMs);
+  let openS = toSec(t.openTime ?? t.timeOpen ?? t.open_time);
+  if(!Number.isFinite(openS) && has(t.durationSec) && Number.isFinite(closeS)) openS = closeS - n(t.durationSec);
+  const net = n(t.netProfit ?? t.profit), start = n(a.startingBalance ?? a.initialBalance);
+  const dir = side === 'SELL' ? -1 : 1;
+  const risk = sl && entry ? Math.abs(entry - sl) : 0;
+  const rMult = risk && exit && entry ? (exit - entry) * dir / risk : null;
+  const planRR = risk && tp && entry ? Math.abs(tp - entry) / risk : null;
+  return { t, a, side, entry, exit, sl, tp, openS, closeS, net, dir, cur:a.currency || 'USD',
+    sym:String(t.symbol || '').trim() || 'SYMBOL', vol:has(t.volume) ? t.volume : t.lots, ticket:t.ticket ?? t.positionId ?? t.id,
+    gross:t.profit, comm:t.commission, swap:t.swap, dur:has(t.durationSec) ? n(t.durationSec) : (Number.isFinite(openS) && Number.isFinite(closeS) ? closeS - openS : NaN),
+    retPct:start ? net/start*100 : null, rMult, planRR, comment:String(t.comment || t.reason || '').trim() };
 }
-function normalizeCandles(t){
- const fx=fxData();
- const symbol=String(t?.symbol||'').trim().toUpperCase();
- const tradeCandles=[t?.candles,t?.ohlc,t?.chartCandles,t?.bars].find(a=>Array.isArray(a)&&a.length);
- let raw=tradeCandles||fx.candles||fx.ohlc||fx.chartCandles||[];
- // Fallback utama: OHLC historis asli yang diterima dari koleksi Firestore marketBars.
- // Jangan memakai candle simbol lain untuk menghindari chart yang menyesatkan.
- if(!Array.isArray(raw)||!raw.length){
-   const bars=Array.isArray(fx.marketBars)?fx.marketBars:[];
-   raw=bars.filter(b=>!symbol||String(b.symbol||'').trim().toUpperCase()===symbol);
- }
- if(!Array.isArray(raw))return [];
- return raw.map(q=>({time:q.time??q.ts??q.t??q.date,open:n(q.open??q.o),high:n(q.high??q.h),low:n(q.low??q.l),close:n(q.close??q.c),symbol:q.symbol,timeframe:q.timeframe??q.tf}))
- .filter(q=>Number(q.time)>0&&[q.open,q.high,q.low,q.close].every(Number.isFinite)&&q.high>=Math.max(q.open,q.close,q.low)&&q.low<=Math.min(q.open,q.close,q.high))
- .sort((a,b)=>Number(a.time)-Number(b.time)).slice(-48);
+
+/* ---------- candle loading (per-trade, window waktu) ---------- */
+const TF_SEC = { M1:60, M5:300, M15:900, M30:1800, H1:3600, H4:14400, D1:86400, W1:604800 };
+const norm = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const symMatch = (a, b) => { a = norm(a); b = norm(b); return !!a && !!b && (a === b || (Math.min(a.length,b.length) >= 6 && (a.startsWith(b) || b.startsWith(a)))); };
+const barState = new Map();     // key -> {state, bars, at}
+const barEpoch = { v:0 };
+function barsFromTrade(t){ const a = [t?.candles, t?.ohlc, t?.chartCandles, t?.bars].find(x => Array.isArray(x) && x.length); return a || []; }
+function cleanBar(q){
+  const time = toSec(q.time ?? q.ts ?? q.t ?? q.date), o = Number(q.open ?? q.o), h = Number(q.high ?? q.h), l = Number(q.low ?? q.l), c = Number(q.close ?? q.c);
+  if(!(time > 0) || ![o,h,l,c].every(Number.isFinite)) return null;
+  if(h < Math.max(o,c,l) - 1e-9 || l > Math.min(o,c,h) + 1e-9) return null;
+  return { time, open:o, high:h, low:l, close:c, symbol:q.symbol, tf:String(q.timeframe ?? q.tf ?? '').toUpperCase() };
 }
-function drawChart(x,t,box){
- const {x:bx,y:by,w:bw,h:bh}=box, candles=normalizeCandles(t);
- x.fillStyle='#07101f';x.beginPath();x.roundRect(bx,by,bw,bh,18);x.fill();
- x.strokeStyle='rgba(125,151,190,.12)';x.lineWidth=1;
- for(let i=0;i<=5;i++){let yy=by+32+(bh-76)*i/5;x.beginPath();x.moveTo(bx+28,yy);x.lineTo(bx+bw-28,yy);x.stroke()}
- for(let i=0;i<=6;i++){let xx=bx+28+(bw-56)*i/6;x.beginPath();x.moveTo(xx,by+24);x.lineTo(xx,by+bh-28);x.stroke()}
- const title=(s,xx,yy,size,color,weight='600',align='left')=>{x.fillStyle=color;x.font=`${weight} ${size}px Arial`;x.textAlign=align;x.fillText(String(s),xx,yy)};
- title('PRICE ACTION',bx+30,by+31,14,'#d8bd79','700');
- const entry=t.openPrice??t.priceOpen,exit=t.closePrice??t.priceClose,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
- if(!candles.length){
-   const bars=Array.isArray(fxData().marketBars)?fxData().marketBars:[];
-   const tradeSymbol=String(t?.symbol||'').toUpperCase();
-   const symbolBars=bars.filter(b=>String(b.symbol||'').toUpperCase()===tradeSymbol);
-   title('HISTORICAL OHLC NOT RECEIVED',bx+bw/2,by+bh/2-18,21,'#e7edf8','700','center');
-   title(symbolBars.length?'Data candle ditemukan tetapi formatnya tidak valid':'Belum ada candle untuk simbol '+(tradeSymbol||'transaksi ini'),bx+bw/2,by+bh/2+12,13,'#8d9bb8','500','center');
-   title('Pastikan EA mengirim chartBars dan webhook menulis accounts/{login}/marketBars',bx+bw/2,by+bh/2+38,11,'#687995','400','center');
-   return false;
- }
- const lows=candles.map(q=>q.low), highs=candles.map(q=>q.high), all=[...lows,...highs,entry,exit,sl,tp].filter(v=>has(v)&&Number.isFinite(Number(v))).map(Number);
- let min=Math.min(...all),max=Math.max(...all); if(!(max>min)){min-=1;max+=1} const pad=(max-min)*.12;min-=pad;max+=pad;
- const left=bx+50,right=bx+bw-32,top=by+55,bottom=by+bh-42,plotH=bottom-top,plotW=right-left;
- const py=v=>bottom-((Number(v)-min)/(max-min))*plotH;
- // right-side price labels
- x.font='12px Arial';x.textAlign='right';x.fillStyle='#8292ad';
- for(let i=0;i<=5;i++){const val=max-(max-min)*i/5,yy=top+plotH*i/5;x.fillText(fmtPrice(val),bx+bw-10,yy+4)}
- const step=plotW/candles.length,cw=Math.max(4,Math.min(19,step*.56));
- candles.forEach((q,i)=>{const xx=left+step*i+step/2,up=q.close>=q.open,col=up?'#36d6a0':'#ff6681';x.strokeStyle=col;x.lineWidth=2;x.beginPath();x.moveTo(xx,py(q.high));x.lineTo(xx,py(q.low));x.stroke();x.fillStyle=col;const y=Math.min(py(q.open),py(q.close)),h=Math.max(2,Math.abs(py(q.open)-py(q.close)));x.fillRect(xx-cw/2,y,cw,h)});
- const levels=[['TP',tp,'#36d6a0'],['ENTRY',entry,'#e7c66d'],['EXIT',exit,'#9cb4ff'],['SL',sl,'#ff6681']];
- levels.forEach(([label,val,color])=>{if(!has(val)||!Number.isFinite(Number(val)))return;const yy=py(val);if(yy<top||yy>bottom)return;x.save();x.strokeStyle=color;x.lineWidth=2;x.setLineDash([8,6]);x.beginPath();x.moveTo(left,yy);x.lineTo(right,yy);x.stroke();x.setLineDash([]);x.fillStyle=color;x.font='700 11px Arial';x.textAlign='left';x.fillText(`${label} ${fmtPrice(val)}`,left+8,Math.max(top+12,yy-6));x.restore()});
- title(`${candles.length} candles · ${t.timeframe||t.tf||fxData().timeframe||'TF belum tersedia'}`,bx+30,by+bh-10,11,'#8292ad','500');return true;
+function tradeWindow(m){
+  const c = Number.isFinite(m.closeS) ? m.closeS : Math.floor(Date.now()/1000);
+  const o = Number.isFinite(m.openS) ? m.openS : c - 7200;
+  return { o:Math.min(o,c), c:Math.max(o,c) };
 }
+function selectCandles(m, extra){
+  const w = tradeWindow(m), fx = fxData();
+  const pool = [...barsFromTrade(m.t), ...(Array.isArray(fx.marketBars) ? fx.marketBars : []), ...(extra || [])].map(cleanBar).filter(Boolean)
+    .filter(b => !b.symbol || symMatch(b.symbol, m.sym));
+  if(!pool.length) return { candles:[], tf:'', coverage:'none' };
+  const byTf = new Map();
+  pool.forEach(b => { const k = b.tf || 'TF'; if(!byTf.has(k)) byTf.set(k, new Map()); byTf.get(k).set(b.time, b); });
+  let best = null;
+  byTf.forEach((map, tf) => {
+    const ps = TF_SEC[tf] || 300, arr = [...map.values()].sort((a,b) => a.time - b.time);
+    const inWin = arr.filter(b => b.time + ps > w.o && b.time < w.c).length;
+    if(!inWin) return;
+    const score = Math.abs(Math.log(Math.max(inWin,1)/45)) - (inWin >= 4 ? 0.5 : 0);
+    if(!best || score < best.score) best = { tf, ps, arr, score, inWin };
+  });
+  if(!best) return { candles:[], tf:'', coverage:'none' };
+  const span = Math.max(best.inWin, 8), pad = Math.max(8, Math.round(span*0.35));
+  const from = w.o - pad*best.ps, to = w.c + pad*best.ps;
+  let cs = best.arr.filter(b => b.time + best.ps > from && b.time < to);
+  if(cs.length > 140) cs = cs.slice(-140);
+  const first = cs[0].time, last = cs[cs.length-1].time + best.ps;
+  const coverage = (first <= w.o + best.ps && last >= w.c - best.ps) ? 'full' : 'partial';
+  return { candles:cs, tf:best.tf, ps:best.ps, coverage };
+}
+function ensureBars(m){
+  const k = keyOf(m.t), cur = barState.get(k);
+  if(cur && (cur.state === 'loading' || (Date.now() - cur.at < 90000 && cur.state !== 'error') || (cur.state === 'error' && Date.now() - cur.at < 20000))) return cur;
+  const fx = fxData();
+  if(typeof fx.fetchBarsRange !== 'function') { const st = { state:'unsupported', bars:[], at:Date.now() }; barState.set(k, st); return st; }
+  const w = tradeWindow(m), padS = Math.max(3600, Math.min(86400*2, (w.c - w.o)*0.6));
+  const st = { state:'loading', bars:cur?.bars || [], at:Date.now() };
+  barState.set(k, st);
+  fx.fetchBarsRange(w.o - padS, w.c + padS).then(rows => {
+    const bars = (rows || []).map(cleanBar).filter(Boolean).filter(b => symMatch(b.symbol, m.sym));
+    barState.set(k, { state: bars.length ? 'ok' : 'empty', bars, at:Date.now() });
+  }).catch(err => { console.warn('fetch candle trade', err); barState.set(k, { state:'error', bars:[], at:Date.now(), err:String(err?.message || err) }); })
+    .finally(() => { barEpoch.v++; setTimeout(tick, 30); });
+  return st;
+}
+
+/* ---------- canvas tools ---------- */
+function rr(x, px, py, w, h, r){ r = Math.max(0, Math.min(r, w/2, h/2)); x.beginPath(); x.moveTo(px+r,py); x.arcTo(px+w,py,px+w,py+h,r); x.arcTo(px+w,py+h,px,py+h,r); x.arcTo(px,py+h,px,py,r); x.arcTo(px,py,px+w,py,r); x.closePath(); }
+function tools(x){
+  const hasLS = 'letterSpacing' in x;
+  const T = (txt, px, py, o = {}) => {
+    const { size = 16, weight = 500, color = '#fff', align = 'left', family = FONT, max = 0, ls = 0, italic = false, minScale = .66 } = o;
+    x.save(); x.textAlign = align; x.textBaseline = 'alphabetic'; x.fillStyle = color;
+    if(hasLS) x.letterSpacing = ls ? ls + 'px' : '0px';
+    let s = size; const f = z => `${italic ? 'italic ' : ''}${weight} ${z}px ${family}`;
+    x.font = f(s); let str = String(txt ?? '—');
+    if(max){
+      while(x.measureText(str).width > max && s > size*minScale){ s -= .5; x.font = f(s); }
+      if(x.measureText(str).width > max){ while(str.length > 1 && x.measureText(str + '…').width > max) str = str.slice(0,-1); str += '…'; }
+    }
+    x.fillText(str, px, py); const w = x.measureText(str).width; x.restore(); return { w, size:s };
+  };
+  const measure = (txt, size, weight = 600, family = FONT) => { x.save(); x.font = `${weight} ${size}px ${family}`; const w = x.measureText(String(txt)).width; x.restore(); return w; };
+  const wrap = (txt, max, size, weight = 500, family = FONT, maxLines = 2) => {
+    x.save(); x.font = `${weight} ${size}px ${family}`;
+    const words = String(txt ?? '').split(/\s+/).filter(Boolean), lines = []; let line = '';
+    for(const w of words){ const t = line ? line + ' ' + w : w; if(x.measureText(t).width <= max || !line) line = t; else { lines.push(line); line = w; } }
+    if(line) lines.push(line);
+    let out = lines.slice(0, maxLines);
+    if(lines.length > maxLines && out.length){ let l = out[out.length-1]; while(l.length > 1 && x.measureText(l + '…').width > max) l = l.slice(0,-1); out[out.length-1] = l + '…'; }
+    x.restore(); return out;
+  };
+  return { T, measure, wrap };
+}
+function stackChips(items, top, bottom, gap){
+  items.sort((a,b) => a.y - b.y);
+  for(let i = 0; i < items.length; i++){ const lo = i ? items[i-1].cy + gap : top; items[i].cy = Math.max(items[i].y, lo); }
+  for(let i = items.length - 1; i >= 0; i--){ const hi = i < items.length - 1 ? items[i+1].cy - gap : bottom; items[i].cy = Math.min(items[i].cy, hi); }
+  for(let i = 0; i < items.length; i++){ const lo = i ? items[i-1].cy + gap : top; items[i].cy = Math.max(items[i].cy, lo); }
+  return items;
+}
+const PAL = { bg:'#08111f', grid:'rgba(125,151,190,.12)', axis:'#8493b0', up:'#2fd39b', dn:'#ff6b86', gold:'#e8c66d', blue:'#9cb4ff', text:'#e9eefb' };
+
+/* ---------- chart: candlestick + level trade ---------- */
+function panel(x, box, r){ rr(x, box.x, box.y, box.w, box.h, r); x.fillStyle = PAL.bg; x.fill(); x.strokeStyle = 'rgba(255,255,255,.08)'; x.lineWidth = 1; x.stroke(); }
+function drawCandleChart(x, box, m, sel, opt = {}){
+  const { T, measure } = tools(x), fs = opt.fs || 15, r = opt.radius ?? 18, { x:bx, y:by, w:bw, h:bh } = box;
+  panel(x, box, r); x.save(); rr(x, bx, by, bw, bh, r); x.clip();
+  const cs = sel.candles, ps = sel.ps || 300, pf = priceFmtFor([m.entry, m.exit, m.sl, m.tp], m.sym);
+  T(opt.title || 'PRICE ACTION', bx + 24, by + 14 + fs*1.2, { size:fs, weight:700, color:PAL.gold, ls:1 });
+  T(`${m.sym} · ${sel.tf} · ${cs.length} candle${sel.coverage === 'partial' ? ' · sebagian' : ''}`, bx + bw - 24, by + 14 + fs*1.2, { size:fs - 1, color:PAL.axis, align:'right', max:bw*.58 });
+  const col = m.net >= 0 ? PAL.up : PAL.dn;
+  const lv = [['TP', m.tp, PAL.up], ['ENTRY', m.entry, PAL.gold], ['EXIT', m.exit, col === PAL.up ? PAL.blue : PAL.blue], ['SL', m.sl, PAL.dn]].filter(l => l[1] != null);
+  const chipFs = fs - 1;
+  let chipW = 0; lv.forEach(l => { chipW = Math.max(chipW, measure(`${l[0]} ${pf(l[1])}`, chipFs, 700) + 22); });
+  chipW = clamp(chipW, 100, bw*.36);
+  const left = bx + 18, right = bx + bw - chipW - 22, top = by + 14 + fs*1.2 + 22, bottom = by + bh - (fs*2.6 + 10), plotW = right - left, plotH = bottom - top;
+  // skala harga: level yang terlalu jauh di-clip supaya candle tidak gepeng
+  let lo = Math.min(...cs.map(c => c.low), m.entry ?? Infinity, m.exit ?? Infinity), hi = Math.max(...cs.map(c => c.high), m.entry ?? -Infinity, m.exit ?? -Infinity);
+  const core = Math.max(hi - lo, 1e-9), off = new Set();
+  [['SL', m.sl], ['TP', m.tp]].forEach(([k, v]) => { if(v == null) return; if(v < lo - core*.9 || v > hi + core*.9) off.add(k); });
+  [['SL', m.sl], ['TP', m.tp]].forEach(([k, v]) => { if(v != null && !off.has(k)){ lo = Math.min(lo, v); hi = Math.max(hi, v); } });
+  if(!(hi > lo)){ lo -= 1; hi += 1; }
+  const padV = (hi - lo)*.08; lo -= padV; hi += padV;
+  const py = v => bottom - (v - lo)/(hi - lo)*plotH;
+  // grid + label sumbu (disembunyikan jika bentrok dengan chip)
+  const ticks = 5, step = plotW/cs.length, cw = clamp(step*.62, 2, 24);
+  x.lineWidth = 1;
+  for(let i = 0; i <= ticks; i++){ const yy = top + plotH*i/ticks; x.strokeStyle = PAL.grid; x.beginPath(); x.moveTo(left, yy); x.lineTo(right, yy); x.stroke(); }
+  const chipItems = lv.map(l => { let y = off.has(l[0]) ? (l[1] > hi ? top + 8 : bottom - 8) : clamp(py(l[1]), top + 4, bottom - 4); return { l, y, cy:y }; });
+  const chipH = chipFs + 12;
+  stackChips(chipItems, top + chipH/2, bottom - chipH/2 + 6, chipH + 4);
+  for(let i = 0; i <= ticks; i++){
+    const yy = top + plotH*i/ticks, val = hi - (hi - lo)*i/ticks;
+    if(chipItems.some(c => Math.abs(c.cy - yy) < chipH*.8)) continue;
+    T(pf(val), bx + bw - 22, yy + 4, { size:chipFs - 1, color:PAL.axis, align:'right', max:chipW + 8 });
+  }
+  const xOf = ts => {
+    if(ts <= cs[0].time) return left;
+    let i = cs.length - 1; for(let k = 0; k < cs.length; k++){ if(cs[k].time > ts){ i = k - 1; break; } }
+    i = Math.max(0, i); const fr = clamp((ts - cs[i].time)/ps, 0, 1); return left + step*(i + fr);
+  };
+  const hasO = Number.isFinite(m.openS), hasC = Number.isFinite(m.closeS);
+  const xo = hasO ? clamp(xOf(m.openS), left, right) : null, xc = hasC ? clamp(xOf(m.closeS), left, right) : null;
+  // zona hasil (entry -> exit)
+  if(xo != null && xc != null && m.entry != null && m.exit != null){
+    const y1 = py(m.entry), y2 = py(m.exit); x.fillStyle = m.net >= 0 ? 'rgba(47,211,155,.10)' : 'rgba(255,107,134,.10)';
+    x.fillRect(Math.min(xo,xc), clamp(Math.min(y1,y2), top, bottom), Math.max(2, Math.abs(xc - xo)), Math.max(2, Math.min(bottom, Math.max(y1,y2)) - clamp(Math.min(y1,y2), top, bottom)));
+  }
+  // garis level
+  lv.forEach(([k, v, c]) => { if(off.has(k)) return; const yy = py(v); if(yy < top - 1 || yy > bottom + 1) return; x.save(); x.strokeStyle = c; x.globalAlpha = .8; x.lineWidth = 1.5; x.setLineDash([9, 6]); x.beginPath(); x.moveTo(left, yy); x.lineTo(right, yy); x.stroke(); x.restore(); });
+  // candle
+  cs.forEach((q, i) => {
+    const cx = left + step*i + step/2, up = q.close >= q.open, c = up ? PAL.up : PAL.dn;
+    x.strokeStyle = c; x.lineWidth = Math.max(1, Math.min(2, cw/5)); x.beginPath(); x.moveTo(cx, py(q.high)); x.lineTo(cx, py(q.low)); x.stroke();
+    const y1 = py(q.open), y2 = py(q.close); x.fillStyle = c; x.fillRect(cx - cw/2, Math.min(y1,y2), cw, Math.max(1.5, Math.abs(y1 - y2)));
+  });
+  // garis vertikal open/close + label (diletakkan agar tidak bertabrakan)
+  const tagFs = chipFs - 2;
+  [[xo, 'OPEN', PAL.gold], [xc, 'CLOSE', PAL.blue]].forEach(([xx, label, c], idx) => {
+    if(xx == null) return; x.save(); x.strokeStyle = c; x.globalAlpha = .55; x.lineWidth = 1; x.setLineDash([2, 4]); x.beginPath(); x.moveTo(xx, top); x.lineTo(xx, bottom); x.stroke(); x.restore();
+  });
+  if(xo != null || xc != null){
+    const wO = measure('OPEN', tagFs, 700), wC = measure('CLOSE', tagFs, 700), close2 = xo != null && xc != null && Math.abs(xc - xo) < Math.max(wO, wC)*2 + 16;
+    const place = (xx, label, c, w, preferRight) => {
+      let al = preferRight ? 'left' : 'right', tx = preferRight ? xx + 5 : xx - 5;
+      if(al === 'left' && tx + w > right) { al = 'right'; tx = xx - 5; } else if(al === 'right' && tx - w < left){ al = 'left'; tx = xx + 5; }
+      T(label, tx, top + tagFs + 4, { size:tagFs, weight:700, color:c, align:al });
+    };
+    if(xo != null) place(xo, 'OPEN', PAL.gold, wO, close2 ? xo <= xc ? false : true : true);
+    if(xc != null) place(xc, 'CLOSE', PAL.blue, wC, close2 ? xc >= xo ? true : false : false);
+  }
+  // marker entry -> exit
+  if(xo != null && xc != null && m.entry != null && m.exit != null){
+    x.save(); x.strokeStyle = col; x.lineWidth = 2.5; x.beginPath(); x.moveTo(xo, py(m.entry)); x.lineTo(xc, py(m.exit)); x.stroke(); x.restore();
+  }
+  const dot = (xx, yy, c) => { if(xx == null || yy < top - 2 || yy > bottom + 2) return; x.beginPath(); x.arc(xx, yy, 7, 0, Math.PI*2); x.fillStyle = c; x.fill(); x.lineWidth = 2.5; x.strokeStyle = PAL.bg; x.stroke(); };
+  if(m.entry != null) dot(xo, py(m.entry), PAL.gold);
+  if(m.exit != null) dot(xc, py(m.exit), PAL.blue);
+  // chip level (kolom kanan)
+  chipItems.forEach(ci => {
+    const [k, v, c] = ci.l, label = `${k} ${pf(v)}${off.has(k) ? (v > hi ? ' ▲' : ' ▼') : ''}`, cx0 = right + 10, cy0 = ci.cy - chipH/2;
+    if(!off.has(k)){ x.save(); x.strokeStyle = c; x.globalAlpha = .5; x.lineWidth = 1; x.beginPath(); x.moveTo(right, py(v)); x.lineTo(cx0, ci.cy); x.stroke(); x.restore(); }
+    rr(x, cx0, cy0, chipW, chipH, 6); x.fillStyle = 'rgba(8,17,31,.92)'; x.fill(); x.strokeStyle = c; x.globalAlpha = .9; x.lineWidth = 1.2; x.stroke(); x.globalAlpha = 1;
+    rr(x, cx0, cy0, chipW, chipH, 6); x.fillStyle = c + '26'; x.fill();
+    T(label, cx0 + 10, ci.cy + chipFs*.36, { size:chipFs, weight:700, color:c, max:chipW - 18 });
+  });
+  // sumbu waktu
+  const k = Math.max(1, Math.min(5, Math.floor(plotW/150)));
+  let prevDay = '';
+  for(let i = 0; i <= k; i++){
+    const idx = Math.round((cs.length - 1)*i/k), w = wib(cs[idx].time); if(!w) continue;
+    const tx = clamp(left + step*idx + step/2, left + 22, right - 22), al = i === 0 ? 'left' : (i === k ? 'right' : 'center'), ax = i === 0 ? left : (i === k ? right : tx);
+    T(w.t, ax, bottom + fs + 6, { size:chipFs - 1, color:PAL.axis, align:al });
+    if(w.key !== prevDay){ T(w.day, ax, bottom + fs*2 + 8, { size:chipFs - 2, color:'#5f6f8c', align:al }); prevDay = w.key; }
+  }
+  x.restore();
+}
+
+/* ---------- chart: tangga level (fallback jujur saat candle belum ada) ---------- */
+function drawLadder(x, box, m, info, opt = {}){
+  const { T, measure, wrap } = tools(x), fs = opt.fs || 15, r = opt.radius ?? 18, { x:bx, y:by, w:bw, h:bh } = box;
+  panel(x, box, r); x.save(); rr(x, bx, by, bw, bh, r); x.clip();
+  T('TRADE LEVELS', bx + 24, by + 14 + fs*1.2, { size:fs, weight:700, color:PAL.gold, ls:1 });
+  const split = bx + bw*.50, pf = priceFmtFor([m.entry, m.exit, m.sl, m.tp], m.sym), col = m.net >= 0 ? PAL.up : PAL.dn;
+  // teks status (kiri)
+  const tx = bx + 28, tw = split - tx - 20; let ty = by + bh*.36;
+  const head = info.loading ? 'Memuat candle…' : 'Candle belum tersedia';
+  T(head, tx, ty, { size:fs + 8, weight:700, color:PAL.text, max:tw }); ty += fs + 14;
+  const body = info.loading ? 'Mengambil data OHLC trade ini dari database.' : (info.msg || 'Tidak ada candle OHLC yang tersimpan untuk simbol & waktu trade ini.');
+  wrap(body, tw, fs - 1, 500, FONT, 4).forEach(l => { T(l, tx, ty, { size:fs - 1, color:PAL.axis }); ty += fs + 5; });
+  // tangga (kanan)
+  const lv = [['TP', m.tp, PAL.up], ['ENTRY', m.entry, PAL.gold], ['EXIT', m.exit, PAL.blue], ['SL', m.sl, PAL.dn]].filter(l => l[1] != null);
+  if(lv.length >= 2){
+    const top = by + 60, bottom = by + bh - 28, ax = split + 40;
+    let lo = Math.min(...lv.map(l => l[1])), hi = Math.max(...lv.map(l => l[1])); if(!(hi > lo)){ lo -= 1; hi += 1; }
+    const p = (hi - lo)*.1; lo -= p; hi += p; const py = v => bottom - (v - lo)/(hi - lo)*(bottom - top);
+    x.strokeStyle = 'rgba(255,255,255,.14)'; x.lineWidth = 2; x.beginPath(); x.moveTo(ax, top); x.lineTo(ax, bottom); x.stroke();
+    if(m.entry != null && m.exit != null){ x.strokeStyle = col; x.lineWidth = 7; x.lineCap = 'round'; x.beginPath(); x.moveTo(ax, py(m.entry)); x.lineTo(ax, py(m.exit)); x.stroke(); x.lineCap = 'butt'; }
+    const chipH = fs + 12, items = lv.map(l => ({ l, y:py(l[1]), cy:py(l[1]) }));
+    stackChips(items, top, bottom, chipH + 4);
+    const cw = bx + bw - (ax + 26) - 20;
+    items.forEach(ci => { const [k, v, c] = ci.l; x.beginPath(); x.arc(ax, py(v), 7, 0, Math.PI*2); x.fillStyle = c; x.fill(); x.lineWidth = 2.5; x.strokeStyle = PAL.bg; x.stroke();
+      x.save(); x.strokeStyle = c; x.globalAlpha = .5; x.beginPath(); x.moveTo(ax + 8, py(v)); x.lineTo(ax + 26, ci.cy); x.stroke(); x.restore();
+      rr(x, ax + 26, ci.cy - chipH/2, cw, chipH, 6); x.fillStyle = c + '26'; x.fill(); x.strokeStyle = c; x.lineWidth = 1.2; x.stroke();
+      T(`${k} ${pf(v)}`, ax + 36, ci.cy + fs*.34, { size:fs - 1, weight:700, color:c, max:cw - 20 }); });
+  }
+  x.restore();
+}
+
+/* ---------- chart: kurva saldo (fallback sertifikat) ---------- */
+function drawCurve(x, box, pts, cur, opt = {}){
+  const { T } = tools(x), fs = opt.fs || 15, r = opt.radius ?? 18, { x:bx, y:by, w:bw, h:bh } = box;
+  panel(x, box, r); x.save(); rr(x, bx, by, bw, bh, r); x.clip();
+  T('BALANCE CURVE', bx + 24, by + 14 + fs*1.2, { size:fs, weight:700, color:PAL.gold, ls:1 });
+  const data = (pts || []).filter(p => !p.gap && Number.isFinite(Number(p.balance)));
+  if(data.length < 2){ T('Data kurva saldo belum cukup', bx + bw/2, by + bh/2 + 24, { size:fs, color:PAL.axis, align:'center', max:bw - 40 }); x.restore(); return; }
+  const left = bx + 24, right = bx + bw - 24, top = by + fs*2.6 + 14, bottom = by + bh - fs*2.4 - 8;
+  let lo = Math.min(...data.map(p => p.balance)), hi = Math.max(...data.map(p => p.balance)); if(!(hi > lo)){ lo -= 1; hi += 1; } const pd = (hi - lo)*.12; lo -= pd; hi += pd;
+  const px = i => left + (right - left)*i/(data.length - 1), py = v => bottom - (v - lo)/(hi - lo)*(bottom - top), up = data[data.length-1].balance >= data[0].balance, c = up ? PAL.up : PAL.dn;
+  x.strokeStyle = PAL.grid; x.lineWidth = 1; for(let i = 0; i <= 3; i++){ const yy = top + (bottom - top)*i/3; x.beginPath(); x.moveTo(left, yy); x.lineTo(right, yy); x.stroke(); }
+  const g = x.createLinearGradient(0, top, 0, bottom); g.addColorStop(0, c + '55'); g.addColorStop(1, c + '00');
+  x.beginPath(); data.forEach((p, i) => i ? x.lineTo(px(i), py(p.balance)) : x.moveTo(px(i), py(p.balance))); x.lineTo(px(data.length-1), bottom); x.lineTo(px(0), bottom); x.closePath(); x.fillStyle = g; x.fill();
+  x.beginPath(); data.forEach((p, i) => i ? x.lineTo(px(i), py(p.balance)) : x.moveTo(px(i), py(p.balance))); x.strokeStyle = c; x.lineWidth = 3; x.lineJoin = 'round'; x.stroke();
+  const f = v => fmtMoney(v, cur), mid = bx + bw/2;
+  T(f(data[0].balance), left, bottom + fs + 8, { size:fs - 1, weight:700, color:PAL.text, max:(bw - 48)/2 - 8 });
+  T(f(data[data.length-1].balance), right, bottom + fs + 8, { size:fs - 1, weight:700, color:c, align:'right', max:(bw - 48)/2 - 8 });
+  T(`${data[0].date} → ${data[data.length-1].date}`, right, by + 14 + fs*1.2, { size:fs - 2, color:PAL.axis, align:'right', max:bw*.5 });
+  x.restore();
+}
+function chartFor(x, box, m, opt){
+  const sel = selectCandles(m, barState.get(keyOf(m.t))?.bars);
+  if(sel.candles.length >= 3) { drawCandleChart(x, box, m, sel, opt); return { ok:true, sel }; }
+  const st = barState.get(keyOf(m.t));
+  let msg;
+  if(st?.state === 'unsupported') msg = 'Dashboard belum bisa membaca koleksi candle (marketBars).';
+  else if(st?.state === 'error') msg = 'Gagal membaca candle dari database. Cek koneksi/aturan Firestore lalu muat ulang.';
+  else if(sel.candles.length) msg = 'Candle yang tersimpan terlalu sedikit untuk membentuk grafik trade ini.';
+  else msg = 'Candle disimpan oleh EA saat trade ditutup. Trade lama (sebelum EA terbaru) tidak punya candle — perbarui EA & webhook, candle akan terisi otomatis.';
+  drawLadder(x, box, m, { loading:st?.state === 'loading', msg }, opt);
+  return { ok:false, sel, state:st?.state };
+}
+
+/* ---------- Kartu P/L ---------- */
 function drawTradeCard(t){
- const c=document.createElement('canvas');c.width=1200;c.height=1740;const x=c.getContext('2d'),a=account(),cur=a.currency||'USD',pl=n(t.netProfit??t.profit),buy=String(t.type??t.side??'').toLowerCase().includes('buy')||String(t.type)==='0';
- const grad=x.createLinearGradient(0,0,1200,1740);grad.addColorStop(0,'#101b32');grad.addColorStop(.55,'#080e1a');grad.addColorStop(1,'#111a2d');x.fillStyle=grad;x.fillRect(0,0,1200,1740);
- x.strokeStyle='#c8a75a';x.lineWidth=3;x.strokeRect(26,26,1148,1688);x.strokeStyle='rgba(200,167,90,.26)';x.lineWidth=1;x.strokeRect(42,42,1116,1660);
- const T=(s,xx,yy,size,color='#f4f6fb',weight='500',align='left')=>{x.fillStyle=color;x.font=`${weight} ${size}px Arial`;x.textAlign=align;x.fillText(String(s??'—'),xx,yy)};
- const wrap=(value,maxWidth,font,maxLines=2)=>{x.font=font;const words=String(value??'—').split(/\s+/);const lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(x.measureText(test).width<=maxWidth||!line){line=test}else{lines.push(line);line=word;if(lines.length>=maxLines-1)break}}if(line)lines.push(line);let result=lines.slice(0,maxLines);if(words.join(' ')!==result.join(' ')&&result.length){let last=result.length-1;while(result[last].length&&x.measureText(result[last]+'…').width>maxWidth)result[last]=result[last].slice(0,-1);result[last]+='…'}return result};
- T('FARIDFX',72,100,31,'#e8c66d','700');T('MARKET REPLAY  /  VERIFIED TRADE DATA',1128,98,14,'#8d9bb7','600','right');x.strokeStyle='rgba(200,167,90,.35)';x.beginPath();x.moveTo(72,126);x.lineTo(1128,126);x.stroke();
- T(t.symbol||'SYMBOL',72,192,42,'#fff','700');const side=String(t.type??t.side??'TRADE').toUpperCase();x.fillStyle=buy?'#0c624c':'#672b3c';x.beginPath();x.roundRect(72,215,180,43,9);x.fill();T(side,162,243,19,buy?'#91f4cf':'#ffc1ce','700','center');
- T('NET PROFIT / LOSS',72,315,15,'#9caac5','700');T((pl>0?'+':'')+fmtMoney(pl,cur),72,382,58,pl>=0?'#45e2a2':'#ff6c87','700');
- const tradeDate=dt(t.closeTime??t.time??t.closeTimeMs);T('CLOSED',1128,316,12,'#9caac5','700','right');T(tradeDate,1128,344,15,'#f1f4fb','600','right');
- drawChart(x,t,{x:72,y:420,w:1056,h:380});
- // Account strip
- x.fillStyle='rgba(255,255,255,.035)';x.beginPath();x.roundRect(72,825,1056,195,14);x.fill();x.strokeStyle='rgba(255,255,255,.08)';x.stroke();
- T('ACCOUNT SNAPSHOT',96,858,13,'#d8bd79','700');
- const acc=[['TRADER',a.name||a.displayName||a.accountLabel||'Farid Siddiq'],['ACCOUNT LOGIN',a.login??a.account??fxData().accountId??'—'],['PROP FIRM',a.propFirm||a.propFirmName||'Not specified'],['BROKER / COMPANY',a.company||a.broker||'—'],['SERVER',a.server||'—'],['CURRENCY',cur],['STARTING BALANCE',fmtMoney(a.startingBalance??a.initialBalance,cur)],['BALANCE',fmtMoney(a.balance,cur)],['EQUITY',fmtMoney(a.equity,cur)],['LEVERAGE',a.leverage?`1:${a.leverage}`:'—'],['MARGIN LEVEL',has(a.marginLevel)?`${n(a.marginLevel).toFixed(1)}%`:'—'],['ACCOUNT TYPE',a.accountType||a.tradeMode||'—']];
- acc.forEach((r,i)=>{const col=i%4,row=Math.floor(i/4),xx=96+col*255,yy=886+row*43;T(r[0],xx,yy,9,'#8190ad','600');const fs=12,font=`600 ${fs}px Arial`,lines=wrap(r[1],224,font,2);lines.forEach((line,j)=>T(line,xx,yy+18+j*13,fs,'#f1f4fb','600'))});
- T('TRADE DETAILS',72,1055,15,'#d8bd79','700');
- const entry=t.openPrice??t.priceOpen??t.entry,exit=t.closePrice??t.priceClose??t.exit,sl=t.sl??t.stopLoss,tp=t.tp??t.takeProfit;
- const rows=[
-  ['DIRECTION',side],['SYMBOL',t.symbol],['TICKET / POSITION ID',t.ticket??t.positionId??t.id],['VOLUME',has(t.volume)?`${t.volume} lot`:t.lots??'—'],
-  ['ENTRY PRICE',fmtPrice(entry)],['EXIT PRICE',fmtPrice(exit)],['STOP LOSS',fmtPrice(sl)],['TAKE PROFIT',fmtPrice(tp)],
-  ['OPEN TIME',dt(t.openTime??t.timeOpen??t.open_time)],['CLOSE TIME',dt(t.closeTime??t.time)],['DURATION',has(t.durationSec)?formatDuration(t.durationSec):'—'],['GROSS PROFIT',fmtMoney(t.profit,cur)],
-  ['COMMISSION',fmtMoney(t.commission,cur)],['SWAP',fmtMoney(t.swap,cur)],['NET P/L',fmtMoney(pl,cur)],['COMMENT',t.comment||t.reason||'—']
- ];
- rows.forEach((r,i)=>{const col=i%2,row=Math.floor(i/2),xx=72+col*535,yy=1092+row*63;x.fillStyle='rgba(255,255,255,.035)';x.beginPath();x.roundRect(xx,yy,510,51,7);x.fill();T(r[0],xx+13,yy+16,9.5,'#8190ad','600');const isPL=r[0]==='NET P/L',fs=isPL?14:12,font=`600 ${fs}px Arial`,lines=wrap(r[1]??'—',478,font,2);lines.forEach((line,j)=>T(line,xx+13,yy+32+j*13,fs,isPL?(pl>=0?'#45e2a2':'#ff6c87'):'#f1f4fb','600'))});
- x.strokeStyle='rgba(200,167,90,.35)';x.beginPath();x.moveTo(72,1610);x.lineTo(1128,1610);x.stroke();T('FARIDFX  ·  TRADE PERFORMANCE RECORD',72,1650,13,'#c9a85a','700');T(`Account ${a.login??a.account??'—'}  •  ${t.ticket??t.positionId??t.id??'Trade'}`,1128,1650,12,'#9caac5','500','right');T('Performance card generated from dashboard records; not a broker statement.',72,1687,11,'#71809a','400');
- return c;
+  const m = model(t), a = m.a, cur = m.cur, W = 1080, H = 1660, P = 60, CW = W - P*2;
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'), { T, wrap } = tools(x);
+  const good = m.net >= 0, accent = good ? '#34d399' : '#fb7185', pf = priceFmtFor([m.entry, m.exit, m.sl, m.tp], m.sym);
+  const bg = x.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#111c34'); bg.addColorStop(.5, '#080e1a'); bg.addColorStop(1, '#0f1829'); x.fillStyle = bg; x.fillRect(0, 0, W, H);
+  const glow = x.createRadialGradient(W*.85, 220, 10, W*.85, 220, 520); glow.addColorStop(0, good ? 'rgba(52,211,153,.16)' : 'rgba(251,113,133,.16)'); glow.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = glow; x.fillRect(0, 0, W, 760);
+  x.strokeStyle = '#c8a75a'; x.lineWidth = 3; rr(x, 22, 22, W - 44, H - 44, 14); x.stroke(); x.strokeStyle = 'rgba(200,167,90,.25)'; x.lineWidth = 1; rr(x, 36, 36, W - 72, H - 72, 8); x.stroke();
+  // header
+  T('FARIDFX', P, 100, { size:34, weight:700, color:'#e8c66d', ls:2 });
+  T('TRADE PERFORMANCE RECORD', W - P, 98, { size:15, weight:600, color:'#8d9bb7', align:'right', ls:1.5, max:CW*.5 });
+  x.strokeStyle = 'rgba(200,167,90,.35)'; x.lineWidth = 1; x.beginPath(); x.moveTo(P, 124); x.lineTo(W - P, 124); x.stroke();
+  // hero kiri: simbol + pill
+  const half = CW*.5 - 10;
+  T(m.sym, P, 206, { size:60, weight:700, color:'#fff', max:half });
+  const pills = [[m.side, m.side === 'SELL' ? '#6b2a3d' : '#0d5f49', m.side === 'SELL' ? '#ffc1ce' : '#92f5d0'], [has(m.vol) ? `${m.vol} LOT` : 'VOLUME —', 'rgba(255,255,255,.07)', '#dfe6f5'], ['CLOSED', 'rgba(255,255,255,.07)', '#9caac5']];
+  let pxx = P; pills.forEach(([txt, bgc, fg]) => { const w = tools(x).measure(txt, 17, 700) + 34; rr(x, pxx, 232, w, 44, 10); x.fillStyle = bgc; x.fill(); T(txt, pxx + w/2, 261, { size:17, weight:700, color:fg, align:'center' }); pxx += w + 10; });
+  // hero kanan: P/L
+  T('NET PROFIT / LOSS', W - P, 160, { size:15, weight:700, color:'#9caac5', align:'right', ls:1.5 });
+  T(fmtMoney(m.net, cur, true), W - P, 232, { size:72, weight:700, color:accent, align:'right', max:CW*.55, family:MONO, minScale:.5 });
+  const subBits = []; if(m.retPct != null) subBits.push(`${m.retPct >= 0 ? '+' : ''}${m.retPct.toFixed(2)}% dari modal awal`); if(m.rMult != null) subBits.push(`${m.rMult >= 0 ? '+' : ''}${m.rMult.toFixed(2)}R`);
+  T(subBits.join('  ·  ') || ' ', W - P, 268, { size:17, weight:600, color:'#aab6cf', align:'right', max:CW*.55 });
+  // chart
+  const chartBox = { x:P, y:304, w:CW, h:540 };
+  c._chart = chartFor(x, chartBox, m, { fs:16, radius:18 });
+  // tile
+  const gap = 14, tw = (CW - gap*3)/4;
+  const tile = (i, y, h, label, val, o = {}) => {
+    const tx0 = P + i*(tw + gap); rr(x, tx0, y, tw, h, 14); x.fillStyle = 'rgba(255,255,255,.045)'; x.fill(); x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1; x.stroke();
+    T(label, tx0 + 18, y + 30, { size:14, weight:700, color:'#8d9bb7', ls:1, max:tw - 36 });
+    if(o.two){ T(val[0], tx0 + 18, y + 62, { size:23, weight:700, color:'#f3f6fd', max:tw - 36 }); T(val[1], tx0 + 18, y + 85, { size:17, weight:600, color:'#aab6cf', max:tw - 36 }); }
+    else T(val, tx0 + 18, y + (h > 96 ? 70 : 66), { size:o.size || 28, weight:700, color:o.color || '#f3f6fd', family:o.mono === false ? FONT : MONO, max:tw - 36 });
+  };
+  let y = 868; const th = 100;
+  const tl = (lbl, v, color) => [lbl, v == null ? '—' : pf(v), color];
+  [tl('ENTRY', m.entry, '#e8c66d'), tl('EXIT', m.exit, '#9cb4ff'), tl('STOP LOSS', m.sl, '#fb7185'), tl('TAKE PROFIT', m.tp, '#34d399')].forEach((r, i) => tile(i, y, th, r[0], r[1], { color:r[1] === '—' ? '#6b7a96' : r[2], size:26 }));
+  y += th + gap;
+  const ow = wib(m.openS), cw2 = wib(m.closeS);
+  tile(0, y, th, 'VOLUME', has(m.vol) ? `${m.vol} lot` : '—', { size:26 });
+  tile(1, y, th, 'DURASI', Number.isFinite(m.dur) ? fmtDur(m.dur) : '—', { size:26, mono:false });
+  tile(2, y, th, 'WAKTU OPEN', ow ? [ow.d, ow.t + ' WIB'] : ['—', ''], { two:true });
+  tile(3, y, th, 'WAKTU CLOSE', cw2 ? [cw2.d, cw2.t + ' WIB'] : ['—', ''], { two:true });
+  y += th + gap;
+  tile(0, y, th, 'GROSS P/L', fmtMoney(m.gross, cur, true), { size:24, color:n(m.gross) >= 0 ? '#34d399' : '#fb7185' });
+  tile(1, y, th, 'KOMISI', fmtMoney(m.comm, cur, true), { size:24, color:'#dfe6f5' });
+  tile(2, y, th, 'SWAP', fmtMoney(m.swap, cur, true), { size:24, color:'#dfe6f5' });
+  tile(3, y, th, 'NET P/L', fmtMoney(m.net, cur, true), { size:24, color:accent });
+  y += th + 34;
+  // akun
+  T('AKUN', P, y + 4, { size:15, weight:700, color:'#e8c66d', ls:2 }); x.strokeStyle = 'rgba(200,167,90,.3)'; x.beginPath(); x.moveTo(P + 70, y); x.lineTo(W - P, y); x.stroke(); y += 22;
+  const ah = 92, accItems = [
+    ['TRADER', a.name || a.displayName || a.accountLabel || '—'], ['PROP FIRM', a.propFirm || a.propFirmName || 'Tidak ditentukan'], ['LOGIN', a.login ?? a.account ?? fxData().accountId ?? '—'], ['BROKER', a.company || a.broker || '—'],
+    ['SERVER', a.server || '—'], ['SALDO', fmtMoney(a.balance, cur)], ['EKUITAS', fmtMoney(a.equity, cur)], ['LEVERAGE', a.leverage ? `1:${a.leverage}` : '—']];
+  accItems.forEach((it, i) => { const row = Math.floor(i/4), col = i%4, tx0 = P + col*(tw + gap), ty = y + row*(ah + gap);
+    rr(x, tx0, ty, tw, ah, 12); x.fillStyle = 'rgba(255,255,255,.03)'; x.fill(); x.strokeStyle = 'rgba(255,255,255,.07)'; x.lineWidth = 1; x.stroke();
+    T(it[0], tx0 + 18, ty + 28, { size:13, weight:700, color:'#8190ad', ls:1, max:tw - 36 });
+    const val = String(it[1]), one = tools(x).measure(val, 22, 600) <= tw - 36;
+    if(one) T(val, tx0 + 18, ty + 64, { size:22, weight:600, color:'#f1f4fb' });
+    else wrap(val, tw - 36, 18, 600, FONT, 2).forEach((ln, k) => T(ln, tx0 + 18, ty + 56 + k*22, { size:18, weight:600, color:'#f1f4fb' })); });
+  y += ah*2 + gap + 28;
+  // ticket + catatan (satu baris, dipotong otomatis)
+  const meta = [m.ticket != null ? `Ticket ${m.ticket}` : '', m.comment ? `Catatan: ${m.comment}` : ''].filter(Boolean).join('   ·   ');
+  if(meta) T(meta, P, y, { size:16, weight:500, color:'#9caac5', max:CW });
+  // footer
+  const fy = H - 128; x.strokeStyle = 'rgba(200,167,90,.35)'; x.beginPath(); x.moveTo(P, fy); x.lineTo(W - P, fy); x.stroke();
+  T('FARIDFX · TRADE PERFORMANCE RECORD', P, fy + 42, { size:15, weight:700, color:'#c9a85a', ls:1, max:CW*.6 });
+  T(`Akun ${a.login ?? a.account ?? '—'}`, W - P, fy + 42, { size:15, weight:500, color:'#9caac5', align:'right', max:CW*.35 });
+  T('Kartu dibuat dari catatan dashboard; bukan laporan resmi broker.', P, fy + 72, { size:13, weight:400, color:'#7384a0', max:CW });
+  return c;
 }
-function formatDuration(v){const s=Math.max(0,Math.floor(n(v)));if(s<60)return `${s}s`;if(s<3600)return `${Math.floor(s/60)}m ${s%60}s`;if(s<86400)return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;return `${Math.floor(s/86400)}d ${Math.floor((s%86400)/3600)}h`}
-const CERT_FORMATS={landscape:{label:'Landscape 16:9',w:1600,h:900},portrait:{label:'Portrait A4',w:1200,h:1697},square:{label:'Square 1:1',w:1200,h:1200},portrait34:{label:'Portrait 3:4',w:1200,h:1600},classic43:{label:'Landscape 4:3',w:1600,h:1200}};
+
+/* ---------- Sertifikat ---------- */
+const CERT_FORMATS = { landscape:{label:'Landscape 16:9', w:1600, h:900}, classic43:{label:'Landscape 4:3', w:1600, h:1200}, portrait:{label:'Portrait A4', w:1200, h:1697}, portrait34:{label:'Portrait 3:4', w:1200, h:1600}, square:{label:'Square 1:1', w:1200, h:1200} };
+function readConfig(){
+  const a = account(), fx = fxData(), id = fx.accountId || a.login || ''; let p = {}, custom = {};
+  try { p = JSON.parse(localStorage.getItem('ffx_p_' + id) || '{}'); } catch(e){}
+  try { custom = JSON.parse(localStorage.getItem('ffx_share_profile_' + id) || '{}'); } catch(e){}
+  return { p, custom, id };
+}
 function certificateData(){
- const fx=fxData(),a=account(),hist=Array.isArray(fx.history)?fx.history:[],{p,custom}=readConfig();
- const start=n(a.startingBalance??a.initialBalance??p.start??a.balance),equity=n(a.equity??a.balance),target=n(a.profitTargetPct??p.target??10),profit=equity-start,pct=start?profit/start*100:0;
- return {fx,a,hist,p,custom,start,equity,target,profit,pct,reached:target>0&&pct>=target};
+  const fx = fxData(), a = account(), hist = Array.isArray(fx.history) ? fx.history : [], { p, custom } = readConfig();
+  const start = n(a.startingBalance ?? a.initialBalance ?? p.start ?? a.balance), equity = n(a.equity ?? a.balance), target = n(a.profitTargetPct ?? p.target ?? 10), profit = equity - start, pct = start ? profit/start*100 : 0;
+  const wins = hist.filter(t => n(t.netProfit ?? t.profit) > 0).length;
+  return { fx, a, hist, p, custom, start, equity, target, profit, pct, wr:hist.length ? wins/hist.length*100 : 0, hasAcc:!!(a && (a.login || a.balance != null)), reached:target > 0 && pct >= target };
 }
-function certCanvas(formatKey){
- const d=certificateData();if(!d.a||!d.reached)return { ...d,canvas:null };
- const f=CERT_FORMATS[formatKey]||CERT_FORMATS.landscape,c=document.createElement('canvas');c.width=f.w;c.height=f.h;const x=c.getContext('2d'),w=f.w,h=f.h,portrait=h>w,square=h===w;
- const bg=x.createLinearGradient(0,0,w,h);bg.addColorStop(0,'#f8f5ed');bg.addColorStop(1,'#e9e3d4');x.fillStyle=bg;x.fillRect(0,0,w,h);x.fillStyle='#10213c';x.fillRect(0,0,w,Math.max(22,h*.025));
- x.strokeStyle='#132744';x.lineWidth=Math.max(5,w*.005);x.strokeRect(w*.025,h*.03,w*.95,h*.94);x.strokeStyle='#b99850';x.lineWidth=Math.max(2,w*.0018);x.strokeRect(w*.04,h*.045,w*.92,h*.91);
- const cx=w/2,margin=w*.09;const T=(s,y,size,color='#142744',weight='600',align='center')=>{x.fillStyle=color;x.font=`${weight} ${Math.round(size)}px Georgia`;x.textAlign=align;x.fillText(String(s),align==='left'?margin:align==='right'?w-margin:cx,y)};
- const fit=(s,maxWidth,size,weight='600')=>{let z=size;x.font=`${weight} ${z}px Georgia`;while(x.measureText(String(s)).width>maxWidth&&z>12){z-=1;x.font=`${weight} ${z}px Georgia`}return z};
- const wrapCert=(value,maxWidth,font,maxLines=2)=>{x.font=font;const words=String(value??'—').split(/\s+/);const lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(x.measureText(test).width<=maxWidth||!line){line=test}else{lines.push(line);line=word;if(lines.length>=maxLines-1)break}}if(line)lines.push(line);const out=lines.slice(0,maxLines);if(words.join(' ')!==out.join(' ')&&out.length){const i=out.length-1;while(out[i].length&&x.measureText(out[i]+'…').width>maxWidth)out[i]=out[i].slice(0,-1);out[i]+='…'}return out};
- const titleY=h*(portrait?.15:.19);T('FARIDFX  •  PERFORMANCE SERIES',h*.095,w*.016,'#a17c2f','700');
- T('CERTIFICATE OF',titleY,w*(portrait?.043:.036),'#132744','600');T('TARGET ACHIEVEMENT',titleY+h*.055,w*(portrait?.052:.043),'#132744','700');
- T('This certificate recognizes the recorded trading performance of',titleY+h*.105,w*.017,'#647087','400');
- const trader=d.custom.trader||d.a.name||d.a.displayName||d.a.accountLabel||'TRADER';T(trader,titleY+h*.17,fit(trader,w*.78,w*(portrait?.052:.047),'700'),'#10213c','700');
- x.strokeStyle='#b99850';x.lineWidth=2;x.beginPath();x.moveTo(w*.27,h*(portrait?.32:.38));x.lineTo(w*.73,h*(portrait?.32:.38));x.stroke();
- const firm=d.custom.firm||d.a.propFirm||d.a.propFirmName||d.a.company||d.a.broker||'PROP FIRM NOT SPECIFIED';
- const data=[['PROP FIRM',firm],['ACCOUNT LOGIN',d.a.login??d.a.account??d.fx.accountId??'—'],['BROKER / COMPANY',d.a.company||d.a.broker||'—'],['SERVER',d.a.server||'—'],['ACCOUNT CURRENCY',d.a.currency||'USD'],['STARTING BALANCE',fmtMoney(d.start,d.a.currency)],['CURRENT EQUITY',fmtMoney(d.equity,d.a.currency)],['NET PROFIT',fmtMoney(d.profit,d.a.currency)],['PROFIT TARGET',`${d.target}%`],['ACHIEVED RETURN',`${d.pct.toFixed(2)}%`],['CLOSED TRADES',String(d.hist.length)],['ISSUED DATE',dt(Date.now())]];
- const top=h*(portrait?.37:.44),bottom=h*.79,cols=portrait?1:2,rows=Math.ceil(data.length/cols),cellW=(w-margin*2)/cols,cellH=(bottom-top)/rows;
- data.forEach((r,i)=>{const col=i%cols,row=Math.floor(i/cols),xx=margin+col*cellW,yy=top+row*cellH,cardW=cellW-12,cardH=cellH-10;x.fillStyle='rgba(16,33,60,.035)';x.beginPath();x.roundRect(xx,yy,cardW,cardH,8);x.fill();x.textAlign='left';x.fillStyle='#a17c2f';const labelFs=Math.max(10,Math.min(14,w*.009));x.font=`700 ${labelFs}px Arial`;x.fillText(r[0],xx+14,yy+Math.min(cardH*.34,22));const val=String(r[1]??'—'),maxW=cardW-28;let fs=Math.max(10,Math.min(w*.017,cellH*.25));let font=`600 ${fs}px Arial`;let lines=wrapCert(val,maxW,font,2);while(lines.some(line=>{x.font=font;return x.measureText(line).width>maxW})&&fs>10){fs-=1;font=`600 ${fs}px Arial`;lines=wrapCert(val,maxW,font,2)}x.fillStyle='#142744';lines.forEach((line,j)=>{x.font=font;x.fillText(line,xx+14,yy+Math.min(cardH*.56,27)+j*(fs+2))})});
- const footerY=h*.865;T('ACHIEVEMENT BASED ON DASHBOARD RECORDS',footerY,w*.012,'#647087','600');T('Not an official prop-firm payout confirmation',footerY+h*.026,w*.011,'#647087','400');
- const certId='FFX-'+String(d.a.login??d.fx.accountId??'ACCOUNT')+'-'+new Date().toISOString().slice(0,10).replace(/-/g,'');T('CERTIFICATE ID  '+certId,h*.94,w*.011,'#a17c2f','600');
- return {...d,canvas:c,format:f,certId};
+function bestTradeOf(hist){ let b = null, bv = 0; hist.forEach(t => { const v = n(t.netProfit ?? t.profit); if(v > bv){ bv = v; b = t; } }); return b; }
+function star(x, cx, cy, ro, ri, pts){ x.beginPath(); for(let i = 0; i < pts*2; i++){ const r = i % 2 ? ri : ro, ang = -Math.PI/2 + i*Math.PI/pts; x.lineTo(cx + Math.cos(ang)*r, cy + Math.sin(ang)*r); } x.closePath(); }
+function drawCert(fmtKey, d, best){
+  const f = CERT_FORMATS[fmtKey] || CERT_FORMATS.landscape, W = f.w, H = f.h, wide = W/H > 1.2, square = Math.abs(W - H) < 2, u = wide ? H/900 : W/1200;
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'), { T, measure, wrap } = tools(x);
+  const NAVY = '#10213c', GOLD = '#a17c2f', MUTED = '#5d6a82', cur = d.a.currency || 'USD';
+  const bg = x.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#fbf8f0'); bg.addColorStop(1, '#ece5d3'); x.fillStyle = bg; x.fillRect(0, 0, W, H);
+  x.strokeStyle = NAVY; x.lineWidth = 6*u; x.strokeRect(26*u, 26*u, W - 52*u, H - 52*u); x.strokeStyle = '#b99850'; x.lineWidth = 2*u; x.strokeRect(42*u, 42*u, W - 84*u, H - 84*u);
+  [[42,42,1,1],[W/u - 42,42,-1,1],[42,H/u - 42,1,-1],[W/u - 42,H/u - 42,-1,-1]].forEach(([cx0, cy0, sx, sy]) => { x.strokeStyle = '#b99850'; x.lineWidth = 3*u; x.beginPath(); x.moveTo(cx0*u + sx*34*u, cy0*u + sy*10*u); x.lineTo(cx0*u + sx*10*u, cy0*u + sy*10*u); x.lineTo(cx0*u + sx*10*u, cy0*u + sy*34*u); x.stroke(); });
+  const M = 84*u, L = wide
+    ? { cx:M + (W*.5 - M - 10*u)/2, colX:M, colW:W*.5 - M - 10*u, rx:W*.54, rw:W - M - W*.54, seal:[W - M - 38*u, H*.092, 33*u], eyebrow:.15, title:.27, title2:.345, orn:.385, recog:.445, name:.545, nameLine:.575, st1:.63, st2:.668, metrics:[.72,.855], chart:[.15,.47], details:[.52,.83], cols:2, fl:.875, f1:.905, f2:.935 }
+    : { cx:W/2, colX:M, colW:W - M*2, rx:M, rw:W - M*2, seal:[W/2, (square ? .068 : .088)*H, (square ? 30 : 42)*u], eyebrow:square ? .122 : .155, title:square ? .192 : .207, title2:square ? .238 : .252, orn:square ? .262 : .277, recog:square ? .297 : .312, name:square ? .355 : .362, nameLine:square ? .376 : .384, st1:square ? .412 : .423, st2:square ? .437 : .448,
+        metrics:square ? [.465,.545] : [.48,.57], chart:square ? [.56,.765] : [.585,.725], details:square ? [.78,.865] : [.745,.885], cols:square ? 4 : 2, fl:square ? .89 : .905, f1:square ? .917 : .932, f2:square ? .947 : .958 };
+  const sx = L.seal; x.beginPath(); x.arc(sx[0], sx[1], sx[2], 0, Math.PI*2); x.fillStyle = NAVY; x.fill(); x.strokeStyle = '#b99850'; x.lineWidth = 3*u; x.stroke(); x.beginPath(); x.arc(sx[0], sx[1], sx[2]*.82, 0, Math.PI*2); x.strokeStyle = 'rgba(232,198,109,.6)'; x.lineWidth = 1.5*u; x.stroke(); star(x, sx[0], sx[1], sx[2]*.52, sx[2]*.22, 5); x.fillStyle = '#e8c66d'; x.fill();
+  T('FARIDFX  ·  PERFORMANCE SERIES', L.cx, L.eyebrow*H, { size:15*u, weight:700, color:GOLD, align:'center', ls:3*u, max:L.colW });
+  T('CERTIFICATE', L.cx, L.title*H, { size:(wide ? 78 : 68)*u, weight:700, color:NAVY, align:'center', family:SERIF, ls:4*u, max:L.colW });
+  T('OF TARGET ACHIEVEMENT', L.cx, L.title2*H, { size:(wide ? 30 : 30)*u, weight:700, color:NAVY, align:'center', family:SERIF, ls:3*u, max:L.colW });
+  x.strokeStyle = '#b99850'; x.lineWidth = 1.5*u; const ow = Math.min(L.colW*.5, 300*u); x.beginPath(); x.moveTo(L.cx - ow/2, L.orn*H); x.lineTo(L.cx - 10*u, L.orn*H); x.moveTo(L.cx + 10*u, L.orn*H); x.lineTo(L.cx + ow/2, L.orn*H); x.stroke(); x.save(); x.translate(L.cx, L.orn*H); x.rotate(Math.PI/4); x.fillStyle = '#b99850'; x.fillRect(-4*u, -4*u, 8*u, 8*u); x.restore();
+  T('This certificate recognizes the recorded trading performance of', L.cx, L.recog*H, { size:20*u, italic:true, weight:500, color:MUTED, align:'center', family:SERIF, max:L.colW });
+  const trader = d.custom.trader || d.a.name || d.a.displayName || d.a.accountLabel || 'TRADER';
+  T(trader, L.cx, L.name*H, { size:(wide ? 62 : 56)*u, weight:700, color:NAVY, align:'center', family:SERIF, max:L.colW, minScale:.4 });
+  x.strokeStyle = '#b99850'; x.lineWidth = 1.5*u; x.beginPath(); x.moveTo(L.cx - L.colW*.36, L.nameLine*H); x.lineTo(L.cx + L.colW*.36, L.nameLine*H); x.stroke();
+  const st = `for achieving the profit target of ${d.target}% on trading account ${d.a.login ?? d.a.account ?? d.fx.accountId ?? '—'}${d.a.propFirm || d.custom.firm ? ' with ' + (d.custom.firm || d.a.propFirm) : ''}.`;
+  wrap(st, L.colW, 20*u, 500, SERIF, 2).forEach((ln, i) => T(ln, L.cx, (i ? L.st2 : L.st1)*H, { size:20*u, weight:500, color:MUTED, align:'center', family:SERIF }));
+  // metrik utama
+  const my0 = L.metrics[0]*H, mh = (L.metrics[1] - L.metrics[0])*H, gap = 14*u, mw = (L.colW - gap*2)/3;
+  const metr = [['NET PROFIT', fmtMoney(d.profit, cur, true), `Modal awal ${fmtMoney(d.start, cur)}`, '#0e7a54'], ['ACHIEVED RETURN', `${d.pct.toFixed(2)}%`, `Target ${d.target}%`, NAVY], ['CLOSED TRADES', String(d.hist.length), `${d.wr.toFixed(0)}% win rate`, NAVY]];
+  metr.forEach((r, i) => { const mx = L.colX + i*(mw + gap); rr(x, mx, my0, mw, mh, 10*u); x.fillStyle = 'rgba(16,33,60,.045)'; x.fill(); x.strokeStyle = 'rgba(161,124,47,.45)'; x.lineWidth = 1.5*u; x.stroke();
+    T(r[0], mx + mw/2, my0 + mh*.26, { size:12*u, weight:700, color:GOLD, align:'center', ls:1.5*u, max:mw - 20*u });
+    T(r[1], mx + mw/2, my0 + mh*.62, { size:32*u, weight:700, color:r[3], align:'center', family:SERIF, max:mw - 22*u, minScale:.45 });
+    T(r[2], mx + mw/2, my0 + mh*.88, { size:12*u, weight:500, color:MUTED, align:'center', max:mw - 20*u }); });
+  // chart (OHLC trade terbaik, atau kurva saldo bila candle belum ada)
+  const cbox = { x:L.rx, y:L.chart[0]*H, w:L.rw, h:(L.chart[1] - L.chart[0])*H };
+  let drewCandle = false;
+  if(best){ const bm = model(best), sel = selectCandles(bm, barState.get(keyOf(best))?.bars); if(sel.candles.length >= 3){ drawCandleChart(x, cbox, bm, sel, { fs:13*u, radius:12*u, title:'BEST TRADE · OHLC' }); drewCandle = true; } }
+  if(!drewCandle) drawCurve(x, cbox, typeof d.fx.balanceCurve === 'function' ? d.fx.balanceCurve() : [], cur, { fs:13*u, radius:12*u });
+  // detail akun
+  const items = [['PROP FIRM', d.custom.firm || d.a.propFirm || d.a.propFirmName || d.a.company || d.a.broker || 'Not specified'], ['ACCOUNT LOGIN', d.a.login ?? d.a.account ?? d.fx.accountId ?? '—'], ['BROKER / COMPANY', d.a.company || d.a.broker || '—'], ['SERVER', d.a.server || '—'], ['ACCOUNT CURRENCY', cur], ['STARTING BALANCE', fmtMoney(d.start, cur)], ['CURRENT EQUITY', fmtMoney(d.equity, cur)], ['PROFIT TARGET', `${d.target}%`]];
+  const dy0 = L.details[0]*H, rows = Math.ceil(items.length/L.cols), rh = (L.details[1]*H - dy0)/rows, cw = L.rw/L.cols;
+  items.forEach((it, i) => { const col = i % L.cols, row = Math.floor(i/L.cols), ix = L.rx + col*cw, iy = dy0 + row*rh;
+    x.strokeStyle = 'rgba(16,33,60,.12)'; x.lineWidth = 1*u; x.beginPath(); x.moveTo(ix + 4*u, iy + rh - 4*u); x.lineTo(ix + cw - 12*u, iy + rh - 4*u); x.stroke();
+    T(it[0], ix + 4*u, iy + rh*.34, { size:11.5*u, weight:700, color:GOLD, ls:1*u, max:cw - 18*u }); T(String(it[1]), ix + 4*u, iy + rh*.72, { size:17*u, weight:600, color:NAVY, max:cw - 18*u, minScale:.55 }); });
+  // footer
+  const certId = 'FFX-' + String(d.a.login ?? d.fx.accountId ?? 'ACCOUNT') + '-' + new Date().toISOString().slice(0,10).replace(/-/g,'');
+  x.strokeStyle = 'rgba(16,33,60,.25)'; x.lineWidth = 1*u; x.beginPath(); x.moveTo(M, L.fl*H); x.lineTo(W - M, L.fl*H); x.stroke();
+  const fw = (W - M*2)/3 - 12*u;
+  T('CERTIFICATE ID', M, L.f1*H, { size:11*u, weight:700, color:GOLD, ls:1*u, max:fw }); T(certId, M, L.f2*H, { size:14*u, weight:600, color:NAVY, family:MONO, max:fw });
+  T('ACHIEVEMENT BASED ON DASHBOARD RECORDS', W/2, L.f1*H, { size:11*u, weight:700, color:MUTED, align:'center', max:fw + 60*u, ls:.5*u }); T('Not an official prop-firm payout confirmation', W/2, L.f2*H, { size:12*u, weight:500, color:MUTED, align:'center', max:fw + 60*u });
+  T('ISSUED', W - M, L.f1*H, { size:11*u, weight:700, color:GOLD, ls:1*u, align:'right', max:fw }); T(dtFull(Math.floor(Date.now()/1000)), W - M, L.f2*H, { size:13*u, weight:600, color:NAVY, align:'right', max:fw });
+  c._chartKind = drewCandle ? 'ohlc' : 'curve'; c._certId = certId; return c;
 }
-function download(c,name){if(!c)return;const a=document.createElement('a');a.download=name;a.href=c.toDataURL('image/png');a.click()}
-function openCanvas(canvas,title){if(!canvas)return;const w=window.open('','_blank');if(!w){alert('Popup diblokir. Gunakan Download PNG atau screenshot preview.');return}w.document.write('<!doctype html><title>'+title+'</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;background:#070b14;display:grid;place-items:start center;padding:16px}img{width:min(100%,1000px);height:auto;object-fit:contain}</style><img alt="'+title+'" src="'+canvas.toDataURL('image/png')+'">');w.document.close()}
-function render(){
- const host=$('marketReplayShare');if(!host)return;
- const existingTrader=$('mrTraderName')?.value,existingFirm=$('mrFirmName')?.value,existingFormat=$('mrCertFormat')?.value;
- if(existingTrader!==undefined||existingFirm!==undefined){const fx=fxData();try{localStorage.setItem('ffx_share_profile_'+(fx.accountId||account().login||''),JSON.stringify({trader:existingTrader??'',firm:existingFirm??''}))}catch(e){}}
- const t=pickedTrade(),d=certificateData(),cfg=readConfig();
- const fmtKey=existingFormat||'landscape';
- host.innerHTML=`
- <div class="mr-studio-head"><div><div class="mr-eyebrow">FARIDFX · MARKET REPLAY STUDIO</div><h3>Trade Performance Card</h3><p>Detail transaksi, akun, dan hasil trading dalam satu kartu siap dibagikan.</p></div><span class="mr-live-pill"><i></i> Data dashboard</span></div>
- <div class="mr-overview">${[
-  ['SELECTED TRADE',t?(t.symbol||'Trade')+' · '+String(t.type||'').toUpperCase():'No trade selected'],['ACCOUNT',account().accountLabel||account().login||account().account||'Waiting for account'],['NET P/L',t?fmtMoney(t.netProfit??t.profit,account().currency):'—'],['CLOSED AT',t?dt(t.closeTime??t.time):'—']
- ].map((r,i)=>`<div class="mr-overview-item"><small>${r[0]}</small><b class="${i===2&&t?(n(t.netProfit??t.profit)>=0?'positive':'negative'):''}">${esc(r[1])}</b></div>`).join('')}</div>
- <div class="mr-toolbar"><div><h4>Share card</h4><p>High-resolution PNG · optimised for mobile and desktop</p></div><div class="mr-actions"><button class="btn primary" id="mrDownload">↓ Download P/L Card</button><button class="btn" id="mrOpen">↗ Open for screenshot</button></div></div>
- <div class="mr-preview" id="mrPreview"></div>
- <p class="mr-note">Chart akan menampilkan candlestick historis hanya saat data OHLC tersedia. Sebelum EA mengirim data tersebut, area chart menampilkan status data secara eksplisit—tidak ada candle sintetis yang disamarkan sebagai harga asli.</p>
- <div class="mr-cert-section"><div class="mr-studio-head"><div><div class="mr-eyebrow">CHALLENGE MILESTONE</div><h3>Achievement Certificate</h3><p>Sertifikat pencapaian target berdasarkan data akun yang tercatat.</p></div><span class="intel-status ${d.reached?'ok':'warn'}">${d.reached?'TARGET ACHIEVED':'IN PROGRESS'}</span></div>
- <div class="mr-cert-controls"><label>Format sertifikat<select id="mrCertFormat">${Object.entries(CERT_FORMATS).map(([k,v])=>`<option value="${k}" ${k===fmtKey?'selected':''}>${v.label} · ${v.w}×${v.h}</option>`).join('')}</select></label><label>Nama trader<input id="mrTraderName" maxlength="64" value="${esc(cfg.custom.trader||account().name||account().displayName||account().accountLabel||'Farid Siddiq')}" placeholder="Nama trader"></label><label>Nama prop firm<input id="mrFirmName" maxlength="80" value="${esc(cfg.custom.firm||account().propFirm||account().propFirmName||'')}" placeholder="Nama prop firm"></label></div>
- ${d.reached?`<div class="mr-actions"><button class="btn primary" id="mrCertDownload">↓ Download Certificate PNG</button><button class="btn" id="mrCertOpen">↗ Open for screenshot</button></div><div class="mr-preview mr-cert-preview" id="mrCertPreview"></div><p class="mr-note">Ini sertifikat pencapaian target internal, bukan bukti payout resmi. Bukti payout harus berasal dari prop firm atau catatan pembayaran yang valid.</p>`:`<div class="mr-target-panel"><div><small>PROFIT TARGET</small><strong>${d.a?`${d.pct.toFixed(2)}% / ${d.target}%`:'Menunggu data akun'}</strong><p>${d.a?`Profit bersih terhadap baseline: ${fmtMoney(d.profit,d.a.currency)}. Sertifikat aktif ketika return mencapai target.`:'Pilih akun yang terhubung agar progress challenge dapat dihitung.'}</p></div><div class="mr-target-track"><i style="width:${Math.max(0,Math.min(100,d.target>0?d.pct/d.target*100:0))}%"></i></div></div>`}
- </div>`;
- if(t){const card=drawTradeCard(t);host.querySelector('#mrPreview').appendChild(card);$('mrDownload').onclick=()=>download(card,`FaridFX-PnL-${String(t.symbol||'trade').replace(/[^a-z0-9_-]/gi,'_')}-${t.ticket??t.id??'record'}.png`);$('mrOpen').onclick=()=>openCanvas(card,'FaridFX Trade Performance Card')}else{host.querySelector('#mrPreview').innerHTML='<div class="mr-empty"><b>No closed trade available</b><span>Pilih transaksi pada dropdown Market Replay untuk membuat P/L Card.</span></div>';}
- if(d.reached){const cert=certCanvas(fmtKey);if(cert.canvas){host.querySelector('#mrCertPreview').appendChild(cert.canvas);$('mrCertDownload').onclick=()=>download(cert.canvas,`FaridFX-Certificate-${fmtKey}.png`);$('mrCertOpen').onclick=()=>openCanvas(cert.canvas,'FaridFX Achievement Certificate')}}
- $('mrCertFormat')?.addEventListener('change',()=>render());
- const saveProfile=()=>{const fx=fxData();try{localStorage.setItem('ffx_share_profile_'+(fx.accountId||account().login||''),JSON.stringify({trader:$('mrTraderName')?.value||'',firm:$('mrFirmName')?.value||''}))}catch(e){}};
- $('mrTraderName')?.addEventListener('change',saveProfile);$('mrFirmName')?.addEventListener('change',saveProfile);
+
+/* ---------- UI ---------- */
+let lastSig = '', certFmt = 'landscape', cardCanvas = null, certCanvas = null, profileFor = '', debounce = 0;
+function download(canvas, name){
+  if(!canvas) return;
+  canvas.toBlob(b => { if(!b) return; const url = URL.createObjectURL(b), a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000); }, 'image/png');
 }
-document.addEventListener('click',e=>{if(e.target.closest('#intelReplayRefresh')||e.target.closest('.tab[data-view="intel"]'))setTimeout(render,180)});
-$('intelReplaySelect')?.addEventListener('change',()=>setTimeout(render,80));
-const prior=window.__FXUI?.update;if(window.__FXUI&&typeof prior==='function')window.__FXUI.update=function(){try{prior.apply(this,arguments)}finally{setTimeout(render,0)}};
-setInterval(()=>{if($('view-intel')?.classList.contains('active'))render()},5000);
-document.addEventListener('DOMContentLoaded',()=>setTimeout(render,400));
+function share(canvas, name, title){
+  if(!canvas) return;
+  canvas.toBlob(async b => {
+    if(!b) return; const file = new File([b], name, { type:'image/png' });
+    try { if(navigator.canShare && navigator.canShare({ files:[file] })){ await navigator.share({ files:[file], title }); return; } } catch(e){ if(e && e.name === 'AbortError') return; }
+    download(canvas, name); fxData().toast?.('Perangkat tidak mendukung berbagi file — PNG diunduh.');
+  }, 'image/png');
+}
+function openViewer(canvas, title, name){
+  if(!canvas) return; const v = $('mr2Viewer'); if(!v) return;
+  canvas.toBlob(b => { if(!b) return; if(v._url) URL.revokeObjectURL(v._url); v._url = URL.createObjectURL(b); $('mr2VImg').src = v._url; $('mr2VTitle').textContent = title; v._canvas = canvas; v._name = name; v.hidden = false; document.documentElement.classList.add('mr2-lock'); }, 'image/png');
+}
+function closeViewer(){ const v = $('mr2Viewer'); if(!v) return; v.hidden = true; document.documentElement.classList.remove('mr2-lock'); }
+function build(host){
+  if(host.dataset.mr2 === '1') return;
+  host.dataset.mr2 = '1';
+  host.innerHTML = `<div class="mr2">
+  <div class="mr2-head"><div><div class="mr2-eyebrow">FARIDFX · TRADE STUDIO</div><h3>Trade Performance Card</h3><p>Detail transaksi, akun, dan grafik candle dalam satu kartu siap dibagikan.</p></div><span class="mr2-pill"><i></i>Data dashboard</span></div>
+  <div class="mr2-meta" id="mr2Meta"></div>
+  <div class="mr2-bar"><div class="mr2-bar-txt"><h4>Kartu P/L</h4><p id="mr2Status">Menyiapkan kartu…</p></div><div class="mr2-actions"><button class="btn primary" id="mr2Dl" type="button">↓ Unduh PNG</button><button class="btn" id="mr2Share" type="button">⇪ Bagikan</button><button class="btn ghost" id="mr2Full" type="button">⛶ Layar penuh</button></div></div>
+  <div class="mr2-stage" id="mr2Stage"></div>
+  <section class="mr2-cert"><div class="mr2-head"><div><div class="mr2-eyebrow">CHALLENGE MILESTONE</div><h3>Achievement Certificate</h3><p>Sertifikat pencapaian target berdasarkan data akun yang tercatat.</p></div><span class="intel-status warn" id="mr2CertPill">IN PROGRESS</span></div>
+  <div class="mr2-controls"><label>Format sertifikat<select id="mrCertFormat">${Object.entries(CERT_FORMATS).map(([k, v]) => `<option value="${k}">${v.label} · ${v.w}×${v.h}</option>`).join('')}</select></label><label>Nama trader<input id="mrTraderName" maxlength="64" autocomplete="off" placeholder="Nama trader"></label><label>Nama prop firm<input id="mrFirmName" maxlength="80" autocomplete="off" placeholder="Nama prop firm"></label></div>
+  <div id="mr2CertBody"></div></section></div>`;
+  if(!$('mr2Viewer')){
+    const v = document.createElement('div'); v.id = 'mr2Viewer'; v.className = 'mr2-viewer'; v.hidden = true;
+    v.innerHTML = `<div class="mr2-vbar"><b id="mr2VTitle">Pratinjau</b><span><button class="btn" id="mr2VDl" type="button">↓ Unduh</button><button class="btn ghost" id="mr2VX" type="button">✕ Tutup</button></span></div><div class="mr2-vscroll"><img id="mr2VImg" alt="Pratinjau"></div><div class="mr2-vhint">Cubit untuk memperbesar · ketuk di luar gambar untuk menutup</div>`;
+    document.body.appendChild(v);
+    v.addEventListener('click', e => { if(e.target === v || e.target.classList.contains('mr2-vscroll')) closeViewer(); });
+    $('mr2VX').onclick = closeViewer; $('mr2VDl').onclick = () => download(v._canvas, v._name || 'faridfx.png');
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') closeViewer(); });
+  }
+  const trig = () => { lastSig = ''; clearTimeout(debounce); debounce = setTimeout(tick, 60); };
+  $('mrCertFormat').onchange = e => { certFmt = e.target.value; trig(); };
+  const saveProfile = () => { const id = readConfig().id; try { localStorage.setItem('ffx_share_profile_' + id, JSON.stringify({ trader:$('mrTraderName').value || '', firm:$('mrFirmName').value || '' })); } catch(e){} };
+  ['mrTraderName', 'mrFirmName'].forEach(id => $(id).addEventListener('input', () => { saveProfile(); clearTimeout(debounce); lastSig = ''; debounce = setTimeout(tick, 350); }));
+  $('mr2Dl').onclick = () => { const m = cardCanvas?._m; download(cardCanvas, `FaridFX-PnL-${String(m?.sym || 'trade').replace(/[^a-z0-9_-]/gi, '_')}-${m?.ticket ?? 'record'}.png`); };
+  $('mr2Share').onclick = () => { const m = cardCanvas?._m; share(cardCanvas, `FaridFX-PnL-${String(m?.sym || 'trade').replace(/[^a-z0-9_-]/gi, '_')}-${m?.ticket ?? 'record'}.png`, 'FaridFX Trade Performance'); };
+  $('mr2Full').onclick = () => { const m = cardCanvas?._m; openViewer(cardCanvas, 'Kartu P/L', `FaridFX-PnL-${String(m?.sym || 'trade').replace(/[^a-z0-9_-]/gi, '_')}-${m?.ticket ?? 'record'}.png`); };
+}
+function paint(t, d, best){
+  const meta = $('mr2Meta'), stage = $('mr2Stage'), status = $('mr2Status'); if(!meta) return;
+  const m = t ? model(t) : null, a = account();
+  const items = [['TRADE TERPILIH', m ? `${m.sym} · ${m.side}` : 'Belum ada trade'], ['AKUN', a.accountLabel || a.login || a.account || 'Menunggu akun'], ['NET P/L', m ? fmtMoney(m.net, m.cur, true) : '—'], ['DITUTUP', m ? dtFull(m.closeS) : '—']];
+  meta.innerHTML = items.map((r, i) => `<div class="mr2-meta-i"><small>${r[0]}</small><b class="${i === 2 && m ? (m.net >= 0 ? 'pos' : 'neg') : ''}">${esc(r[1])}</b></div>`).join('');
+  ['mr2Dl', 'mr2Share', 'mr2Full'].forEach(id => { const b = $(id); if(b) b.disabled = !m; });
+  if(m){
+    cardCanvas = drawTradeCard(t); cardCanvas._m = m; stage.replaceChildren(cardCanvas);
+    const cr = cardCanvas._chart;
+    status.textContent = cr?.ok ? `Grafik candle ${cr.sel.tf} · ${cr.sel.candles.length} bar${cr.sel.coverage === 'partial' ? ' (menutup sebagian durasi trade)' : ''}.` : (cr?.state === 'loading' ? 'Memuat candle trade ini…' : 'Candle belum tersedia — kartu menampilkan tangga level (entry/exit/SL/TP).');
+  } else { cardCanvas = null; stage.innerHTML = '<div class="mr2-empty"><b>Belum ada trade tertutup</b><span>Pilih transaksi pada dropdown di atas untuk membuat kartu P/L.</span></div>'; status.textContent = 'Menunggu data trade.'; }
+  // profil sertifikat (isi hanya saat akun berganti & input tidak sedang diketik)
+  const cfg = readConfig(), tn = $('mrTraderName'), fn = $('mrFirmName');
+  if(profileFor !== cfg.id || (document.activeElement !== tn && !tn.value && cfg.custom.trader)){
+    if(document.activeElement !== tn) tn.value = cfg.custom.trader || a.name || a.displayName || a.accountLabel || '';
+    if(document.activeElement !== fn) fn.value = cfg.custom.firm || a.propFirm || a.propFirmName || '';
+    profileFor = cfg.id;
+  }
+  $('mrCertFormat').value = certFmt;
+  const pill = $('mr2CertPill'); pill.className = 'intel-status ' + (d.reached ? 'ok' : 'warn'); pill.textContent = d.reached ? 'TARGET ACHIEVED' : 'IN PROGRESS';
+  const body = $('mr2CertBody');
+  if(d.reached){
+    certCanvas = drawCert(certFmt, d, best); const fname = `FaridFX-Certificate-${certFmt}.png`;
+    body.innerHTML = `<div class="mr2-bar"><div class="mr2-bar-txt"><p>${certCanvas._chartKind === 'ohlc' ? 'Grafik: OHLC trade terbaik.' : 'Grafik: kurva saldo (candle trade terbaik belum tersedia).'} Sertifikat internal, bukan bukti payout resmi.</p></div><div class="mr2-actions"><button class="btn primary" id="mr2CDl" type="button">↓ Unduh PNG</button><button class="btn" id="mr2CShare" type="button">⇪ Bagikan</button><button class="btn ghost" id="mr2CFull" type="button">⛶ Layar penuh</button></div></div><div class="mr2-stage mr2-stage-cert" id="mr2CStage"></div>`;
+    $('mr2CStage').appendChild(certCanvas);
+    $('mr2CDl').onclick = () => download(certCanvas, fname); $('mr2CShare').onclick = () => share(certCanvas, fname, 'FaridFX Achievement Certificate'); $('mr2CFull').onclick = () => openViewer(certCanvas, 'Sertifikat', fname);
+  } else {
+    certCanvas = null; const pct = d.hasAcc ? d.pct : 0, prog = clamp(d.target > 0 ? pct/d.target*100 : 0, 0, 100);
+    body.innerHTML = `<div class="mr2-target"><small>PROFIT TARGET</small><strong>${d.hasAcc ? `${d.pct.toFixed(2)}% / ${d.target}%` : 'Menunggu data akun'}</strong><p>${d.hasAcc ? `Profit bersih terhadap baseline: ${esc(fmtMoney(d.profit, d.a.currency))}. Sertifikat aktif ketika return mencapai target.` : 'Pilih akun yang terhubung agar progress challenge dapat dihitung.'}</p><div class="mr2-track"><i style="width:${prog}%"></i></div></div>`;
+  }
+}
+function tick(){
+  const host = $('marketReplayShare'); if(!host || !$('view-intel')?.classList.contains('active')) return;
+  build(host);
+  const t = pickedTrade(), d = certificateData(); let best = null;
+  if(t) ensureBars(model(t));
+  if(d.reached){ best = bestTradeOf(d.hist); if(best) ensureBars(model(best)); }
+  const a = d.a, tn = $('mrTraderName'), fn = $('mrFirmName');
+  const sig = [t ? keyOf(t) : '-', t ? (t.netProfit ?? t.profit) : '', a.login, a.balance, a.equity, a.startingBalance, d.reached ? 1 : 0, d.hist.length, barEpoch.v, (fxData().marketBars || []).length, certFmt, tn?.value, fn?.value, profileFor].join('|');
+  if(sig === lastSig) return; lastSig = sig; paint(t, d, best);
+}
+// pastikan chart tersimpan untuk status UI
+const _chartFor = chartFor;
+document.addEventListener('click', e => { if(e.target.closest('#intelReplayRefresh') || e.target.closest('.tab[data-view="intel"]')) setTimeout(() => { lastSig = ''; tick(); }, 180); });
+document.addEventListener('change', e => { if(e.target && e.target.id === 'intelReplaySelect') setTimeout(() => { lastSig = ''; tick(); }, 60); });
+const prior = window.__FXUI?.update; if(window.__FXUI && typeof prior === 'function') window.__FXUI.update = function(){ try { return prior.apply(this, arguments); } finally { setTimeout(tick, 0); } };
+setInterval(tick, 3000);
+if(!document.querySelector('link[href*="Cormorant+Garamond"]')){ const fl = document.createElement('link'); fl.rel = 'stylesheet'; fl.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap'; document.head.appendChild(fl); }
+try { Promise.race([Promise.all([document.fonts.load('700 40px "Cormorant Garamond"'), document.fonts.load('italic 500 20px "Cormorant Garamond"'), document.fonts.load('700 20px "Chakra Petch"'), document.fonts.load('600 20px "JetBrains Mono"')]), new Promise(r => setTimeout(r, 2500))]).then(() => { lastSig = ''; tick(); }); } catch(e){}
+document.addEventListener('DOMContentLoaded', () => setTimeout(tick, 400));
+window.__MR2 = { tick, drawTradeCard, drawCert, model, selectCandles, certificateData, _reset(){ lastSig = ''; } };
 })();
+
 </script>
 
 </body>
