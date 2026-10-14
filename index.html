@@ -727,6 +727,39 @@ img,canvas,svg,video{max-width:100%}
  .cal-cell .p{font-size:9.5px;margin-top:3px;letter-spacing:-.05em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  .toast{max-width:calc(100vw - 24px);left:12px;right:12px;text-align:center}
 }
+
+/* ===== Icon system (SVG) + UX polish ===== */
+.ic{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;overflow:visible}
+.ic-dot,.ic-play,.ic-pause{stroke:none}.ic-star{stroke-width:1.2}
+.ic-dot{width:.72em;height:.72em;vertical-align:.01em}
+.ic-red{color:#ff5d73}.ic-green{color:#39d98a}.ic-blue{color:#5aa9ff}.ic-white{color:#e6ecff}.ic-amber{color:#ffb84d}.ic-gold{color:#ffd25e}.ic-silver{color:#cbd5e1}.ic-bronze{color:#d38b4a}.ic-cyan{color:#35e0ff}.ic-orange{color:#ff8a3d}
+.tico .ic{width:56%;height:56%;color:#fff;stroke-width:2.1;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}
+.rchip .ri .ic{width:18px;height:18px}
+.btn .ic{width:1.2em;height:1.2em;margin-right:.38em;vertical-align:-.24em}
+.btn .ic:only-child{margin-right:0}
+.x-close .ic{width:16px;height:16px;margin:0;vertical-align:middle}
+.cx .ic,.diag-row .ic,.diag-hint .ic{width:1.1em;height:1.1em}
+h3 .ic,h4 .ic,b .ic{vertical-align:-.18em}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.tab:focus-visible{outline:2px solid var(--gold,#ffd25e);outline-offset:2px}
+button,.btn,.tab,select{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media(max-width:900px){
+  .nav{bottom:calc(8px + env(safe-area-inset-bottom));gap:2px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8px,#000 calc(100% - 8px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 8px,#000 calc(100% - 8px),transparent 100%)}
+  .nav::-webkit-scrollbar{display:none}
+  .tab{scroll-snap-align:center;min-width:72px;padding:6px 6px 7px;font-size:10px;letter-spacing:.05em;white-space:nowrap}
+  .tab.active{background:rgba(255,255,255,.07)}
+  .tab.active::after{content:"";position:absolute;bottom:2px;left:28%;right:28%;height:3px;border-radius:3px;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+  .app{padding-bottom:calc(116px + env(safe-area-inset-bottom))}
+  .toast{bottom:calc(108px + env(safe-area-inset-bottom))}
+  .btn{min-height:40px}
+  .tab .tico{width:42px;height:42px}
+}
+@media(max-width:700px){
+  input,select,textarea,.search{font-size:16px}
+  .btn{padding:9px 12px}
+  .x-close{width:40px;height:40px}
+}
 </style>
 </head>
 <body>
@@ -1248,6 +1281,165 @@ img,canvas,svg,video{max-width:100%}
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script>
+/* FaridFX Icon System — emoji -> SVG (otomatis untuk markup statis & konten dinamis) */
+(function(){
+'use strict';
+const I = {
+pulse:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+alert:'<path d="m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+bellOff:'<path d="M8.7 3A6 6 0 0 1 18 8c0 2.2.3 4 .8 5.4"/><path d="M17 17H3s3-2 3-9c0-.7.1-1.3.3-1.9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="m2 2 20 20"/>',
+target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+dot:'<circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/>',
+check:'<path d="M20 6 9 17l-5-5"/>',
+checkCircle:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+xCircle:'<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+shield:'<path d="M20 13c0 5-3.5 7.5-7.7 8.9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/>',
+waves:'<path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>',
+share:'<path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/>',
+chart:'<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
+wallet:'<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+sparkles:'<path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>',
+leaf:'<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/><path d="M2 21c0-3 1.9-5.5 4-7"/>',
+sliders:'<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
+compass:'<circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-2 6.3-6.4 2.1 2-6.3z"/>',
+landmark:'<path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2 3 7h18z"/>',
+calendar:'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21.1 7 14.2 2 9.3l6.9-1z" fill="currentColor"/>',
+maximize:'<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
+gem:'<path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>',
+zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
+pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+tri:'<path d="M4 20V4l16 16z"/><path d="M4 12h4"/><path d="M4 16h8"/>',
+ban:'<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>',
+pushpin:'<path d="M12 17v5"/><path d="M9 10.8a2 2 0 0 1-1.1 1.8l-1.8.9A2 2 0 0 0 5 15.2V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.8a2 2 0 0 0-1.1-1.8l-1.8-.9a2 2 0 0 1-1.1-1.8V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>',
+flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.3 1-3 0 1.5 1 2.5 2.5 2.5Z"/>',
+trash:'<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+monitor:'<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+dashboard:'<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+gamepad:'<path d="M6 12h4"/><path d="M8 10v4"/><path d="M15 13h.01"/><path d="M18 11h.01"/><path d="M17.3 5H6.7a4 4 0 0 0-3.9 3.2l-1.5 7.4A3 3 0 0 0 4.2 19c1 0 1.8-.5 2.4-1.3L8 16h8l1.4 1.7c.6.8 1.4 1.3 2.4 1.3a3 3 0 0 0 2.9-3.4l-1.5-7.4A4 4 0 0 0 17.3 5Z"/>',
+swords:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6"/><path d="m16 16 4 4"/><path d="m19 21 2-2"/><path d="M14.5 6.5 18 3h3v3l-3.5 3.5"/><path d="m5 14 4 4"/><path d="m7 17-3 3"/><path d="m3 19 2 2"/>',
+file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
+book:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+mountain:'<path d="m8 3 4 8 5-5 5 15H2z"/>',
+flask:'<path d="M10 2v6.3L4.5 19A2 2 0 0 0 6.3 22h11.4a2 2 0 0 0 1.8-3L14 8.3V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>',
+pencil:'<path d="M12 20h9"/><path d="M16.4 3.6a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.7V17c0 .6-.5 1-1.1 1.2C7.8 18.7 7 20.2 7 22"/><path d="M14 14.7V17c0 .6.5 1 1.1 1.2 1.1.5 1.9 2 1.9 3.8"/><path d="M18 2H6v7a6 6 0 0 0 12 0Z"/>',
+building:'<rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/>',
+cpu:'<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/>',
+radio:'<path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/>',
+stop:'<path d="M7.9 2h8.2L22 7.9v8.2L16.1 22H7.9L2 16.1V7.9z"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+volume:'<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/>',
+award:'<circle cx="12" cy="8" r="6"/><path d="M15.5 12.9 17 22l-5-3-5 3 1.5-9.1"/>',
+box:'<path d="m7.5 4.3 9 5.2"/><path d="M21 8v8a2 2 0 0 1-1 1.7l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.7l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>',
+lock:'<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+bulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+trend:'<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
+clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+news:'<path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/>',
+drop:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+candle:'<path d="M9 5v4"/><rect width="4" height="6" x="7" y="9" rx="1"/><path d="M9 15v2"/><path d="M17 3v2"/><rect width="4" height="8" x="15" y="5" rx="1"/><path d="M17 13v3"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/>',
+eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+crown:'<path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>',
+diamond:'<path d="M2.7 10.3a2.4 2.4 0 0 0 0 3.4l7.6 7.6a2.4 2.4 0 0 0 3.4 0l7.6-7.6a2.4 2.4 0 0 0 0-3.4l-7.6-7.6a2.4 2.4 0 0 0-3.4 0Z"/>',
+medal:'<circle cx="12" cy="15" r="6"/><path d="M8.5 3 12 9l3.5-6"/><path d="M12 12.5v5"/>',
+snow:'<path d="M2 12h20"/><path d="M12 2v20"/><path d="m5 5 14 14"/><path d="M19 5 5 19"/>',
+heart:'<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/>',
+db:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>',
+inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z"/>',
+help:'<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
+camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
+siren:'<path d="M7 18v-6a5 5 0 1 1 10 0v6"/><path d="M5 21a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z"/><path d="M21 12h1M18.5 4.5 18 5M2 12h1M12 2v1M4.9 4.9l.7.7"/>',
+download:'<path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
+message:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+clipboard:'<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>',
+hourglass:'<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.2a2 2 0 0 0-.6-1.4L12 12l-4.4 4.4a2 2 0 0 0-.6 1.4V22"/><path d="M7 2v4.2a2 2 0 0 0 .6 1.4L12 12l4.4-4.4a2 2 0 0 0 .6-1.4V2"/>',
+refresh:'<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+play:'<path d="M6 4v16l14-8z" fill="currentColor"/>',
+pause:'<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>'
+};
+// emoji -> [ikon, kelas warna opsional]
+const M = {
+'🩺':['pulse'],'⚠':['alert','ic-amber'],'⚠️':['alert','ic-amber'],'🔔':['bell'],'🔕':['bellOff'],'🎯':['target'],
+'🔴':['dot','ic-red'],'🟢':['dot','ic-green'],'🔵':['dot','ic-blue'],'⚪':['dot','ic-white'],
+'✅':['checkCircle','ic-green'],'✔':['check'],'✓':['check'],'❌':['xCircle','ic-red'],'✖':['x'],'✗':['x'],'✕':['x'],
+'🛡️':['shield'],'🌊':['waves'],'📤':['share'],'⇪':['share'],'📊':['chart'],'💰':['wallet'],'🎞':['sparkles'],'🌿':['leaf'],
+'⚙':['sliders'],'⚙️':['sliders'],'🧭':['compass'],'🏛️':['landmark'],'📅':['calendar'],'🗓️':['calendar'],'★':['star','ic-gold'],'⛶':['maximize'],
+'💎':['gem','ic-cyan'],'⚡':['zap','ic-amber'],'📍':['pin'],'📐':['tri'],'⛔':['ban','ic-red'],'📌':['pushpin'],'🔥':['flame','ic-orange'],
+'🧹':['trash'],'🖥️':['monitor'],'🏰':['dashboard'],'🎮':['gamepad'],'⚔️':['swords'],'📜':['file'],'📖':['book'],'🏔️':['mountain'],
+'🧪':['flask'],'📝':['pencil'],'🏆':['trophy'],'🏯':['building'],'🧠':['cpu'],'📡':['radio'],'🛑':['stop','ic-red'],'🔊':['volume'],
+'🎖️':['award'],'📦':['box'],'🔒':['lock'],'💡':['bulb','ic-amber'],'📈':['trend'],'🕒':['clock'],'📰':['news'],'💧':['drop','ic-blue'],
+'🕯':['candle'],'👀':['eye'],'👑':['crown','ic-gold'],'💠':['diamond','ic-cyan'],'🥇':['medal','ic-gold'],'🥈':['medal','ic-silver'],
+'🥉':['medal','ic-bronze'],'🪖':['shield'],'🧊':['snow','ic-cyan'],'❤':['heart','ic-red'],'🛰️':['db'],'📭':['inbox'],'❔':['help'],
+'🧩':['layers'],'📷':['camera'],'🚨':['siren','ic-red'],'⬇':['download'],'💬':['message'],'📋':['clipboard'],'⏳':['hourglass'],
+'↻':['refresh'],'▶':['play'],'⏸':['pause']
+};
+const esc = k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const keys = Object.keys(M).sort((a, b) => b.length - a.length);
+const RE = new RegExp(keys.map(esc).join('|') + '|[\\uFE0F\\u200D]', 'g');
+const STRIP = new RegExp(keys.map(esc).join('|') + '|[\\uFE0F\\u200D]', 'g');
+const SKIP = /^(SCRIPT|STYLE|TEXTAREA|OPTION|TITLE|NOSCRIPT|CODE|PRE)$/;
+const NS = 'http://www.w3.org/2000/svg';
+function make(name, cls){
+  const s = document.createElementNS(NS, 'svg');
+  s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('class', 'ic ic-' + name + (cls ? ' ' + cls : ''));
+  s.setAttribute('aria-hidden', 'true'); s.setAttribute('focusable', 'false'); s.innerHTML = I[name] || I.dot; return s;
+}
+function convert(node){
+  const txt = node.nodeValue; if(!txt || !RE.test(txt)){ RE.lastIndex = 0; return; } RE.lastIndex = 0;
+  const par = node.parentNode; if(!par || SKIP.test(par.nodeName) || (par.closest && (par.closest('svg') || par.closest('[data-keep-emoji]')))) return;
+  const frag = document.createDocumentFragment(); let last = 0, m;
+  while((m = RE.exec(txt))){
+    if(m.index > last) frag.appendChild(document.createTextNode(txt.slice(last, m.index)));
+    const def = M[m[0]]; if(def) frag.appendChild(make(def[0], def[1]));
+    last = m.index + m[0].length;
+  }
+  if(last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+  RE.lastIndex = 0; par.replaceChild(frag, node);
+}
+function scan(root){
+  if(!root) return;
+  if(root.nodeType === 3){ convert(root); return; }
+  if(root.nodeType !== 1 || SKIP.test(root.nodeName)) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => (n.nodeValue && n.nodeValue.length && /[^\x00-\u2000]/.test(n.nodeValue)) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT });
+  const list = []; let n; while((n = w.nextNode())) list.push(n); list.forEach(convert);
+}
+function cleanAttrs(root){
+  (root.querySelectorAll ? root.querySelectorAll('[title],[placeholder]') : []).forEach(el => {
+    ['title', 'placeholder'].forEach(a => { const v = el.getAttribute(a); if(v && STRIP.test(v)){ STRIP.lastIndex = 0; el.setAttribute(a, v.replace(STRIP, '').replace(/\s{2,}/g, ' ').trim()); } STRIP.lastIndex = 0; });
+  });
+}
+function labelIconButtons(root){
+  (root.querySelectorAll ? root.querySelectorAll('button') : []).forEach(b => {
+    if(!b.getAttribute('aria-label') && !b.textContent.trim() && b.title) b.setAttribute('aria-label', b.title);
+  });
+}
+let queued = false, pend = new Set();
+const flush = () => { queued = false; const items = [...pend]; pend.clear(); items.forEach(n => { if(n.isConnected !== false) { scan(n); if(n.nodeType === 1){ cleanAttrs(n); labelIconButtons(n); } } }); };
+const mo = new MutationObserver(muts => {
+  muts.forEach(m => { if(m.type === 'characterData') pend.add(m.target); else m.addedNodes.forEach(n => pend.add(n)); });
+  if(!queued){ queued = true; queueMicrotask(flush); }
+});
+function init(){
+  scan(document.body); cleanAttrs(document.body); labelIconButtons(document.body);
+  mo.observe(document.body, { childList:true, subtree:true, characterData:true });
+  // tab aktif selalu terlihat pada dock HP
+  const nav = document.querySelector('.nav');
+  if(nav){
+    const reveal = () => { const a = nav.querySelector('.tab.active'); if(a && getComputedStyle(nav).flexDirection === 'row'){ const l = a.offsetLeft - (nav.clientWidth - a.offsetWidth)/2; nav.scrollTo({ left:Math.max(0, l), behavior:'smooth' }); } };
+    nav.addEventListener('click', () => setTimeout(reveal, 60));
+    new MutationObserver(reveal).observe(nav, { attributes:true, subtree:true, attributeFilter:['class'] });
+    setTimeout(reveal, 400);
+  }
+}
+window.__IC = { scan, make, icons:I };
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
+</script>
 <script>
 (() => {
   // ================= FIREBASE CONFIG =================
