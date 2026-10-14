@@ -270,7 +270,7 @@ function sameTrade(old, rec) {
     (k) =>
       old[k] !== undefined &&
       Math.abs(Number(old[k]) - Number(rec[k])) < 1e-6
-  );
+  ) && String(old.exitReason || '') === String(rec.exitReason || '');
 }
 
 // ---------------------------------------------------------------- sinyal
