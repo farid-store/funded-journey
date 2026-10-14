@@ -4,6 +4,42 @@
 const admin = require('firebase-admin');
 
 const SHARED_TOKEN = process.env.EA_WEBHOOK_SECRET;
+// ===== Partner & Promo (link afiliasi/IB di dashboard) =====
+// Hanya pemegang PARTNERS_ADMIN_KEY (env Vercel) yang bisa menyimpan. Semua orang boleh MEMBACA (data memang publik).
+const PARTNERS_KEY = process.env.PARTNERS_ADMIN_KEY;
+const PARTNER_IDS = ['broker1','broker2','broker3','broker4','broker5','prop1','prop2','prop3','prop4','prop5'];
+function keyOk(k) {
+  if (!PARTNERS_KEY || typeof k !== 'string') return false;
+  const a = Buffer.from(k), b = Buffer.from(PARTNERS_KEY);
+  return a.length === b.length && require('crypto').timingSafeEqual(a, b);
+}
+function cleanHttpUrl(u, max) {
+  u = String(u || '').trim();
+  if (!u) return '';
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(u)) u = 'https://' + u;
+  try {
+    const x = new URL(u);
+    return (x.protocol === 'https:' || x.protocol === 'http:') && x.href.length <= max ? x.href : '';
+  } catch (e) { return ''; }
+}
+function cleanPartners(input) {
+  const src = input && Array.isArray(input.slots) ? input.slots : [];
+  const slots = PARTNER_IDS.map((id) => {
+    const o = src.find((x) => x && x.id === id) || {};
+    const logo = String(o.logo || '').trim();
+    return {
+      id,
+      group: id.startsWith('broker') ? 'broker' : 'prop',
+      name: String(o.name || '').trim().slice(0, 40),
+      url: cleanHttpUrl(o.url, 600),
+      tagline: String(o.tagline || '').trim().slice(0, 90),
+      code: String(o.code || '').trim().slice(0, 24),
+      logo: /^https:\/\//i.test(logo) && logo.length <= 500 ? logo : '',
+    };
+  });
+  return { note: String((input && input.note) || '').trim().slice(0, 400), slots };
+}
+
 const EQUITY_POINT_INTERVAL_MS = 5 * 60 * 1000;
 const BATCH_CHUNK = 400;
 const HISTORY_V = 3;
@@ -373,6 +409,17 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === 'GET') {
+    let wantPartners = false;
+    try { wantPartners = new URL(req.url, 'http://x').searchParams.get('partners') === '1'; } catch (e) {}
+    if (wantPartners) {
+      try {
+        const snap = await db.collection('config').doc('partners').get();
+        res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=120');
+        return res.status(200).json({ ok: true, partners: snap.exists ? snap.data() : null });
+      } catch (e) {
+        return res.status(500).json({ ok: false, error: 'partners read failed' });
+      }
+    }
     return res.status(200).json({
       ok: true,
       service: 'faridfx-webhook',
@@ -393,6 +440,19 @@ module.exports = async (req, res) => {
       req.body && typeof req.body === 'object'
         ? req.body
         : JSON.parse(req.body || '{}');
+
+    if (body.action === 'partners:auth' || body.action === 'partners:save') {
+      if (!PARTNERS_KEY) {
+        return res.status(503).json({ ok: false, error: 'PARTNERS_ADMIN_KEY belum diisi di Vercel' });
+      }
+      if (!keyOk(body.key)) {
+        return res.status(401).json({ ok: false, error: 'kunci pemilik salah' });
+      }
+      if (body.action === 'partners:auth') return res.status(200).json({ ok: true });
+      const clean = cleanPartners(body);
+      await db.collection('config').doc('partners').set({ ...clean, updatedAt: FieldValue.serverTimestamp() });
+      return res.status(200).json({ ok: true, partners: clean });
+    }
 
     if (!SHARED_TOKEN || body.token !== SHARED_TOKEN) {
       return res.status(401).json({
