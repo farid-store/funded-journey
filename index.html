@@ -2633,7 +2633,7 @@ img,canvas,svg,video{max-width:100%}
       const ref = db.collection('accounts').doc(currentAccountId).collection('marketBars');
       const f0 = Math.floor(fromSec), t0 = Math.ceil(toSec), rows = s => s.docs.map(d => ({ id:d.id, ...d.data() }));
       const attempts = [
-        () => ref.where('time','>=',f0).where('time','<=',t0).orderBy('time','asc').limit(300).get(),
+        () => ref.where('time','>=',f0).where('time','<=',t0).orderBy('time','asc').limit(500).get(),
         () => ref.where('time','>=',f0).where('time','<=',t0).orderBy('time','asc').limit(250).get(),
         () => ref.orderBy('time','desc').limit(250).get()          // sama dengan listener lama (pasti diizinkan rules)
       ];
@@ -4548,10 +4548,10 @@ function selectCandles(m, extra){
     if(!best || score < best.score) best = { tf, ps, arr, score, inWin };
   });
   if(!best) return { candles:[], tf:'', coverage:'none' };
-  const span = Math.max(best.inWin, 8), pad = Math.max(8, Math.round(span*0.35)), padAfter = Math.max(pad, 40);
+  const ctx = Math.max(60, 150 - best.inWin), pad = Math.round(ctx*0.4), padAfter = ctx - pad;   // total ±150 bar: konteks sebelum & sesudah trade
   const from = w.o - pad*best.ps, to = w.c + padAfter*best.ps;
   let cs = best.arr.filter(b => b.time + best.ps > from && b.time < to);
-  if(cs.length > 170) cs = cs.slice(cs.length - 170);
+  if(cs.length > 230) cs = cs.slice(cs.length - 230);
   const first = cs[0].time, last = cs[cs.length-1].time + best.ps;
   const coverage = (first <= w.o + best.ps && last >= w.c - best.ps) ? 'full' : 'partial';
   return { candles:cs, tf:best.tf, ps:best.ps, coverage };
@@ -4561,7 +4561,7 @@ function ensureBars(m){
   if(cur && (cur.state === 'loading' || (cur.state === 'ok' && Date.now() - cur.at < 1800000) || (cur.state === 'empty' && Date.now() - cur.at < 300000) || (cur.state === 'unsupported') || (cur.state === 'error' && Date.now() - cur.at < 120000))) return cur;
   const fx = fxData();
   if(typeof fx.fetchBarsRange !== 'function') { const st = { state:'unsupported', bars:[], at:Date.now() }; barState.set(k, st); return st; }
-  const w = tradeWindow(m), padS = Math.max(3600, Math.min(86400*2, (w.c - w.o)*0.6)), padA = Math.max(4*3600, Math.min(86400*2, (w.c - w.o)*2 + 4*3600));
+  const w = tradeWindow(m), padS = Math.max(3*3600, Math.min(86400*2, (w.c - w.o)*0.8)), padA = Math.max(6*3600, Math.min(86400*2, (w.c - w.o)*2 + 6*3600));
   const st = { state:'loading', bars:cur?.bars || [], at:Date.now() };
   barState.set(k, st);
   fx.fetchBarsRange(w.o - padS, w.c + padA).then(rows => {
