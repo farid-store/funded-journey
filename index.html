@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<script>try{var __t=localStorage.getItem('ffx_theme')||'citadel';if(__t==='soft'||__t==='graphite'){document.documentElement.dataset.theme=__t;document.documentElement.dataset.pro='1'}}catch(e){}</script>
+<script>try{var __t=localStorage.getItem('ffx_theme')||'citadel';if(__t==='soft'||__t==='graphite'||__t==='emerald'){document.documentElement.dataset.theme=__t;document.documentElement.dataset.pro='1'}}catch(e){}</script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FaridFX — Citadel Command Deck</title>
@@ -1334,6 +1334,238 @@ html[data-theme="graphite"] .cal-seg{background:rgba(140,145,157,0.08)}
 html[data-theme="graphite"] .cal-next,html[data-theme="graphite"] .cal-guard{background:rgba(140,145,157,0.07)}
 html[data-theme="graphite"] .cal-empty code{background:rgba(140,145,157,0.15)}
 @media (max-width:700px){html[data-theme="graphite"] .cal-vals{background:rgba(140,145,157,0.08)}}
+html[data-theme="emerald"] option{background:rgb(16,33,32)}
+html[data-theme="emerald"] ::selection{background:color-mix(in srgb,var(--gold) 35%,transparent)}
+html[data-theme="emerald"] ::-webkit-scrollbar-thumb{background:rgb(45,89,86)}
+html[data-theme="emerald"] .world{background:radial-gradient(900px 520px at 78% -8%,color-mix(in srgb,var(--amber) 16%,transparent),transparent 70%),
+  radial-gradient(800px 560px at 6% 8%,color-mix(in srgb,var(--cyan) 12%,transparent),transparent 70%),
+  linear-gradient(180deg,rgb(8,17,17) 0%,rgb(9,20,20) 55%,rgb(5,11,10) 100%)}
+html[data-theme="emerald"] .world .stars{background-image:radial-gradient(1.3px 1.3px at 12% 18%,rgb(255,255,255) 50%,transparent 52%),radial-gradient(1px 1px at 34% 8%,rgb(196,204,212) 50%,transparent 52%),radial-gradient(1.4px 1.4px at 58% 22%,rgb(255,255,255) 50%,transparent 52%),radial-gradient(1px 1px at 81% 12%,rgb(213,221,229) 50%,transparent 52%),radial-gradient(1.2px 1.2px at 92% 34%,rgb(255,255,255) 50%,transparent 52%),radial-gradient(1px 1px at 22% 40%,rgb(193,216,232) 50%,transparent 52%),radial-gradient(1.1px 1.1px at 70% 46%,rgb(255,255,255) 50%,transparent 52%)}
+html[data-theme="emerald"] .world .floor{background-image:linear-gradient(color-mix(in srgb,var(--cyan) 22%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--cyan) 20%,transparent) 1px,transparent 1px);-webkit-mask-image:linear-gradient(to top,rgb(0,0,0) 5%,transparent 78%);mask-image:linear-gradient(to top,rgb(0,0,0) 5%,transparent 78%)}
+html[data-theme="emerald"] .world .horizon{background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--gold) 55%,transparent),transparent)}
+html[data-theme="emerald"] .gpanel,html[data-theme="emerald"] .card,html[data-theme="emerald"] .nav{background:linear-gradient(180deg,rgba(25,51,50,0.94),rgba(13,28,27,0.96))}
+html[data-theme="emerald"] .coin span{background:linear-gradient(150deg,var(--gold),var(--gold) 60%,rgb(42,105,101))}
+html[data-theme="emerald"] .coin span.f,html[data-theme="emerald"] .coin span.b{color:rgb(17,51,49);background:radial-gradient(circle at 30% 25%,rgb(239,233,212),var(--gold) 45%,var(--gold));box-shadow:inset 0 0 0 4px rgba(122.0,86.0,12.0,0.45)}
+html[data-theme="emerald"] .brand h1{text-shadow:none}
+html[data-theme="emerald"] .bar .trk{background:rgb(7,14,14);border:1px solid rgba(255,255,255,0.1)}
+html[data-theme="emerald"] .bar .trk::after{background:repeating-linear-gradient(90deg,transparent 0 9px,rgba(0,0,0,0.45) 9px 10px)}
+html[data-theme="emerald"] .bar.hp .trk i{background:linear-gradient(90deg,var(--red),var(--amber) 45%,var(--green));color:var(--green)}
+html[data-theme="emerald"] .bar.sh .trk i{background:linear-gradient(90deg,var(--blue),var(--cyan));color:var(--cyan)}
+html[data-theme="emerald"] .bar.xp .trk i{background:linear-gradient(90deg,var(--gold2),var(--gold));color:var(--gold)}
+html[data-theme="emerald"] .gb i{color:rgb(25,74,71);border:1px solid rgba(28,83,79,0.5);background:linear-gradient(135deg,rgb(233,227,198),var(--gold) 55%,var(--gold))}
+html[data-theme="emerald"] .gb .tp{background:linear-gradient(135deg,rgb(240,236,214),var(--gold))}
+html[data-theme="emerald"] .tk-src{background:rgba(0,0,0,0.4)}
+html[data-theme="emerald"] .tk-src.live{color:var(--green)}
+html[data-theme="emerald"] .tk-price{color:rgb(255,255,255);text-shadow:none}
+html[data-theme="emerald"] .tk-chg{background:rgba(0,0,0,0.4)}
+html[data-theme="emerald"] .tk-range{background:rgb(7,14,14)}
+html[data-theme="emerald"] .tk-spark path{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--gold) 60%,transparent))}
+html[data-theme="emerald"] .rchip{background:linear-gradient(180deg,rgb(14,30,29),rgb(9,19,18));clip-path:none}
+html[data-theme="emerald"] .status{background:rgb(7,14,14)}
+html[data-theme="emerald"] .btn{background:linear-gradient(180deg,rgb(33,68,66),rgb(21,44,43));box-shadow:0 3px 0 rgb(2,4,10),inset 0 1px 0 rgba(255,255,255,.12);clip-path:none}
+html[data-theme="emerald"] .btn:active{box-shadow:0 1px 0 rgb(2,4,10),inset 0 1px 0 rgba(255,255,255,.1)}
+html[data-theme="emerald"] .btn.primary{background:linear-gradient(180deg,var(--gold),var(--amber));color:rgb(10,31,30);border-color:rgb(235,230,204);box-shadow:0 3px 0 rgb(122,74,0),0 0 18px color-mix(in srgb,var(--gold) 25%,transparent)}
+html[data-theme="emerald"] .btn.danger{background:linear-gradient(180deg,var(--red),var(--red));border-color:rgb(238,211,217);box-shadow:0 3px 0 rgb(90,15,34)}
+html[data-theme="emerald"] .btn.ghost{background:rgba(255,255,255,0.04)}
+html[data-theme="emerald"] .sel,html[data-theme="emerald"] .search,html[data-theme="emerald"] .select{background:rgb(7,14,14)}
+html[data-theme="emerald"] .pill2{background:rgb(14,30,29);clip-path:none}
+html[data-theme="emerald"] .pill2.on{background:color-mix(in srgb,var(--green) 10%,transparent);border-color:color-mix(in srgb,var(--green) 45%,transparent);color:rgb(204,236,222)}
+html[data-theme="emerald"] .pill2.warn{background:color-mix(in srgb,var(--amber) 10%,transparent);border-color:color-mix(in srgb,var(--amber) 50%,transparent);color:rgb(231,217,192)}
+html[data-theme="emerald"] .pill2.danger{background:color-mix(in srgb,var(--red) 12%,transparent);border-color:color-mix(in srgb,var(--red) 55%,transparent);color:rgb(240,214,220)}
+html[data-theme="emerald"] .account-strip span b{color:rgb(255,255,255)}
+html[data-theme="emerald"] .alert.warn{background:color-mix(in srgb,var(--amber) 9%,transparent);color:rgb(233,221,198)}
+html[data-theme="emerald"] .alert.danger{background:color-mix(in srgb,var(--red) 10%,transparent);color:rgb(242,221,225)}
+html[data-theme="emerald"] .alert.info{background:color-mix(in srgb,var(--cyan) 8%,transparent);color:rgb(223,239,243)}
+html[data-theme="emerald"] .alert .abtn{border:1px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.3);color:rgb(255,255,255)}
+html[data-theme="emerald"] .tab:hover{color:rgb(255,255,255)}
+html[data-theme="emerald"] .tico{border:1px solid rgba(255,255,255,0.35);box-shadow:0 4px 0 rgba(0.0,0.0,0.0,0.5),inset 0 1px 0 rgba(255,255,255,.5)}
+html[data-theme="emerald"] .tico span{filter:drop-shadow(0 2px 0 rgba(0.0,0.0,0.0,0.35))}
+html[data-theme="emerald"] .tab:active .tico{box-shadow:0 1px 0 rgba(0.0,0.0,0.0,0.5)}
+html[data-theme="emerald"] .tab.active .tico{box-shadow:0 4px 0 rgba(0.0,0.0,0.0,0.5),0 0 0 2px rgba(255,255,255,.6),0 0 26px var(--c1)}
+html[data-theme="emerald"] .tab .pip{border:2px solid rgb(255,255,255)}
+html[data-theme="emerald"] .state{background:rgba(13,28,27,0.85)}
+html[data-theme="emerald"] .state code{background:rgba(0,0,0,0.45)}
+html[data-theme="emerald"] .arena{background:radial-gradient(90% 120% at 50% 110%,rgb(33,71,69) 0%,rgb(16,37,36) 55%,rgb(9,19,18) 100%)}
+html[data-theme="emerald"] .arena-hud b{text-shadow:none}
+html[data-theme="emerald"] .arena-hud em{color:rgb(255,255,255);background:rgba(0,0,0,0.5)}
+html[data-theme="emerald"] .arena-tip{background:rgba(5,12,12,0.92);color:rgb(255,255,255)}
+html[data-theme="emerald"] .hero{background:radial-gradient(110% 150% at 72% 108%,rgb(33,71,69) 0%,rgb(17,38,37) 55%,rgb(10,22,21) 100%)}
+html[data-theme="emerald"] .hero-info b{text-shadow:none}
+html[data-theme="emerald"] .hero-info em{color:rgb(255,255,255);background:rgba(0,0,0,0.45)}
+html[data-theme="emerald"] .iso-a{fill:rgb(21,47,45);stroke:color-mix(in srgb,var(--cyan) 22%,transparent)}
+html[data-theme="emerald"] .iso-b{fill:rgb(17,38,36);stroke:color-mix(in srgb,var(--cyan) 22%,transparent)}
+html[data-theme="emerald"] .blk polygon{stroke:rgba(4,9,9,0.55)}
+html[data-theme="emerald"] .lbl{fill:rgb(255,255,255);stroke:rgb(3,8,7)}
+html[data-theme="emerald"] .val{stroke:rgb(3,8,7)}
+html[data-theme="emerald"] .section-head h2{color:rgb(255,255,255)}
+html[data-theme="emerald"] .kpi::before{background:radial-gradient(circle,color-mix(in srgb,var(--gold) 20%,transparent),transparent 70%)}
+html[data-theme="emerald"] .chart{background:rgb(7,14,14)}
+html[data-theme="emerald"] .chart svg polyline{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--gold) 50%,transparent))}
+html[data-theme="emerald"] .metric,html[data-theme="emerald"] .statbox,html[data-theme="emerald"] .info{background:linear-gradient(180deg,rgb(14,30,29),rgb(9,19,18))}
+html[data-theme="emerald"] th{background:rgb(19,41,39)}
+html[data-theme="emerald"] tbody tr:nth-child(even){background:rgba(255,255,255,0.02)}
+html[data-theme="emerald"] tbody tr:hover{background:color-mix(in srgb,var(--gold) 7%,transparent)}
+html[data-theme="emerald"] .strong{color:rgb(255,255,255)}
+html[data-theme="emerald"] .tag.buy{color:rgb(204,236,222);background:color-mix(in srgb,var(--green) 14%,transparent);border-color:color-mix(in srgb,var(--green) 50%,transparent)}
+html[data-theme="emerald"] .tag.sell{color:rgb(240,214,220);background:color-mix(in srgb,var(--red) 15%,transparent);border-color:color-mix(in srgb,var(--red) 55%,transparent)}
+html[data-theme="emerald"] .tag.neutral,html[data-theme="emerald"] .tag.low{background:color-mix(in srgb,var(--blue) 10%,transparent)}
+html[data-theme="emerald"] .tag.high{color:rgb(240,214,220);background:color-mix(in srgb,var(--red) 15%,transparent);border-color:color-mix(in srgb,var(--red) 55%,transparent)}
+html[data-theme="emerald"] .tag.medium{color:rgb(231,217,192);background:color-mix(in srgb,var(--amber) 14%,transparent);border-color:color-mix(in srgb,var(--amber) 55%,transparent)}
+html[data-theme="emerald"] .riskbar{background:rgb(7,14,14)}
+html[data-theme="emerald"] .riskbar i::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent)}
+html[data-theme="emerald"] .trend-badge{background:linear-gradient(180deg,rgb(14,30,29),rgb(9,19,18))}
+html[data-theme="emerald"] .trend-badge .dirbox{border:1px solid rgba(255,255,255,0.35);box-shadow:0 3px 0 rgba(0.0,0.0,0.0,0.5)}
+html[data-theme="emerald"] .trend-badge.up .dirbox{background:linear-gradient(var(--green),rgb(37,100,96));color:rgb(11,29,28)}
+html[data-theme="emerald"] .trend-badge.down .dirbox{background:linear-gradient(var(--red),var(--red));color:rgb(255,255,255)}
+html[data-theme="emerald"] .trend-badge.flat .dirbox{background:linear-gradient(var(--gold),rgb(42,120,114));color:rgb(10,31,30)}
+html[data-theme="emerald"] .mh-bar{background:rgb(7,14,14)}
+html[data-theme="emerald"] .cal-sum span{background:rgb(14,30,29)}
+html[data-theme="emerald"] .cal-sum b{color:rgb(255,255,255)}
+html[data-theme="emerald"] .cal-cell{background:rgb(14,30,29)}
+html[data-theme="emerald"] .cal-cell.has-data:hover{box-shadow:0 18px 26px rgba(0.0,0.0,0.0,0.55)}
+html[data-theme="emerald"] .cal-cell.pos-day{background:linear-gradient(160deg,color-mix(in srgb,var(--green) 28%,transparent),rgba(25,65,63,0.35));border-color:color-mix(in srgb,var(--green) 55%,transparent)}
+html[data-theme="emerald"] .cal-cell.neg-day{background:linear-gradient(160deg,color-mix(in srgb,var(--red) 28%,transparent),rgba(35,84,81,0.4));border-color:color-mix(in srgb,var(--red) 55%,transparent)}
+html[data-theme="emerald"] .cal-cell.pos-day .p,html[data-theme="emerald"] .cal-cell.neg-day .p{color:rgb(255,255,255)}
+html[data-theme="emerald"] .cal-week{background:rgb(9,19,18)}
+html[data-theme="emerald"] .integrity.ok{border-color:color-mix(in srgb,var(--green) 50%,transparent)}
+html[data-theme="emerald"] .integrity.warn{border-color:color-mix(in srgb,var(--amber) 60%,transparent)}
+html[data-theme="emerald"] .quest{background:linear-gradient(180deg,rgb(14,30,29),rgb(9,19,18))}
+html[data-theme="emerald"] .quest.done{border-color:color-mix(in srgb,var(--green) 55%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--green) 10%,transparent),rgb(9,19,18))}
+html[data-theme="emerald"] .modal-overlay{background:rgba(4,9,9,0.78)}
+html[data-theme="emerald"] .modal{background:linear-gradient(180deg,rgb(25,52,51),rgb(11,24,23));box-shadow:var(--shadow),0 0 40px color-mix(in srgb,var(--gold) 12%,transparent)}
+html[data-theme="emerald"] .x-close{background:rgb(14,24,23);color:var(--red)}
+html[data-theme="emerald"] .x-close:hover{background:rgb(21,47,45)}
+html[data-theme="emerald"] .diag-hint{border:1px solid color-mix(in srgb,var(--amber) 45%,transparent);color:rgb(233,221,198)}
+html[data-theme="emerald"] .diag-log .rej{background:color-mix(in srgb,var(--red) 9%,transparent);color:rgb(240,214,220)}
+html[data-theme="emerald"] .news-item{background:rgb(14,30,29)}
+html[data-theme="emerald"] .news-item .t{color:rgb(255,255,255)}
+html[data-theme="emerald"] .wallet-card{background:linear-gradient(180deg,rgb(19,41,39),rgb(11,24,23))}
+html[data-theme="emerald"] .net-badge{color:rgb(12,31,29);border:1px solid rgba(255,255,255,0.5);box-shadow:0 3px 0 rgba(0.0,0.0,0.0,0.5)}
+html[data-theme="emerald"] .net-badge.btc{background:linear-gradient(145deg,var(--amber),var(--amber))}
+html[data-theme="emerald"] .net-badge.eth{background:linear-gradient(145deg,rgb(229,233,245),rgb(163,174,194))}
+html[data-theme="emerald"] .net-badge.bnb{background:linear-gradient(145deg,var(--gold),var(--gold))}
+html[data-theme="emerald"] .net-badge.trx{background:linear-gradient(145deg,var(--red),var(--red))}
+html[data-theme="emerald"] .toast{background:linear-gradient(180deg,rgb(30,60,58),rgb(14,30,29));box-shadow:var(--shadow),0 0 22px color-mix(in srgb,var(--gold) 20%,transparent)}
+html[data-theme="emerald"] .mtf-card{color:rgb(255,255,255);background:linear-gradient(180deg,rgb(25,52,51),rgb(11,24,23));box-shadow:0 5px 0 rgba(0.0,0.0,0.0,0.5)}
+html[data-theme="emerald"] .mtf-card.sel{box-shadow:0 5px 0 rgba(0.0,0.0,0.0,0.5),0 0 26px color-mix(in srgb,var(--gold) 35%,transparent)}
+html[data-theme="emerald"] .mtf-card.up{background:linear-gradient(180deg,color-mix(in srgb,var(--green) 28%,transparent),rgb(8,17,16))}
+html[data-theme="emerald"] .mtf-card.down{background:linear-gradient(180deg,color-mix(in srgb,var(--red) 30%,transparent),rgb(9,18,17))}
+html[data-theme="emerald"] .mtf-card.flat{background:linear-gradient(180deg,color-mix(in srgb,var(--amber) 26%,transparent),rgb(7,16,16))}
+html[data-theme="emerald"] .mtf-card small{color:rgba(255,255,255,0.75)}
+html[data-theme="emerald"] .fibo-head{background:rgb(9,19,18)}
+html[data-theme="emerald"] .fibo-head b{color:rgb(255,255,255)}
+html[data-theme="emerald"] .lsum b{color:rgb(255,255,255)}
+html[data-theme="emerald"] .lad{background:rgb(7,14,14)}
+html[data-theme="emerald"] .lrow .ln{color:rgb(255,255,255)}
+html[data-theme="emerald"] .lrow .lp{color:rgb(255,255,255)}
+html[data-theme="emerald"] .lrow.sl{background:linear-gradient(90deg,color-mix(in srgb,var(--red) 26%,transparent),transparent)}
+html[data-theme="emerald"] .lrow.tp{background:linear-gradient(90deg,color-mix(in srgb,var(--green) 12%,transparent),transparent)}
+html[data-theme="emerald"] .lrow.tp.sel{background:linear-gradient(90deg,color-mix(in srgb,var(--green) 34%,transparent),transparent)}
+html[data-theme="emerald"] .lrow.ote{background:linear-gradient(90deg,color-mix(in srgb,var(--cyan) 28%,transparent),transparent)}
+html[data-theme="emerald"] .lrow.price{background:linear-gradient(90deg,var(--gold),var(--gold));color:rgb(10,31,30);box-shadow:0 0 18px color-mix(in srgb,var(--gold) 50%,transparent)}
+html[data-theme="emerald"] .lrow.price .ln,html[data-theme="emerald"] .lrow.price .lp,html[data-theme="emerald"] .lrow.price .ld{color:rgb(10,31,30)}
+html[data-theme="emerald"] .tfchip{background:rgb(14,30,29)}
+html[data-theme="emerald"] .tfchip.on{background:linear-gradient(180deg,var(--gold),var(--amber));color:rgb(10,31,30);border-color:rgb(235,230,204);box-shadow:0 0 14px color-mix(in srgb,var(--gold) 30%,transparent)}
+html[data-theme="emerald"] .tgl input{accent-color:var(--gold)}
+html[data-theme="emerald"] .sig-sum{background:rgb(14,30,29)}
+html[data-theme="emerald"] .sig-sum.buy{background:color-mix(in srgb,var(--green) 16%,transparent);border-color:color-mix(in srgb,var(--green) 55%,transparent)}
+html[data-theme="emerald"] .sig-sum.sell{background:color-mix(in srgb,var(--red) 17%,transparent);border-color:color-mix(in srgb,var(--red) 60%,transparent)}
+html[data-theme="emerald"] .sig-sum.bw{background:color-mix(in srgb,var(--blue) 15%,transparent);border-color:color-mix(in srgb,var(--blue) 50%,transparent)}
+html[data-theme="emerald"] .sig-sum.sw{background:color-mix(in srgb,var(--purple) 15%,transparent);border-color:color-mix(in srgb,var(--purple) 50%,transparent)}
+html[data-theme="emerald"] .sig-card.buy{border-color:color-mix(in srgb,var(--green) 55%,transparent)}
+html[data-theme="emerald"] .sig-card.sell{border-color:color-mix(in srgb,var(--red) 55%,transparent)}
+html[data-theme="emerald"] .sig-tf{color:rgb(255,255,255)}
+html[data-theme="emerald"] .sig-pill{border:1px solid rgba(255,255,255,0.3)}
+html[data-theme="emerald"] .sig-pill.buy{background:rgb(37,100,96);color:rgb(225,244,236)}
+html[data-theme="emerald"] .sig-pill.sell{background:var(--red);color:rgb(246,233,236)}
+html[data-theme="emerald"] .sig-pill.bw{background:var(--blue);color:rgb(227,238,244)}
+html[data-theme="emerald"] .sig-pill.sw{background:rgb(107,94,143);color:rgb(237,232,246)}
+html[data-theme="emerald"] .sig-pill.none{background:rgb(23,46,44)}
+html[data-theme="emerald"] .sig-box{background:rgb(7,14,14)}
+html[data-theme="emerald"] .sig-box h5 em{color:rgb(255,255,255)}
+html[data-theme="emerald"] .div-chip.bull{background:color-mix(in srgb,var(--green) 15%,transparent);color:rgb(204,236,222);border-color:color-mix(in srgb,var(--green) 50%,transparent)}
+html[data-theme="emerald"] .div-chip.bear{background:color-mix(in srgb,var(--red) 16%,transparent);color:rgb(240,214,220);border-color:color-mix(in srgb,var(--red) 55%,transparent)}
+html[data-theme="emerald"] .sig-pill.fm{background:rgb(34,82,79);color:rgb(227,241,245)}
+html[data-theme="emerald"] .sig-sum.fm{background:color-mix(in srgb,var(--cyan) 12%,transparent);border-color:color-mix(in srgb,var(--cyan) 45%,transparent)}
+html[data-theme="emerald"] .cx{background:rgb(14,30,29)}
+html[data-theme="emerald"] .cx.ok{background:color-mix(in srgb,var(--green) 13%,transparent);color:rgb(204,236,222);border-color:color-mix(in srgb,var(--green) 45%,transparent)}
+html[data-theme="emerald"] .cx.warn{background:color-mix(in srgb,var(--amber) 13%,transparent);color:rgb(231,217,192);border-color:color-mix(in srgb,var(--amber) 50%,transparent)}
+html[data-theme="emerald"] .cx.bad{background:color-mix(in srgb,var(--red) 14%,transparent);color:rgb(240,214,220);border-color:color-mix(in srgb,var(--red) 55%,transparent)}
+html[data-theme="emerald"] .calib.ok{background:color-mix(in srgb,var(--green) 10%,transparent);border-color:color-mix(in srgb,var(--green) 40%,transparent);color:rgb(216,240,230)}
+html[data-theme="emerald"] .calib.bad{background:color-mix(in srgb,var(--red) 10%,transparent);border-color:color-mix(in srgb,var(--red) 40%,transparent);color:rgb(242,221,225)}
+html[data-theme="emerald"] .calib.none{background:rgba(255,255,255,0.04)}
+html[data-theme="emerald"] .mini{background:rgb(7,14,14)}
+html[data-theme="emerald"] .mini i{background:linear-gradient(90deg,var(--gold),var(--green))}
+@media (max-width:900px){html[data-theme="emerald"] .nav{background:linear-gradient(180deg,rgba(25,51,50,0.98),rgba(9,19,18,0.99))}}
+html[data-theme="emerald"] .state::after{background:linear-gradient(90deg,rgb(22,47,45) 25%,rgb(30,61,59) 50%,rgb(22,47,45) 75%)}
+html[data-theme="emerald"] .hm i{background:color-mix(in srgb,var(--blue) 6%,transparent)}
+html[data-theme="emerald"] .cv{background:rgb(8,19,18)}
+html[data-theme="emerald"] .lg{background:linear-gradient(90deg,rgb(43,95,92),var(--cyan),var(--gold),rgb(255,255,255))}
+html[data-theme="emerald"] .mr-share .mr-preview{background:rgb(7,14,14)}
+html[data-theme="emerald"] .intel-card{background:linear-gradient(145deg,rgba(24,49,47,0.92),rgba(10,23,22,0.96))}
+html[data-theme="emerald"] .intel-meter{background:rgba(255,255,255,0.08)}
+html[data-theme="emerald"] .intel-replay div{background:rgba(255,255,255,0.035)}
+html[data-theme="emerald"] #marketReplayShare .mr-eyebrow{color:var(--gold,var(--gold))}
+html[data-theme="emerald"] #marketReplayShare .mr-live-pill i{background:var(--green);box-shadow:0 0 10px color-mix(in srgb,var(--green) 45%,transparent)}
+html[data-theme="emerald"] #marketReplayShare .mr-overview-item{background:linear-gradient(145deg,rgba(26,51,50,0.72),rgba(11,24,23,0.72))}
+html[data-theme="emerald"] #marketReplayShare .mr-overview-item .positive{color:var(--green)}
+html[data-theme="emerald"] #marketReplayShare .mr-overview-item .negative{color:var(--red)}
+html[data-theme="emerald"] #marketReplayShare .mr-preview{background:radial-gradient(ellipse at top,rgba(42,81,79,0.35),transparent 65%),rgb(7,16,15)}
+html[data-theme="emerald"] #marketReplayShare .mr-preview canvas{box-shadow:0 16px 45px rgba(0.0,0.0,0.0,0.28)}
+html[data-theme="emerald"] #marketReplayShare .mr-cert-controls select:focus,html[data-theme="emerald"] #marketReplayShare .mr-cert-controls input:focus{border-color:var(--gold,var(--gold))}
+html[data-theme="emerald"] #marketReplayShare .mr-target-panel{background:linear-gradient(135deg,rgba(26,51,50,0.7),rgba(10,22,21,0.85))}
+html[data-theme="emerald"] #marketReplayShare .mr-target-track{background:rgba(255,255,255,0.08)}
+html[data-theme="emerald"] #marketReplayShare .mr-target-track i{background:linear-gradient(90deg,var(--green),var(--gold))}
+html[data-theme="emerald"] #marketReplayShare .mr2-eyebrow{color:var(--gold,var(--gold))}
+html[data-theme="emerald"] #marketReplayShare .mr2-pill i{background:var(--green);box-shadow:0 0 10px color-mix(in srgb,var(--green) 45%,transparent)}
+html[data-theme="emerald"] #marketReplayShare .mr2-meta-i{background:linear-gradient(145deg,rgba(26,51,50,0.72),rgba(11,24,23,0.72))}
+html[data-theme="emerald"] #marketReplayShare .mr2-meta-i b.pos{color:var(--green)}
+html[data-theme="emerald"] #marketReplayShare .mr2-meta-i b.neg{color:var(--red)}
+html[data-theme="emerald"] #marketReplayShare .mr2-stage{background:radial-gradient(ellipse at top,rgba(42,81,79,0.35),transparent 60%),rgb(7,14,14)}
+html[data-theme="emerald"] #marketReplayShare .mr2-stage canvas{box-shadow:0 16px 45px rgba(0.0,0.0,0.0,0.35)}
+html[data-theme="emerald"] #marketReplayShare .mr2-controls select:focus,html[data-theme="emerald"] #marketReplayShare .mr2-controls input:focus{border-color:var(--gold,var(--gold))}
+html[data-theme="emerald"] #marketReplayShare .mr2-target{background:linear-gradient(135deg,rgba(26,51,50,0.7),rgba(10,22,21,0.85))}
+html[data-theme="emerald"] #marketReplayShare .mr2-track{background:rgba(255,255,255,0.08)}
+html[data-theme="emerald"] #marketReplayShare .mr2-track i{background:linear-gradient(90deg,var(--green),var(--gold))}
+html[data-theme="emerald"] .mr2-viewer{background:rgba(4,10,9,0.94)}
+html[data-theme="emerald"] .mr2-vbar{border-bottom:1px solid var(--line2,rgb(41,78,76))}
+html[data-theme="emerald"] .mr2-vscroll img{box-shadow:0 20px 60px rgb(0,0,0)}
+html[data-theme="emerald"] .mr2-vhint{color:var(--muted,rgb(182,188,205))}
+html[data-theme="emerald"] .ic-red{color:var(--red)}
+html[data-theme="emerald"] .ic-green{color:var(--green)}
+html[data-theme="emerald"] .ic-blue{color:var(--blue)}
+html[data-theme="emerald"] .ic-white{color:rgb(237,240,248)}
+html[data-theme="emerald"] .ic-amber{color:var(--amber)}
+html[data-theme="emerald"] .ic-gold{color:var(--gold)}
+html[data-theme="emerald"] .ic-silver{color:rgb(209,214,219)}
+html[data-theme="emerald"] .ic-bronze{color:var(--amber)}
+html[data-theme="emerald"] .ic-cyan{color:var(--cyan)}
+html[data-theme="emerald"] .ic-orange{color:var(--amber)}
+html[data-theme="emerald"] .tico .ic{color:rgb(255,255,255);filter:drop-shadow(0 2px 0 rgba(0.0,0.0,0.0,0.35))}
+html[data-theme="emerald"] button:focus-visible,html[data-theme="emerald"] a:focus-visible,html[data-theme="emerald"] input:focus-visible,html[data-theme="emerald"] select:focus-visible,html[data-theme="emerald"] textarea:focus-visible,html[data-theme="emerald"] .tab:focus-visible{outline:2px solid var(--gold,var(--gold))}
+@media (max-width:900px){html[data-theme="emerald"] .nav{-webkit-mask-image:linear-gradient(90deg,transparent 0,rgb(0,0,0) 8px,rgb(0,0,0) calc(100% - 8px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,rgb(0,0,0) 8px,rgb(0,0,0) calc(100% - 8px),transparent 100%)}
+html[data-theme="emerald"] .tab.active{background:rgba(255,255,255,0.07)}}
+html[data-theme="emerald"] #ptStrip{background:linear-gradient(135deg,rgba(26,51,50,0.75),rgba(10,22,21,0.85))}
+html[data-theme="emerald"] .pt-chip{background:color-mix(in srgb,var(--a) 8%,rgb(14,30,29))}
+html[data-theme="emerald"] .pt-logo{color:rgb(13,27,26);background:linear-gradient(150deg,var(--a,var(--gold)),color-mix(in srgb,var(--a,var(--gold)) 55%,rgb(0,0,0)))}
+html[data-theme="emerald"] .pt-logo img{background:rgb(255,255,255)}
+html[data-theme="emerald"] .pt-disc{border:1px solid color-mix(in srgb,var(--amber) 40%,transparent);background:color-mix(in srgb,var(--amber) 7%,transparent);color:rgb(231,217,192)}
+html[data-theme="emerald"] .pt-card{background:linear-gradient(160deg,color-mix(in srgb,var(--a) 9%,rgb(18,39,37)),rgb(10,22,21))}
+html[data-theme="emerald"] .pt-code{background:rgba(255,255,255,0.03)}
+html[data-theme="emerald"] .pt-copy{background:rgb(21,44,43)}
+html[data-theme="emerald"] .pt-edit input{background:var(--surface2,rgb(17,38,37))}
+html[data-theme="emerald"] .pt-edit input.bad{border-color:var(--red)}
+html[data-theme="emerald"] .pt-err{color:var(--red)}
+html[data-theme="emerald"] #ptTools{background:rgba(255,255,255,0.03)}
+html[data-theme="emerald"] #ptTools textarea{background:var(--surface2,rgb(17,38,37))}
+html[data-theme="emerald"] #ptLogin input{background:var(--surface2,rgb(17,38,37))}
+html[data-theme="emerald"] .pt-status.ok{color:rgb(204,236,222);border-color:color-mix(in srgb,var(--green) 45%,transparent);background:color-mix(in srgb,var(--green) 8%,transparent)}
+html[data-theme="emerald"] .pt-status.bad{color:rgb(240,214,220);border-color:color-mix(in srgb,var(--red) 50%,transparent);background:color-mix(in srgb,var(--red) 8%,transparent)}
+html[data-theme="emerald"] .pt-status.warn{color:rgb(231,217,192);border-color:color-mix(in srgb,var(--amber) 50%,transparent);background:color-mix(in srgb,var(--amber) 7%,transparent)}
+html[data-theme="emerald"] .cal-seg{background:rgba(139,145,158,0.08)}
+html[data-theme="emerald"] .cal-next,html[data-theme="emerald"] .cal-guard{background:rgba(139,145,158,0.07)}
+html[data-theme="emerald"] .cal-empty code{background:rgba(139,145,158,0.15)}
+@media (max-width:700px){html[data-theme="emerald"] .cal-vals{background:rgba(139,145,158,0.08)}}
 /* THEME-MANUAL: palet, struktur "tanpa unsur game", dan saklar tema */
 html[data-theme="soft"]{color-scheme:light;
  --bg0:#f2f4f8;--bg1:#e9edf4;--text:#18213a;--muted:#55627d;--faint:#7c88a0;
@@ -1431,6 +1663,47 @@ html[data-pro] .hero-info{padding:2px 0;gap:4px}
 html[data-pro] .hero-info b{font:700 20px/1.25 var(--fh);letter-spacing:0;text-transform:none;color:var(--text);text-shadow:none}
 html[data-pro] .hero-info span{font-size:12px;color:var(--muted)}
 html[data-pro] .hero-info em{background:var(--surface2);color:var(--text);border:1px solid var(--line2)}
+
+/* ===== Emerald Glass (tema ke-4): kaca gelap + aksen teal ===== */
+html[data-theme="emerald"]{color-scheme:dark;
+ --bg0:#04090b;--bg1:#071417;--text:#eef8f7;--muted:#95b4b1;--faint:#638482;
+ --surface:#0b1719;--surface2:#0f2124;--surface3:#163034;
+ --line:rgba(140,255,235,.08);--line2:rgba(140,255,235,.17);
+ --gold:#2ee6c4;--gold2:#14b8a6;--gold-soft:rgba(46,230,196,.14);
+ --cyan:#4fd1e8;--cyan-soft:rgba(79,209,232,.13);--green:#34d399;--green-soft:rgba(52,211,153,.13);
+ --red:#fb5a6e;--red-soft:rgba(251,90,110,.13);--amber:#f5b942;--amber-soft:rgba(245,185,66,.14);
+ --blue:#5aa7ff;--blue-soft:rgba(90,167,255,.13);--purple:#9b6bff;--purple-soft:rgba(155,107,255,.14);
+ --brd:#1d3a3e;--edge:#02080a;--on-gold:#03211c;
+ --shadow:0 12px 40px rgba(0,0,0,.4);--shadow-sm:0 8px 28px rgba(0,0,0,.32);
+ --radius:16px;--radius-sm:12px;
+ --fh:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--fb:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+html[data-theme="emerald"] body{background:radial-gradient(1100px 620px at 8% -12%,rgba(40,210,185,.24),transparent 62%),radial-gradient(900px 520px at 100% 105%,rgba(22,130,120,.20),transparent 62%),linear-gradient(180deg,#05100f,#03080a 70%);background-attachment:fixed}
+html[data-theme="emerald"] .gpanel,html[data-theme="emerald"] .card{background:radial-gradient(420px 240px at 100% 100%,rgba(46,230,196,.13),transparent 70%),linear-gradient(150deg,rgba(24,58,60,.58),rgba(7,19,21,.88));border:1px solid var(--line2);box-shadow:var(--shadow-sm),inset 0 1px 0 rgba(255,255,255,.05);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-radius:var(--radius)}
+html[data-theme="emerald"] .rchip,html[data-theme="emerald"] .metric,html[data-theme="emerald"] .quest,html[data-theme="emerald"] .trend-badge,html[data-theme="emerald"] .news-item,html[data-theme="emerald"] .info,html[data-theme="emerald"] .cal-next,html[data-theme="emerald"] .cal-guard{background:linear-gradient(150deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line2);border-radius:var(--radius-sm)}
+html[data-theme="emerald"] .kpi{min-height:104px}
+html[data-theme="emerald"] .kpi:nth-child(3n+2){background:radial-gradient(420px 240px at 100% 100%,rgba(155,107,255,.20),transparent 70%),linear-gradient(150deg,rgba(54,34,92,.55),rgba(10,14,28,.88))}
+html[data-theme="emerald"] .nav{background:linear-gradient(180deg,rgba(14,34,36,.7),rgba(6,16,18,.8));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--line2);border-radius:var(--radius)}
+html[data-theme="emerald"] .logo{background:linear-gradient(145deg,#2ee6c4,#0e8f7e)}
+html[data-theme="emerald"] .btn{border-radius:12px;background:rgba(255,255,255,.04);border-color:var(--line2)}
+html[data-theme="emerald"] .btn.primary{background:linear-gradient(135deg,#2ee6c4,#14b8a6)!important;color:var(--on-gold)!important;box-shadow:0 6px 22px rgba(46,230,196,.28)}
+html[data-theme="emerald"] .sel,html[data-theme="emerald"] .search,html[data-theme="emerald"] input,html[data-theme="emerald"] select,html[data-theme="emerald"] textarea{background:rgba(255,255,255,.04);border-color:var(--line2);border-radius:12px}
+html[data-theme="emerald"] th{background:rgba(255,255,255,.035)}
+html[data-theme="emerald"] .cal-ccy{background:rgba(46,230,196,.12);color:var(--gold)}
+html[data-theme="emerald"] .cal-row{border-radius:12px}
+html[data-theme="emerald"] .cal-row:hover{background:rgba(46,230,196,.06)}
+html[data-theme="emerald"] ::-webkit-scrollbar-thumb{background:#1d3a3e}
+@media(min-width:901px){
+ html[data-theme="emerald"] .layout{grid-template-columns:236px minmax(0,1fr)}
+ html[data-theme="emerald"] .nav{padding:14px 10px;gap:3px}
+ html[data-theme="emerald"] .tab{flex-direction:row;justify-content:flex-start;align-items:center;gap:12px;width:100%;padding:10px 12px;font-size:13px;font-weight:600;text-align:left;border:1px solid transparent;border-radius:12px;color:var(--muted)}
+ html[data-theme="emerald"] .tab .tico{width:22px;height:22px;flex:none}
+ html[data-theme="emerald"] .tab .tico .ic{width:19px;height:19px}
+ html[data-theme="emerald"] .tab>span:last-child{text-align:left;line-height:1.25}
+ html[data-theme="emerald"] .tab:hover{background:rgba(255,255,255,.04);color:var(--text)}
+ html[data-theme="emerald"] .tab.active{background:linear-gradient(135deg,rgba(46,230,196,.17),rgba(46,230,196,.04));border-color:rgba(46,230,196,.45);color:var(--text);box-shadow:0 0 24px rgba(46,230,196,.12)}
+ html[data-theme="emerald"] .tab.active::before{display:none}
+}
+.sw.emerald{background:linear-gradient(135deg,#071417 50%,#2ee6c4 50%)}
 
 </style>
 </head>
@@ -2429,10 +2702,10 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
 /* FaridFX tema: Citadel (asli) · Professional Soft (terang) · Graphite Pro (gelap netral) */
 (function(){
 'use strict';
-const KEY = 'ffx_theme', THEMES = ['citadel','soft','graphite'];
-const META = { citadel:'#04060d', soft:'#f2f4f8', graphite:'#0d0f13' };
-const NAMES = { citadel:'Citadel (tampilan asli)', soft:'Professional Soft (terang)', graphite:'Graphite Pro (gelap netral)' };
-const LABEL = { citadel:'Citadel', soft:'Soft', graphite:'Graphite' };
+const KEY = 'ffx_theme', THEMES = ['citadel','soft','graphite','emerald'];
+const META = { citadel:'#04060d', soft:'#f2f4f8', graphite:'#0d0f13', emerald:'#04090b' };
+const NAMES = { citadel:'Citadel (tampilan asli)', soft:'Professional Soft (terang)', graphite:'Graphite Pro (gelap netral)', emerald:'Emerald Glass (kaca gelap teal)' };
+const LABEL = { citadel:'Citadel', soft:'Soft', graphite:'Graphite', emerald:'Emerald' };
 const get = () => { try { const t = localStorage.getItem(KEY); return THEMES.includes(t) ? t : 'citadel'; } catch(e){ return 'citadel'; } };
 // teks bertema game -> padanan profesional (disimpan asli agar bisa dikembalikan)
 const RELABEL = [
