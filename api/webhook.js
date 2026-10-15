@@ -411,6 +411,19 @@ module.exports = async (req, res) => {
   if (req.method === 'GET') {
     let wantPartners = false;
     try { wantPartners = new URL(req.url, 'http://x').searchParams.get('partners') === '1'; } catch (e) {}
+    let calAcc = '';
+    try { const sp = new URL(req.url, 'http://x').searchParams; if (sp.get('calendar') === '1') calAcc = String(sp.get('acc') || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40); } catch (e) {}
+    if (calAcc) {
+      try {
+        const snap = await db.collection('accounts').doc(calAcc).collection('meta').doc('calendar').get();
+        res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+        if (!snap.exists) return res.status(200).json({ ok: true, events: [], updatedAt: null });
+        const d = snap.data() || {};
+        return res.status(200).json({ ok: true, events: d.events || [], updatedAt: d.updatedAt && d.updatedAt.toMillis ? d.updatedAt.toMillis() : null, source: d.source || 'mt5' });
+      } catch (e) {
+        return res.status(500).json({ ok: false, error: 'calendar read failed' });
+      }
+    }
     if (wantPartners) {
       try {
         const snap = await db.collection('config').doc('partners').get();
@@ -469,6 +482,35 @@ module.exports = async (req, res) => {
         ok: false,
         error: 'missing account.login',
       });
+    }
+
+    // Kalender ekonomi MT5 (dikirim EA berkala) -> accounts/{id}/meta/calendar
+    if (Array.isArray(body.calendar) && body.calendar.length) {
+      try {
+        const num = (v) => (Number.isFinite(Number(v)) && v !== null && v !== '' ? Number(v) : null);
+        const events = body.calendar.slice(0, 200).map((x) => {
+          const o = {
+            id: String((x && x.id) || '').slice(0, 60),
+            t: Math.floor(Number(x && x.t) || 0),
+            ccy: String((x && x.ccy) || '').slice(0, 6).toUpperCase(),
+            title: String((x && x.title) || '').slice(0, 120),
+            imp: Math.max(0, Math.min(3, Math.floor(Number(x && x.imp) || 0))),
+            u: String((x && x.u) || '').slice(0, 6),
+          };
+          ['a', 'f', 'p'].forEach((k) => { const v = x && x[k] !== undefined ? num(x[k]) : null; if (v !== null) o[k] = v; });
+          return o;
+        }).filter((o) => o.id && o.t > 0 && o.title);
+        if (events.length) {
+          await db.collection('accounts').doc(accountId).collection('meta').doc('calendar').set({
+            events,
+            count: events.length,
+            source: 'mt5',
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        }
+      } catch (calErr) {
+        console.warn('calendar write failed', calErr && calErr.message);
+      }
     }
 
     const positions = Array.isArray(body.positions)
