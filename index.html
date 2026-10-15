@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<script>try{var __t=localStorage.getItem('ffx_theme')||'citadel';if(__t==='soft'||__t==='graphite'||__t==='emerald'){document.documentElement.dataset.theme=__t;document.documentElement.dataset.pro='1'}}catch(e){}</script>
+<script>try{var __t=localStorage.getItem('ffx_theme')||'graphite';if(__t==='soft'||__t==='graphite'||__t==='emerald'){document.documentElement.dataset.theme=__t;document.documentElement.dataset.pro='1'}}catch(e){}</script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FaridFX — Citadel Command Deck</title>
@@ -1705,6 +1705,37 @@ html[data-theme="emerald"] ::-webkit-scrollbar-thumb{background:#1d3a3e}
 }
 .sw.emerald{background:linear-gradient(135deg,#071417 50%,#2ee6c4 50%)}
 
+/* ===== Citadel: ikon & layout lebih ringkas ===== */
+html:not([data-pro]) .layout{grid-template-columns:76px minmax(0,1fr);gap:12px}
+html:not([data-pro]) .nav{padding:8px 4px;gap:2px}
+html:not([data-pro]) .tab .tico{width:34px;height:34px;border-radius:10px;box-shadow:0 3px 0 rgba(0,0,0,.45)}
+html:not([data-pro]) .tab .tico .ic{width:19px;height:19px}
+html:not([data-pro]) .tab{gap:3px;padding:4px 2px 5px;font-size:8.5px;letter-spacing:.06em}
+html:not([data-pro]) .tab.active .tico{transform:translateY(-2px) scale(1.04);box-shadow:0 3px 0 rgba(0,0,0,.5),0 0 0 1.5px rgba(255,255,255,.55),0 0 14px var(--c1)}
+html:not([data-pro]) .logo{width:50px;height:50px}
+html:not([data-pro]) .brand{padding:10px 14px}
+html:not([data-pro]) .brand h1{font-size:20px}
+html:not([data-pro]) .arena{height:clamp(240px,36vh,340px)}
+html:not([data-pro]) .hero-scene{height:140px}
+html:not([data-pro]) .hero{margin-bottom:10px}
+html:not([data-pro]) .hero-info{padding:8px 0}
+html:not([data-pro]) .hero-info b{font-size:18px}
+html:not([data-pro]) .kpi{min-height:80px;padding:11px 14px}
+html:not([data-pro]) .tk-price{font-size:30px}
+html:not([data-pro]) .rchip{padding:8px 9px 7px}
+html:not([data-pro]) .rchip .ri .ic{width:15px;height:15px}
+html:not([data-pro]) .rchip b{font-size:15px;margin-top:4px}
+html:not([data-pro]) .panel{padding:14px 16px}
+html:not([data-pro]) .section-head h2{font-size:15px}
+html:not([data-pro]) .quest{padding:8px 10px}
+@media(max-width:900px){
+  html:not([data-pro]) .tab .tico{width:32px;height:32px}
+  html:not([data-pro]) .tab .tico .ic{width:18px;height:18px}
+  html:not([data-pro]) .tab{min-width:60px;font-size:9px}
+  html:not([data-pro]) .arena{height:clamp(200px,30vh,280px)}
+  html:not([data-pro]) .hero-scene{height:120px}
+}
+
 </style>
 </head>
 <body>
@@ -2706,7 +2737,7 @@ const KEY = 'ffx_theme', THEMES = ['citadel','soft','graphite','emerald'];
 const META = { citadel:'#04060d', soft:'#f2f4f8', graphite:'#0d0f13', emerald:'#04090b' };
 const NAMES = { citadel:'Citadel (tampilan asli)', soft:'Professional Soft (terang)', graphite:'Graphite Pro (gelap netral)', emerald:'Emerald Glass (kaca gelap teal)' };
 const LABEL = { citadel:'Citadel', soft:'Soft', graphite:'Graphite', emerald:'Emerald' };
-const get = () => { try { const t = localStorage.getItem(KEY); return THEMES.includes(t) ? t : 'citadel'; } catch(e){ return 'citadel'; } };
+const get = () => { try { const t = localStorage.getItem(KEY); return THEMES.includes(t) ? t : 'graphite'; } catch(e){ return 'graphite'; } };
 // teks bertema game -> padanan profesional (disimpan asli agar bisa dikembalikan)
 const RELABEL = [
   ['.brand .sub > span:first-child', null, 'Trading Dashboard'],
