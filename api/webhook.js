@@ -428,7 +428,8 @@ module.exports = async (req, res) => {
       try {
         const snap = await db.collection('config').doc('partners').get();
         res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=120');
-        return res.status(200).json({ ok: true, partners: snap.exists ? snap.data() : null });
+
+              return res.status(200).json({ ok: true, partners: snap.exists ? snap.data() : null });
       } catch (e) {
         return res.status(500).json({ ok: false, error: 'partners read failed' });
       }
@@ -465,6 +466,93 @@ module.exports = async (req, res) => {
       const clean = cleanPartners(body);
       await db.collection('config').doc('partners').set({ ...clean, updatedAt: FieldValue.serverTimestamp() });
       return res.status(200).json({ ok: true, partners: clean });
+    }
+
+
+    // ===== Trading Cost & ROI Tracker (sinkron Firestore) =====
+    // Tracker menggunakan kunci pemilik yang sama dengan modul Partner.
+    // Dokumen disimpan terpisah agar tidak bercampur dengan data akun MT5.
+    if (typeof body.action === 'string' && body.action.startsWith('costroi:')) {
+      if (!['costroi:load', 'costroi:save'].includes(body.action)) {
+        return res.status(400).json({ ok: false, error: 'unknown costroi action' });
+      }
+      if (!PARTNERS_KEY) {
+        return res.status(503).json({
+          ok: false,
+          error: 'PARTNERS_ADMIN_KEY belum diisi di Vercel',
+        });
+      }
+      if (!keyOk(body.key)) {
+        return res.status(401).json({
+          ok: false,
+          error: 'Kunci pemilik tidak cocok. Masukkan kembali kunci yang sama dengan PARTNERS_ADMIN_KEY di Vercel.',
+        });
+      }
+
+      const trackerRef = db.collection('config').doc('costroi_tracker');
+      if (body.action === 'costroi:load') {
+        const snap = await trackerRef.get();
+        const saved = snap.exists ? (snap.data() || {}) : {};
+        const data = {
+          rows: Array.isArray(saved.rows) ? saved.rows : [],
+          wd: Array.isArray(saved.wd) ? saved.wd : [],
+          fx: Number.isFinite(Number(saved.fx)) ? Number(saved.fx) : 16500,
+          rev: Math.max(0, Math.floor(num(saved.rev))),
+        };
+        res.setHeader('Cache-Control', 'no-store');
+        return res.status(200).json({ ok: true, data });
+      }
+
+      // Revision check mencegah satu browser menimpa perubahan terbaru dari browser lain.
+      const snap = await trackerRef.get();
+      const saved = snap.exists ? (snap.data() || {}) : {};
+      const currentRev = Math.max(0, Math.floor(num(saved.rev)));
+      const baseRev = Math.max(0, Math.floor(num(body.baseRev)));
+      if (baseRev !== currentRev) {
+        return res.status(409).json({
+          ok: false,
+          error: 'revision conflict',
+          data: {
+            rows: Array.isArray(saved.rows) ? saved.rows : [],
+            wd: Array.isArray(saved.wd) ? saved.wd : [],
+            fx: Number.isFinite(Number(saved.fx)) ? Number(saved.fx) : 16500,
+            rev: currentRev,
+          },
+        });
+      }
+
+      const safeRecord = (item) => {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
+        const out = {};
+        for (const [k, v] of Object.entries(item)) {
+          if (!/^[a-zA-Z][a-zA-Z0-9_]{0,39}$/.test(k)) continue;
+          if (typeof v === 'string') out[k] = v.slice(0, 1000);
+          else if (typeof v === 'number' && Number.isFinite(v)) out[k] = v;
+          else if (typeof v === 'boolean' || v === null) out[k] = v;
+        }
+        return out;
+      };
+      const rows = Array.isArray(body.rows)
+        ? body.rows.slice(0, 2000).map(safeRecord).filter(Boolean)
+        : [];
+      const wd = Array.isArray(body.wd)
+        ? body.wd.slice(0, 5000).map(safeRecord).filter(Boolean)
+        : [];
+      const fx = Number(body.fx);
+      if (!Number.isFinite(fx) || fx < 0 || fx > 1000000000) {
+        return res.status(400).json({ ok: false, error: 'nilai kurs fx tidak valid' });
+      }
+
+      const rev = currentRev + 1;
+      await trackerRef.set({
+        rows,
+        wd,
+        fx,
+        rev,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      res.setHeader('Cache-Control', 'no-store');
+      return res.status(200).json({ ok: true, rev });
     }
 
     if (!SHARED_TOKEN || body.token !== SHARED_TOKEN) {
@@ -771,7 +859,7 @@ module.exports = async (req, res) => {
         trades += 1;
         volume += num(t.volume);
 
-        if (n > 0) wins += 1;
+                        if (n > 0) wins += 1;
         else if (n < 0) losses += 1;
       });
 
