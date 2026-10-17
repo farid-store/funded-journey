@@ -6613,19 +6613,27 @@ function renderRoiPng(W,H){
     section('PROP FIRM BREAKDOWN',`${firms.length} firm tercatat`);
     const colXs=[pad+inner*.02,pad+inner*.48,pad+inner*.60,pad+inner*.70,pad+inner*.80,pad+inner*.90];
     const heads=['FIRM / PAKET','MODAL','PROFIT','LOSS','NET P/L','ROI'];
-    heads.forEach((v,i)=>text(v,i===0?colXs[i]:colXs[i]+(i===5?0:inner*.075),y,base*.61,'#8998af','700',i===0?'left':'right',i===0?inner*.43:inner*.09));
-    y+=base*1.1;const rowH=Math.max(28,H*.038), wdNeed=Math.max(90,H*.13), maxRows=Math.max(0,Math.floor((availableBottom-y-footerH-wdNeed)/rowH)), rows=firms.slice(0,Math.min(firms.length,maxRows));
+    heads.forEach((v,i)=>text(v,i===0?colXs[i]:colXs[i]+(i===5?0:inner*.075),y,base*.61,'#8998af','700','left'=== (i===0?'left':'right') ? 'left' : 'right',i===0?inner*.43:inner*.09));
+    y+=base*1.35;
+    // Reserve enough vertical space for a distinct withdrawal section and its rows.
+    const rowH=Math.max(28,H*.038), wdNeed=Math.max(base*9,H*(portrait?.28:square?.24:.23)), maxRows=Math.max(0,Math.floor((availableBottom-y-footerH-wdNeed)/rowH)), rows=firms.slice(0,Math.min(firms.length,maxRows));
     rows.forEach((f,i)=>{rr(pad,y- base*.72,inner,rowH*.88,5,i%2?'rgba(255,255,255,.025)':'rgba(255,255,255,.05)');text(f.name+(f.plan?' · '+f.plan:''),pad+inner*.02,y,base*.65,'#edf2fa','600','left',inner*.43);text(money(f.cost),pad+inner*.57,y,base*.65,'#dfe7f3','500','right',inner*.09);text(money(f.profit||0,true),pad+inner*.68,y,base*.65,'#45e2a2','500','right',inner*.09);text(money(f.loss||0),pad+inner*.78,y,base*.65,'#ff7189','500','right',inner*.09);text(money(f.net,true),pad+inner*.88,y,base*.65,f.net>=0?'#45e2a2':'#ff7189','600','right',inner*.09);text(pct(f.roi,true),W-pad,y,base*.65,f.roi==null?'#9eacc2':f.roi>=0?'#45e2a2':'#ff7189','600','right',inner*.08);y+=rowH;});
     if(firms.length>rows.length){text(`+ ${firms.length-rows.length} firm lainnya tidak ditampilkan pada format ini`,pad,y,base*.62,'#9eacc2');y+=base*1.1;}
   } else {
     section('PROP FIRM BREAKDOWN',`${firms.length} firm tercatat`);
-    const rowH=Math.max(58,H*.043), remain=Math.max(0,availableBottom-y-footerH-base*5), cap=H/W>1.6?9:(H/W>1.12?5:3), maxRows=Math.max(1,Math.min(cap,Math.floor(remain/rowH))), rows=firms.slice(0,Math.min(firms.length,maxRows));
+    const rowH=Math.max(58,H*.043), withdrawalReserve=Math.max(base*10,H*(portrait?.31:square?.25:.23)), remain=Math.max(0,availableBottom-y-footerH-withdrawalReserve), cap=H/W>1.6?7:(H/W>1.12?4:3), maxRows=Math.max(1,Math.min(cap,Math.floor(remain/rowH))), rows=firms.slice(0,Math.min(firms.length,maxRows));
     rows.forEach((f,i)=>{rr(pad,y,inner,rowH-7,9,i%2?'rgba(255,255,255,.035)':'rgba(255,255,255,.065)','rgba(180,195,220,.09)');const name=f.name+(f.plan?' · '+f.plan:'');text(name,pad+12,y+rowH*.32,base*.78,'#f0f4fa','700','left',inner*.65);text(`Modal ${money(f.cost)}   ·   Net P/L ${money(f.net,true)}`,pad+12,y+rowH*.67,base*.65,f.net>=0?'#45e2a2':'#ff7189','500','left',inner*.72);text(`ROI ${pct(f.roi,true)}`,W-pad-12,y+rowH*.53,base*.78,f.roi==null?'#9eacc2':f.roi>=0?'#45e2a2':'#ff7189','700','right',inner*.25);y+=rowH;});
     if(firms.length>rows.length){text(`+ ${firms.length-rows.length} firm lainnya tidak ditampilkan`,pad,y,base*.62,'#9eacc2');y+=base*1.05;}
   }
-  y+=base*.4;
-  const wdAvailable=Math.max(0,availableBottom-y-footerH-base*2.3);
-  if(wdAvailable>base*1.8){section('WITHDRAWAL HISTORY',`${wds.length} transaksi`);const wdRowH=Math.max(25,H*.022),maxWd=Math.max(0,Math.floor((availableBottom-y-footerH-base*1.4)/wdRowH)),list=wds.slice(0,Math.min(wds.length,maxWd,portrait?7:4));
+  // Visually separate the two tables: generous breathing room plus a subtle divider.
+  y+=Math.max(base*2.1,H*.018);
+  const wdAvailable=Math.max(0,availableBottom-y-footerH-base*3.2);
+  if(wdAvailable>base*1.8){
+    ctx.save();ctx.strokeStyle='rgba(217,181,109,.32)';ctx.lineWidth=Math.max(1,W/1400);ctx.beginPath();ctx.moveTo(pad,y-base*.55);ctx.lineTo(W-pad,y-base*.55);ctx.stroke();ctx.restore();
+    y+=base*.85;
+    section('WITHDRAWAL HISTORY',`${wds.length} transaksi`);
+    y+=base*.35;
+    const wdRowH=Math.max(25,H*.022),maxWd=Math.max(0,Math.floor((availableBottom-y-footerH-base*1.4)/wdRowH)),list=wds.slice(0,Math.min(wds.length,maxWd,portrait?6:4));
     if(!list.length){text('Belum ada withdrawal yang dicatat.',pad,y,base*.68,'#9eacc2');y+=base;}
     list.forEach((w,i)=>{rr(pad,y-base*.72,inner,wdRowH*.9,5,i%2?'rgba(255,255,255,.025)':'rgba(255,255,255,.05)');text(fmtDate(w.date),pad+inner*.015,y,base*.62,'#dfe7f3','500','left',inner*.18);text(w.firm||'—',pad+inner*.22,y,base*.62,'#dfe7f3','500','left',inner*.36);text(w.note||'Withdrawal',pad+inner*.59,y,base*.58,'#9eacc2','400','left',inner*.22);text(money(w.amount),W-pad-inner*.015,y,base*.62,'#6eb8ff','700','right',inner*.16);y+=wdRowH;});
     if(wds.length>list.length){text(`+ ${wds.length-list.length} transaksi lainnya ada di tracker`,pad,y,base*.58,'#8492a8');y+=base*.9;}
