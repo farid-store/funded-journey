@@ -6201,8 +6201,53 @@ const ST = {
 };
 const ST_ORDER = ['funded','passed','active','purchased','unset','breached'];
 const ST_COLOR = {funded:'#2df5a3',passed:'#7dffb3',active:'#35e0ff',purchased:'#5aa8ff',unset:'#7384b4',breached:'#ff4b6e'};
-const FIRM_COLORS = {'FTMO':'#35e0ff','FundedNext':'#5aa8ff','FundingPips':'#ffc94a','The 5%ers':'#2df5a3','Alpha Capital Group':'#a98bff','Alpha Trader Firm':'#ff8aa0','Blue Guardian':'#5aa8ff','WeMasterTrade':'#ffc94a','Goat Funded Trader':'#2df5a3','Propanium':'#ff8aa0','Topstep':'#7ce8ff','E8 Markets':'#ffb02e','True Forex Funds':'#a98bff','FunderPro':'#35e0ff','Audacity Capital':'#ffc94a','Funded Trading Plus':'#5aa8ff','The Funded Trader':'#2df5a3','MyFundedFX':'#ff8aa0','City Traders Imperium':'#a98bff','Take Profit Trader':'#7ce8ff','TradeDay':'#ffb02e','Maven Trading':'#35e0ff','Instant Funding':'#ffc94a','Lux Trading Firm':'#5aa8ff'};
-const PROP_FIRM_OPTIONS = Object.keys(FIRM_COLORS).concat(['Goat Funded','AlphaTraderFirm (AlphaFunded)','FundedNext Futures','Apex Trader Funding','Tradeify','Bulenox','TickTickTrader','OneUp Trader','Earn2Trade','Custom / Lainnya']).filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>a.localeCompare(b));
+const FIRM_COLORS = {
+  'FTMO':'#35e0ff','FundedNext':'#5aa8ff','FundingPips':'#ffc94a','The 5%ers':'#2df5a3',
+  'Alpha Capital Group':'#a98bff','Alpha Trader Firm':'#ff8aa0','Blue Guardian':'#5aa8ff',
+  'WeMasterTrade':'#ffc94a','Goat Funded Trader':'#2df5a3','Propanium':'#ff8aa0',
+  'Topstep':'#7ce8ff','E8 Markets':'#ffb02e','FunderPro':'#35e0ff','Audacity Capital':'#ffc94a',
+  'Funded Trading Plus':'#5aa8ff','The Funded Trader':'#2df5a3','MyFundedFX':'#ff8aa0',
+  'City Traders Imperium':'#a98bff','Take Profit Trader':'#7ce8ff','TradeDay':'#ffb02e',
+  'Maven Trading':'#35e0ff','Instant Funding':'#ffc94a','Lux Trading Firm':'#5aa8ff',
+  'Aqua Funded':'#22d3ee','BrightFunded':'#f59e0b','Finotive Funding':'#a78bfa',
+  'For Traders':'#34d399','Apex Trader Funding':'#fb7185','Tradeify':'#60a5fa',
+  'Bulenox':'#f97316','TickTickTrader':'#2dd4bf','OneUp Trader':'#c084fc',
+  'Earn2Trade':'#facc15','FXIFY':'#38bdf8','Funding Traders':'#4ade80',
+  'Fundora':'#f472b6','QT Funded':'#818cf8','Top One Trader':'#fbbf24',
+  'FundedHive':'#14b8a6','The Trading Pit':'#93c5fd','Fintokei':'#c4b5fd',
+  'RebelsFunding':'#fb7185','DNA Funded':'#2dd4bf','Hola Prime':'#f59e0b',
+  'Trade The Pool':'#60a5fa','MyFundedFutures':'#a3e635','TakeProfitTrader':'#7ce8ff'
+};
+// Satu nama kanonis per firm. Alias lama dinormalisasi agar opsi, ringkasan, dan histori tidak terpecah.
+const FIRM_ALIASES = {
+  'goat funded':'Goat Funded Trader',
+  'goat funded trader':'Goat Funded Trader',
+  'alphatraderfirm (alphafunded)':'Alpha Trader Firm',
+  'alpha trader firm':'Alpha Trader Firm',
+  'alpha trader firm (alphafunded)':'Alpha Trader Firm',
+  'the5ers':'The 5%ers',
+  '5ers':'The 5%ers',
+  'bright funded':'BrightFunded',
+  'brightfunded':'BrightFunded',
+  'aqua funded':'Aqua Funded',
+  'finotive':'Finotive Funding',
+  'finotive funding':'Finotive Funding',
+  'for trader':'For Traders',
+  'for traders':'For Traders',
+  'takeprofittrader':'Take Profit Trader',
+  'funded next':'FundedNext',
+  'fundednext futures':'FundedNext',
+  'alpha capital':'Alpha Capital Group'
+};
+function canonicalFirm(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return raw;
+  const alias = FIRM_ALIASES[raw.toLowerCase()];
+  if (alias) return alias;
+  const match = Object.keys(FIRM_COLORS).find(k => k.toLowerCase() === raw.toLowerCase());
+  return match || raw;
+}
+const PROP_FIRM_OPTIONS = [...new Set(Object.keys(FIRM_COLORS).concat(['Custom / Lainnya']).map(canonicalFirm))].sort((a,b)=>a.localeCompare(b));
 const PALETTE = ['#35e0ff','#5aa8ff','#ffc94a','#2df5a3','#a98bff','#ff8aa0','#ffb02e','#7ce8ff'];
 
 const SEED = {
@@ -6242,7 +6287,7 @@ const ownerOK = () => { try { return new URLSearchParams(location.search).get('o
 
 let S = load();
 const U = {q:'', reveal:false};
-function load(){ try { const j = JSON.parse(localStorage.getItem(KEY) || 'null'); if (j && Array.isArray(j.rows) && Array.isArray(j.wd)) { j.rows = j.rows.map(({login, ...r}) => r); if (j.fx == null) j.fx = SEED.fx; j.rev = Number(j.rev) || 0; j.dirty = !!j.dirty; return j; } } catch (e) {} const s0 = clone(SEED); s0.rev = 0; s0.dirty = false; return s0; }
+function load(){ try { const j = JSON.parse(localStorage.getItem(KEY) || 'null'); if (j && Array.isArray(j.rows) && Array.isArray(j.wd)) { j.rows = j.rows.map(({login, ...r}) => ({...r, firm:canonicalFirm(r.firm)})); j.wd = j.wd.map(w => ({...w, firm:canonicalFirm(w.firm)})); if (j.fx == null) j.fx = SEED.fx; j.rev = Number(j.rev) || 0; j.dirty = !!j.dirty; return j; } } catch (e) {} const s0 = clone(SEED); s0.rows = s0.rows.map(r => ({...r, firm:canonicalFirm(r.firm)})); s0.rev = 0; s0.dirty = false; return s0; }
 function persist(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 function save(){ S.dirty = true; persist(); schedSync(); }
 
@@ -6490,7 +6535,7 @@ function exportCsv(){
 }
 function toggle(id, other){ const el = $(id), show = el.hidden; el.hidden = !show; if (other) $(other).hidden = true; if (show) el.scrollIntoView({behavior:'smooth', block:'nearest'}); }
 function saveAcc(){
-  const firm = $('croFFirm').value.trim(), cost = num($('croFCost').value);
+  const firm = canonicalFirm($('croFFirm').value.trim()), cost = num($('croFCost').value);
   if (!firm) { $('croFFirm').focus(); return; }
   S.rows.push({id:uid(), firm, plan:$('croFPlan').value.trim(), size:num($('croFSize').value), qty:Math.max(1, Math.round(num($('croFQty').value)) || 1), cost, status:$('croFStatus').value, date:$('croFDate').value, note:$('croFNote').value.trim(), profit:0, loss:0});
   ['croFFirm','croFPlan','croFSize','croFCost','croFDate','croFNote'].forEach(i => $(i).value = ''); $('croFQty').value = 1;
@@ -6499,7 +6544,7 @@ function saveAcc(){
 function saveWd(){
   const amt = num($('croWAmt').value);
   if (!(amt > 0)) { $('croWAmt').focus(); return; }
-  S.wd.push({id:uid(), date:$('croWDate').value || new Date().toISOString().slice(0, 10), firm:$('croWFirm').value.trim(), amount:amt, note:$('croWNote').value.trim()});
+  S.wd.push({id:uid(), date:$('croWDate').value || new Date().toISOString().slice(0, 10), firm:canonicalFirm($('croWFirm').value.trim()), amount:amt, note:$('croWNote').value.trim()});
   ['croWAmt','croWNote','croWFirm'].forEach(i => $(i).value = ''); save(); render();
 }
 $('croFStatus').innerHTML = ST_ORDER.map(k => `<option value="${k}"${k === 'purchased' ? ' selected' : ''}>${ST[k].t}</option>`).join('');
