@@ -583,6 +583,96 @@ button.kp{color:var(--text);font:inherit}.amber{color:var(--amber)}
 .intel-replay{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.intel-replay div{padding:10px;border-radius:9px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.intel-replay small{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}.intel-replay b{font-family:var(--fm);overflow-wrap:anywhere}
 @media(max-width:900px){.intel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.intel-replay{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.intel-grid{grid-template-columns:1fr}.intel-replay{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ===== 08 · Trading Cost & ROI Tracker ===== */
+#view-intel [hidden]{display:none!important}
+.intel-status.info{color:var(--blue);background:var(--blue-soft)}
+.cro-jump{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.cro-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cro-tools .btn{padding:7px 11px;font-size:11px}
+.cro-fx{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;color:var(--muted);border:1px solid var(--line2);border-radius:8px;padding:4px 9px;background:rgba(255,255,255,.03)}
+.cro-fx input{width:74px;background:transparent;border:0;color:var(--text);font:600 11px var(--fm);text-align:right;outline:none}
+.cro-wrap{display:grid;gap:12px}
+.cro-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.cro-kpi{border-top:2px solid var(--ac,var(--cyan))!important;position:relative}
+.cro-kpi strong{display:block;font-size:clamp(16px,1.7vw,22px)}
+.cro-kpi .alt{display:block;font-family:var(--fm);font-size:10px;color:var(--faint);margin-top:4px}
+.cro-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cro-panel{padding:14px!important;min-width:0}
+.cro-ph{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.cro-ph h3{margin:0;font:700 12px var(--fh);letter-spacing:.12em;text-transform:uppercase;color:var(--text)}
+.cro-ph span{font-size:10.5px;color:var(--faint);line-height:1.5}
+.cro-row{display:grid;grid-template-columns:136px minmax(0,1fr) 90px;gap:10px;align-items:center;margin:10px 0;font-size:11px}
+.cro-row .lb{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+.cro-row .lb i{width:8px;height:8px;border-radius:50%;flex:none}
+.cro-row .vl{text-align:right;font-family:var(--fm);font-weight:700;white-space:nowrap}
+.cro-track{position:relative;height:16px;border-radius:8px;background:var(--line);overflow:hidden}
+.cro-track i{position:absolute;top:0;bottom:0;border-radius:8px;min-width:2px}
+.cro-track.div::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line2)}
+.cro-track b{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--text);opacity:.75}
+.cro-donut{display:grid;grid-template-columns:210px minmax(0,1fr);gap:16px;align-items:center}
+.cro-leg{display:grid;gap:7px;font-size:11px}
+.cro-leg div{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto;gap:8px;align-items:center}
+.cro-leg i{width:10px;height:10px;border-radius:3px}
+.cro-leg span{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cro-leg b{font-family:var(--fm);font-weight:700}
+.cro-leg em{font-style:normal;font-family:var(--fm);color:var(--faint);min-width:44px;text-align:right}
+.cro-svg{width:100%;height:auto;display:block}
+.cro-svg text{fill:var(--muted);font-family:var(--fm);font-size:10px}
+.cro-svg .big{font-size:17px;font-weight:700;fill:var(--text)}
+.cro-svg .cap{font-size:8.5px;letter-spacing:.14em;fill:var(--faint)}
+.cro-svg .vlab{fill:var(--text);font-weight:700;font-size:10px}
+.cro-lg{display:flex;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--muted);margin-top:8px}
+.cro-lg span{display:inline-flex;align-items:center;gap:6px}
+.cro-lg i{width:12px;height:3px;border-radius:2px;display:inline-block}
+.cro-stack{display:flex;height:18px;border-radius:9px;overflow:hidden;background:var(--line);margin-bottom:12px}
+.cro-stack i{display:block;height:100%}
+.cro-st{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:11px}
+.cro-st:last-child{border-bottom:0}
+.cro-st .u{color:var(--muted);font-family:var(--fm)}
+.cro-st .c{font-family:var(--fm);font-weight:700;text-align:right}
+.cro-ins{display:grid;gap:8px}
+.cro-ins div{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid var(--line);border-left:3px solid var(--ac,var(--cyan));font-size:11.5px;line-height:1.6;color:var(--muted)}
+.cro-ins b{color:var(--text)}
+.cro-empty{display:flex;align-items:center;justify-content:center;min-height:160px;text-align:center;color:var(--faint);font-size:11.5px;border:1px dashed var(--line2);border-radius:10px;padding:16px;line-height:1.6}
+.cro-table{width:100%;border-collapse:collapse;font-size:11px;min-width:1020px}
+.cro-table th,.cro-table td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.cro-table th{color:var(--muted);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;position:sticky;top:0;background:var(--surface);z-index:2}
+.cro-table td.n,.cro-table th.n{text-align:right;font-family:var(--fm)}
+.cro-table td:last-child{text-align:center}
+.cro-table tfoot td{font-weight:700;border-top:1px solid var(--line2);border-bottom:0;background:rgba(255,255,255,.03)}
+.cro-table .firm{display:inline-flex;align-items:center;gap:7px;font-weight:700}
+.cro-table .firm i{width:9px;height:9px;border-radius:50%}
+.cro-in{width:100%;min-width:0;background:transparent;border:1px solid transparent;border-radius:6px;color:var(--text);padding:5px 6px;font:inherit;font-size:11px;outline:none}
+.cro-in:hover{border-color:var(--line)}
+.cro-in:focus{border-color:var(--cyan);background:rgba(255,255,255,.05)}
+.cro-in.num{text-align:right;font-family:var(--fm)}
+.cro-in.sel{cursor:pointer}
+.cro-in option{background:var(--surface);color:var(--text)}
+.cro-x{background:transparent;border:1px solid var(--line2);color:var(--red);border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:12px;line-height:1}
+.cro-x:hover{background:var(--red-soft)}
+.cro-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
+.cro-field label{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.cro-field .cro-in{border-color:var(--line2);background:rgba(255,255,255,.03);padding:8px 9px}
+.cro-field.wide{grid-column:span 2}
+.cro-lock{text-align:center;padding:26px 16px!important}
+.cro-lock p{color:var(--muted);max-width:560px;margin:8px auto 14px;line-height:1.6;font-size:12px}
+.cro-note{color:var(--faint);font-size:10.5px;line-height:1.65;margin:10px 0 0}
+.cro-search{max-width:260px;min-width:160px}
+@media(max-width:1100px){.cro-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.cro-grid{grid-template-columns:1fr}.cro-form{grid-template-columns:repeat(2,minmax(0,1fr))}.cro-donut{grid-template-columns:1fr;justify-items:center}.cro-leg{width:100%}}
+@media(max-width:560px){.cro-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.cro-row{grid-template-columns:84px minmax(0,1fr) 78px}.cro-form{grid-template-columns:1fr}.cro-field.wide{grid-column:auto}}
+.cro-table .cro-in{background:transparent!important;border:1px solid transparent!important;padding:5px 6px!important;height:auto!important;min-height:0!important;box-shadow:none!important;border-radius:6px}
+.cro-table .cro-in:hover{border-color:var(--line)!important}
+.cro-table .cro-in:focus{border-color:var(--cyan)!important;background:rgba(255,255,255,.05)!important}
+.cro-table .cro-in.sel{min-width:132px;width:auto}
+.cro-table input[type=date].cro-in{min-width:136px}
+.cro-table td:nth-child(1) .cro-in{min-width:150px}
+.cro-table td:nth-child(2) .cro-in{min-width:210px}
+.cro-table td:nth-child(13) .cro-in{min-width:190px}
+#croLedger .cro-table{min-width:1560px}
+.cro-table td:nth-child(1) .cro-in{min-width:190px}
+.cro-table td:nth-child(2) .cro-in{min-width:250px}
+
 </style>
 
 <style id="marketReplayMobileResponsive">
@@ -2198,6 +2288,7 @@ html:not(.z1):not(.z2):not(.z3) :is(.btn,.tab,.theme-sw button,.cal-seg button):
 
     <section id="view-intel" class="view">
       <div class="hero" data-scene="intel"><div class="hero-info"><b>COMMAND INTELLIGENCE</b><span>Integritas data → survival akun → konfluensi setup → performa → replay trade. Semua berbasis data yang tersedia di dashboard; tidak membuat sinyal atau harga fiktif.</span><em id="intelStamp">Menunggu snapshot…</em></div><div class="hero-scene"></div></div>
+      <div class="cro-jump"><button class="btn ghost" data-cro="jump" type="button">💼 Trading Cost &amp; ROI Tracker ↓</button></div>
       <div class="section-head"><div><h2>01 · Data Integrity Guardian</h2><p>Memeriksa status koneksi dan kelengkapan data yang diterima.</p></div><button class="btn ghost" id="intelDiagBtn">🩺 Diagnosa</button></div>
       <div id="intelIntegrity" class="intel-grid"></div>
       <div class="section-head"><div><h2>02 · Prop Firm Survival</h2><p>Ruang aman akun berdasarkan batas yang dikirim EA. Ini monitor, bukan jaminan pemblokiran order.</p></div><span class="tag neutral">LIVE DATA</span></div>
@@ -2211,6 +2302,75 @@ html:not(.z1):not(.z2):not(.z3) :is(.btn,.tab,.theme-sw button,.cal-seg button):
         <div class="toolbar" style="margin-bottom:12px"><label class="note" for="intelReplaySelect">Pilih trade</label><select id="intelReplaySelect" class="search" style="max-width:460px;min-width:220px"></select><button class="btn ghost" id="intelReplayRefresh">↻ Muat ulang</button></div>
         <div id="intelReplayDetail"></div>
         <div id="marketReplayShare" class="mr-share"></div>
+      </div>
+
+      <div class="section-head" id="costRoiTracker"><div><h2>08 · Trading Cost &amp; ROI Tracker</h2><p>Modal prop firm, profit, loss, net P/L, dan total withdrawal. Isi profit/loss per akun di tabel dan catat setiap penarikan untuk menghitung ROI &amp; ROE. Data tersimpan lokal di browser ini.</p></div>
+        <div class="cro-tools" id="croTools">
+          <button class="btn primary" data-cro="toggle-acc" type="button">➕ Akun</button>
+          <button class="btn" data-cro="toggle-wd" type="button">💸 Withdrawal</button>
+          <button class="btn ghost" data-cro="reveal" id="croRevealBtn" type="button">👁 ID</button>
+          <button class="btn ghost" data-cro="csv" type="button">⬇ CSV</button>
+          <button class="btn ghost" data-cro="backup" type="button">⬇ Backup</button>
+          <button class="btn ghost" data-cro="import" type="button">⬆ Import</button>
+          <button class="btn ghost" data-cro="reset" type="button">↺ Reset</button>
+          <label class="cro-fx">USD→IDR <input id="croFx" type="number" min="0" step="1" inputmode="numeric" aria-label="Kurs manual USD ke IDR"></label>
+        </div>
+      </div>
+      <input type="file" id="croImport" accept="application/json,.json" hidden>
+      <div id="croLock" class="card panel cro-lock" hidden>
+        <h3 style="margin:0;font:700 14px var(--fh);letter-spacing:.1em">🔒 TRACKER PRIBADI</h3>
+        <p>Data modal, profit, dan withdrawal hanya ditampilkan di mode pemilik. Masukkan kunci pemilik di tab Partner, lalu kembali ke Command Intel.</p>
+        <button class="btn primary" data-cro="goto-partner" type="button">Buka tab Partner</button>
+      </div>
+      <div id="croBody" class="cro-wrap" hidden>
+        <div id="croFormAcc" class="card panel cro-panel" hidden>
+          <div class="cro-ph"><h3>Tambah Akun / Challenge</h3><span>Biaya diisi total untuk semua unit (mis. 6 unit × $5 = 30).</span></div>
+          <div class="cro-form">
+            <div class="cro-field"><label for="croFFirm">Prop firm</label><input class="cro-in" id="croFFirm" list="croFirmList" autocomplete="off"><datalist id="croFirmList"></datalist></div>
+            <div class="cro-field"><label for="croFPlan">Paket</label><input class="cro-in" id="croFPlan"></div>
+            <div class="cro-field"><label for="croFSize">Ukuran akun (USD)</label><input class="cro-in num" id="croFSize" type="number" min="0" step="any"></div>
+            <div class="cro-field"><label for="croFQty">Jumlah unit</label><input class="cro-in num" id="croFQty" type="number" min="1" step="1" value="1"></div>
+            <div class="cro-field"><label for="croFCost">Biaya total (USD)</label><input class="cro-in num" id="croFCost" type="number" min="0" step="any"></div>
+            <div class="cro-field"><label for="croFLogin">Login / ID</label><input class="cro-in" id="croFLogin"></div>
+            <div class="cro-field"><label for="croFStatus">Status</label><select class="cro-in sel" id="croFStatus"></select></div>
+            <div class="cro-field"><label for="croFDate">Tanggal</label><input class="cro-in" id="croFDate" type="date"></div>
+            <div class="cro-field wide"><label for="croFNote">Catatan</label><input class="cro-in" id="croFNote"></div>
+            <div class="cro-field"><button class="btn primary" data-cro="save-acc" type="button" style="width:100%">Simpan akun</button></div>
+          </div>
+        </div>
+        <div id="croFormWd" class="card panel cro-panel" hidden>
+          <div class="cro-ph"><h3>Catat Withdrawal</h3><span>Setiap penarikan/payout yang sudah diterima.</span></div>
+          <div class="cro-form">
+            <div class="cro-field"><label for="croWDate">Tanggal</label><input class="cro-in" id="croWDate" type="date"></div>
+            <div class="cro-field"><label for="croWFirm">Prop firm</label><input class="cro-in" id="croWFirm" list="croFirmList" autocomplete="off"></div>
+            <div class="cro-field"><label for="croWAmt">Jumlah (USD)</label><input class="cro-in num" id="croWAmt" type="number" min="0" step="any"></div>
+            <div class="cro-field"><label for="croWNote">Catatan</label><input class="cro-in" id="croWNote"></div>
+            <div class="cro-field"><button class="btn primary" data-cro="save-wd" type="button" style="width:100%">Simpan withdrawal</button></div>
+          </div>
+        </div>
+        <div id="croKpis" class="cro-kpis"></div>
+        <div class="cro-grid">
+          <div class="card panel cro-panel"><div class="cro-ph"><h3>Capital Flow</h3><span>Modal → profit → loss → withdrawal → net cash</span></div><div id="croFlow"></div></div>
+          <div class="card panel cro-panel"><div class="cro-ph"><h3>Insight Otomatis</h3><span>Dihitung dari data di tabel</span></div><div id="croInsights" class="cro-ins"></div></div>
+        </div>
+        <div class="cro-grid">
+          <div class="card panel cro-panel"><div class="cro-ph"><h3>Alokasi Modal per Prop Firm</h3><span>Total biaya challenge</span></div><div id="croDonut"></div></div>
+          <div class="card panel cro-panel"><div class="cro-ph"><h3>Efisiensi Biaya</h3><span>Biaya per $1.000 funding · garis putih = rata-rata</span></div><div id="croPerK"></div></div>
+        </div>
+        <div class="cro-grid">
+          <div class="card panel cro-panel"><div class="cro-ph"><h3>Akumulasi Modal</h3><span>Kumulatif biaya berdasarkan tanggal catatan</span></div><div id="croTimeline"></div></div>
+          <div class="card panel cro-panel"><div class="cro-ph"><h3>Status Akun</h3><span>Sebaran unit &amp; modal per status</span></div><div id="croStatus"></div></div>
+        </div>
+        <div class="cro-grid">
+          <div class="card panel cro-panel"><div class="cro-ph"><h3>Payback vs Break-even</h3><span>Withdrawal kumulatif terhadap total modal</span></div><div id="croPayback"></div></div>
+          <div class="card panel cro-panel"><div class="cro-ph"><h3>Log Withdrawal</h3><span id="croWdSum"></span></div><div id="croWdLog"></div></div>
+        </div>
+        <div class="card panel cro-panel"><div class="cro-ph"><h3>Performa per Prop Firm</h3><span>ROI = (withdrawal − modal) ÷ modal · ROE = net P/L ÷ total funding</span></div><div class="table-scroll" style="max-height:none"><div id="croFirmTable"></div></div></div>
+        <div class="card panel cro-panel">
+          <div class="cro-ph"><h3>Ledger Akun</h3><input class="cro-in cro-search" id="croSearch" placeholder="Cari firm / paket / ID…" style="border-color:var(--line2)"></div>
+          <div id="croLedger"></div>
+          <p class="cro-note">Kolom Profit, Loss, Modal, Status, dan Tanggal bisa diedit langsung (tersimpan saat selesai mengetik). Profit/Loss adalah hasil trading akun; withdrawal dicatat terpisah di Log Withdrawal.</p>
+        </div>
       </div>
     </section>
 </main>
@@ -6021,6 +6181,328 @@ if (window.__FXUI) { const u = window.__FXUI.update; window.__FXUI.update = () =
   const prior=window.__FXUI?.update;
   if(window.__FXUI&&typeof prior==='function')window.__FXUI.update=function(){try{prior.apply(this,arguments)}finally{try{if(document.getElementById('view-intel')?.classList.contains('active'))renderIntel()}catch(e){console.warn('intel render',e)}}};
   setInterval(()=>{if(document.getElementById('view-intel')?.classList.contains('active'))renderIntel()},5000);
+})();
+</script>
+
+<script>
+/* FaridFX Trading Cost & ROI Tracker — modal, profit/loss, net P/L, withdrawal, ROI & ROE (Command Intel · modul 08) */
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+if (!$('croBody')) return;
+const KEY = 'ffx_cost_roi_v1';
+const MON = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const ST = {
+  funded:{t:'Funded',k:'ok'}, passed:{t:'Lulus Challenge',k:'ok'}, active:{t:'Aktif',k:'ok'},
+  purchased:{t:'Dibeli',k:'info'}, unset:{t:'Belum diisi',k:'warn'}, breached:{t:'Breached',k:'bad'}
+};
+const ST_ORDER = ['funded','passed','active','purchased','unset','breached'];
+const ST_COLOR = {funded:'#2df5a3',passed:'#7dffb3',active:'#35e0ff',purchased:'#5aa8ff',unset:'#7384b4',breached:'#ff4b6e'};
+const FIRM_COLORS = {'FundedNext':'#35e0ff','Blue Guardian':'#5aa8ff','WeMasterTrade':'#ffc94a','Goat Funded Trader':'#2df5a3','AlphaTraderFirm (AlphaFunded)':'#a98bff','Propanium':'#ff8aa0'};
+const PALETTE = ['#35e0ff','#5aa8ff','#ffc94a','#2df5a3','#a98bff','#ff8aa0','#ffb02e','#7ce8ff'];
+
+const SEED = {
+  v:1, fx:16500,
+  rows:[
+    {id:'s01',firm:'FundedNext',plan:'Stellar Lite 2-Step',size:10000,qty:1,login:'12032060',cost:44.99,status:'active',date:'2026-08-18',note:'Aktif / Berhasil dibeli (18 Agustus 2026)',profit:0,loss:0},
+    {id:'s02',firm:'FundedNext',plan:'Stellar Lite 2-Step',size:10000,qty:1,login:'12016213',cost:44.99,status:'active',date:'2026-08-06',note:'Aktif / Berhasil dibeli (6 Agustus 2026)',profit:0,loss:0},
+    {id:'s03',firm:'Blue Guardian',plan:'Trading Evaluation (1 Step Nano)',size:10000,qty:1,login:'570485',cost:29,status:'purchased',date:'2026-09-23',note:'Berhasil dibeli / Checkout (23 September 2026)',profit:0,loss:0},
+    {id:'s04',firm:'Blue Guardian',plan:'Trading Evaluation (Inst Starter)',size:5000,qty:1,login:'577421',cost:11,status:'breached',date:'',note:'Breached (15 Oktober 2026)',profit:0,loss:0},
+    {id:'s05',firm:'WeMasterTrade',plan:'Customize Instant - FreeSwap',size:25000,qty:1,login:'1206817',cost:120.38,status:'active',date:'2026-09-02',note:'Aktif (2 September 2026)',profit:0,loss:0},
+    {id:'s06',firm:'Goat Funded Trader',plan:'Start Goat (Instant)',size:1000,qty:1,login:'4848030 (Order)',cost:1,status:'active',date:'2026-08-18',note:'Aktif / Pesanan selesai (18 Agustus 2026)',profit:0,loss:0},
+    {id:'s07',firm:'Goat Funded Trader',plan:'2 Step Standar',size:5000,qty:2,login:'',cost:20,status:'unset',date:'',note:'$10 masing-masing',profit:0,loss:0},
+    {id:'s08',firm:'Goat Funded Trader',plan:'2 Step Goat',size:8000,qty:1,login:'',cost:35,status:'unset',date:'',note:'',profit:0,loss:0},
+    {id:'s09',firm:'Goat Funded Trader',plan:'Instant Hero / Instant 5K',size:5000,qty:2,login:'',cost:50,status:'unset',date:'',note:'$25 masing-masing',profit:0,loss:0},
+    {id:'s10',firm:'AlphaTraderFirm (AlphaFunded)',plan:'Funded Instant',size:5000,qty:2,login:'',cost:20,status:'unset',date:'',note:'$10 masing-masing',profit:0,loss:0},
+    {id:'s11',firm:'Propanium',plan:'Starter',size:1000,qty:11,login:'',cost:11,status:'unset',date:'',note:'$1 masing-masing',profit:0,loss:0},
+    {id:'s12',firm:'Propanium',plan:'2 Step',size:2500,qty:6,login:'',cost:30,status:'unset',date:'',note:'$5 masing-masing',profit:0,loss:0},
+    {id:'s13',firm:'Propanium',plan:'Flash 1 Step',size:10000,qty:2,login:'',cost:60,status:'unset',date:'',note:'$30 masing-masing',profit:0,loss:0}
+  ],
+  wd:[]
+};
+
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = v => { const x = typeof v === 'string' ? parseFloat(v.replace(',', '.')) : Number(v); return Number.isFinite(x) ? x : 0; };
+const grp = (x, d) => Math.abs(x).toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
+const usd = (v, signed) => { const x = num(v); return (x < 0 ? '−' : (signed && x > 0 ? '+' : '')) + '$' + grp(x, 2); };
+const idr = v => (num(v) < 0 ? '−' : '') + 'Rp ' + Math.round(Math.abs(num(v))).toLocaleString('id-ID');
+const pct = (v, signed) => v == null ? '—' : (v < 0 ? '−' : (signed && v > 0 ? '+' : '')) + Math.abs(v).toFixed(2) + '%';
+const tone = v => v > 0 ? 'var(--green)' : v < 0 ? 'var(--red)' : 'var(--muted)';
+const fmtDate = d => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); return m ? `${+m[3]} ${MON[+m[2]-1]} ${m[1]}` : '—'; };
+const fmtAx = v => '$' + (Math.abs(v) >= 100 ? Math.round(v) : +v.toFixed(2)).toLocaleString('en-US');
+const uid = () => 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const clone = o => JSON.parse(JSON.stringify(o));
+const maskId = s => { s = String(s || ''); const d = s.replace(/\D/g, ''); return d.length > 4 ? '••••' + d.slice(-4) + (/order/i.test(s) ? ' (Order)' : '') : (s || '—'); };
+
+const ownerOK = () => { try { return new URLSearchParams(location.search).get('owner') === '1' || !!localStorage.getItem('ffx_pt_ownerhint') || !!sessionStorage.getItem('ffx_pt_key'); } catch (e) { return false; } };
+
+let S = load();
+const U = {q:'', reveal:false};
+function load(){ try { const j = JSON.parse(localStorage.getItem(KEY) || 'null'); if (j && Array.isArray(j.rows) && Array.isArray(j.wd)) { if (j.fx == null) j.fx = SEED.fx; return j; } } catch (e) {} return clone(SEED); }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* ---------- perhitungan ---------- */
+function compute(){
+  const rows = S.rows.map(r => {
+    const qty = Math.max(1, Math.round(num(r.qty)) || 1), size = num(r.size), cost = num(r.cost), profit = num(r.profit), loss = Math.abs(num(r.loss));
+    return Object.assign({}, r, {qty, size, cost, profit, loss, fund:size * qty, net:profit - loss, status:ST[r.status] ? r.status : 'unset'});
+  });
+  const firms = new Map();
+  const g = name => { name = String(name || '').trim() || '—'; if (!firms.has(name)) firms.set(name, {name, units:0, fund:0, cost:0, profit:0, loss:0, net:0, wd:0}); return firms.get(name); };
+  rows.forEach(r => { const f = g(r.firm); f.units += r.qty; f.fund += r.fund; f.cost += r.cost; f.profit += r.profit; f.loss += r.loss; f.net += r.net; });
+  const wds = S.wd.map(w => Object.assign({}, w, {amount:num(w.amount)}));
+  wds.forEach(w => { g(w.firm).wd += w.amount; });
+  const list = [...firms.values()];
+  list.forEach((f, i) => { f.color = FIRM_COLORS[f.name] || PALETTE[i % PALETTE.length]; f.cash = f.wd - f.cost; f.roi = f.cost ? f.cash / f.cost * 100 : null; f.roe = f.fund ? f.net / f.fund * 100 : null; f.perK = f.fund ? f.cost / f.fund * 1000 : null; });
+  const sum = k => list.reduce((a, f) => a + f[k], 0);
+  const T = {units:sum('units'), fund:sum('fund'), cost:sum('cost'), profit:sum('profit'), loss:sum('loss'), net:sum('net'), wd:sum('wd')};
+  T.cash = T.wd - T.cost; T.roi = T.cost ? T.cash / T.cost * 100 : null; T.roe = T.fund ? T.net / T.fund * 100 : null;
+  T.payback = T.cost ? T.wd / T.cost * 100 : 0; T.perK = T.fund ? T.cost / T.fund * 1000 : 0;
+  const st = {};
+  rows.forEach(r => { const o = st[r.status] || (st[r.status] = {units:0, cost:0}); o.units += r.qty; o.cost += r.cost; });
+  return {rows, list, wds, T, st};
+}
+
+/* ---------- util chart ---------- */
+function niceMax(max){
+  if (!(max > 0)) return 4;
+  const raw = max * 1.1 / 4, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const k = [1,1.25,1.5,2,2.5,3,4,5,6,7.5,10].find(k => k * mag >= raw - 1e-9);
+  return k * mag * 4;
+}
+const empty = msg => `<div class="cro-empty">${msg}</div>`;
+function axis(W, H, L, R, Tp, B, ymax){
+  let s = '';
+  for (let i = 0; i <= 4; i++) {
+    const y = Tp + (1 - i / 4) * (H - Tp - B);
+    s += `<line x1="${L}" x2="${W - R}" y1="${y}" y2="${y}" style="stroke:var(--line);stroke-width:1${i ? ';stroke-dasharray:3 4' : ''}"/><text x="${L - 8}" y="${y + 3}" text-anchor="end">${fmtAx(ymax / 4 * i)}</text>`;
+  }
+  return s;
+}
+
+/* ---------- renderer ---------- */
+function kpi(label, value, sub, ac, color, extra){
+  return `<div class="intel-card cro-kpi" style="--ac:${ac}"><small>${label}</small><strong style="color:${color || 'var(--text)'}">${value}</strong><p>${sub}</p>${extra || ''}</div>`;
+}
+function renderKpis(D){
+  const {T, st} = D, fx = num(S.fx);
+  const alt = v => fx > 0 ? `<span class="alt">≈ ${idr(v * fx)}</span>` : '';
+  const pb = Math.max(0, Math.min(100, T.payback));
+  const meter = `<div class="intel-meter"><i style="width:${pb}%;background:${T.payback >= 100 ? 'var(--green)' : T.payback >= 50 ? 'var(--amber)' : 'var(--cyan)'}"></i></div>`;
+  const act = (st.active ? st.active.units : 0) + (st.funded ? st.funded.units : 0) + (st.passed ? st.passed.units : 0), br = st.breached ? st.breached.units : 0;
+  $('croKpis').innerHTML = [
+    kpi('Total Modal', usd(T.cost), `${T.units} unit akun · funding ${usd(T.fund)}`, 'var(--amber)', 'var(--amber)', alt(T.cost)),
+    kpi('Total Profit', usd(T.profit), 'Akumulasi profit trading', 'var(--green)', T.profit > 0 ? 'var(--green)' : 'var(--muted)'),
+    kpi('Total Loss', T.loss ? '−' + usd(T.loss) : usd(0), 'Akumulasi loss trading', 'var(--red)', T.loss > 0 ? 'var(--red)' : 'var(--muted)'),
+    kpi('Net Profit / Loss', usd(T.net, true), 'Profit − Loss (hasil trading)', 'var(--cyan)', tone(T.net), alt(T.net)),
+    kpi('Total Withdrawal', usd(T.wd), `${D.wds.length} penarikan tercatat`, 'var(--blue)', 'var(--blue)', alt(T.wd)),
+    kpi('Net Cash', usd(T.cash, true), 'Withdrawal − Modal (uang riil)', 'var(--purple)', tone(T.cash), alt(T.cash)),
+    kpi('ROI Realisasi', pct(T.roi, true), 'Net cash ÷ total modal', 'var(--green)', T.roi == null ? 'var(--muted)' : tone(T.roi)),
+    kpi('ROE Trading', pct(T.roe, true), 'Net P/L ÷ total funding akun', 'var(--cyan)', T.roe == null ? 'var(--muted)' : tone(T.roe)),
+    kpi('Break-even', pct(T.payback), T.payback >= 100 ? 'Modal sudah kembali' : `Sisa ${usd(Math.max(0, T.cost - T.wd))} untuk impas`, 'var(--gold)', T.payback >= 100 ? 'var(--green)' : 'var(--text)', meter),
+    kpi('Biaya / $1K Funding', usd(T.perK), `${act} aktif · ${br} breached dari ${T.units} unit`, 'var(--amber)')
+  ].join('');
+}
+function renderFlow(D){
+  const T = D.T;
+  const items = [['Modal', -T.cost, 'var(--amber)'], ['Profit', T.profit, 'var(--green)'], ['Loss', -T.loss, 'var(--red)'], ['Net P/L', T.net, T.net >= 0 ? 'var(--green)' : 'var(--red)'], ['Withdrawal', T.wd, 'var(--blue)'], ['Net Cash', T.cash, T.cash >= 0 ? 'var(--cyan)' : 'var(--red)']];
+  const max = Math.max(1, ...items.map(i => Math.abs(i[1])));
+  $('croFlow').innerHTML = items.map(([l, v, c]) => {
+    const w = Math.abs(v) / max * 50;
+    return `<div class="cro-row"><div class="lb">${l}</div><div class="cro-track div"><i style="background:${c};${v >= 0 ? 'left:50%' : 'right:50%'};width:${w}%"></i></div><div class="vl" style="color:${v === 0 ? 'var(--muted)' : c}">${usd(v, l !== 'Modal' && l !== 'Loss')}</div></div>`;
+  }).join('') + `<p class="cro-note">Bar kiri = pengeluaran / kerugian, bar kanan = pemasukan. Net Cash negatif berarti total modal belum kembali.</p>`;
+}
+function renderInsights(D){
+  const {T, list, st} = D, out = [];
+  const top = [...list].sort((a, b) => b.cost - a.cost)[0];
+  if (top && T.cost) out.push(['var(--amber)', `Pengeluaran terbesar: <b>${esc(top.name)}</b> ${usd(top.cost)} (${(top.cost / T.cost * 100).toFixed(1)}% dari total modal).`]);
+  const pk = list.filter(f => f.perK != null && f.fund > 0).sort((a, b) => a.perK - b.perK);
+  if (pk.length > 1) out.push(['var(--green)', `Biaya per $1K funding termurah: <b>${esc(pk[0].name)}</b> (${usd(pk[0].perK)}); termahal: <b>${esc(pk[pk.length - 1].name)}</b> (${usd(pk[pk.length - 1].perK)}). Rata-rata portofolio ${usd(T.perK)}.`]);
+  if (st.breached && T.cost) out.push(['var(--red)', `Modal di akun breached: <b>${usd(st.breached.cost)}</b> (${(st.breached.cost / T.cost * 100).toFixed(1)}% dari total modal) — dihitung sebagai biaya hangus.`]);
+  if (T.cost) out.push([T.wd >= T.cost ? 'var(--green)' : 'var(--cyan)', T.wd >= T.cost ? `Break-even tercapai: withdrawal ${usd(T.wd)} melampaui total modal ${usd(T.cost)}.` : `Butuh withdrawal <b>${usd(T.cost - T.wd)}</b> lagi untuk break-even (${T.payback.toFixed(1)}% tercapai).`]);
+  const un = st.unset ? st.unset.units : 0;
+  if (un) out.push(['var(--faint)', `${un} unit belum punya status. Ubah di Ledger agar breakdown status akurat.`]);
+  if (!T.profit && !T.loss && !T.wd) out.push(['var(--amber)', 'Profit, loss, dan withdrawal belum diisi, jadi ROI & ROE masih menunjukkan hasil dari modal saja. Isi di Ledger dan Log Withdrawal.']);
+  $('croInsights').innerHTML = out.map(([c, t]) => `<div style="--ac:${c}">${t}</div>`).join('');
+}
+function renderDonut(D){
+  const items = D.list.filter(f => f.cost > 0).sort((a, b) => b.cost - a.cost), T = D.T;
+  if (!items.length) { $('croDonut').innerHTML = empty('Belum ada data modal.'); return; }
+  const R = 70, C = 2 * Math.PI * R; let off = 0;
+  const segs = items.map(f => {
+    const len = f.cost / T.cost * C, gap = items.length > 1 ? Math.min(2.5, len * 0.3) : 0;
+    const s = `<circle cx="100" cy="100" r="${R}" fill="none" stroke="${f.color}" stroke-width="26" stroke-dasharray="${Math.max(0, len - gap)} ${C - Math.max(0, len - gap)}" stroke-dashoffset="${-off}" transform="rotate(-90 100 100)"><title>${esc(f.name)}: ${usd(f.cost)} (${(f.cost / T.cost * 100).toFixed(1)}%)</title></circle>`;
+    off += len; return s;
+  }).join('');
+  const svg = `<svg class="cro-svg" viewBox="0 0 200 200" style="max-width:210px" role="img" aria-label="Alokasi modal per prop firm"><circle cx="100" cy="100" r="${R}" fill="none" style="stroke:var(--line)" stroke-width="26"/>${segs}<text x="100" y="94" text-anchor="middle" class="cap">TOTAL MODAL</text><text x="100" y="114" text-anchor="middle" class="big">${usd(T.cost)}</text></svg>`;
+  const leg = items.map(f => `<div><i style="background:${f.color}"></i><span title="${esc(f.name)}">${esc(f.name)}</span><b>${usd(f.cost)}</b><em>${(f.cost / T.cost * 100).toFixed(1)}%</em></div>`).join('');
+  $('croDonut').innerHTML = `<div class="cro-donut">${svg}<div class="cro-leg">${leg}</div></div>`;
+}
+function renderPerK(D){
+  const items = D.list.filter(f => f.perK != null && f.fund > 0).sort((a, b) => a.perK - b.perK);
+  if (!items.length) { $('croPerK').innerHTML = empty('Belum ada data funding.'); return; }
+  const max = Math.max(...items.map(f => f.perK), D.T.perK), avg = D.T.perK / max * 100;
+  $('croPerK').innerHTML = items.map(f => `<div class="cro-row"><div class="lb" title="${esc(f.name)}"><i style="background:${f.color}"></i>${esc(f.name)}</div><div class="cro-track"><i style="left:0;width:${f.perK / max * 100}%;background:${f.color}"></i><b style="left:${avg}%"></b></div><div class="vl">${usd(f.perK)}</div></div>`).join('') +
+    `<p class="cro-note">Rata-rata portofolio <b style="color:var(--text)">${usd(D.T.perK)}</b> per $1K funding. Makin kecil makin murah, tetapi aturan drawdown & profit target tiap firm berbeda.</p>`;
+}
+function renderTimeline(D){
+  const by = {}; let undated = 0, undUnits = 0;
+  D.rows.forEach(r => { if (/^\d{4}-\d{2}-\d{2}$/.test(r.date || '')) by[r.date] = (by[r.date] || 0) + r.cost; else { undated += r.cost; undUnits += r.qty; } });
+  const ds = Object.keys(by).sort();
+  if (!ds.length) { $('croTimeline').innerHTML = empty('Belum ada tanggal pada akun. Isi kolom Tanggal di Ledger.'); return; }
+  let cum = 0; const pts = ds.map(d => ({d, t:Date.parse(d + 'T00:00:00Z'), add:by[d], cum:(cum += by[d])}));
+  const W = 640, H = 260, L = 54, R = 22, Tp = 26, B = 34, pw = W - L - R, ph = H - Tp - B, ymax = niceMax(cum);
+  const t0 = pts[0].t, span = pts[pts.length - 1].t - t0;
+  const X = t => pts.length === 1 || !span ? L + pw / 2 : L + (t - t0) / span * pw, Y = v => Tp + (1 - v / ymax) * ph;
+  let line = `M${X(pts[0].t)},${Y(0)}`; pts.forEach(p => { line += ` H${X(p.t)} V${Y(p.cum)}`; });
+  const area = line + ` V${Y(0)} H${X(pts[0].t)} Z`;
+  let lastX = -99;
+  const dots = pts.map(p => {
+    const x = X(p.t), y = Y(p.cum); let lab = '';
+    if (x - lastX >= 52) { lab = `<text x="${x}" y="${H - 12}" text-anchor="middle">${+p.d.slice(8)} ${MON[+p.d.slice(5, 7) - 1]}</text>`; lastX = x; }
+    return `<circle cx="${x}" cy="${y}" r="4.5" style="fill:var(--amber);stroke:var(--surface);stroke-width:2"><title>${fmtDate(p.d)}: +${usd(p.add)} → kumulatif ${usd(p.cum)}</title></circle><text class="vlab" x="${x}" y="${y - 10}" text-anchor="middle">${usd(p.cum)}</text>${lab}`;
+  }).join('');
+  $('croTimeline').innerHTML = `<svg class="cro-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Akumulasi modal"><defs><linearGradient id="croGA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb02e" stop-opacity=".38"/><stop offset="1" stop-color="#ffb02e" stop-opacity=".02"/></linearGradient></defs>${axis(W, H, L, R, Tp, B, ymax)}<path d="${area}" fill="url(#croGA)"/><path d="${line}" fill="none" style="stroke:var(--amber);stroke-width:2.2" stroke-linejoin="round"/>${dots}</svg>` +
+    (undated ? `<p class="cro-note">${undUnits} unit senilai ${usd(undated)} belum punya tanggal sehingga tidak masuk kurva.</p>` : '');
+}
+function renderStatus(D){
+  const {st, T} = D, keys = ST_ORDER.filter(k => st[k]);
+  if (!keys.length) { $('croStatus').innerHTML = empty('Belum ada akun.'); return; }
+  const stack = keys.map(k => `<i style="width:${st[k].units / T.units * 100}%;background:${ST_COLOR[k]}" title="${ST[k].t}: ${st[k].units} unit"></i>`).join('');
+  const rowsH = keys.map(k => `<div class="cro-st"><span class="intel-status ${ST[k].k}">${ST[k].t}</span><span class="u">${st[k].units} unit · ${(st[k].units / T.units * 100).toFixed(1)}%</span><span class="u">${T.cost ? (st[k].cost / T.cost * 100).toFixed(1) : '0.0'}% modal</span><span class="c">${usd(st[k].cost)}</span></div>`).join('');
+  const br = st.breached ? st.breached.units : 0;
+  $('croStatus').innerHTML = `<div class="cro-stack">${stack}</div>${rowsH}<p class="cro-note">Breach rate: <b style="color:var(--text)">${(br / T.units * 100).toFixed(1)}%</b> (${br} dari ${T.units} unit). Unit “Belum diisi” ikut dihitung di penyebut.</p>`;
+}
+function renderPayback(D){
+  const T = D.T, by = {};
+  D.wds.forEach(w => { const m = String(w.date || '').slice(0, 7); if (/^\d{4}-\d{2}$/.test(m)) by[m] = (by[m] || 0) + w.amount; });
+  const ks = Object.keys(by).sort();
+  if (!ks.length) { $('croPayback').innerHTML = empty(`Belum ada withdrawal tercatat.<br>Tambahkan lewat tombol “💸 Withdrawal”. Target break-even: ${usd(T.cost)}.`); return; }
+  const now = new Date(), nowK = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0'), end = ks[ks.length - 1] > nowK ? ks[ks.length - 1] : nowK;
+  const months = []; let [y, m] = ks[0].split('-').map(Number);
+  for (;;) { const k = y + '-' + String(m).padStart(2, '0'); months.push(k); if (k >= end || months.length >= 36) break; if (++m > 12) { m = 1; y++; } }
+  let c = 0; const monthly = months.map(k => by[k] || 0), cumA = monthly.map(v => (c += v));
+  const W = 640, H = 260, L = 54, R = 22, Tp = 26, B = 34, pw = W - L - R, ph = H - Tp - B, ymax = niceMax(Math.max(T.cost, cumA[cumA.length - 1], ...monthly));
+  const n = months.length, Xc = i => L + (i + .5) * pw / n, Y = v => Tp + (1 - v / ymax) * ph, bw = Math.min(34, pw / n * .55);
+  const bars = months.map((k, i) => monthly[i] ? `<rect x="${Xc(i) - bw / 2}" y="${Y(monthly[i])}" width="${bw}" height="${Y(0) - Y(monthly[i])}" rx="3" style="fill:var(--cyan);opacity:.85"><title>${MON[+k.slice(5) - 1]} ${k.slice(0, 4)}: ${usd(monthly[i])}</title></rect>` : '').join('');
+  const step = Math.ceil(n / 8), xl = months.map((k, i) => i % step === 0 ? `<text x="${Xc(i)}" y="${H - 12}" text-anchor="middle">${MON[+k.slice(5) - 1]} ${k.slice(2, 4)}</text>` : '').join('');
+  const cl = cumA.map((v, i) => `${i ? 'L' : 'M'}${Xc(i)},${Y(v)}`).join(' ');
+  const cd = cumA.map((v, i) => `<circle cx="${Xc(i)}" cy="${Y(v)}" r="3.5" style="fill:var(--green);stroke:var(--surface);stroke-width:1.5"><title>Kumulatif ${usd(v)}</title></circle>`).join('');
+  const be = Y(T.cost);
+  $('croPayback').innerHTML = `<svg class="cro-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Payback withdrawal">${axis(W, H, L, R, Tp, B, ymax)}${bars}<line x1="${L}" x2="${W - R}" y1="${be}" y2="${be}" style="stroke:var(--amber);stroke-width:1.6" stroke-dasharray="6 5"/><text x="${W - R}" y="${be - 6}" text-anchor="end" style="fill:var(--amber);font-weight:700">Break-even ${usd(T.cost)}</text><path d="${cl}" fill="none" style="stroke:var(--green);stroke-width:2.2" stroke-linejoin="round"/>${cd}${xl}</svg><div class="cro-lg"><span><i style="background:var(--cyan)"></i>Withdrawal bulanan</span><span><i style="background:var(--green)"></i>Kumulatif</span><span><i style="background:var(--amber)"></i>Total modal</span></div>`;
+}
+function renderWdLog(D){
+  $('croWdSum').textContent = `${D.wds.length} entri · total ${usd(D.T.wd)}`;
+  if (!D.wds.length) { $('croWdLog').innerHTML = empty('Belum ada withdrawal.'); return; }
+  const rows = [...D.wds].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+  $('croWdLog').innerHTML = `<div class="table-scroll" style="max-height:300px"><table class="cro-table" style="min-width:420px"><thead><tr><th>Tanggal</th><th>Firm</th><th class="n">Jumlah</th><th>Catatan</th><th></th></tr></thead><tbody>${rows.map(w => `<tr><td>${fmtDate(w.date)}</td><td>${esc(w.firm || '—')}</td><td class="n" style="color:var(--green)">${usd(w.amount)}</td><td style="white-space:normal">${esc(w.note || '')}</td><td><button class="cro-x" data-cro="del-wd" data-id="${esc(w.id)}" title="Hapus" type="button">✕</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+function renderFirmTable(D){
+  const rows = [...D.list].sort((a, b) => b.cost - a.cost), T = D.T, c = v => `style="color:${tone(v)}"`;
+  const body = rows.map(f => `<tr><td><span class="firm"><i style="background:${f.color}"></i>${esc(f.name)}</span></td><td class="n">${f.units}</td><td class="n">${usd(f.fund)}</td><td class="n">${usd(f.cost)}</td><td class="n">${T.cost ? (f.cost / T.cost * 100).toFixed(1) : '0.0'}%</td><td class="n">${usd(f.profit)}</td><td class="n">${f.loss ? '−' + usd(f.loss) : usd(0)}</td><td class="n" ${c(f.net)}>${usd(f.net, true)}</td><td class="n">${usd(f.wd)}</td><td class="n" ${c(f.cash)}>${usd(f.cash, true)}</td><td class="n" ${c(f.roi || 0)}>${pct(f.roi, true)}</td><td class="n" ${c(f.roe || 0)}>${pct(f.roe, true)}</td></tr>`).join('');
+  $('croFirmTable').innerHTML = `<table class="cro-table" style="min-width:1040px"><thead><tr><th>Prop Firm</th><th class="n">Unit</th><th class="n">Funding</th><th class="n">Modal</th><th class="n">% Modal</th><th class="n">Profit</th><th class="n">Loss</th><th class="n">Net P/L</th><th class="n">Withdrawal</th><th class="n">Net Cash</th><th class="n">ROI</th><th class="n">ROE</th></tr></thead><tbody>${body}</tbody><tfoot><tr><td>TOTAL</td><td class="n">${T.units}</td><td class="n">${usd(T.fund)}</td><td class="n">${usd(T.cost)}</td><td class="n">100%</td><td class="n">${usd(T.profit)}</td><td class="n">${T.loss ? '−' + usd(T.loss) : usd(0)}</td><td class="n" ${c(T.net)}>${usd(T.net, true)}</td><td class="n">${usd(T.wd)}</td><td class="n" ${c(T.cash)}>${usd(T.cash, true)}</td><td class="n" ${c(T.roi || 0)}>${pct(T.roi, true)}</td><td class="n" ${c(T.roe || 0)}>${pct(T.roe, true)}</td></tr></tfoot></table>`;
+}
+function renderLedger(D){
+  const old = $('croLedger').querySelector('.table-scroll'), top = old ? old.scrollTop : 0, left = old ? old.scrollLeft : 0;
+  const q = U.q.trim().toLowerCase();
+  const firmColor = {}; D.list.forEach(f => firmColor[f.name] = f.color);
+  const rows = D.rows.filter(r => !q || [r.firm, r.plan, r.login, r.note, ST[r.status].t].join(' ').toLowerCase().includes(q));
+  const t = (r, f) => `<input class="cro-in" data-id="${esc(r.id)}" data-f="${f}" value="${esc(r[f] ?? '')}">`;
+  const nn = (r, f, w) => `<input class="cro-in num" type="number" min="0" step="any" style="min-width:${w || 72}px" data-id="${esc(r.id)}" data-f="${f}" value="${r[f]}">`;
+  const body = rows.map(r => `<tr>
+    <td><span class="firm" style="min-width:130px"><i style="background:${firmColor[String(r.firm || '').trim() || '—'] || 'var(--muted)'}"></i>${t(r, 'firm')}</span></td>
+    <td style="min-width:170px">${t(r, 'plan')}</td>
+    <td class="n">${nn(r, 'size', 80)}</td><td class="n">${nn(r, 'qty', 46)}</td>
+    <td style="min-width:110px">${U.reveal ? t(r, 'login') : `<span style="font-family:var(--fm);color:var(--muted)">${esc(maskId(r.login))}</span>`}</td>
+    <td class="n">${nn(r, 'cost', 78)}</td>
+    <td><select class="cro-in sel" data-id="${esc(r.id)}" data-f="status">${ST_ORDER.map(k => `<option value="${k}"${r.status === k ? ' selected' : ''}>${ST[k].t}</option>`).join('')}</select></td>
+    <td><input class="cro-in" type="date" data-id="${esc(r.id)}" data-f="date" value="${esc(r.date || '')}"></td>
+    <td class="n">${nn(r, 'profit', 78)}</td><td class="n">${nn(r, 'loss', 78)}</td>
+    <td class="n" style="color:${tone(r.net)}">${usd(r.net, true)}</td>
+    <td class="n" style="color:${tone(r.net)}">${r.fund ? pct(r.net / r.fund * 100, true) : '—'}</td>
+    <td style="min-width:170px">${t(r, 'note')}</td>
+    <td><button class="cro-x" data-cro="del-row" data-id="${esc(r.id)}" title="Hapus akun" type="button">✕</button></td></tr>`).join('');
+  $('croLedger').innerHTML = `<div class="table-scroll" style="max-height:620px"><table class="cro-table" style="min-width:1560px"><thead><tr><th>Prop Firm</th><th>Paket</th><th class="n">Ukuran</th><th class="n">Unit</th><th>Login / ID</th><th class="n">Modal (USD)</th><th>Status</th><th>Tanggal</th><th class="n">Profit</th><th class="n">Loss</th><th class="n">Net P/L</th><th class="n">ROE</th><th>Catatan</th><th></th></tr></thead><tbody>${body || '<tr><td colspan="14" style="text-align:center;color:var(--faint);padding:22px">Tidak ada akun yang cocok.</td></tr>'}</tbody></table></div>`;
+  const sc = $('croLedger').querySelector('.table-scroll'); if (sc) { sc.scrollTop = top; sc.scrollLeft = left; }
+}
+function render(){
+  const ok = ownerOK();
+  $('croLock').hidden = ok; $('croBody').hidden = !ok; $('croTools').hidden = !ok;
+  if (!ok) return;
+  const D = compute();
+  const fx = $('croFx'); if (fx && document.activeElement !== fx) fx.value = S.fx || '';
+  $('croFirmList').innerHTML = D.list.map(f => `<option value="${esc(f.name)}"></option>`).join('');
+  $('croRevealBtn').classList.toggle('on', U.reveal);
+  renderKpis(D); renderFlow(D); renderInsights(D); renderDonut(D); renderPerK(D); renderTimeline(D); renderStatus(D); renderPayback(D); renderWdLog(D); renderFirmTable(D); renderLedger(D);
+}
+
+/* ---------- interaksi ---------- */
+function download(name, text, type){
+  const a = document.createElement('a'), url = URL.createObjectURL(new Blob([text], {type}));
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+const csvc = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+function exportCsv(){
+  const D = compute();
+  const a = [['Prop Firm','Paket','Ukuran Akun','Unit','Login/ID','Modal Total (USD)','Status','Tanggal','Profit','Loss','Net P/L','Catatan']].concat(D.rows.map(r => [r.firm, r.plan, r.size, r.qty, r.login, r.cost, ST[r.status].t, r.date, r.profit, r.loss, r.net, r.note]));
+  a.push([]); a.push(['Withdrawal','Tanggal','Prop Firm','Jumlah (USD)','Catatan']);
+  D.wds.forEach(w => a.push(['', w.date, w.firm, w.amount, w.note]));
+  a.push([]); a.push(['TOTAL','Modal',D.T.cost,'Profit',D.T.profit,'Loss',D.T.loss,'Net P/L',D.T.net,'Withdrawal',D.T.wd,'Net Cash',D.T.cash,'ROI %',D.T.roi == null ? '' : D.T.roi.toFixed(2),'ROE %',D.T.roe == null ? '' : D.T.roe.toFixed(2)]);
+  download('trading-cost-roi-' + new Date().toISOString().slice(0, 10) + '.csv', '\ufeff' + a.map(r => r.map(csvc).join(',')).join('\n'), 'text/csv;charset=utf-8');
+}
+function toggle(id, other){ const el = $(id), show = el.hidden; el.hidden = !show; if (other) $(other).hidden = true; if (show) el.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+function saveAcc(){
+  const firm = $('croFFirm').value.trim(), cost = num($('croFCost').value);
+  if (!firm) { $('croFFirm').focus(); return; }
+  S.rows.push({id:uid(), firm, plan:$('croFPlan').value.trim(), size:num($('croFSize').value), qty:Math.max(1, Math.round(num($('croFQty').value)) || 1), login:$('croFLogin').value.trim(), cost, status:$('croFStatus').value, date:$('croFDate').value, note:$('croFNote').value.trim(), profit:0, loss:0});
+  ['croFFirm','croFPlan','croFSize','croFCost','croFLogin','croFDate','croFNote'].forEach(i => $(i).value = ''); $('croFQty').value = 1;
+  save(); render();
+}
+function saveWd(){
+  const amt = num($('croWAmt').value);
+  if (!(amt > 0)) { $('croWAmt').focus(); return; }
+  S.wd.push({id:uid(), date:$('croWDate').value || new Date().toISOString().slice(0, 10), firm:$('croWFirm').value.trim(), amount:amt, note:$('croWNote').value.trim()});
+  ['croWAmt','croWNote','croWFirm'].forEach(i => $(i).value = ''); save(); render();
+}
+$('croFStatus').innerHTML = ST_ORDER.map(k => `<option value="${k}"${k === 'purchased' ? ' selected' : ''}>${ST[k].t}</option>`).join('');
+$('croWDate').value = new Date().toISOString().slice(0, 10);
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-cro]'); if (!b || !$('croBody')) return;
+  const a = b.dataset.cro, id = b.dataset.id;
+  if (a === 'toggle-acc') toggle('croFormAcc', 'croFormWd');
+  else if (a === 'toggle-wd') toggle('croFormWd', 'croFormAcc');
+  else if (a === 'save-acc') saveAcc();
+  else if (a === 'save-wd') saveWd();
+  else if (a === 'reveal') { U.reveal = !U.reveal; render(); }
+  else if (a === 'csv') exportCsv();
+  else if (a === 'backup') download('trading-cost-roi-backup-' + new Date().toISOString().slice(0, 10) + '.json', JSON.stringify(S, null, 2), 'application/json');
+  else if (a === 'import') $('croImport').click();
+  else if (a === 'reset') { if (confirm('Reset ke data awal? Semua perubahan lokal (profit, loss, withdrawal) akan hilang.')) { S = clone(SEED); save(); render(); } }
+  else if (a === 'del-row') { const r = S.rows.find(x => x.id === id); if (r && confirm(`Hapus akun ${r.firm} · ${r.plan}?`)) { S.rows = S.rows.filter(x => x.id !== id); save(); render(); } }
+  else if (a === 'del-wd') { if (confirm('Hapus entri withdrawal ini?')) { S.wd = S.wd.filter(x => x.id !== id); save(); render(); } }
+  else if (a === 'goto-partner') document.querySelector('.tab[data-view="partner"]')?.click();
+  else if (a === 'jump') $('costRoiTracker')?.scrollIntoView({behavior:'smooth', block:'start'});
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.id === 'croFx') { S.fx = Math.max(0, num(el.value)); save(); render(); return; }
+  if (el.id === 'croImport') {
+    const f = el.files && el.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => { try { const j = JSON.parse(rd.result); if (!j || !Array.isArray(j.rows) || !Array.isArray(j.wd)) throw 0; j.rows.forEach(r => { if (!r.id) r.id = uid(); }); j.wd.forEach(w => { if (!w.id) w.id = uid(); }); S = {v:1, fx:j.fx == null ? S.fx : j.fx, rows:j.rows, wd:j.wd}; save(); render(); } catch (err) { alert('File backup tidak valid.'); } el.value = ''; };
+    rd.readAsText(f); return;
+  }
+  if (!el.dataset || !el.dataset.f || !el.dataset.id) return;
+  const r = S.rows.find(x => x.id === el.dataset.id); if (!r) return;
+  const f = el.dataset.f;
+  r[f] = ['size','qty','cost','profit','loss'].includes(f) ? (f === 'qty' ? Math.max(1, Math.round(num(el.value)) || 1) : Math.max(0, num(el.value))) : el.value;
+  save(); render();
+});
+document.addEventListener('input', e => { if (e.target.id === 'croSearch') { U.q = e.target.value; if (!$('croBody').hidden) renderLedger(compute()); } });
+document.querySelector('.tab[data-view="intel"]')?.addEventListener('click', () => setTimeout(render, 90));
+window.addEventListener('storage', e => { if (e.key === KEY) { S = load(); render(); } });
+render();
 })();
 </script>
 
