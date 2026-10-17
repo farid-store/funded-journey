@@ -6559,50 +6559,46 @@ function saveWd(){
 $('croFStatus').innerHTML = ST_ORDER.map(k => `<option value="${k}"${k === 'purchased' ? ' selected' : ''}>${ST[k].t}</option>`).join('');
 $('croWDate').value = new Date().toISOString().slice(0, 10);
 
-/* ---------- Share Card PNG ---------- */
+/* ---------- ROI PNG: generate -> preview -> download/share ---------- */
+let roiPreviewBlob = null, roiPreviewUrl = '';
+function ensureRoiPreview(){
+  if(document.getElementById('croPngPreview')) return;
+  const style=document.createElement('style');
+  style.textContent=`#croPngPreview{position:fixed;inset:0;z-index:99999;background:rgba(3,8,18,.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:22px}#croPngPreview[hidden]{display:none!important}.cro-png-dialog{width:min(1100px,100%);max-height:94vh;display:flex;flex-direction:column;background:#0b1220;border:1px solid rgba(217,181,109,.35);border-radius:18px;overflow:hidden;box-shadow:0 25px 90px #0009}.cro-png-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid #263247}.cro-png-head h3{margin:0;color:#f5f7fb;font-size:16px}.cro-png-head p{margin:4px 0 0;color:#94a3b8;font-size:12px}.cro-png-actions{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid #263247}.cro-png-actions button{border:1px solid #34435a;border-radius:9px;padding:9px 13px;background:#111d30;color:#e7edf7;font-weight:650;cursor:pointer}.cro-png-actions .gold{background:#d9b56d;color:#101725;border-color:#d9b56d}.cro-png-stage{padding:16px;overflow:auto;display:flex;justify-content:center;background:#070c15}.cro-png-stage img{display:block;width:100%;height:auto;max-width:1000px;align-self:flex-start;border-radius:8px;box-shadow:0 8px 36px #0008}.cro-png-close{font-size:22px!important;padding:4px 11px!important}@media(max-width:600px){#croPngPreview{padding:8px}.cro-png-dialog{max-height:96vh;border-radius:12px}.cro-png-head{padding:12px}.cro-png-actions{padding:10px}.cro-png-actions button{flex:1}.cro-png-stage{padding:8px}}`;
+  document.head.appendChild(style);
+  const wrap=document.createElement('div');wrap.id='croPngPreview';wrap.hidden=true;wrap.innerHTML=`<section class="cro-png-dialog" role="dialog" aria-modal="true" aria-labelledby="croPngTitle"><header class="cro-png-head"><div><h3 id="croPngTitle">Preview ROI Portfolio Card</h3><p>Periksa kartu terlebih dahulu, lalu download atau bagikan.</p></div><button class="cro-png-actions-btn cro-png-close" data-cro-preview="close" aria-label="Tutup preview">×</button></header><div class="cro-png-actions"><button class="gold" data-cro-preview="download">⬇ Download PNG</button><button data-cro-preview="share">↗ Bagikan</button><button data-cro-preview="close">Tutup preview</button></div><div class="cro-png-stage"><img id="croPngImage" alt="Preview kartu Trading Cost dan ROI Golden Break Terminal"></div></section>`;
+  wrap.addEventListener('click',e=>{if(e.target===wrap||e.target.closest('[data-cro-preview="close"]'))closeRoiPreview();else if(e.target.closest('[data-cro-preview="download"]'))downloadRoiPreview();else if(e.target.closest('[data-cro-preview="share"]'))shareRoiPreview();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRoiPreview()});document.body.appendChild(wrap);
+}
+function closeRoiPreview(){const el=document.getElementById('croPngPreview');if(el)el.hidden=true;document.documentElement.style.overflow='';}
+function downloadRoiPreview(){if(!roiPreviewBlob)return;const a=document.createElement('a');a.href=URL.createObjectURL(roiPreviewBlob);a.download=`golden-break-roi-${new Date().toISOString().slice(0,10)}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);}
+async function shareRoiPreview(){if(!roiPreviewBlob)return;const file=new File([roiPreviewBlob],`golden-break-roi-${new Date().toISOString().slice(0,10)}.png`,{type:'image/png'});try{if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Golden Break Terminal — ROI Portfolio',text:'Portfolio snapshot Trading Cost & ROI Tracker'});return;}}catch(e){if(e?.name==='AbortError')return;}downloadRoiPreview();}
 async function sharePng(){
-  const D = compute(), T = D.T;
-  const canvas = document.createElement('canvas');
-  canvas.width = 1200; canvas.height = 675;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) { alert('Browser tidak mendukung pembuatan gambar.'); return; }
-  const W=canvas.width,H=canvas.height;
-  const grad=ctx.createLinearGradient(0,0,W,H); grad.addColorStop(0,'#0b1220'); grad.addColorStop(.55,'#101a2c'); grad.addColorStop(1,'#071014');
-  ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
-  // subtle grid and decorative gold line
-  ctx.strokeStyle='rgba(148,163,184,.075)'; ctx.lineWidth=1;
-  for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
-  for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
-  ctx.fillStyle='#d9b56d'; ctx.fillRect(0,0,10,H);
-  const rounded=(x,y,w,h,r,fill,stroke)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke()}};
-  const txt=(t,x,y,size,color,weight='400',font='Inter, Arial, sans-serif')=>{ctx.fillStyle=color;ctx.font=`${weight} ${size}px ${font}`;ctx.fillText(String(t),x,y)};
-  txt('GOLDEN BREAK TERMINAL',52,58,18,'#d9b56d','700');
-  txt('TRADING COST & ROI TRACKER',52,91,31,'#f4f7fb','700');
-  txt('PORTFOLIO SNAPSHOT  ·  '+new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}),54,119,13,'#9eacc2','500');
+  const D=compute(),T=D.T;
+  const firms=(D.list||[]).slice().sort((a,b)=>Math.abs(b.cost||0)-Math.abs(a.cost||0));
+  const wds=(D.wds||[]).slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+  const visibleFirms=firms; const rowH=37, firmStart=472, firmHeight=Math.max(48,visibleFirms.length*rowH), wdStart=firmStart+firmHeight+64, wdRows=Math.min(wds.length,8), H=Math.max(860,wdStart+70+wdRows*31+86);
+  const canvas=document.createElement('canvas');canvas.width=1400;canvas.height=H;const ctx=canvas.getContext('2d');if(!ctx){alert('Browser tidak mendukung pembuatan gambar.');return;}
+  const W=canvas.width;const grad=ctx.createLinearGradient(0,0,W,H);grad.addColorStop(0,'#0b1220');grad.addColorStop(.52,'#101a2c');grad.addColorStop(1,'#071014');ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(148,163,184,.055)';ctx.lineWidth=1;for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}ctx.fillStyle='#d9b56d';ctx.fillRect(0,0,9,H);
+  const round=(x,y,w,h,r,fill,stroke)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke()}};
+  const txt=(t,x,y,size,color,weight='400',align='left')=>{ctx.fillStyle=color;ctx.font=`${weight} ${size}px Inter,Arial,sans-serif`;ctx.textAlign=align;ctx.fillText(String(t??'—'),x,y);ctx.textAlign='left'};
+  const fit=(t,max)=>{let s=String(t??'—');return s.length>max?s.slice(0,max-1)+'…':s};
+  txt('GOLDEN BREAK TERMINAL',54,54,19,'#d9b56d','700');txt('TRADING COST & ROI TRACKER',54,91,34,'#f4f7fb','700');txt('DETAILED PORTFOLIO REPORT  ·  '+new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}),56,121,14,'#9eacc2','500');
   const cards=[
-    {label:'TOTAL MODAL',value:usd(T.cost),sub:'Biaya challenge',color:'#f5c56b'},
-    {label:'NET PROFIT / LOSS',value:usd(T.net,true),sub:'Profit dikurangi loss',color:T.net>=0?'#45e2a2':'#ff7189'},
-    {label:'TOTAL WITHDRAWAL',value:usd(T.wd),sub:'Payout tercatat',color:'#6eb8ff'},
-    {label:'NET CASH',value:usd(T.cash,true),sub:'Withdrawal − modal',color:T.cash>=0?'#45e2a2':'#ff7189'},
-    {label:'ROI REALISASI',value:pct(T.roi,true),sub:'Net cash ÷ modal',color:T.roi==null?'#d7deea':T.roi>=0?'#45e2a2':'#ff7189'},
-    {label:'ROE TRADING',value:pct(T.roe,true),sub:'Net P/L ÷ funding',color:T.roe==null?'#d7deea':T.roe>=0?'#45e2a2':'#ff7189'}
+    ['TOTAL MODAL',usd(T.cost),'Total biaya akun/challenge','#f5c56b'],['TOTAL PROFIT',usd(T.profit,true),'Profit yang dicatat',T.profit>=0?'#45e2a2':'#ff7189'],['TOTAL LOSS',usd(T.loss),'Loss yang dicatat','#ff7189'],
+    ['NET TRADING P/L',usd(T.net,true),'Profit dikurangi loss',T.net>=0?'#45e2a2':'#ff7189'],['TOTAL WITHDRAWAL',usd(T.wd),'Payout yang tercatat','#6eb8ff'],['NET CASH',usd(T.cash,true),'Withdrawal − modal',T.cash>=0?'#45e2a2':'#ff7189'],
+    ['ROI REALISASI',pct(T.roi,true),'Net cash ÷ modal',T.roi==null?'#d7deea':T.roi>=0?'#45e2a2':'#ff7189'],['ROE TRADING',pct(T.roe,true),'Net P/L ÷ total funding',T.roe==null?'#d7deea':T.roe>=0?'#45e2a2':'#ff7189'],['JUMLAH AKUN',String((D.rows||[]).length),'Semua akun tercatat','#d9b56d']
   ];
-  const cw=350,ch=105,gap=18,startX=52,startY=150;
-  cards.forEach((c,i)=>{const x=startX+(i%3)*(cw+gap),y=startY+Math.floor(i/3)*(ch+15);rounded(x,y,cw,ch,13,'rgba(255,255,255,.055)','rgba(180,195,220,.16)');txt(c.label,x+18,y+25,12,'#9eacc2','700');txt(c.value,x+18,y+62,27,c.color,'700');txt(c.sub,x+18,y+84,12,'#8190a8','400')});
-  const top=D.list.slice().sort((a,b)=>b.cost-a.cost).slice(0,4);
-  txt('PROP FIRM BREAKDOWN',52,405,14,'#d9b56d','700');
-  txt('Firm',56,435,11,'#8998af','700'); txt('Modal',430,435,11,'#8998af','700'); txt('Net P/L',625,435,11,'#8998af','700'); txt('Withdrawal',820,435,11,'#8998af','700'); txt('ROI',1030,435,11,'#8998af','700');
-  if(!top.length){txt('Belum ada data prop firm yang dicatat.',56,470,16,'#9eacc2','400')}
-  top.forEach((f,i)=>{const y=465+i*39;rounded(52,y-22,1096,32,7,i%2?'rgba(255,255,255,.025)':'rgba(255,255,255,.055)');ctx.fillStyle=f.color||'#d9b56d';ctx.beginPath();ctx.arc(68,y-6,4,0,Math.PI*2);ctx.fill();txt(f.name.slice(0,34),82,y,13,'#edf2fa','600');txt(usd(f.cost),430,y,13,'#dfe7f3','500');txt(usd(f.net,true),625,y,13,f.net>=0?'#45e2a2':'#ff7189','600');txt(usd(f.wd),820,y,13,'#9cc9ff','500');txt(pct(f.roi,true),1030,y,13,f.roi==null?'#9eacc2':f.roi>=0?'#45e2a2':'#ff7189','600')});
-  ctx.strokeStyle='rgba(217,181,109,.45)';ctx.beginPath();ctx.moveTo(52,635);ctx.lineTo(1148,635);ctx.stroke();
-  txt('Golden Break Capital  ·  Data berdasarkan catatan tracker pengguna',52,657,11,'#8492a8','400');
-  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
-  if(!blob){alert('Gagal membuat PNG. Coba gunakan browser terbaru.');return;}
-  const file=new File([blob],`golden-break-roi-${new Date().toISOString().slice(0,10)}.png`,{type:'image/png'});
-  if(navigator.share && navigator.canShare){
-    try{if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Golden Break Terminal — ROI Snapshot',text:'Ringkasan Trading Cost & ROI Tracker'});return;}}catch(err){if(err && err.name==='AbortError')return;}
-  }
-  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+  const cw=410,ch=91,gap=18,sx=54,sy=145;cards.forEach((c,i)=>{const x=sx+(i%3)*(cw+gap),y=sy+Math.floor(i/3)*(ch+13);round(x,y,cw,ch,12,'rgba(255,255,255,.055)','rgba(180,195,220,.16)');txt(c[0],x+17,y+24,12,'#9eacc2','700');txt(c[1],x+17,y+56,27,c[3],'700');txt(c[2],x+17,y+77,12,'#8190a8','400')});
+  txt('PROP FIRM BREAKDOWN',54,445,16,'#d9b56d','700');txt('Firm / Paket',62,469,11,'#8998af','700');txt('Modal',690,469,11,'#8998af','700','right');txt('Profit',830,469,11,'#8998af','700','right');txt('Loss',950,469,11,'#8998af','700','right');txt('Net P/L',1085,469,11,'#8998af','700','right');txt('Withdrawal',1220,469,11,'#8998af','700','right');txt('ROI',1340,469,11,'#8998af','700','right');
+  if(!visibleFirms.length)txt('Belum ada data prop firm yang dicatat.',62,firmStart+25,15,'#9eacc2');
+  visibleFirms.forEach((f,i)=>{const y=firmStart+i*rowH;round(54,y-20,1292,31,6,i%2?'rgba(255,255,255,.025)':'rgba(255,255,255,.055)');ctx.fillStyle=f.color||'#d9b56d';ctx.beginPath();ctx.arc(67,y-5,4,0,Math.PI*2);ctx.fill();txt(fit(f.name+(f.plan?' · '+f.plan:''),63),80,y,12,'#edf2fa','600');txt(usd(f.cost),690,y,12,'#dfe7f3','500','right');txt(usd(f.profit||0,true),830,y,12,'#45e2a2','500','right');txt(usd(f.loss||0),950,y,12,'#ff7189','500','right');txt(usd(f.net,true),1085,y,12,f.net>=0?'#45e2a2':'#ff7189','600','right');txt(usd(f.wd||0),1220,y,12,'#9cc9ff','500','right');txt(pct(f.roi,true),1340,y,12,f.roi==null?'#9eacc2':f.roi>=0?'#45e2a2':'#ff7189','600','right')});
+  let y=wdStart;ctx.strokeStyle='rgba(217,181,109,.35)';ctx.beginPath();ctx.moveTo(54,y-28);ctx.lineTo(1346,y-28);ctx.stroke();txt('WITHDRAWAL HISTORY',54,y,16,'#d9b56d','700');y+=27;txt('Tanggal',62,y,11,'#8998af','700');txt('Prop Firm',250,y,11,'#8998af','700');txt('Jumlah',900,y,11,'#8998af','700','right');txt('Catatan',930,y,11,'#8998af','700');y+=14;
+  if(!wdRows) {y+=18;txt('Belum ada withdrawal yang dicatat.',62,y,13,'#9eacc2');} else {wds.slice(0,8).forEach((w,i)=>{y+=rowH-4;round(54,y-19,1292,27,5,i%2?'rgba(255,255,255,.025)':'rgba(255,255,255,.05)');txt(fmtDate(w.date),62,y,12,'#dfe7f3');txt(fit(w.firm||'—',45),250,y,12,'#dfe7f3');txt(usd(w.amount),900,y,12,'#6eb8ff','600','right');txt(fit(w.note||'—',60),930,y,12,'#9eacc2');});if(wds.length>8)txt(`+ ${wds.length-8} transaksi withdrawal lainnya tercatat di tracker.`,62,y+25,11,'#9eacc2');}
+  const foot=H-31;ctx.strokeStyle='rgba(217,181,109,.35)';ctx.beginPath();ctx.moveTo(54,foot-17);ctx.lineTo(1346,foot-17);ctx.stroke();txt('Golden Break Capital  ·  Data berdasarkan catatan tracker pengguna',54,foot,11,'#8492a8','400');txt('PRIVATE PORTFOLIO SNAPSHOT',1346,foot,11,'#8492a8','600','right');
+  roiPreviewBlob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!roiPreviewBlob){alert('Gagal membuat PNG. Coba browser terbaru.');return;}
+  ensureRoiPreview();if(roiPreviewUrl)URL.revokeObjectURL(roiPreviewUrl);roiPreviewUrl=URL.createObjectURL(roiPreviewBlob);document.getElementById('croPngImage').src=roiPreviewUrl;document.getElementById('croPngPreview').hidden=false;document.documentElement.style.overflow='hidden';
 }
 
 document.addEventListener('click', e => {
