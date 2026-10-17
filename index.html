@@ -1725,15 +1725,23 @@ html[data-pro] .kpi{box-shadow:var(--shadow-sm)}
 html[data-pro] .footer{letter-spacing:.02em}
 html[data-theme="soft"] ::-webkit-scrollbar-thumb{background:#c5cde0}
 html[data-theme="graphite"] ::-webkit-scrollbar-thumb{background:#2c3342}
-/* saklar tema */
-.theme-sw{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line2);border-radius:10px;background:rgba(127,140,170,.1);flex:none}
-.theme-sw button{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--muted);padding:5px 10px;border-radius:7px;font:600 11px var(--fb);min-height:32px;white-space:nowrap}
+/* Saklar tema ringkas: label hanya muncul saat hover/fokus atau tema aktif */
+.theme-sw{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--line2);border-radius:10px;background:rgba(127,140,170,.1);flex:0 0 auto;min-width:max-content}
+.theme-sw button{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;color:var(--muted);padding:6px 7px;border-radius:7px;font:600 11px var(--fb);min-height:32px;white-space:nowrap;min-width:29px;transition:padding .16s ease,background .16s ease}
+.theme-sw button .l{display:none}
+.theme-sw button:hover .l,.theme-sw button:focus-visible .l,.theme-sw button[aria-checked="true"] .l{display:inline}
+.theme-sw button:hover,.theme-sw button:focus-visible{background:var(--surface2);color:var(--text)}
 .theme-sw button[aria-checked="true"]{background:var(--surface3);color:var(--text);box-shadow:inset 0 0 0 1px var(--line2)}
 .theme-sw .sw{width:13px;height:13px;border-radius:50%;border:1px solid rgba(127,140,170,.5);flex:none}
 .sw.citadel{background:linear-gradient(135deg,#0d1428 50%,#ffc94a 50%)}
 .sw.soft{background:linear-gradient(135deg,#ffffff 50%,#2f64e8 50%)}
 .sw.graphite{background:linear-gradient(135deg,#151922 50%,#d9b068 50%)}
-@media(max-width:700px){.theme-sw button .l{display:none}.theme-sw button{padding:5px 9px}}
+.sw.emerald{background:linear-gradient(135deg,#062c2a 50%,#2ee6c4 50%)}
+/* Desktop: satu baris horizontal; Parameter tetap paling ujung kanan */
+@media(min-width:1101px){.top-actions{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}.top-actions .sel{flex:0 1 220px;min-width:145px}.top-actions .spacer{flex:1 0 10px}.top-actions #limitsBtn{order:999;margin-left:auto;flex:0 0 auto;white-space:nowrap}}
+@media(max-width:1100px){.top-actions #limitsBtn{order:999;margin-left:auto;flex:0 0 auto}}
+@media(max-width:700px){.theme-sw button{padding:6px 7px}.theme-sw button .l{display:none!important}.theme-sw button{min-width:29px}}
+
 /* bar status: datar & terbaca */
 html[data-pro] .bar{grid-template-columns:64px 1fr auto;font-size:10px;letter-spacing:.02em;text-transform:none;font-weight:600}
 html[data-pro] .bar .trk{transform:none;height:8px;border-radius:99px;background:var(--surface3);border:0}
@@ -2310,6 +2318,7 @@ html:not(.z1):not(.z2):not(.z3) :is(.btn,.tab,.theme-sw button,.cal-seg button):
           <button class="btn" data-cro="toggle-wd" type="button">💸 Withdrawal</button>
           <button class="btn ghost" data-cro="sync" type="button" title="Sinkron ke Firestore">☁ Sync</button>
           <span class="intel-status" id="croSync">Lokal</span>
+          <button class="btn primary" data-cro="share-png" type="button" title="Buat kartu ROI dalam format PNG untuk dibagikan">▧ Share PNG</button>
           <button class="btn ghost" data-cro="csv" type="button">⬇ CSV</button>
           <button class="btn ghost" data-cro="backup" type="button">⬇ Backup</button>
           <button class="btn ghost" data-cro="import" type="button">⬆ Import</button>
@@ -6550,6 +6559,52 @@ function saveWd(){
 $('croFStatus').innerHTML = ST_ORDER.map(k => `<option value="${k}"${k === 'purchased' ? ' selected' : ''}>${ST[k].t}</option>`).join('');
 $('croWDate').value = new Date().toISOString().slice(0, 10);
 
+/* ---------- Share Card PNG ---------- */
+async function sharePng(){
+  const D = compute(), T = D.T;
+  const canvas = document.createElement('canvas');
+  canvas.width = 1200; canvas.height = 675;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) { alert('Browser tidak mendukung pembuatan gambar.'); return; }
+  const W=canvas.width,H=canvas.height;
+  const grad=ctx.createLinearGradient(0,0,W,H); grad.addColorStop(0,'#0b1220'); grad.addColorStop(.55,'#101a2c'); grad.addColorStop(1,'#071014');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
+  // subtle grid and decorative gold line
+  ctx.strokeStyle='rgba(148,163,184,.075)'; ctx.lineWidth=1;
+  for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+  for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+  ctx.fillStyle='#d9b56d'; ctx.fillRect(0,0,10,H);
+  const rounded=(x,y,w,h,r,fill,stroke)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke()}};
+  const txt=(t,x,y,size,color,weight='400',font='Inter, Arial, sans-serif')=>{ctx.fillStyle=color;ctx.font=`${weight} ${size}px ${font}`;ctx.fillText(String(t),x,y)};
+  txt('GOLDEN BREAK TERMINAL',52,58,18,'#d9b56d','700');
+  txt('TRADING COST & ROI TRACKER',52,91,31,'#f4f7fb','700');
+  txt('PORTFOLIO SNAPSHOT  ·  '+new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}),54,119,13,'#9eacc2','500');
+  const cards=[
+    {label:'TOTAL MODAL',value:usd(T.cost),sub:'Biaya challenge',color:'#f5c56b'},
+    {label:'NET PROFIT / LOSS',value:usd(T.net,true),sub:'Profit dikurangi loss',color:T.net>=0?'#45e2a2':'#ff7189'},
+    {label:'TOTAL WITHDRAWAL',value:usd(T.wd),sub:'Payout tercatat',color:'#6eb8ff'},
+    {label:'NET CASH',value:usd(T.cash,true),sub:'Withdrawal − modal',color:T.cash>=0?'#45e2a2':'#ff7189'},
+    {label:'ROI REALISASI',value:pct(T.roi,true),sub:'Net cash ÷ modal',color:T.roi==null?'#d7deea':T.roi>=0?'#45e2a2':'#ff7189'},
+    {label:'ROE TRADING',value:pct(T.roe,true),sub:'Net P/L ÷ funding',color:T.roe==null?'#d7deea':T.roe>=0?'#45e2a2':'#ff7189'}
+  ];
+  const cw=350,ch=105,gap=18,startX=52,startY=150;
+  cards.forEach((c,i)=>{const x=startX+(i%3)*(cw+gap),y=startY+Math.floor(i/3)*(ch+15);rounded(x,y,cw,ch,13,'rgba(255,255,255,.055)','rgba(180,195,220,.16)');txt(c.label,x+18,y+25,12,'#9eacc2','700');txt(c.value,x+18,y+62,27,c.color,'700');txt(c.sub,x+18,y+84,12,'#8190a8','400')});
+  const top=D.list.slice().sort((a,b)=>b.cost-a.cost).slice(0,4);
+  txt('PROP FIRM BREAKDOWN',52,405,14,'#d9b56d','700');
+  txt('Firm',56,435,11,'#8998af','700'); txt('Modal',430,435,11,'#8998af','700'); txt('Net P/L',625,435,11,'#8998af','700'); txt('Withdrawal',820,435,11,'#8998af','700'); txt('ROI',1030,435,11,'#8998af','700');
+  if(!top.length){txt('Belum ada data prop firm yang dicatat.',56,470,16,'#9eacc2','400')}
+  top.forEach((f,i)=>{const y=465+i*39;rounded(52,y-22,1096,32,7,i%2?'rgba(255,255,255,.025)':'rgba(255,255,255,.055)');ctx.fillStyle=f.color||'#d9b56d';ctx.beginPath();ctx.arc(68,y-6,4,0,Math.PI*2);ctx.fill();txt(f.name.slice(0,34),82,y,13,'#edf2fa','600');txt(usd(f.cost),430,y,13,'#dfe7f3','500');txt(usd(f.net,true),625,y,13,f.net>=0?'#45e2a2':'#ff7189','600');txt(usd(f.wd),820,y,13,'#9cc9ff','500');txt(pct(f.roi,true),1030,y,13,f.roi==null?'#9eacc2':f.roi>=0?'#45e2a2':'#ff7189','600')});
+  ctx.strokeStyle='rgba(217,181,109,.45)';ctx.beginPath();ctx.moveTo(52,635);ctx.lineTo(1148,635);ctx.stroke();
+  txt('Golden Break Capital  ·  Data berdasarkan catatan tracker pengguna',52,657,11,'#8492a8','400');
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  if(!blob){alert('Gagal membuat PNG. Coba gunakan browser terbaru.');return;}
+  const file=new File([blob],`golden-break-roi-${new Date().toISOString().slice(0,10)}.png`,{type:'image/png'});
+  if(navigator.share && navigator.canShare){
+    try{if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Golden Break Terminal — ROI Snapshot',text:'Ringkasan Trading Cost & ROI Tracker'});return;}}catch(err){if(err && err.name==='AbortError')return;}
+  }
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-cro]'); if (!b || !$('croBody')) return;
   const a = b.dataset.cro, id = b.dataset.id;
@@ -6557,6 +6612,7 @@ document.addEventListener('click', e => {
   else if (a === 'toggle-wd') toggle('croFormWd', 'croFormAcc');
   else if (a === 'save-acc') saveAcc();
   else if (a === 'save-wd') saveWd();
+  else if (a === 'share-png') { sharePng().catch(err => { console.error('ROI share PNG', err); alert('Gagal membuat kartu PNG. Silakan coba lagi.'); }); }
   else if (a === 'csv') exportCsv();
   else if (a === 'sync') { clearTimeout(syncT); sync(); }
   else if (a === 'backup') download('trading-cost-roi-backup-' + new Date().toISOString().slice(0, 10) + '.json', JSON.stringify(S, null, 2), 'application/json');
