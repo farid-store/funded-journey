@@ -2121,6 +2121,73 @@ html:not(.z1):not(.z2):not(.z3) .kpi{justify-content:flex-start}
 html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-space:nowrap;font-size:12px}
 #mgBox .table-scroll{overflow-x:auto}
 @media(max-width:760px){.mg-hero,.mg-form{grid-template-columns:1fr}.mg-sim-row{grid-template-columns:1fr}}
+/* ---------- Backtest Lab ---------- */
+#view-backtest .bt-form{display:grid;gap:12px}
+#view-backtest .bt-form label{display:flex;flex-direction:column;gap:6px;font-size:11.5px;font-weight:600;color:var(--muted);min-width:0}
+#view-backtest .bt-form .sel{width:100%;box-sizing:border-box}
+#view-backtest .bt-form-data{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));align-items:end}
+#view-backtest .bt-form-set{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+#view-backtest .bt-form-ticket{grid-template-columns:1fr 1fr}
+#view-backtest .bt-form-ticket label:nth-child(n+2){grid-column:1/-1}
+#view-backtest .bt-form-ticket label:first-child{grid-column:1/-1}
+#view-backtest[data-src=csv] .bt-src-bin,#view-backtest[data-src=binance] .bt-src-csv{display:none}
+#view-backtest .bt-check{flex-direction:row!important;align-items:center;gap:8px!important;font-weight:500!important;color:var(--text)!important}
+#view-backtest .bt-check input{width:16px;height:16px;accent-color:var(--gold)}
+#view-backtest .bt-hint{margin:12px 0 0;color:var(--muted);font-size:11.5px;line-height:1.6}
+#view-backtest .bt-note{margin-top:12px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);color:var(--muted);font-size:11.5px;line-height:1.6;background:var(--surface2,rgba(255,255,255,.03))}
+#view-backtest .bt-resume{margin-top:10px}
+#view-backtest .bt-resume .btn{white-space:normal;text-align:left}
+#view-backtest .bt-main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;margin-top:16px;align-items:start}
+#view-backtest .bt-side{display:grid;gap:16px;min-width:0}
+#view-backtest .bt-chartcard{padding:14px 16px;min-width:0}
+#view-backtest .bt-toolbar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:space-between;margin-bottom:12px}
+#view-backtest .bt-ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#view-backtest .bt-ctl .sel{padding-top:7px;padding-bottom:7px;font-size:12px;width:auto}
+#view-backtest .bt-ctl .btn{min-width:38px}
+#view-backtest .bt-seg{display:inline-flex;flex-wrap:wrap;gap:2px;padding:3px;border-radius:10px;border:1px solid var(--line2);background:var(--surface2,rgba(255,255,255,.03))}
+#view-backtest .bt-seg button{border:0;background:transparent;color:var(--muted);font:600 12px var(--fb);padding:6px 11px;border-radius:7px;cursor:pointer}
+#view-backtest .bt-seg button:hover:not(:disabled){color:var(--text)}
+#view-backtest .bt-seg button.on{background:var(--gold-soft,rgba(217,176,104,.18));color:var(--gold)}
+#view-backtest .bt-seg button:disabled{opacity:.35;cursor:not-allowed}
+#view-backtest .bt-chartwrap{position:relative;height:clamp(360px,58vh,580px);border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--bg0,#080a0f)}
+#view-backtest .bt-chartwrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+#view-backtest .bt-chartwrap.picking canvas{cursor:copy}
+#view-backtest .bt-status{margin-top:10px;font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 16px;font-family:var(--fm)}
+#view-backtest .bt-status b{color:var(--text)}
+#view-backtest .bt-prog{height:4px;border-radius:99px;background:var(--surface3,rgba(255,255,255,.08));overflow:hidden;margin-top:8px}
+#view-backtest .bt-prog i{display:block;height:100%;width:0;background:var(--gold);border-radius:99px;transition:width .15s}
+#view-backtest .bt-msg{min-height:20px;margin-top:8px;font-size:12px;color:var(--muted)}
+#view-backtest .bt-msg.err{color:var(--red)}#view-backtest .bt-msg.ok{color:var(--green)}
+#view-backtest .bt-row{display:flex;gap:6px}
+#view-backtest .bt-row .sel{flex:1;min-width:0}
+#view-backtest .bt-row .btn{padding:0 10px;white-space:nowrap}
+#view-backtest .bt-row .btn.on{background:var(--gold-soft);border-color:var(--gold)}
+#view-backtest .bt-maxlot{margin:12px 0;padding:10px 12px;border-radius:10px;border:1px solid var(--line);font-size:12px;line-height:1.55;color:var(--muted);background:var(--surface2,rgba(255,255,255,.03))}
+#view-backtest .bt-maxlot b{color:var(--text)}
+#view-backtest .bt-maxlot button{margin-left:6px;padding:2px 10px;min-height:0;font-size:11.5px}
+#view-backtest .bt-trade-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+#view-backtest .bt-buy,#view-backtest .bt-sell{border:1px solid transparent;border-radius:12px;padding:12px 8px;cursor:pointer;font-family:var(--fb);display:flex;flex-direction:column;align-items:center;gap:2px;transition:filter .15s,transform .05s}
+#view-backtest .bt-buy{background:color-mix(in srgb,var(--green) 18%,transparent);border-color:color-mix(in srgb,var(--green) 55%,transparent);color:var(--green)}
+#view-backtest .bt-sell{background:color-mix(in srgb,var(--red) 18%,transparent);border-color:color-mix(in srgb,var(--red) 55%,transparent);color:var(--red)}
+#view-backtest .bt-buy:hover,#view-backtest .bt-sell:hover{filter:brightness(1.15)}
+#view-backtest .bt-buy:active,#view-backtest .bt-sell:active{transform:translateY(1px)}
+#view-backtest .bt-buy small,#view-backtest .bt-sell small{font-size:11px;font-weight:700;letter-spacing:.08em}
+#view-backtest .bt-buy b,#view-backtest .bt-sell b{font:700 17px var(--fm);color:var(--text)}
+#view-backtest .bt-wide{width:100%}
+#view-backtest .bt-kpis{grid-template-columns:1fr 1fr;margin-bottom:14px}
+#view-backtest .bt-rules{display:grid;gap:12px}
+#view-backtest .bt-rule .r1{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--muted);font-weight:600}
+#view-backtest .bt-rule .r1 b{color:var(--text);font-family:var(--fm);font-weight:600}
+#view-backtest .bt-rule .riskbar{margin-top:6px}
+#view-backtest .bt-rule small{display:block;margin-top:5px;font-size:11px;color:var(--faint)}
+#view-backtest .bt-eqwrap{position:relative;height:260px}
+#view-backtest .bt-eqwrap canvas{position:absolute;inset:0;width:100%;height:100%}
+#view-backtest .bt-actions{display:flex;gap:8px;flex-wrap:wrap}
+#view-backtest .bt-mini{width:92px;padding:5px 8px;font-size:12px;border-radius:8px}
+#view-backtest td .btn{padding:0 10px;min-height:28px;font-size:11.5px}
+#view-backtest .bt-breach{padding:12px 14px;border-radius:12px;border:1px solid color-mix(in srgb,var(--red) 55%,transparent);background:color-mix(in srgb,var(--red) 12%,transparent);color:var(--text);font-size:12.5px;line-height:1.6;margin-top:10px}
+@media(max-width:1100px){#view-backtest .bt-main{grid-template-columns:minmax(0,1fr)}#view-backtest .bt-side{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}}
+@media(max-width:760px){#view-backtest .bt-chartwrap{height:min(62vh,440px)}#view-backtest .bt-ctl{width:100%}#view-backtest .bt-form-ticket{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -2205,6 +2272,7 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
       <button class="tab" data-view="calendar"><span class="tico" style="--c1:#8fe0ff;--c2:#2f9bd6"><span>🗓️</span></span><span>Kalender</span></button>
       <button class="tab" data-view="portfolio"><span class="tico" style="--c1:#a8f08a;--c2:#3aa04a"><span>🏔️</span></span><span>Portfolio</span></button>
       <button class="tab" data-view="edge"><span class="tico" style="--c1:#ffd25e;--c2:#e08a10"><span>🧪</span></span><span>Edge Lab</span></button>
+      <button class="tab" data-view="backtest"><span class="tico" style="--c1:#9ef0ff;--c2:#2b8fd6"><span>⏪</span></span><span>Backtest</span></button>
       <button class="tab" data-view="journal"><span class="tico" style="--c1:#8ef0c4;--c2:#1f9c6c"><span>📝</span></span><span>Journal</span></button>
       <button class="tab" data-view="challenge"><span class="tico" style="--c1:#ffb86a;--c2:#e0701a"><span>🏆</span></span><span>Challenge</span></button>
       <button class="tab" data-view="risk"><span class="tico" style="--c1:#ff9a8a;--c2:#d8433a"><span>🛡️</span></span><span>Risk</span></button>
@@ -2314,6 +2382,106 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
       <div class="section-head"><div><h2>Open Positions</h2><p>Monitoring posisi + risiko + status min-hold guard secara real-time</p></div></div>
       <div class="toolbar"><input id="posSearch" class="search" placeholder="Cari symbol, ticket, comment..."><select id="posFilter" class="select"><option value="all">Semua arah</option><option value="buy">Buy</option><option value="sell">Sell</option></select></div>
       <div class="card table-card"><div class="table-scroll"><table id="positionsTable"></table></div></div>
+    </section>
+
+    <section id="view-backtest" class="view">
+      <div class="section-head"><div><h2>Backtest Lab</h2><p>Replay chart candle demi candle, buka posisi seperti live, lalu lihat statistik dan kurva equity. Terintegrasi dengan aturan prop firm: margin rule, daily loss, overall loss, dan target profit.</p></div></div>
+
+      <div class="card panel bt-data">
+        <div class="panel-title"><h3>Data Historis</h3><span id="btDataInfo">Belum ada data</span></div>
+        <div class="bt-form bt-form-data">
+          <label>Sumber<select id="btSrc" class="sel"><option value="csv">File CSV (ekspor MT5 / lainnya)</option><option value="binance">Binance (online)</option></select></label>
+          <label class="bt-src bt-src-csv">File CSV<input id="btFile" type="file" accept=".csv,.txt,.tsv" class="sel"></label>
+          <label class="bt-src bt-src-csv">Nama simbol<input id="btName" class="sel" placeholder="mis. XAUUSD M15"></label>
+          <label class="bt-src bt-src-bin">Simbol<select id="btBinSym" class="sel"><option value="PAXGUSDT">PAXGUSDT (proxy emas)</option><option value="BTCUSDT">BTCUSDT</option><option value="ETHUSDT">ETHUSDT</option><option value="SOLUSDT">SOLUSDT</option><option value="BNBUSDT">BNBUSDT</option></select></label>
+          <label class="bt-src bt-src-bin">Timeframe<select id="btBinTf" class="sel"><option value="1m">M1</option><option value="5m">M5</option><option value="15m" selected>M15</option><option value="30m">M30</option><option value="1h">H1</option><option value="4h">H4</option><option value="1d">D1</option></select></label>
+          <label class="bt-src bt-src-bin">Jumlah candle<select id="btBinBars" class="sel"><option value="1000">1.000</option><option value="3000" selected>3.000</option><option value="5000">5.000</option><option value="10000">10.000</option></select></label>
+          <label class="bt-src bt-src-bin">Berakhir pada (opsional)<input id="btBinEnd" type="date" class="sel"></label>
+          <button id="btLoadBin" class="btn primary bt-src bt-src-bin" type="button">Muat dari Binance</button>
+        </div>
+        <p class="bt-hint">CSV yang didukung: ekspor MT5 (Tools → History Center → Export, atau Market Watch → Export Bars) dengan kolom tanggal, waktu, open, high, low, close; juga format <i>time,open,high,low,close</i> atau Unix timestamp. Data Binance bukan harga broker, jadi hasilnya hanya pendekatan.</p>
+        <div id="btResume" class="bt-resume"></div>
+      </div>
+
+      <div class="bt-main">
+        <div class="card panel bt-chartcard">
+          <div class="bt-toolbar">
+            <div class="bt-seg" id="btTfs"></div>
+            <div class="bt-ctl">
+              <button id="btReset" class="btn ghost" type="button" title="Kembali ke awal replay (hapus posisi dan trade)">⟲ Reset</button>
+              <button id="btPlay" class="btn primary" type="button" title="Spasi">▶ Play</button>
+              <button id="btStep" class="btn" type="button" title="Panah kanan">+1</button>
+              <button id="btStep10" class="btn" type="button" title="Shift + panah kanan">+10</button>
+              <select id="btSpeed" class="sel" title="Kecepatan (candle per detik)"><option value="1">1×</option><option value="3">3×</option><option value="10" selected>10×</option><option value="30">30×</option><option value="100">100×</option></select>
+              <input id="btJump" type="datetime-local" class="sel" title="Lompat maju ke waktu tertentu (UTC)">
+              <button id="btJumpGo" class="btn" type="button">Lompat</button>
+              <button id="btZoomOut" class="btn ghost" type="button" title="Perkecil">−</button>
+              <button id="btZoomIn" class="btn ghost" type="button" title="Perbesar">+</button>
+            </div>
+          </div>
+          <div class="bt-chartwrap"><canvas id="btChart"></canvas></div>
+          <div class="bt-status" id="btStatus">Muat data untuk mulai replay.</div>
+          <div class="bt-prog"><i id="btProg"></i></div>
+          <div id="btMsg" class="bt-msg" role="status"></div>
+        </div>
+
+        <div class="bt-side">
+          <div class="card panel bt-ticket">
+            <div class="panel-title"><h3>Order Ticket</h3><span id="btPrice" class="mono">—</span></div>
+            <div class="bt-form bt-form-ticket">
+              <label>Lot<input id="btLots" class="sel" type="number" min="0.01" step="0.01" value="0.10" inputmode="decimal"></label>
+              <label>Harga entry (kosong = market)<span class="bt-row"><input id="btEntry" class="sel" type="number" step="any" inputmode="decimal" placeholder="market"><button class="btn bt-pick" data-pick="entry" type="button" title="Pilih di chart">🎯</button></span></label>
+              <label>Stop Loss<span class="bt-row"><input id="btSL" class="sel" type="number" step="any" inputmode="decimal" placeholder="opsional"><button class="btn bt-pick" data-pick="sl" type="button" title="Pilih di chart">🎯</button></span></label>
+              <label>Take Profit<span class="bt-row"><input id="btTP" class="sel" type="number" step="any" inputmode="decimal" placeholder="opsional"><button class="btn bt-pick" data-pick="tp" type="button" title="Pilih di chart">🎯</button></span></label>
+              <label>Risk % per trade<span class="bt-row"><input id="btRisk" class="sel" type="number" min="0.1" step="0.1" value="1" inputmode="decimal"><button id="btCalcLot" class="btn" type="button" title="Hitung lot dari jarak SL">Lot dari risk</button></span></label>
+            </div>
+            <div class="bt-maxlot" id="btMaxLot">—</div>
+            <div class="bt-trade-btns">
+              <button id="btBuy" class="bt-buy" type="button"><small>BUY</small><b>—</b></button>
+              <button id="btSell" class="bt-sell" type="button"><small>SELL</small><b>—</b></button>
+            </div>
+            <button id="btCloseAll" class="btn danger bt-wide" type="button">Tutup semua posisi &amp; batalkan order</button>
+          </div>
+
+          <div class="card panel">
+            <div class="panel-title"><h3>Akun &amp; Aturan Prop</h3><span id="btRuleState" class="tag">—</span></div>
+            <div class="metrics bt-kpis" id="btKpis"></div>
+            <div id="btRules" class="bt-rules"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head"><div><h2>Posisi &amp; Order</h2><p>Ubah SL/TP langsung di tabel. Pending order terisi saat harga menyentuh level.</p></div></div>
+      <div class="card table-card"><div class="table-scroll"><table id="btPosTable"></table></div></div>
+
+      <div class="section-head"><div><h2>Hasil Backtest</h2><p>Statistik dihitung dari trade yang sudah tertutup.</p></div><div class="bt-actions"><button id="btExportCsv" class="btn" type="button">↓ CSV trade</button><button id="btExportPng" class="btn primary" type="button">↓ Kartu PNG</button></div></div>
+      <div class="grid2 bt-results">
+        <div class="card panel"><div class="panel-title"><h3>Statistik</h3><span id="btStatInfo"></span></div><div class="metrics" id="btStats"></div></div>
+        <div class="card panel"><div class="panel-title"><h3>Kurva Equity</h3><span id="btEqInfo"></span></div><div class="bt-eqwrap"><canvas id="btEq"></canvas></div></div>
+      </div>
+      <div class="card table-card" style="margin-top:16px"><div class="table-scroll"><table id="btTrades"></table></div></div>
+
+      <div class="section-head"><div><h2>Pengaturan Simulasi</h2><p>Atur akun dan aturan prop firm. Perubahan berlaku langsung, kecuali balance awal yang berlaku setelah Reset.</p></div></div>
+      <div class="card panel bt-settings">
+        <div class="bt-form bt-form-set">
+          <label>Balance awal ($)<input id="btBal" class="sel" type="number" min="100" step="100" inputmode="decimal"></label>
+          <label>Contract size<input id="btContract" class="sel" type="number" min="0.0001" step="any" inputmode="decimal"></label>
+          <label>Leverage (1:x)<input id="btLev" class="sel" type="number" min="1" step="1" inputmode="decimal"></label>
+          <label>Spread (satuan harga)<input id="btSpread" class="sel" type="number" min="0" step="any" inputmode="decimal"></label>
+          <label>Komisi per lot (round-turn, $)<input id="btComm" class="sel" type="number" min="0" step="0.1" inputmode="decimal"></label>
+          <label class="bt-check"><input id="btProp" type="checkbox"> Aktifkan aturan prop firm</label>
+          <label>Margin rule (% dari dasar)<input id="btMPct" class="sel" type="number" min="1" step="0.5" inputmode="decimal"></label>
+          <label>Dasar margin rule<select id="btMBase" class="sel"><option value="balance">Balance</option><option value="equity">Equity</option></select></label>
+          <label>Buffer keamanan lot (%)<input id="btBuf" class="sel" type="number" min="0" max="90" step="1" inputmode="decimal"></label>
+          <label>Daily loss limit (%)<input id="btDaily" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
+          <label>Overall loss limit (%)<input id="btOverall" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
+          <label>Target profit (%)<input id="btTarget" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
+          <label class="bt-check"><input id="btBlock" type="checkbox"> Tolak order yang melanggar margin rule</label>
+          <label class="bt-check"><input id="btStop" type="checkbox"> Hentikan akun saat rule dilanggar (breach)</label>
+        </div>
+        <p class="bt-hint">Contoh contract size: XAUUSD 100, BTC/ETH 1. Pair dengan quote non-USD tidak dikonversi ke dolar. Angka daily/overall/target hanya contoh awal, samakan dengan aturan firm kamu. Margin rule memakai pengaturan yang sama dengan Margin Rule Guard di tab Risk.</p>
+        <div class="bt-note">Catatan eksekusi: simulasi berbasis candle (tanpa data tick). Bila SL dan TP sama-sama tersentuh dalam satu candle, SL dianggap kena lebih dulu. Gap melewati SL terisi di harga open candle. Hasil backtest hanyalah gambaran, bukan jaminan.</div>
+      </div>
     </section>
 
     <section id="view-orders" class="view">
@@ -7754,6 +7922,754 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(tick, 400));
 window.__MR2 = { tick, drawTradeCard, drawCert, model, selectCandles, certificateData, _reset(){ lastSig = ''; } };
 })();
 
+</script>
+
+<script>
+/* ===================== BACKTEST LAB ===================== */
+(function(){
+'use strict';
+const root=document.getElementById('view-backtest'); if(!root) return;
+const $=id=>document.getElementById(id);
+const TFS=[['M1',60],['M5',300],['M15',900],['M30',1800],['H1',3600],['H4',14400],['D1',86400]];
+const BIN_TF={'1m':60,'5m':300,'15m':900,'30m':1800,'1h':3600,'4h':14400,'1d':86400};
+const LS_CFG='ffx_bt_cfg', LS_MG='ffx_marginrule';
+const DEF={balance:10000,contract:100,leverage:100,spread:0.3,comm:0,prop:true,marginPct:80,marginBase:'balance',buffer:10,daily:5,overall:10,target:8,block:true,stop:true,risk:1};
+
+function loadCfg(){
+  let c=Object.assign({},DEF), saved=null;
+  try{ saved=JSON.parse(localStorage.getItem(LS_CFG)||'null'); }catch(e){}
+  if(saved) Object.assign(c,saved);
+  else { try{ const m=JSON.parse(localStorage.getItem(LS_MG)||'null'); if(m){ if(+m.pct>0)c.marginPct=+m.pct; if(m.base==='equity')c.marginBase='equity'; if(m.buffer!==undefined&&m.buffer!=='')c.buffer=+m.buffer; } }catch(e){} }
+  return c;
+}
+let cfg=loadCfg();
+const saveCfg=()=>{ try{ localStorage.setItem(LS_CFG,JSON.stringify(cfg)); }catch(e){} };
+
+const S={ B:null,n:0,baseSec:0,name:'',dec:2,i:0,start:0,playing:false,raf:0,last:0,acc:0,speed:10,tf:0,tfCache:{},
+  view:{n:110,off:0},hover:null,pick:null,
+  pos:[],pend:[],closed:[],balance:0,initial:0,nextId:1,
+  eq:[],eqStride:1,peak:0,maxDD:0,maxDDpct:0,dayKey:'',dayStartEq:0,breach:null,violations:[],vioKeys:{},targetHit:false,
+  sig:{pos:'',closed:-1},dirty:true,saveT:0 };
+window.__BT={state:S};
+
+/* ---------- util ---------- */
+const nz=v=>{const x=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(x)?x:0;};
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fm=(v,s)=>{v=+v||0;const a=Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});return (v<0?'−$':(s&&v>0?'+$':'$'))+a;};
+const fp=v=>(+v).toFixed(S.dec);
+const pc=(v,s)=>{v=+v||0;return (v<0?'−':(s&&v>0?'+':''))+Math.abs(v).toFixed(2)+'%';};
+const f2=v=>(+v||0).toFixed(2);
+const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+const MON=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const p2=n=>String(n).padStart(2,'0');
+function fdt(sec,short){const d=new Date(sec*1000);return short?`${p2(d.getUTCDate())} ${MON[d.getUTCMonth()]} ${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`:`${p2(d.getUTCDate())} ${MON[d.getUTCMonth()]} ${d.getUTCFullYear()} ${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;}
+const tfName=s=>{const f=TFS.find(x=>x[1]===s);return f?f[0]:(s%86400===0?'D'+s/86400:s%3600===0?'H'+s/3600:'M'+s/60);};
+let msgT=0;
+function msg(t,kind){const e=$('btMsg');if(!e)return;e.textContent=t;e.className='bt-msg'+(kind?' '+kind:'');clearTimeout(msgT);if(t)msgT=setTimeout(()=>{e.textContent='';e.className='bt-msg';},kind==='err'?7000:4500);}
+function pal(){const cs=getComputedStyle(document.documentElement),g=(n,d)=>(cs.getPropertyValue(n)||'').trim()||d;
+  return {up:g('--green','#3dcf94'),dn:g('--red','#ef6270'),text:g('--text','#eef1f6'),mut:g('--muted','#a3adbf'),faint:g('--faint','#6f7a8e'),line:'rgba(128,140,165,.16)',gold:g('--gold','#d9b068'),blue:g('--blue','#6fa3ff')||'#6fa3ff',bg:g('--bg0','#080a0f'),amber:g('--amber','#ffb02e')};}
+
+/* ---------- parsing CSV ---------- */
+function parseTS(d,t){
+  let s=(t?(d+' '+t):d).trim();
+  if(/^\d{9,13}(\.\d+)?$/.test(s)){const x=parseFloat(s);return x>1e12?Math.floor(x/1000):Math.floor(x);}
+  let m=s.match(/^(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+  if(m)return Date.UTC(+m[1],+m[2]-1,+m[3],+(m[4]||0),+(m[5]||0),+(m[6]||0))/1000;
+  m=s.match(/^(\d{1,2})[.\-\/](\d{1,2})[.\-\/](\d{4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+  if(m)return Date.UTC(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0),+(m[6]||0))/1000;
+  const x=Date.parse(s);return Number.isNaN(x)?NaN:Math.floor(x/1000);
+}
+function parseCSV(text){
+  const lines=text.replace(/\r/g,'').split('\n').filter(x=>x.trim());
+  if(lines.length<20)throw new Error('File terlalu pendek (minimal 20 baris data).');
+  const delim=['\t',';',','].find(d=>lines[0].includes(d))||',';
+  const split=l=>l.split(delim).map(s=>s.trim().replace(/^"|"$/g,''));
+  let idx={d:-1,t:-1,o:-1,h:-1,l:-1,c:-1}, start=0;
+  const head=split(lines[0]).map(x=>x.toLowerCase().replace(/[<>"]/g,'').trim());
+  if(/open|high|low|close|date|time/.test(lines[0].toLowerCase())&&head.some(x=>/^(open|o)$/.test(x))){
+    start=1;
+    head.forEach((h,i)=>{
+      if(/^(date)$/.test(h)&&idx.d<0)idx.d=i;
+      else if(/^(time|datetime|timestamp|gmt time|local time|date\/time|time \(utc\))$/.test(h)){ if(idx.d<0)idx.d=i; else if(idx.t<0)idx.t=i; }
+      else if(/^(open|o)$/.test(h))idx.o=i; else if(/^(high|h)$/.test(h))idx.h=i; else if(/^(low|l)$/.test(h))idx.l=i; else if(/^(close|c|last)$/.test(h))idx.c=i;
+    });
+    if(idx.d<0)idx.d=0;
+  } else {
+    const r=split(lines[0]);
+    if(!Number.isNaN(parseTS(r[0],r[1]))&&r[2]!==undefined&&!Number.isNaN(parseFloat(r[2]))&&/[.\-\/:]/.test(r[1]||'')){ idx={d:0,t:1,o:2,h:3,l:4,c:5}; }
+    else idx={d:0,t:-1,o:1,h:2,l:3,c:4};
+  }
+  if(idx.o<0||idx.h<0||idx.l<0||idx.c<0)throw new Error('Kolom open/high/low/close tidak ditemukan di header CSV.');
+  const rows=[];
+  for(let i=start;i<lines.length;i++){
+    const r=split(lines[i]);
+    const ts=parseTS(r[idx.d]||'',idx.t>=0?r[idx.t]:'');
+    const o=nz(r[idx.o]),h=nz(r[idx.h]),l=nz(r[idx.l]),c=nz(r[idx.c]);
+    if(Number.isNaN(ts)||!(o>0&&h>0&&l>0&&c>0)||h<l-1e-9)continue;
+    rows.push([ts,o,Math.max(h,o,c),Math.min(l,o,c),c]);
+  }
+  return finalizeRows(rows);
+}
+function finalizeRows(rows){
+  rows.sort((a,b)=>a[0]-b[0]);
+  const u=[];for(const r of rows){if(!u.length||r[0]>u[u.length-1][0])u.push(r);}
+  if(u.length<50)throw new Error('Data valid kurang dari 50 candle ('+u.length+').');
+  const n=u.length,B={t:new Float64Array(n),o:new Float64Array(n),h:new Float64Array(n),l:new Float64Array(n),c:new Float64Array(n)};
+  u.forEach((r,i)=>{B.t[i]=r[0];B.o[i]=r[1];B.h[i]=r[2];B.l[i]=r[3];B.c[i]=r[4];});
+  const diffs=[];for(let i=1;i<Math.min(n,400);i++)diffs.push(B.t[i]-B.t[i-1]);
+  diffs.sort((a,b)=>a-b);
+  const baseSec=diffs[Math.floor(diffs.length*0.3)]||60;
+  let dec=0;for(let i=0;i<Math.min(n,80);i++){const s=String(B.c[i]);const k=s.indexOf('.');if(k>=0)dec=Math.max(dec,s.length-k-1);}
+  return {B,n,baseSec,dec:cl(dec,0,5)};
+}
+
+/* ---------- Binance ---------- */
+async function fetchKlines(sym,interval,limit,endMs){
+  const hosts=['https://api.binance.com','https://data-api.binance.vision'];
+  const chunks=[];let end=endMs||Date.now(),got=0,lastErr=null;
+  while(got<limit){
+    const need=Math.min(1000,limit-got);let arr=null;
+    for(const h of hosts){
+      try{const r=await fetch(`${h}/api/v3/klines?symbol=${sym}&interval=${interval}&limit=${need}&endTime=${end}`);if(!r.ok)throw new Error('HTTP '+r.status);arr=await r.json();break;}catch(e){lastErr=e;}
+    }
+    if(!arr)throw new Error('Gagal mengambil data Binance'+(lastErr?' ('+lastErr.message+')':'')+'. Jaringan atau wilayah mungkin memblokir akses; gunakan file CSV.');
+    if(!arr.length)break;
+    chunks.unshift(arr);got+=arr.length;end=arr[0][0]-1;
+    if(arr.length<need)break;
+  }
+  const rows=[];chunks.forEach(a=>a.forEach(k=>rows.push([Math.floor(k[0]/1000),+k[1],+k[2],+k[3],+k[4]])));
+  return finalizeRows(rows);
+}
+
+/* ---------- timeframe ---------- */
+function tfData(){
+  const sec=S.tf||S.baseSec;
+  if(S.tfCache[sec])return S.tfCache[sec];
+  const B=S.B,n=S.n,t=[],o=[],h=[],l=[],c=[],s=[],bidx=new Int32Array(n);
+  let cur=-1,key=-1;
+  for(let i=0;i<n;i++){
+    const k=Math.floor(B.t[i]/sec)*sec;
+    if(k!==key){key=k;cur++;t.push(sec===S.baseSec?B.t[i]:k);o.push(B.o[i]);h.push(B.h[i]);l.push(B.l[i]);c.push(B.c[i]);s.push(i);}
+    else{if(B.h[i]>h[cur])h[cur]=B.h[i];if(B.l[i]<l[cur])l[cur]=B.l[i];c[cur]=B.c[i];}
+    bidx[i]=cur;
+  }
+  return S.tfCache[sec]={sec,t,o,h,l,c,s,bidx};
+}
+function getBar(T,k,out){
+  if(k===T.bidx[S.i]){ // bar berjalan: gabungkan hanya sampai kursor
+    let hh=-Infinity,ll=Infinity;for(let j=T.s[k];j<=S.i;j++){if(S.B.h[j]>hh)hh=S.B.h[j];if(S.B.l[j]<ll)ll=S.B.l[j];}
+    out[0]=T.t[k];out[1]=T.o[k];out[2]=hh;out[3]=ll;out[4]=S.B.c[S.i];
+  } else {out[0]=T.t[k];out[1]=T.o[k];out[2]=T.h[k];out[3]=T.l[k];out[4]=T.c[k];}
+  return out;
+}
+
+/* ---------- engine ---------- */
+const sp=()=>nz(cfg.spread);
+const px=(k)=>S.B.c[k==null?S.i:k];
+const marginPerLot=(price)=>nz(cfg.contract)*price/Math.max(1,nz(cfg.leverage));
+function floatPnl(p,k){const mark=p.side==='buy'?px(k):px(k)+sp();return (p.side==='buy'?mark-p.entry:p.entry-mark)*p.lots*nz(cfg.contract);}
+const floating=k=>S.pos.reduce((s,p)=>s+floatPnl(p,k),0);
+const equity=k=>S.balance+floating(k);
+const usedMargin=k=>S.pos.reduce((s,p)=>s+marginPerLot(px(k))*p.lots,0);
+function marginLimit(k){const base=cfg.marginBase==='equity'?equity(k):S.balance;return base*nz(cfg.marginPct)/100;}
+
+function closePos(p,price,reason,k){
+  const dir=p.side==='buy'?1:-1;
+  const gross=dir*(price-p.entry)*p.lots*nz(cfg.contract),comm=nz(cfg.comm)*p.lots,pnl=gross-comm;
+  S.balance+=pnl;
+  S.pos=S.pos.filter(x=>x!==p);
+  const risk=p.sl0>0?Math.abs(p.entry-p.sl0)*p.lots*nz(cfg.contract):0;
+  S.closed.push({id:p.id,side:p.side,lots:p.lots,entry:p.entry,exit:price,sl:p.sl,tp:p.tp,openT:p.openT,closeT:S.B.t[k],openI:p.openI,closeI:k,pnl,comm,reason,R:risk>0?pnl/risk:null,mfe:p.side==='buy'?p.hi-p.entry:p.entry-p.lo,mae:p.side==='buy'?p.entry-p.lo:p.hi-p.entry});
+}
+function openPos(side,lots,entry,sl,tp,k){
+  const p={id:S.nextId++,side,lots,entry,sl:sl||0,tp:tp||0,sl0:sl||0,openI:k,openT:S.B.t[k],hi:entry,lo:entry};
+  S.pos.push(p);return p;
+}
+function processCandle(k){
+  const B=S.B,o=B.o[k],h=B.h[k],l=B.l[k],s=sp();
+  // 1) pending order
+  for(const q of S.pend.slice()){
+    let fill=null;
+    if(q.side==='buy'){
+      if(q.type==='limit'&&l+s<=q.price)fill=Math.min(q.price,o+s);
+      else if(q.type==='stop'&&h+s>=q.price)fill=Math.max(q.price,o+s);
+    } else {
+      if(q.type==='limit'&&h>=q.price)fill=Math.max(q.price,o);
+      else if(q.type==='stop'&&l<=q.price)fill=Math.min(q.price,o);
+    }
+    if(fill!=null){
+      S.pend=S.pend.filter(x=>x!==q);
+      const p=openPos(q.side,q.lots,fill,q.sl,q.tp,k);p.id=q.id;
+      // konservatif: SL pada candle yang sama dianggap tersentuh bila rentang candle mencapainya
+      if(p.sl>0){const hit=p.side==='buy'?(l<=p.sl):(h+s>=p.sl);if(hit)closePos(p,p.sl,'SL',k);}
+    }
+  }
+  // 2) exit posisi yang dibuka pada candle sebelumnya
+  for(const p of S.pos.slice()){
+    if(p.openI>=k)continue;
+    if(h>p.hi)p.hi=h; if(l<p.lo)p.lo=l;
+    let exit=null,why='';
+    if(p.side==='buy'){
+      const sl=p.sl>0&&l<=p.sl,tp=p.tp>0&&h>=p.tp;
+      if(sl){exit=Math.min(p.sl,o);why='SL';} else if(tp){exit=Math.max(p.tp,o);why='TP';}
+    } else {
+      const sl=p.sl>0&&h+s>=p.sl,tp=p.tp>0&&l+s<=p.tp;
+      if(sl){exit=Math.max(p.sl,o+s);why='SL';} else if(tp){exit=Math.min(p.tp,o+s);why='TP';}
+    }
+    if(exit!=null)closePos(p,exit,why,k);
+  }
+  recordEq(k);
+  checkRules(k);
+}
+function recordEq(k){
+  const eq=equity(k);
+  if(eq>S.peak)S.peak=eq;
+  const dd=S.peak-eq;if(dd>S.maxDD){S.maxDD=dd;}
+  const ddp=S.peak>0?dd/S.peak*100:0;if(ddp>S.maxDDpct)S.maxDDpct=ddp;
+  if(k%S.eqStride===0)S.eq.push([S.B.t[k],eq,S.balance]);
+}
+function addViolation(type,detail,k){
+  const key=type+'|'+new Date(S.B.t[k]*1000).toISOString().slice(0,10);
+  if(S.vioKeys[key])return false;S.vioKeys[key]=1;
+  S.violations.push({t:S.B.t[k],type,detail});return true;
+}
+function checkRules(k){
+  const eq=equity(k),dk=new Date(S.B.t[k]*1000).toISOString().slice(0,10);
+  if(dk!==S.dayKey){S.dayKey=dk;S.dayStartEq=eq;}
+  if(S.initial>0&&(eq-S.initial)/S.initial*100>=nz(cfg.target)&&nz(cfg.target)>0)S.targetHit=true;
+  if(!cfg.prop||S.breach)return;
+  let why=null;
+  const dLim=S.dayStartEq*nz(cfg.daily)/100,oLim=S.initial*nz(cfg.overall)/100;
+  const dLoss=S.dayStartEq-eq,oLoss=S.initial-eq;
+  if(nz(cfg.daily)>0&&dLoss>dLim+1e-9)why=['Daily loss limit',`Kerugian harian ${fm(dLoss)} melewati batas ${fm(dLim)}.`];
+  else if(nz(cfg.overall)>0&&oLoss>oLim+1e-9)why=['Overall loss limit',`Kerugian total ${fm(oLoss)} melewati batas ${fm(oLim)}.`];
+  else if(S.pos.length){const u=usedMargin(k),lim=marginLimit(k);if(u>lim+1e-9)why=['Margin rule',`Margin terpakai ${fm(u)} melewati batas ${fm(lim)} (${f2(cfg.marginPct)}% dari ${cfg.marginBase==='equity'?'equity':'balance'}).`];}
+  if(!why)return;
+  addViolation(why[0],why[1],k);
+  if(cfg.stop){
+    for(const p of S.pos.slice())closePos(p,p.side==='buy'?px(k):px(k)+sp(),'BREACH',k);
+    S.pend=[];S.breach={type:why[0],detail:why[1],t:S.B.t[k]};
+    pause();
+    msg('Akun breach: '+why[0]+'. Tekan Reset untuk mengulang.','err');
+  }
+}
+function step(cnt){
+  if(!S.B||S.breach)return 0;
+  let done=0;
+  for(let j=0;j<cnt;j++){
+    if(S.i>=S.n-1){pause();msg('Data habis — akhir replay.','ok');break;}
+    S.i++;done++;processCandle(S.i);
+    if(S.breach)break;
+  }
+  if(done){S.view.off=Math.max(0,S.view.off);dirty();persist();}
+  return done;
+}
+function dirty(){S.dirty=true;if(!S.raf)S.raf=requestAnimationFrame(frame);}
+function pause(){S.playing=false;const b=$('btPlay');if(b){b.textContent='▶ Play';b.classList.add('primary');}}
+function play(){
+  if(!S.B)return msg('Muat data dulu.','err');
+  if(S.breach)return msg('Akun sudah breach. Tekan Reset.','err');
+  if(S.i>=S.n-1)return msg('Data habis.','err');
+  S.playing=true;S.last=performance.now();S.acc=0;const b=$('btPlay');b.textContent='⏸ Pause';
+  const loop=(now)=>{
+    if(!S.playing)return;
+    const dt=Math.min(250,now-S.last);S.last=now;S.acc+=dt/1000*S.speed;
+    const c=Math.floor(S.acc);if(c>0){S.acc-=c;step(Math.min(c,500));}
+    if(S.playing)requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+
+/* ---------- orders ---------- */
+function readTicket(){return {lots:Math.round(nz($('btLots').value)*100)/100,entry:nz($('btEntry').value),sl:nz($('btSL').value),tp:nz($('btTP').value)};}
+function maxLotInfo(){
+  if(!S.B)return null;
+  const price=px(),mpl=marginPerLot(price);if(!(mpl>0))return null;
+  const lim=marginLimit(S.i),buf=cl(nz(cfg.buffer),0,90),used=usedMargin(S.i);
+  const fl=(v)=>Math.max(0,Math.floor(v/mpl*100+1e-9)/100);
+  return {mpl,lim,used,safe:fl(lim*(1-buf/100)-used),max:fl(lim-used),freeLots:fl(equity(S.i)-used)};
+}
+function placeOrder(side){
+  if(!S.B)return msg('Muat data dulu.','err');
+  if(S.breach)return msg('Akun sudah breach. Tekan Reset.','err');
+  const t=readTicket();
+  if(!(t.lots>=0.01))return msg('Lot minimal 0.01.','err');
+  const price=px(),ask=price+sp();
+  let type='market',entry=side==='buy'?ask:price;
+  if(t.entry>0){
+    if(side==='buy'){if(t.entry<ask-1e-9){type='limit';}else if(t.entry>ask+1e-9){type='stop';}}
+    else{if(t.entry>price+1e-9){type='limit';}else if(t.entry<price-1e-9){type='stop';}}
+    if(type!=='market')entry=t.entry;
+  }
+  const ref=entry;
+  if(t.sl>0){if(side==='buy'&&!(t.sl<ref))return msg('Stop Loss BUY harus di bawah harga entry.','err');if(side==='sell'&&!(t.sl>ref))return msg('Stop Loss SELL harus di atas harga entry.','err');}
+  if(t.tp>0){if(side==='buy'&&!(t.tp>ref))return msg('Take Profit BUY harus di atas harga entry.','err');if(side==='sell'&&!(t.tp<ref))return msg('Take Profit SELL harus di bawah harga entry.','err');}
+  const addM=marginPerLot(ref)*t.lots,newUsed=usedMargin(S.i)+addM;
+  if(newUsed>equity(S.i)+1e-9)return msg(`Margin tidak cukup: butuh ${fm(newUsed)}, equity ${fm(equity(S.i))}.`,'err');
+  if(cfg.prop&&cfg.block&&newUsed>marginLimit(S.i)+1e-9){
+    const mi=maxLotInfo();
+    return msg(`Ditolak: melanggar margin rule (${fm(newUsed)} > batas ${fm(marginLimit(S.i))}). Lot tambahan maksimal ${mi?f2(mi.max):'0.00'}.`,'err');
+  }
+  if(type==='market'){const p=openPos(side,t.lots,entry,t.sl,t.tp,S.i);msg(`${side.toUpperCase()} ${f2(t.lots)} @ ${fp(entry)} dibuka (#${p.id}).`,'ok');}
+  else{const q={id:S.nextId++,side,lots:t.lots,type,price:entry,sl:t.sl,tp:t.tp,openI:S.i};S.pend.push(q);msg(`Order ${side.toUpperCase()} ${type.toUpperCase()} ${f2(t.lots)} @ ${fp(entry)} dipasang.`,'ok');}
+  dirty();persist();
+}
+function closeAll(){
+  if(!S.B)return;let n=0;
+  for(const p of S.pos.slice()){closePos(p,p.side==='buy'?px():px()+sp(),'MANUAL',S.i);n++;}
+  n+=S.pend.length;S.pend=[];
+  if(n)msg('Semua posisi ditutup dan order dibatalkan.','ok');
+  recordEq(S.i);dirty();persist();
+}
+function calcLotFromRisk(){
+  const t=readTicket();if(!S.B)return msg('Muat data dulu.','err');
+  if(!(t.sl>0))return msg('Isi Stop Loss dulu untuk menghitung lot dari risk.','err');
+  const ref=t.entry>0?t.entry:px(),dist=Math.abs(ref-t.sl);if(!(dist>0))return msg('Jarak SL tidak valid.','err');
+  const riskMoney=S.balance*nz($('btRisk').value)/100,lots=Math.floor(riskMoney/(dist*nz(cfg.contract))*100)/100;
+  $('btLots').value=Math.max(0.01,lots).toFixed(2);
+  msg(`Risk ${f2(nz($('btRisk').value))}% = ${fm(riskMoney)} → ${$('btLots').value} lot.`,'ok');
+  dirty();
+}
+
+/* ---------- reset / load ---------- */
+function resetSession(keepIdx){
+  pause();
+  S.pos=[];S.pend=[];S.closed=[];S.nextId=1;S.eq=[];S.violations=[];S.vioKeys={};S.breach=null;S.targetHit=false;
+  S.balance=nz(cfg.balance);S.initial=S.balance;S.peak=S.balance;S.maxDD=0;S.maxDDpct=0;
+  S.eqStride=S.B?Math.max(1,Math.ceil(S.n/4000)):1;
+  if(S.B){S.i=keepIdx==null?S.start:keepIdx;S.dayKey=new Date(S.B.t[S.i]*1000).toISOString().slice(0,10);S.dayStartEq=S.balance;S.eq.push([S.B.t[S.i],S.balance,S.balance]);}
+  S.view.off=0;S.sig={pos:'',closed:-1};
+  dirty();persist();
+}
+function applyData(d,name){
+  S.B=d.B;S.n=d.n;S.baseSec=d.baseSec;S.dec=d.dec;S.name=name;S.tfCache={};
+  S.start=Math.max(Math.min(60,d.n-1),Math.floor(d.n*0.25));
+  if(S.tf&&S.tf<S.baseSec)S.tf=0;
+  resetSession(S.start);
+  buildTfButtons();
+  const info=`${name} · ${tfName(S.baseSec)} · ${d.n.toLocaleString('en-US')} candle · ${fdt(S.B.t[0])} → ${fdt(S.B.t[d.n-1])}`;
+  $('btDataInfo').textContent=info;
+  const j=$('btJump');j.min=toLocal(S.B.t[0]);j.max=toLocal(S.B.t[d.n-1]);
+  msg(`Data dimuat: ${d.n.toLocaleString('en-US')} candle. Replay dimulai dari ${fdt(S.B.t[S.i])}.`,'ok');
+}
+const toLocal=sec=>{const d=new Date(sec*1000);return `${d.getUTCFullYear()}-${p2(d.getUTCMonth()+1)}-${p2(d.getUTCDate())}T${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;};
+function guessInstrument(name){
+  const n=(name||'').toUpperCase();
+  if(/XAU|GOLD|PAXG/.test(n)){cfg.contract=100;if(!/PAXG/.test(n)||true)cfg.spread=cfg.spread||0.3;}
+  else if(/BTC|ETH|SOL|BNB/.test(n)){cfg.contract=1;if(/BTC/.test(n))cfg.spread=10;else if(/ETH/.test(n))cfg.spread=1;else cfg.spread=0.1;}
+  syncCfgInputs();saveCfg();
+}
+async function onFile(f){
+  if(!f)return;
+  try{
+    msg('Membaca file…');
+    const text=await f.text();const d=parseCSV(text);
+    const name=($('btName').value.trim())||f.name.replace(/\.[^.]+$/,'');
+    guessInstrument(name);
+    applyData(d,name);
+  }catch(e){msg('Gagal membaca CSV: '+e.message,'err');}
+}
+async function onBinance(){
+  const sym=$('btBinSym').value,tf=$('btBinTf').value,bars=+$('btBinBars').value;
+  const endV=$('btBinEnd').value,endMs=endV?Date.parse(endV+'T23:59:59Z'):0;
+  const b=$('btLoadBin');b.disabled=true;b.textContent='Memuat…';
+  try{
+    const d=await fetchKlines(sym,tf,bars,endMs);
+    if(d.baseSec!==BIN_TF[tf])d.baseSec=BIN_TF[tf];
+    guessInstrument(sym);
+    applyData(d,sym+' '+tf);
+  }catch(e){msg(e.message,'err');}
+  finally{b.disabled=false;b.textContent='Muat dari Binance';}
+}
+function jumpTo(){
+  if(!S.B)return msg('Muat data dulu.','err');
+  const v=$('btJump').value;if(!v)return msg('Pilih waktu tujuan.','err');
+  const target=Date.parse(v+':00Z')/1000;
+  let idx=S.i;if(target<=S.B.t[S.i])return msg('Lompat hanya bisa ke depan. Gunakan Reset untuk mulai dari awal.','err');
+  while(idx<S.n-1&&S.B.t[idx+1]<=target)idx++;
+  pause();const c=idx-S.i;step(c);msg(`Melompat ${c.toLocaleString('en-US')} candle ke ${fdt(S.B.t[S.i])}.`,'ok');
+}
+
+/* ---------- stats ---------- */
+function stats(){
+  const T=S.closed,n=T.length,w=T.filter(t=>t.pnl>0),ls=T.filter(t=>t.pnl<0);
+  const gp=w.reduce((s,t)=>s+t.pnl,0),gl=Math.abs(ls.reduce((s,t)=>s+t.pnl,0)),net=T.reduce((s,t)=>s+t.pnl,0);
+  let streak=0,maxL=0;T.forEach(t=>{if(t.pnl<0){streak++;maxL=Math.max(maxL,streak);}else streak=0;});
+  const rs=T.filter(t=>t.R!=null);
+  return {n,wins:w.length,losses:ls.length,net,gp,gl,pf:gl>0?gp/gl:(gp>0?Infinity:0),wr:n?w.length/n*100:0,avgW:w.length?gp/w.length:0,avgL:ls.length?gl/ls.length:0,exp:n?net/n:0,
+    best:n?Math.max(...T.map(t=>t.pnl)):0,worst:n?Math.min(...T.map(t=>t.pnl)):0,maxL,avgR:rs.length?rs.reduce((s,t)=>s+t.R,0)/rs.length:null,
+    ret:S.initial>0?(S.balance-S.initial)/S.initial*100:0,bars:n?T.reduce((s,t)=>s+(t.closeI-t.openI),0)/n:0};
+}
+
+/* ---------- chart ---------- */
+function niceStep(raw){const e=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/e;return (f<1.5?1:f<3.5?2:f<7.5?5:10)*e;}
+function fmtAxisT(sec,tfs){const d=new Date(sec*1000);return tfs>=86400?`${p2(d.getUTCDate())} ${MON[d.getUTCMonth()]} ${String(d.getUTCFullYear()).slice(2)}`:`${p2(d.getUTCDate())} ${MON[d.getUTCMonth()]} ${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;}
+let geo=null; // geometri terakhir untuk interaksi
+function drawChart(){
+  const cv=$('btChart'),wrap=cv.parentElement,W=wrap.clientWidth,H=wrap.clientHeight;if(!W||!H)return;
+  const dpr=window.devicePixelRatio||1;
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+  const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
+  const C=pal();g.font='11px '+(getComputedStyle(document.body).fontFamily||'sans-serif');
+  if(!S.B){g.fillStyle=C.faint;g.textAlign='center';g.font='13px sans-serif';g.fillText('Muat data (CSV atau Binance) untuk memulai replay',W/2,H/2);geo=null;return;}
+  const T=tfData(),last=T.bidx[S.i],N=S.view.n;
+  const padL=10,padR=74,padT=14,padB=26,cw=W-padL-padR,chh=H-padT-padB;
+  const rightPad=Math.max(3,Math.round(N*0.07)),step=cw/(N+rightPad);
+  const lastVis=Math.max(0,last-S.view.off),first=lastVis-N+1;
+  const bar=[0,0,0,0,0];
+  let hi=-Infinity,lo=Infinity;
+  for(let k=Math.max(0,first);k<=lastVis;k++){getBar(T,k,bar);if(bar[2]>hi)hi=bar[2];if(bar[3]<lo)lo=bar[3];}
+  if(!(hi>lo)){hi=lo+1;}
+  const ext=(v)=>{if(v>0){if(v>hi)hi=v;if(v<lo)lo=v;}};
+  S.pos.forEach(p=>{ext(p.entry);ext(p.sl);ext(p.tp);});
+  const rng=hi-lo;hi+=rng*0.06;lo-=rng*0.06;
+  const y=p=>padT+(hi-p)/(hi-lo)*chh,x=k=>padL+(k-first+0.5)*step;
+  geo={W,H,padL,padR,padT,padB,cw,chh,step,first,lastVis,hi,lo,T,last};
+  // grid
+  g.textBaseline='middle';g.lineWidth=1;
+  const ps=niceStep((hi-lo)/6);
+  g.strokeStyle=C.line;g.fillStyle=C.faint;g.textAlign='left';
+  for(let v=Math.ceil(lo/ps)*ps;v<=hi;v+=ps){const yy=Math.round(y(v))+.5;g.beginPath();g.moveTo(padL,yy);g.lineTo(padL+cw,yy);g.stroke();g.fillText(v.toFixed(S.dec>ps.toString().split('.')[1]?.length?S.dec:Math.min(S.dec,Math.max(0,(ps.toString().split('.')[1]||'').length))),padL+cw+8,yy);}
+  g.textAlign='center';g.textBaseline='alphabetic';
+  const everyBars=Math.max(1,Math.ceil(120/step));
+  for(let k=Math.ceil(first/everyBars)*everyBars;k<=lastVis;k+=everyBars){if(k<0||k>=T.t.length)continue;const xx=Math.round(x(k))+.5;g.beginPath();g.moveTo(xx,padT);g.lineTo(xx,padT+chh);g.stroke();g.fillStyle=C.faint;g.fillText(fmtAxisT(T.t[k],T.sec),xx,H-8);}
+  // candles
+  const bw=Math.max(1,Math.floor(step*0.72));
+  for(let k=Math.max(0,first);k<=lastVis;k++){
+    getBar(T,k,bar);const up=bar[4]>=bar[1],xx=x(k),col=up?C.up:C.dn;
+    g.fillStyle=col;g.strokeStyle=col;
+    const yh=y(bar[2]),yl=y(bar[3]);g.fillRect(Math.round(xx)-0.5,Math.round(yh),1,Math.max(1,Math.round(yl-yh)));
+    const yo=y(bar[1]),yc=y(bar[4]),top=Math.min(yo,yc),hh=Math.max(1,Math.abs(yo-yc));
+    g.fillRect(Math.round(xx-bw/2),Math.round(top),bw,Math.round(hh));
+  }
+  // clip utk overlay
+  g.save();g.beginPath();g.rect(padL,padT,cw,chh);g.clip();
+  const hl=(price,col,dash,label,lblCol)=>{
+    if(!(price>0))return;const yy=Math.round(y(price))+.5;if(yy<padT-20||yy>padT+chh+20)return;
+    g.strokeStyle=col;g.setLineDash(dash||[]);g.lineWidth=1;g.beginPath();g.moveTo(padL,yy);g.lineTo(padL+cw,yy);g.stroke();g.setLineDash([]);
+  };
+  const tags=[];
+  const tag=(price,text,fg,bgc)=>{if(price>0)tags.push([price,text,fg,bgc]);};
+  // harga berjalan
+  const cur=px();hl(cur,C.mut,[2,3]);tag(cur,fp(cur),'#0b0d12',C.text);
+  // posisi
+  S.pos.forEach(p=>{
+    const fl=floatPnl(p,S.i),col=p.side==='buy'?C.up:C.dn;
+    hl(p.entry,col,[]);tag(p.entry,`${p.side.toUpperCase()} ${f2(p.lots)}  ${fm(fl,true)}`,'#0b0d12',fl>=0?C.up:C.dn);
+    if(p.sl>0){hl(p.sl,C.dn,[5,4]);tag(p.sl,'SL '+fp(p.sl),'#fff',C.dn);}
+    if(p.tp>0){hl(p.tp,C.up,[5,4]);tag(p.tp,'TP '+fp(p.tp),'#0b0d12',C.up);}
+  });
+  S.pend.forEach(q=>{hl(q.price,C.amber,[2,4]);tag(q.price,`${q.side.toUpperCase()} ${q.type.toUpperCase()} ${f2(q.lots)}`,'#0b0d12',C.amber);if(q.sl>0){hl(q.sl,C.dn,[2,4]);}if(q.tp>0){hl(q.tp,C.up,[2,4]);}});
+  // pratinjau ticket
+  const tk=readTicket();
+  if(tk.entry>0){hl(tk.entry,C.blue,[3,3]);tag(tk.entry,'ENTRY '+fp(tk.entry),'#0b0d12',C.blue);}
+  if(tk.sl>0){hl(tk.sl,C.dn,[3,3]);tag(tk.sl,'SL ticket',C.dn,'transparent');}
+  if(tk.tp>0){hl(tk.tp,C.up,[3,3]);tag(tk.tp,'TP ticket',C.up,'transparent');}
+  // marker trade
+  const mark=(k,price,kind,col)=>{
+    if(k<first||k>lastVis)return;const xx=x(k),yy=y(price);g.fillStyle=col;g.strokeStyle=col;
+    if(kind==='buy'){g.beginPath();g.moveTo(xx,yy-1);g.lineTo(xx-5,yy+9);g.lineTo(xx+5,yy+9);g.closePath();g.fill();}
+    else if(kind==='sell'){g.beginPath();g.moveTo(xx,yy+1);g.lineTo(xx-5,yy-9);g.lineTo(xx+5,yy-9);g.closePath();g.fill();}
+    else{g.beginPath();g.arc(xx,yy,3.5,0,6.283);g.fill();}
+  };
+  const lo2=Math.max(0,S.closed.length-300);
+  for(let q=lo2;q<S.closed.length;q++){const t=S.closed[q];mark(T.bidx[t.openI],t.entry,t.side,C.text);mark(T.bidx[t.closeI],t.exit,'x',t.pnl>=0?C.up:C.dn);
+    if(T.bidx[t.openI]>=first&&T.bidx[t.closeI]<=lastVis+1){g.strokeStyle=t.pnl>=0?C.up:C.dn;g.globalAlpha=.55;g.setLineDash([3,3]);g.beginPath();g.moveTo(x(T.bidx[t.openI]),y(t.entry));g.lineTo(x(T.bidx[t.closeI]),y(t.exit));g.stroke();g.setLineDash([]);g.globalAlpha=1;}}
+  S.pos.forEach(p=>mark(T.bidx[p.openI],p.entry,p.side,C.text));
+  // crosshair
+  if(S.hover&&S.hover.x>=padL&&S.hover.x<=padL+cw&&S.hover.y>=padT&&S.hover.y<=padT+chh){
+    g.strokeStyle=S.pick?C.gold:C.faint;g.setLineDash([3,3]);g.beginPath();g.moveTo(S.hover.x+.5,padT);g.lineTo(S.hover.x+.5,padT+chh);g.moveTo(padL,S.hover.y+.5);g.lineTo(padL+cw,S.hover.y+.5);g.stroke();g.setLineDash([]);
+  }
+  g.restore();
+  // tag harga di sumbu kanan (hindari tumpang tindih)
+  tags.sort((a,b)=>b[0]-a[0]);let lastY=-99;g.textAlign='left';g.textBaseline='middle';g.font='600 11px '+(getComputedStyle(document.body).fontFamily||'sans-serif');
+  tags.forEach(t=>{let yy=y(t[0]);if(yy<padT-8||yy>padT+chh+8)return;if(yy-lastY<16)yy=lastY+16;lastY=yy;const tw=Math.min(padR+90,g.measureText(t[1]).width+12);
+    if(t[3]==='transparent'){g.fillStyle=t[2];g.textAlign='right';g.fillText(t[1],padL+cw-6,yy-9);g.textAlign='left';return;}
+    g.fillStyle=t[3];g.beginPath();g.roundRect(padL+cw+2,yy-8,Math.max(tw,padR-4),16,4);g.fill();g.fillStyle=t[2];g.fillText(t[1],padL+cw+7,yy);});
+  // label crosshair
+  if(S.hover&&S.hover.y>=padT&&S.hover.y<=padT+chh&&S.hover.x>=padL&&S.hover.x<=padL+cw){
+    const pr=hi-(S.hover.y-padT)/chh*(hi-lo);g.fillStyle=S.pick?C.gold:C.mut;g.beginPath();g.roundRect(padL+cw+2,S.hover.y-8,padR-4,16,4);g.fill();g.fillStyle='#0b0d12';g.textAlign='left';g.fillText(fp(pr),padL+cw+7,S.hover.y);
+    const kx=Math.round((S.hover.x-padL)/step-0.5+first);
+    if(kx>=0&&kx<=lastVis){getBar(T,kx,bar);const txt=W<520?`${fdt(bar[0],true)}  C ${fp(bar[4])}`:`${fdt(bar[0],true)}   O ${fp(bar[1])}  H ${fp(bar[2])}  L ${fp(bar[3])}  C ${fp(bar[4])}`;g.textAlign='left';g.fillStyle=C.mut;g.font='11px '+(getComputedStyle(document.body).fontFamily||'sans-serif');g.fillText(txt,padL+6,padT+8);}
+  } else {
+    getBar(T,last,bar);g.textAlign='left';g.textBaseline='middle';g.fillStyle=C.mut;g.font='11px '+(getComputedStyle(document.body).fontFamily||'sans-serif');
+    g.fillText(W<520?`${S.name} · ${tfName(T.sec)}   C ${fp(bar[4])}`:`${S.name} · ${tfName(T.sec)}   O ${fp(bar[1])}  H ${fp(bar[2])}  L ${fp(bar[3])}  C ${fp(bar[4])}`,padL+6,padT+8);
+  }
+  if(S.pick){g.fillStyle=C.gold;g.textAlign='right';g.fillText('Klik di chart untuk mengisi '+({entry:'harga entry',sl:'Stop Loss',tp:'Take Profit'}[S.pick]),padL+cw-8,padT+8);}
+}
+function drawEq(){
+  const cv=$('btEq'),wrap=cv.parentElement,W=wrap.clientWidth,H=wrap.clientHeight;if(!W||!H)return;
+  const dpr=window.devicePixelRatio||1;if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+  const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);const C=pal();
+  const d=S.eq;g.font='11px sans-serif';
+  if(d.length<2){g.fillStyle=C.faint;g.textAlign='center';g.fillText('Kurva equity muncul setelah replay berjalan',W/2,H/2);return;}
+  const padL=8,padR=62,padT=10,padB=18;let lo=Infinity,hi=-Infinity;d.forEach(r=>{lo=Math.min(lo,r[1],r[2]);hi=Math.max(hi,r[1],r[2]);});lo=Math.min(lo,S.initial);hi=Math.max(hi,S.initial);if(hi-lo<1){hi+=1;lo-=1;}const pad=(hi-lo)*.08;lo-=pad;hi+=pad;
+  const x=i=>padL+i/(d.length-1)*(W-padL-padR),y=v=>padT+(hi-v)/(hi-lo)*(H-padT-padB);
+  g.strokeStyle=C.line;g.lineWidth=1;g.fillStyle=C.faint;g.textAlign='left';g.textBaseline='middle';
+  const ps=niceStep((hi-lo)/4);for(let v=Math.ceil(lo/ps)*ps;v<=hi;v+=ps){const yy=Math.round(y(v))+.5;g.beginPath();g.moveTo(padL,yy);g.lineTo(W-padR,yy);g.stroke();g.fillText('$'+Math.round(v).toLocaleString('en-US'),W-padR+6,yy);}
+  g.strokeStyle=C.mut;g.setLineDash([4,4]);g.beginPath();g.moveTo(padL,y(S.initial));g.lineTo(W-padR,y(S.initial));g.stroke();g.setLineDash([]);
+  const up=d[d.length-1][1]>=S.initial,col=up?C.up:C.dn;
+  const grad=g.createLinearGradient(0,padT,0,H-padB);grad.addColorStop(0,col+'55');grad.addColorStop(1,col+'00');
+  g.beginPath();d.forEach((r,i)=>{i?g.lineTo(x(i),y(r[1])):g.moveTo(x(i),y(r[1]));});g.lineTo(x(d.length-1),H-padB);g.lineTo(x(0),H-padB);g.closePath();g.fillStyle=grad;g.fill();
+  g.beginPath();d.forEach((r,i)=>{i?g.lineTo(x(i),y(r[1])):g.moveTo(x(i),y(r[1]));});g.strokeStyle=col;g.lineWidth=1.6;g.stroke();
+  g.beginPath();d.forEach((r,i)=>{i?g.lineTo(x(i),y(r[2])):g.moveTo(x(i),y(r[2]));});g.strokeStyle=C.blue;g.globalAlpha=.8;g.lineWidth=1;g.stroke();g.globalAlpha=1;
+  g.fillStyle=col;g.textAlign='left';g.fillText(fm(d[d.length-1][1]),W-padR+6,Math.max(padT+6,Math.min(H-padB-6,y(d[d.length-1][1])-12)));
+  g.fillStyle=C.faint;g.textAlign='left';g.textBaseline='alphabetic';g.fillText(fdt(d[0][0],true),padL,H-4);g.textAlign='right';g.fillText(fdt(d[d.length-1][0],true),W-padR,H-4);
+}
+
+/* ---------- UI update ---------- */
+function tfCheck(){const dis=sec=>sec<S.baseSec;return dis;}
+function buildTfButtons(){
+  const box=$('btTfs');box.innerHTML='';
+  const base=S.baseSec||0;
+  TFS.forEach(([n,sec])=>{
+    const b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.sec=sec;
+    const ok=!S.B||(sec>=base&&sec%base===0);b.disabled=!ok;
+    if((S.tf||base)===sec)b.classList.add('on');
+    b.onclick=()=>{S.tf=sec;box.querySelectorAll('button').forEach(x=>x.classList.toggle('on',+x.dataset.sec===sec));S.view.off=0;dirty();};
+    box.appendChild(b);
+  });
+}
+function kpi(l,v,cls){return `<div class="metric"><label>${l}</label><strong class="${cls||''}">${v}</strong></div>`;}
+function ruleBar(label,val,lim,pctUsed,sub,warn){
+  const w=cl(pctUsed,0,100),col=pctUsed>=100?'var(--red)':pctUsed>=100-nz(cfg.buffer)?'var(--amber)':'var(--green)';
+  return `<div class="bt-rule"><div class="r1"><span>${label}</span><b>${val} / ${lim}</b></div><div class="riskbar"><i style="width:${w}%;background:${col}"></i></div><small>${sub}</small></div>`;
+}
+function updateAccount(){
+  if(!S.B){$('btKpis').innerHTML='';$('btRules').innerHTML='<small style="color:var(--faint)">Muat data untuk melihat status akun.</small>';$('btRuleState').textContent='—';$('btRuleState').className='tag';return;}
+  const k=S.i,eq=equity(k),fl=floating(k),used=usedMargin(k),free=eq-used;
+  $('btKpis').innerHTML=kpi('Balance',fm(S.balance))+kpi('Equity',fm(eq),eq>=S.initial?'pos':'neg')+kpi('Floating P/L',fm(fl,true),fl>=0?'pos':'neg')+kpi('Free margin',fm(free))+kpi('Margin terpakai',fm(used))+kpi('Return',pc((eq-S.initial)/S.initial*100,true),eq>=S.initial?'pos':'neg');
+  let html='',state='AMAN',cls='tag buy';
+  if(!cfg.prop){html='<small style="color:var(--faint)">Aturan prop firm nonaktif (Pengaturan Simulasi).</small>';state='NONAKTIF';cls='tag';}
+  else{
+    const lim=marginLimit(k);
+    html+=ruleBar('Margin rule',fm(used),fm(lim),lim>0?used/lim*100:0,`${f2(cfg.marginPct)}% dari ${cfg.marginBase==='equity'?'equity':'balance'} · pelanggaran = akun gagal`);
+    const dLim=S.dayStartEq*nz(cfg.daily)/100,dLoss=Math.max(0,S.dayStartEq-eq);
+    html+=ruleBar('Daily loss',fm(dLoss),fm(dLim),dLim>0?dLoss/dLim*100:0,`Batas ${f2(cfg.daily)}% dari equity awal hari (${fm(S.dayStartEq)})`);
+    const oLim=S.initial*nz(cfg.overall)/100,oLoss=Math.max(0,S.initial-eq);
+    html+=ruleBar('Overall loss',fm(oLoss),fm(oLim),oLim>0?oLoss/oLim*100:0,`Batas ${f2(cfg.overall)}% dari balance awal`);
+    const tg=S.initial*nz(cfg.target)/100,pr=Math.max(0,eq-S.initial);
+    html+=`<div class="bt-rule"><div class="r1"><span>Target profit</span><b>${fm(pr)} / ${fm(tg)}</b></div><div class="riskbar"><i style="width:${cl(tg>0?pr/tg*100:0,0,100)}%;background:var(--gold)"></i></div><small>${S.targetHit?'Target tercapai ✔':'Target '+f2(cfg.target)+'% dari balance awal'}</small></div>`;
+    if(S.breach){state='BREACH';cls='tag sell';html+=`<div class="bt-breach"><b>Akun gagal: ${esc(S.breach.type)}</b><br>${esc(S.breach.detail)}<br>Waktu: ${fdt(S.breach.t)}. Tekan <b>Reset</b> untuk mengulang.</div>`;}
+    else if((lim>0&&used/lim>=1-nz(cfg.buffer)/100)||(dLim>0&&dLoss/dLim>=.8)||(oLim>0&&oLoss/oLim>=.8)){state='WASPADA';cls='tag warn';}
+    if(S.violations.length&&!S.breach)html+=`<div class="bt-breach"><b>${S.violations.length} pelanggaran tercatat</b><br>${S.violations.slice(-3).map(v=>`${fdt(v.t,true)} · ${esc(v.type)}: ${esc(v.detail)}`).join('<br>')}</div>`;
+  }
+  $('btRules').innerHTML=html;$('btRuleState').textContent=state;$('btRuleState').className=cls;
+}
+function updateTicket(){
+  const bb=$('btBuy').querySelector('b'),sb=$('btSell').querySelector('b'),pr=$('btPrice');
+  if(!S.B){bb.textContent='—';sb.textContent='—';pr.textContent='—';$('btMaxLot').textContent='Muat data untuk melihat lot maksimal.';return;}
+  bb.textContent=fp(px()+sp());sb.textContent=fp(px());pr.textContent=fp(px());
+  const mi=maxLotInfo();
+  if(!mi){$('btMaxLot').textContent='—';return;}
+  const lim=cfg.prop?`Lot tambahan maks (margin rule ${f2(cfg.marginPct)}%): <b>${f2(mi.max)}</b> · aman: <b>${f2(mi.safe)}</b> <button class="btn" type="button" id="btUseMax">Pakai ${f2(mi.safe)}</button>`:`Lot maks sesuai free margin: <b>${f2(mi.freeLots)}</b>`;
+  $('btMaxLot').innerHTML=lim+`<br><span style="color:var(--faint)">Margin per lot ${fm(mi.mpl)} · terpakai ${fm(mi.used)} dari batas ${fm(mi.lim)}</span>`;
+  const u=$('btUseMax');if(u)u.onclick=()=>{$('btLots').value=Math.max(0.01,mi.safe).toFixed(2);dirty();};
+}
+function updateStatus(){
+  if(!S.B){$('btStatus').innerHTML='Muat data untuk mulai replay.';$('btProg').style.width='0%';return;}
+  $('btStatus').innerHTML=`<span><b>${fdt(S.B.t[S.i])}</b> UTC</span><span>Candle <b>${(S.i+1).toLocaleString('en-US')}</b> / ${S.n.toLocaleString('en-US')}</span><span>${S.playing?'▶ berjalan':'⏸ jeda'}</span>`;
+  $('btProg').style.width=(S.i/(S.n-1)*100).toFixed(2)+'%';
+}
+function updatePos(){
+  const sig=S.pos.map(p=>p.id+':'+p.sl+':'+p.tp).join(',')+'|'+S.pend.map(q=>q.id).join(',');
+  const tbl=$('btPosTable');
+  if(sig!==S.sig.pos){
+    S.sig.pos=sig;
+    let h='<thead><tr><th>#</th><th>Tipe</th><th>Lot</th><th>Entry</th><th>SL</th><th>TP</th><th>Floating P/L</th><th></th></tr></thead><tbody>';
+    S.pos.forEach(p=>{h+=`<tr><td class="mono">${p.id}</td><td><span class="tag ${p.side}">${p.side}</span></td><td class="mono">${f2(p.lots)}</td><td class="mono">${fp(p.entry)}</td><td><input class="sel bt-mini" data-f="sl" data-id="${p.id}" type="number" step="any" value="${p.sl>0?p.sl:''}" placeholder="—"></td><td><input class="sel bt-mini" data-f="tp" data-id="${p.id}" type="number" step="any" value="${p.tp>0?p.tp:''}" placeholder="—"></td><td class="mono" data-pl="${p.id}">—</td><td style="white-space:nowrap"><button class="btn" data-be="${p.id}" type="button">BE</button> <button class="btn danger" data-close="${p.id}" type="button">Tutup</button></td></tr>`;});
+    S.pend.forEach(q=>{h+=`<tr><td class="mono">${q.id}</td><td><span class="tag ${q.side}">${q.side} ${q.type}</span></td><td class="mono">${f2(q.lots)}</td><td class="mono">${fp(q.price)}</td><td class="mono">${q.sl>0?fp(q.sl):'—'}</td><td class="mono">${q.tp>0?fp(q.tp):'—'}</td><td class="mono" style="color:var(--faint)">pending</td><td><button class="btn danger" data-cancel="${q.id}" type="button">Batal</button></td></tr>`;});
+    if(!S.pos.length&&!S.pend.length)h+='<tr><td colspan="8" class="empty" style="color:var(--faint)">Belum ada posisi atau order aktif.</td></tr>';
+    tbl.innerHTML=h+'</tbody>';
+  }
+  S.pos.forEach(p=>{const c=tbl.querySelector(`[data-pl="${p.id}"]`);if(c){const v=floatPnl(p,S.i);c.textContent=fm(v,true);c.className='mono '+(v>=0?'pos':'neg');}});
+}
+function updateResults(){
+  const st=stats();
+  $('btStatInfo').textContent=`${st.n} trade`;
+  const m=(l,v,c)=>`<div class="metric"><label>${l}</label><strong class="${c||''}">${v}</strong></div>`;
+  $('btStats').innerHTML=m('Net profit',fm(st.net,true),st.net>=0?'pos':'neg')+m('Return',pc(st.ret,true),st.ret>=0?'pos':'neg')+m('Win rate',st.n?f2(st.wr)+'%':'—')+m('Profit factor',st.n?(st.pf===Infinity?'∞':f2(st.pf)):'—')+m('Expectancy',st.n?fm(st.exp,true):'—',st.exp>=0?'pos':'neg')+m('Rata-rata win',st.n?fm(st.avgW):'—','pos')+m('Rata-rata loss',st.n?fm(st.avgL):'—','neg')+m('Avg R',st.avgR!=null?f2(st.avgR)+'R':'—')+m('Max drawdown',`${fm(S.maxDD)} (${f2(S.maxDDpct)}%)`,'neg')+m('Trade terbaik',st.n?fm(st.best,true):'—','pos')+m('Trade terburuk',st.n?fm(st.worst,true):'—','neg')+m('Loss beruntun maks',st.n?String(st.maxL):'—');
+  $('btEqInfo').textContent=S.eq.length>1?`${fm(S.initial)} → ${fm(S.eq[S.eq.length-1][1])}`:'';
+  let h='<thead><tr><th>#</th><th>Tipe</th><th>Lot</th><th>Buka</th><th>Entry</th><th>Tutup</th><th>Exit</th><th>Alasan</th><th>R</th><th>P/L</th></tr></thead><tbody>';
+  S.closed.slice(-200).reverse().forEach(t=>{h+=`<tr><td class="mono">${t.id}</td><td><span class="tag ${t.side}">${t.side}</span></td><td class="mono">${f2(t.lots)}</td><td class="mono">${fdt(t.openT,true)}</td><td class="mono">${fp(t.entry)}</td><td class="mono">${fdt(t.closeT,true)}</td><td class="mono">${fp(t.exit)}</td><td>${esc(t.reason)}</td><td class="mono">${t.R!=null?f2(t.R)+'R':'—'}</td><td class="mono ${t.pnl>=0?'pos':'neg'}">${fm(t.pnl,true)}</td></tr>`;});
+  if(!S.closed.length)h+='<tr><td colspan="10" class="empty" style="color:var(--faint)">Belum ada trade tertutup.</td></tr>';
+  $('btTrades').innerHTML=h+'</tbody>';
+}
+let frameN=0;
+function frame(){
+  S.raf=0;if(!root.classList.contains('active')&&!S.force)return;
+  S.dirty=false;frameN++;
+  drawChart();updateStatus();updateAccount();updateTicket();updatePos();
+  if(S.sig.closed!==S.closed.length){S.sig.closed=S.closed.length;updateResults();drawEq();}
+  else if(frameN%8===0){drawEq();}
+}
+
+/* ---------- export ---------- */
+function download(name,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
+function exportCsv(){
+  if(!S.closed.length)return msg('Belum ada trade untuk diekspor.','err');
+  const hd='id,side,lots,open_time,entry,close_time,exit,sl,tp,reason,R,commission,pnl';
+  const rows=S.closed.map(t=>[t.id,t.side,t.lots,new Date(t.openT*1000).toISOString(),t.entry,new Date(t.closeT*1000).toISOString(),t.exit,t.sl,t.tp,t.reason,t.R!=null?t.R.toFixed(3):'',t.comm.toFixed(2),t.pnl.toFixed(2)].join(','));
+  download(`backtest_${(S.name||'data').replace(/\W+/g,'_')}.csv`,new Blob([[hd,...rows].join('\n')],{type:'text/csv'}));
+}
+function exportPng(){
+  if(!S.B)return msg('Muat data dulu.','err');
+  const W=1200,H=675,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d'),C=pal(),st=stats();
+  const UI='Inter,"Segoe UI",system-ui,sans-serif',MN='"JetBrains Mono",ui-monospace,Menlo,monospace';
+  g.fillStyle='#0b0d12';g.fillRect(0,0,W,H);
+  let gr=g.createRadialGradient(W*.9,-40,0,W*.9,-40,W*.7);gr.addColorStop(0,'rgba(217,176,104,.16)');gr.addColorStop(1,'rgba(217,176,104,0)');g.fillStyle=gr;g.fillRect(0,0,W,H);
+  const txt=(t,x,y,sz,col,wt,al,fam)=>{g.font=`${wt||500} ${sz}px ${fam||UI}`;g.fillStyle=col;g.textAlign=al||'left';g.textBaseline='alphabetic';g.fillText(t,x,y);};
+  g.fillStyle='#d9b068';g.beginPath();g.roundRect(48,40,48,48,12);g.fill();txt('GB',72,72,19,'#1a1306',800,'center');
+  txt('Backtest Result',112,66,32,'#eef1f6',700);txt(`${S.name} · ${tfName(S.baseSec)} · ${fdt(S.B.t[S.start],true)} → ${fdt(S.B.t[S.i],true)} UTC`,112,90,15,'#a3adbf',500);
+  const up=S.balance>=S.initial,col=up?'#3dcf94':'#ef6270';
+  txt('Net profit',48,150,16,'#a3adbf',600);txt(fm(st.net,true),48,214,64,col,800);txt(`${pc(st.ret,true)} dari ${fm(S.initial)}`,48,244,17,'#6f7a8e',500);
+  const items=[['Trade',String(st.n)],['Win rate',st.n?f2(st.wr)+'%':'—'],['Profit factor',st.n?(st.pf===Infinity?'∞':f2(st.pf)):'—'],['Expectancy',st.n?fm(st.exp,true):'—'],['Max drawdown',f2(S.maxDDpct)+'%'],['Avg R',st.avgR!=null?f2(st.avgR)+'R':'—']];
+  items.forEach((m,i)=>{const x=48+(i%3)*196,y=282+Math.floor(i/3)*86;g.fillStyle='rgba(255,255,255,.045)';g.beginPath();g.roundRect(x,y,184,74,12);g.fill();g.strokeStyle='rgba(255,255,255,.09)';g.stroke();txt(m[0],x+16,y+28,13.5,'#a3adbf',600);txt(m[1],x+16,y+58,24,'#eef1f6',700,'left',MN);});
+  // kurva equity
+  const ex=670,ey=130,ew=482,eh=300;g.fillStyle='rgba(255,255,255,.04)';g.beginPath();g.roundRect(ex-16,ey-30,ew+32,eh+60,14);g.fill();g.strokeStyle='rgba(255,255,255,.09)';g.stroke();
+  txt('Kurva equity',ex,ey-6,15,'#a3adbf',600);
+  const d=S.eq;if(d.length>1){let lo=S.initial,hi=S.initial;d.forEach(r=>{lo=Math.min(lo,r[1]);hi=Math.max(hi,r[1]);});if(hi-lo<1){hi+=1;lo-=1;}const pd=(hi-lo)*.1;lo-=pd;hi+=pd;
+    const X=i=>ex+i/(d.length-1)*ew,Y=v=>ey+10+(hi-v)/(hi-lo)*(eh-20);
+    g.strokeStyle='rgba(255,255,255,.25)';g.setLineDash([5,5]);g.beginPath();g.moveTo(ex,Y(S.initial));g.lineTo(ex+ew,Y(S.initial));g.stroke();g.setLineDash([]);
+    gr=g.createLinearGradient(0,ey,0,ey+eh);gr.addColorStop(0,col+'66');gr.addColorStop(1,col+'00');g.beginPath();d.forEach((r,i)=>{i?g.lineTo(X(i),Y(r[1])):g.moveTo(X(i),Y(r[1]));});g.lineTo(X(d.length-1),ey+eh);g.lineTo(X(0),ey+eh);g.closePath();g.fillStyle=gr;g.fill();
+    g.beginPath();d.forEach((r,i)=>{i?g.lineTo(X(i),Y(r[1])):g.moveTo(X(i),Y(r[1]));});g.strokeStyle=col;g.lineWidth=2.5;g.stroke();}
+  g.strokeStyle='rgba(217,176,104,.35)';g.lineWidth=1;g.beginPath();g.moveTo(48,H-64);g.lineTo(W-48,H-64);g.stroke();
+  txt(`Spread ${fp(sp())} · komisi ${fm(cfg.comm)}/lot · leverage 1:${cfg.leverage}${cfg.prop?` · margin rule ${f2(cfg.marginPct)}%`:''}`,48,H-34,14,'#6f7a8e',500);
+  txt('Simulasi berbasis candle, bukan jaminan hasil nyata',W-48,H-34,14,'#6f7a8e',500,'right');
+  cv.toBlob(b=>b&&download(`backtest_${(S.name||'data').replace(/\W+/g,'_')}.png`,b),'image/png');
+}
+
+/* ---------- persistence (IndexedDB) ---------- */
+const idb={open(){return new Promise((res,rej)=>{if(!window.indexedDB)return rej(new Error('no idb'));const r=indexedDB.open('ffx_bt',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});},
+  async get(k){const db=await this.open();return new Promise((res,rej)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});},
+  async set(k,v){const db=await this.open();return new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});}};
+function persist(){
+  if(!S.B)return;clearTimeout(S.saveT);
+  S.saveT=setTimeout(()=>{
+    const snap={v:1,name:S.name,baseSec:S.baseSec,dec:S.dec,n:S.n,B:S.B,i:S.i,start:S.start,pos:S.pos,pend:S.pend,closed:S.closed,balance:S.balance,initial:S.initial,nextId:S.nextId,eq:S.eq,eqStride:S.eqStride,peak:S.peak,maxDD:S.maxDD,maxDDpct:S.maxDDpct,dayKey:S.dayKey,dayStartEq:S.dayStartEq,breach:S.breach,violations:S.violations,vioKeys:S.vioKeys,targetHit:S.targetHit,tf:S.tf,savedAt:Date.now()};
+    idb.set('last',snap).catch(()=>{});
+  },1500);
+}
+async function offerResume(){
+  try{
+    const s=await idb.get('last');if(!s||!s.B||s.v!==1)return;
+    const box=$('btResume');
+    box.innerHTML=`<button class="btn" type="button" id="btResumeBtn">↻ Lanjutkan sesi terakhir: ${esc(s.name)} · candle ${(s.i+1).toLocaleString('en-US')}/${s.n.toLocaleString('en-US')} · ${s.closed.length} trade · ${fm(s.balance)}</button>`;
+    $('btResumeBtn').onclick=()=>{
+      pause();
+      S.B=s.B;S.n=s.n;S.baseSec=s.baseSec;S.dec=s.dec;S.name=s.name;S.tfCache={};S.i=s.i;S.start=s.start;
+      S.pos=s.pos;S.pend=s.pend;S.closed=s.closed;S.balance=s.balance;S.initial=s.initial;S.nextId=s.nextId;S.eq=s.eq;S.eqStride=s.eqStride;S.peak=s.peak;S.maxDD=s.maxDD;S.maxDDpct=s.maxDDpct;
+      S.dayKey=s.dayKey;S.dayStartEq=s.dayStartEq;S.breach=s.breach;S.violations=s.violations||[];S.vioKeys=s.vioKeys||{};S.targetHit=!!s.targetHit;S.tf=(s.tf&&s.tf>=s.baseSec)?s.tf:0;S.view.off=0;S.sig={pos:'',closed:-1};
+      buildTfButtons();$('btDataInfo').textContent=`${s.name} · ${tfName(s.baseSec)} · ${s.n.toLocaleString('en-US')} candle · ${fdt(s.B.t[0])} → ${fdt(s.B.t[s.n-1])}`;
+      const j=$('btJump');j.min=toLocal(s.B.t[0]);j.max=toLocal(s.B.t[s.n-1]);
+      box.innerHTML='';msg('Sesi terakhir dipulihkan.','ok');S.force=true;dirty();
+    };
+  }catch(e){}
+}
+
+/* ---------- settings ---------- */
+const CFG_MAP={btBal:['balance',1],btContract:['contract',1],btLev:['leverage',1],btSpread:['spread',1],btComm:['comm',1],btMPct:['marginPct',1],btBuf:['buffer',1],btDaily:['daily',1],btOverall:['overall',1],btTarget:['target',1],btMBase:['marginBase',0],btProp:['prop','c'],btBlock:['block','c'],btStop:['stop','c']};
+function syncCfgInputs(){Object.keys(CFG_MAP).forEach(id=>{const [k,t]=CFG_MAP[id],el=$(id);if(!el)return;if(t==='c')el.checked=!!cfg[k];else el.value=cfg[k];});$('btRisk').value=cfg.risk;}
+function bindSettings(){
+  syncCfgInputs();
+  Object.keys(CFG_MAP).forEach(id=>{
+    const [k,t]=CFG_MAP[id],el=$(id),on=()=>{
+      if(t==='c')cfg[k]=el.checked;else if(t===1)cfg[k]=nz(el.value);else cfg[k]=el.value;
+      if(k==='leverage'&&!(cfg[k]>=1))cfg[k]=1;if(k==='contract'&&!(cfg[k]>0))cfg[k]=DEF.contract;
+      saveCfg();
+      if(k==='balance'){msg('Balance awal baru berlaku setelah Reset.');return;}
+      dirty();
+    };
+    el.addEventListener('input',on);el.addEventListener('change',on);
+  });
+  $('btRisk').addEventListener('input',()=>{cfg.risk=nz($('btRisk').value);saveCfg();});
+  ['btLots','btEntry','btSL','btTP'].forEach(id=>$(id).addEventListener('input',dirty));
+}
+
+/* ---------- interaksi chart ---------- */
+function bindChart(){
+  const cv=$('btChart'),wrap=cv.parentElement;
+  const ptrs=new Map();let dragStart=null,pinch0=0,moved=false;
+  const rel=e=>{const r=cv.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
+  cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,rel(e));moved=false;
+    if(ptrs.size===1)dragStart={x:rel(e).x,off:S.view.off};
+    if(ptrs.size===2){const a=[...ptrs.values()];pinch0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);dragStart=null;}});
+  cv.addEventListener('pointermove',e=>{
+    const p=rel(e);S.hover=p;
+    if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,p);
+    if(ptrs.size===2&&pinch0>0){const a=[...ptrs.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(Math.abs(d-pinch0)>6){S.view.n=cl(Math.round(S.view.n*pinch0/d),20,800);pinch0=d;moved=true;}}
+    else if(dragStart&&geo){const dx=p.x-dragStart.x;if(Math.abs(dx)>4)moved=true;
+      if(moved){const maxOff=Math.max(0,geo.last-10);S.view.off=cl(Math.round(dragStart.off+dx/geo.step),0,maxOff);}}
+    dirty();
+  });
+  const up=e=>{
+    const wasClick=!moved&&ptrs.size===1;
+    ptrs.delete(e.pointerId);if(ptrs.size<2)pinch0=0;if(!ptrs.size)dragStart=null;
+    if(wasClick&&S.pick&&geo){
+      const p=rel(e);if(p.y>=geo.padT&&p.y<=geo.padT+geo.chh){
+        const price=geo.hi-(p.y-geo.padT)/geo.chh*(geo.hi-geo.lo);
+        const id={entry:'btEntry',sl:'btSL',tp:'btTP'}[S.pick];$(id).value=price.toFixed(S.dec);setPick(null);dirty();
+      }
+    }
+  };
+  cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',e=>{ptrs.delete(e.pointerId);dragStart=null;});
+  cv.addEventListener('pointerleave',()=>{S.hover=null;dirty();});
+  cv.addEventListener('wheel',e=>{e.preventDefault();S.view.n=cl(Math.round(S.view.n*(e.deltaY>0?1.12:0.89)),20,800);dirty();},{passive:false});
+  new ResizeObserver(()=>dirty()).observe(wrap);
+  new ResizeObserver(()=>{S.sig.closed=-1;dirty();}).observe($('btEq').parentElement);
+}
+function setPick(k){
+  S.pick=(S.pick===k)?null:k;
+  root.querySelectorAll('.bt-pick').forEach(b=>b.classList.toggle('on',b.dataset.pick===S.pick));
+  $('btChart').parentElement.classList.toggle('picking',!!S.pick);dirty();
+}
+
+/* ---------- binding ---------- */
+function bind(){
+  root.dataset.src='csv';
+  $('btSrc').addEventListener('change',()=>{root.dataset.src=$('btSrc').value;});
+  $('btFile').addEventListener('change',e=>onFile(e.target.files[0]));
+  $('btLoadBin').addEventListener('click',onBinance);
+  $('btPlay').addEventListener('click',()=>S.playing?pause():play());
+  $('btStep').addEventListener('click',()=>{if(!S.B)return msg('Muat data dulu.','err');pause();step(1);});
+  $('btStep10').addEventListener('click',()=>{if(!S.B)return msg('Muat data dulu.','err');pause();step(10);});
+  $('btSpeed').addEventListener('change',()=>{S.speed=+$('btSpeed').value;});
+  $('btJumpGo').addEventListener('click',jumpTo);
+  $('btReset').addEventListener('click',()=>{if(!S.B)return;if(S.closed.length&&!confirm('Reset sesi? Semua trade dan posisi akan dihapus.'))return;resetSession(S.start);msg('Sesi di-reset ke awal replay.','ok');});
+  $('btZoomIn').addEventListener('click',()=>{S.view.n=cl(Math.round(S.view.n*0.8),20,800);dirty();});
+  $('btZoomOut').addEventListener('click',()=>{S.view.n=cl(Math.round(S.view.n*1.25),20,800);dirty();});
+  $('btBuy').addEventListener('click',()=>placeOrder('buy'));
+  $('btSell').addEventListener('click',()=>placeOrder('sell'));
+  $('btCloseAll').addEventListener('click',closeAll);
+  $('btCalcLot').addEventListener('click',calcLotFromRisk);
+  root.querySelectorAll('.bt-pick').forEach(b=>b.addEventListener('click',()=>setPick(b.dataset.pick)));
+  $('btExportCsv').addEventListener('click',exportCsv);
+  $('btExportPng').addEventListener('click',exportPng);
+  $('btPosTable').addEventListener('click',e=>{
+    const t=e.target.closest('button');if(!t)return;
+    if(t.dataset.close){const p=S.pos.find(x=>x.id==t.dataset.close);if(p){closePos(p,p.side==='buy'?px():px()+sp(),'MANUAL',S.i);recordEq(S.i);dirty();persist();}}
+    else if(t.dataset.be){const p=S.pos.find(x=>x.id==t.dataset.be);if(p){p.sl=p.entry;S.sig.pos='';dirty();persist();msg('SL dipindah ke harga entry (break-even).','ok');}}
+    else if(t.dataset.cancel){S.pend=S.pend.filter(x=>x.id!=t.dataset.cancel);S.sig.pos='';dirty();persist();}
+  });
+  $('btPosTable').addEventListener('change',e=>{
+    const el=e.target;if(!el.dataset||!el.dataset.f)return;const p=S.pos.find(x=>x.id==el.dataset.id);if(!p)return;
+    const v=nz(el.value),f=el.dataset.f,ref=p.entry;
+    if(v>0){const bad=f==='sl'?(p.side==='buy'?v>=px():v<=px()+sp()):(p.side==='buy'?v<=px():v>=px()+sp());
+      if(bad){msg(`${f.toUpperCase()} tidak valid terhadap harga saat ini.`,'err');el.value=p[f]>0?p[f]:'';return;}}
+    p[f]=v>0?v:0;S.sig.pos='';dirty();persist();
+  });
+  document.addEventListener('keydown',e=>{
+    if(!root.classList.contains('active'))return;
+    const t=e.target;if(t&&/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName))return;
+    if(e.code==='Space'){e.preventDefault();S.playing?pause():play();}
+    else if(e.code==='ArrowRight'){e.preventDefault();pause();step(e.shiftKey?10:1);}
+  });
+  document.querySelector('.tab[data-view="backtest"]')?.addEventListener('click',()=>{S.force=false;setTimeout(()=>{dirty();},30);setTimeout(dirty,250);});
+  window.addEventListener('resize',()=>dirty());
+  bindSettings();bindChart();buildTfButtons();
+}
+bind();offerResume();dirty();
+})();
 </script>
 
 </body>
