@@ -2105,6 +2105,8 @@ html:not(.z1):not(.z2):not(.z3) .kpi{justify-content:flex-start}
 .mg-usage b{color:var(--text);font-size:12.5px}
 .mg-hint{color:var(--muted);font-size:11.5px;line-height:1.6;margin:10px 0 0}
 .mg-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mg-wide{grid-column:1/-1}
+#mgBox[data-mode=auto] .mg-manual,#mgBox[data-mode=manual] .mg-auto{display:none}
 .mg-form label,.mg-sim label{display:flex;flex-direction:column;gap:6px;font-size:11.5px;font-weight:600;color:var(--muted)}
 .mg-form .sel,.mg-sim .sel{width:100%;box-sizing:border-box}
 .mg-sim{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
@@ -2417,13 +2419,16 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
         <div class="card panel">
           <div class="panel-title"><h3>Aturan &amp; Parameter</h3><span>tersimpan di browser</span></div>
           <div class="mg-form">
-            <label>Dasar perhitungan<select id="mgBase" class="sel"><option value="balance">Balance aktual</option><option value="equity">Equity aktual</option><option value="start">Modal awal</option></select></label>
+            <label class="mg-wide">Sumber data<select id="mgMode" class="sel"><option value="auto">Otomatis dari EA</option><option value="manual">Manual (isi sendiri, tanpa EA)</option></select></label>
+            <label class="mg-manual">Balance (manual)<input id="mgMBal" class="sel" type="number" min="0" step="0.01" inputmode="decimal" placeholder="mis. 10000"></label>
+            <label class="mg-manual">Lot yang sudah terbuka<input id="mgMLots" class="sel" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0"></label>
+            <label class="mg-auto">Dasar perhitungan<select id="mgBase" class="sel"><option value="balance">Balance aktual</option><option value="equity">Equity aktual</option><option value="start">Modal awal</option></select></label>
             <label>Batas margin rule (% dari dasar)<input id="mgPct" class="sel" type="number" min="1" max="1000" step="0.5" inputmode="decimal"></label>
             <label>Buffer keamanan (%)<input id="mgBuffer" class="sel" type="number" min="0" max="90" step="1" inputmode="decimal"></label>
             <label>Batas lot dari firm (opsional)<input id="mgMaxLot" class="sel" type="number" min="0" step="0.01" inputmode="decimal" placeholder="kosong = tanpa batas"></label>
             <label>Contract size<input id="mgContract" class="sel" type="number" min="1" step="1" inputmode="decimal"></label>
-            <label>Leverage (kosong = dari akun)<input id="mgLev" class="sel" type="number" min="1" step="1" inputmode="decimal" placeholder="otomatis"></label>
-            <label>Harga acuan (kosong = otomatis)<input id="mgPrice" class="sel" type="number" min="0" step="0.01" inputmode="decimal" placeholder="otomatis"></label>
+            <label>Leverage (wajib jika manual)<input id="mgLev" class="sel" type="number" min="1" step="1" inputmode="decimal" placeholder="otomatis"></label>
+            <label>Harga acuan (wajib jika manual)<input id="mgPrice" class="sel" type="number" min="0" step="0.01" inputmode="decimal" placeholder="otomatis"></label>
           </div>
           <p class="mg-hint">Nilai awal 80% mengikuti rule margin prop firm kamu. Pastikan dasarnya (balance, equity, atau modal awal) sama dengan teks aturan firm, lalu ubah di sini kalau berbeda.</p>
           <div class="table-scroll"><table id="mgTable"></table></div>
@@ -4224,19 +4229,21 @@ window.__THEME = { apply, get };
 
   // ================= MARGIN RULE GUARD (batas lot agar tidak melanggar margin rule prop firm) =================
   const MG_KEY = 'ffx_marginrule';
-  const MG_DEF = { base:'balance', pct:80, buffer:10, contract:100, lev:'', price:'', maxLot:'', plan:'' };
+  const MG_DEF = { base:'balance', pct:80, buffer:10, contract:100, lev:'', price:'', maxLot:'', plan:'', mode:'auto', mBal:'', mLots:'' };
   function mgLoad(){ try { return Object.assign({}, MG_DEF, JSON.parse(localStorage.getItem(MG_KEY) || '{}')); } catch(e){ return Object.assign({}, MG_DEF); } }
   function mgSave(c){ try { localStorage.setItem(MG_KEY, JSON.stringify(c)); } catch(e){} }
   const mgN = v => { const x = parseFloat(String(v ?? '').replace(',', '.')); return Number.isFinite(x) ? x : 0; };
   const mgFloor = x => Math.floor(Math.max(0, x) * 100 + 1e-9) / 100;
   function mgCalc(a, cfg){
-    cfg = cfg || mgLoad();
-    const pos = a.positions || [];
-    const bal = mgN(a.balance), eq = mgN(a.equity), st = mgN(a.startingBalance);
+    cfg = cfg || mgLoad(); a = a || {};
+    const manual = cfg.mode === 'manual';
+    const pos = manual ? [] : (a.positions || []);
+    const bal = manual ? mgN(cfg.mBal) : mgN(a.balance), eq = manual ? bal : mgN(a.equity), st = manual ? bal : mgN(a.startingBalance);
     const base = cfg.base === 'equity' ? eq : cfg.base === 'start' ? (st || bal) : bal;
     const pctLim = mgN(cfg.pct), buf = Math.min(90, Math.max(0, mgN(cfg.buffer)));
     const limit = base * pctLim / 100, safeLimit = limit * (1 - buf / 100);
-    const used = mgN(a.margin), lots = pos.reduce((s, p) => s + mgN(p.volume), 0);
+    let used = manual ? 0 : mgN(a.margin);
+    const lots = manual ? mgN(cfg.mLots) : pos.reduce((s, p) => s + mgN(p.volume), 0);
     const lev = mgN(cfg.lev) > 0 ? mgN(cfg.lev) : mgN(a.leverage);
     let price = mgN(cfg.price), priceSrc = 'manual';
     if (!(price > 0)) {
@@ -4249,6 +4256,7 @@ window.__THEME = { apply, get };
     const syms = new Set(pos.map(p => p.symbol));
     const calib = (used > 0 && lots > 0 && syms.size === 1) ? used / lots : 0;
     const perLot = calib || formula;
+    if (manual) used = lots * perLot;
     const src = calib ? 'kalibrasi dari margin aktual EA' : (formula ? `rumus · harga ${priceSrc}` : '—');
     const maxLot = mgN(cfg.maxLot);
     const capLeft = maxLot > 0 ? Math.max(0, maxLot - lots) : Infinity;
@@ -4259,22 +4267,26 @@ window.__THEME = { apply, get };
     let status = 'ok';
     if (limit > 0 && (used > limit + 1e-9 || (maxLot > 0 && lots > maxLot + 1e-9))) status = 'violation';
     else if (limit > 0 && (used > safeLimit + 1e-9 || addSafe <= 0)) status = 'warn';
-    return { base, baseLabel: cfg.base === 'equity' ? 'Equity' : cfg.base === 'start' ? 'Modal awal' : 'Balance', pctLim, buf, limit, safeLimit, used, lots, perLot, src, calib: !!calib, formula, price, lev, contract, head, safeHead, addMax, addSafe, maxLot, usage, status, ok: limit > 0 && perLot > 0 };
+    return { base, manual, baseLabel: manual ? 'Balance (manual)' : cfg.base === 'equity' ? 'Equity' : cfg.base === 'start' ? 'Modal awal' : 'Balance', pctLim, buf, limit, safeLimit, used, lots, perLot, src, calib: !!calib, formula, price, lev, contract, head, safeHead, addMax, addSafe, maxLot, usage, status, ok: limit > 0 && perLot > 0 };
   }
   function mgInit(){
     if (!$('mgBase') || mgInit.done) return; mgInit.done = true;
     const cfg = mgLoad();
-    const map = { mgBase:'base', mgPct:'pct', mgBuffer:'buffer', mgMaxLot:'maxLot', mgContract:'contract', mgLev:'lev', mgPrice:'price', mgPlan:'plan' };
+    const map = { mgBase:'base', mgPct:'pct', mgBuffer:'buffer', mgMaxLot:'maxLot', mgContract:'contract', mgLev:'lev', mgPrice:'price', mgPlan:'plan', mgMode:'mode', mgMBal:'mBal', mgMLots:'mLots' };
     Object.keys(map).forEach(id => {
       const el = $(id); el.value = cfg[map[id]] ?? '';
       const on = () => { const c = mgLoad(); c[map[id]] = el.value; mgSave(c); renderMarginGuard(); try { renderAlerts(); } catch(e){} };
       el.addEventListener('input', on); el.addEventListener('change', on);
     });
   }
+  setTimeout(() => { try { renderMarginGuard(); } catch(e){} }, 0);
   function renderMarginGuard(){
     mgInit();
-    const box = $('mgBox'); if (!box || !currentAccount) return;
-    const a = currentAccount, cfg = mgLoad(), r = mgCalc(a, cfg);
+    const box = $('mgBox'); if (!box) return;
+    const cfg = mgLoad(); box.dataset.mode = cfg.mode === 'manual' ? 'manual' : 'auto';
+    const a = (typeof currentAccount !== 'undefined' && currentAccount) ? currentAccount : null;
+    if (!a && cfg.mode !== 'manual') { $('mgVerdict').textContent = 'MENUNGGU EA'; $('mgVerdict').className = 'tag'; $('mgBarHint').textContent = 'EA belum terhubung. Ganti "Sumber data" ke Manual di panel kanan untuk menghitung dengan balance yang kamu isi sendiri.'; return; }
+    const r = mgCalc(a, cfg);
     const lot = v => num(v, 2), fmt = v => (Number.isFinite(v) ? lot(v) : '—');
     const stTxt = { ok:'AMAN', warn:'MEPET', violation:'MELANGGAR' }[r.status], stCls = { ok:'buy', warn:'warn', violation:'sell' }[r.status];
     const v = $('mgVerdict'); v.textContent = r.ok ? stTxt : 'ISI PARAMETER'; v.className = 'tag ' + (r.ok ? stCls : '');
@@ -4285,7 +4297,7 @@ window.__THEME = { apply, get };
     $('mgUsage').textContent = r.limit > 0 ? `${money(r.used)} / ${money(r.limit)} (${num(r.usage, 1)}%)` : '—';
     const bar = $('mgBar'); bar.style.width = Math.max(0, Math.min(100, r.usage)) + '%';
     bar.style.background = r.status === 'violation' ? 'var(--red)' : r.status === 'warn' ? 'var(--amber)' : 'var(--green)';
-    $('mgBarHint').textContent = !r.ok ? 'Lengkapi parameter di sebelah kanan untuk menghitung batas lot.'
+    $('mgBarHint').textContent = !r.ok ? (cfg.mode === 'manual' ? 'Isi balance, leverage, dan harga acuan di panel kanan.' : 'Lengkapi parameter di sebelah kanan untuk menghitung batas lot.')
       : r.status === 'violation' ? 'Margin melebihi batas rule — kurangi posisi sekarang untuk menghindari pelanggaran.'
       : r.status === 'warn' ? 'Mendekati batas rule — hindari menambah posisi.'
       : `Masih ada ruang ${money(Math.max(0, r.head))} sebelum menyentuh batas rule.`;
@@ -4448,7 +4460,7 @@ window.__THEME = { apply, get };
     if (oUse>=90) alerts.push({level:'danger', key:'overall90', text:`<b>Overall loss limit hampir tercapai</b> — ${pct(oUse)} terpakai.`});
     else if (oUse>=70) alerts.push({level:'warn', key:'overall70', text:`Overall loss limit sudah ${pct(oUse)} terpakai.`});
     if (marginOk(a) && a.marginLevel<120) alerts.push({level:'danger', key:'margin', text:`<b>Margin level rendah</b> — ${pct(a.marginLevel)}.`});
-    try { if (Number(a.margin) > 0) { const g = mgCalc(a); if (g.ok && g.status==='violation') alerts.push({level:'danger', key:'mgviol', text:`<b>MARGIN RULE terlampaui</b> — margin ${money(g.used)} melebihi batas ${money(g.limit)} (${pct(g.usage)} dari batas). Kurangi posisi segera.`}); else if (g.ok && g.status==='warn') alerts.push({level:'warn', key:'mgwarn', text:`<b>Margin rule mepet</b> — ${pct(g.usage)} dari batas; sisa ruang aman ${num(g.addSafe)} lot.`}); } } catch(e){}
+    try { if (Number(a.margin) > 0) { const g = mgCalc(a, Object.assign(mgLoad(), {mode:'auto'})); if (g.ok && g.status==='violation') alerts.push({level:'danger', key:'mgviol', text:`<b>MARGIN RULE terlampaui</b> — margin ${money(g.used)} melebihi batas ${money(g.limit)} (${pct(g.usage)} dari batas). Kurangi posisi segera.`}); else if (g.ok && g.status==='warn') alerts.push({level:'warn', key:'mgwarn', text:`<b>Margin rule mepet</b> — ${pct(g.usage)} dari batas; sisa ruang aman ${num(g.addSafe)} lot.`}); } } catch(e){}
     (a.positions||[]).forEach(p=>{ if (!p.sl || Number(p.sl)===0) alerts.push({level:'warn', key:'nosl'+p.ticket, text:`Posisi ${esc(p.symbol)} #${p.ticket} tidak memiliki Stop Loss.`}); });
 
     const now = Date.now();
