@@ -2425,7 +2425,7 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
             <label>Leverage (kosong = dari akun)<input id="mgLev" class="sel" type="number" min="1" step="1" inputmode="decimal" placeholder="otomatis"></label>
             <label>Harga acuan (kosong = otomatis)<input id="mgPrice" class="sel" type="number" min="0" step="0.01" inputmode="decimal" placeholder="otomatis"></label>
           </div>
-          <p class="mg-hint">Nilai awal 50% hanya contoh. Samakan dengan teks aturan margin di prop firm kamu (beberapa firm memakai balance, sebagian equity atau modal awal).</p>
+          <p class="mg-hint">Nilai awal 80% mengikuti rule margin prop firm kamu. Pastikan dasarnya (balance, equity, atau modal awal) sama dengan teks aturan firm, lalu ubah di sini kalau berbeda.</p>
           <div class="table-scroll"><table id="mgTable"></table></div>
           <p id="mgNote" class="mg-hint">—</p>
         </div>
@@ -4224,7 +4224,7 @@ window.__THEME = { apply, get };
 
   // ================= MARGIN RULE GUARD (batas lot agar tidak melanggar margin rule prop firm) =================
   const MG_KEY = 'ffx_marginrule';
-  const MG_DEF = { base:'balance', pct:50, buffer:10, contract:100, lev:'', price:'', maxLot:'', plan:'' };
+  const MG_DEF = { base:'balance', pct:80, buffer:10, contract:100, lev:'', price:'', maxLot:'', plan:'' };
   function mgLoad(){ try { return Object.assign({}, MG_DEF, JSON.parse(localStorage.getItem(MG_KEY) || '{}')); } catch(e){ return Object.assign({}, MG_DEF); } }
   function mgSave(c){ try { localStorage.setItem(MG_KEY, JSON.stringify(c)); } catch(e){} }
   const mgN = v => { const x = parseFloat(String(v ?? '').replace(',', '.')); return Number.isFinite(x) ? x : 0; };
