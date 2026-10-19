@@ -2274,6 +2274,146 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
   #view-backtest .bt-drawbar{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 </style>
+<style id="btx-css">
+/* ===================== Backtest Lab v2 — layout TradingView-style & mobile-first ===================== */
+.btx-card{display:flex;flex-direction:column;gap:10px;padding:12px;min-width:0}
+.btx-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.btx-tfs{display:flex;gap:2px;padding:3px;border:1px solid var(--line2);border-radius:11px;background:var(--surface2,rgba(255,255,255,.03));overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto}
+.btx-tfs::-webkit-scrollbar{display:none}
+.btx-tfs button{flex:0 0 auto;min-height:34px;min-width:38px;padding:0 10px;border:0;background:transparent;color:var(--muted);font:700 12px var(--fb);border-radius:8px;cursor:pointer}
+.btx-tfs button.on{background:var(--gold-soft,rgba(217,176,104,.18));color:var(--gold)}
+.btx-tfs button:disabled{opacity:.3;cursor:not-allowed}
+.btx-tools{display:flex;gap:4px;flex:0 0 auto;position:relative}
+.btx-ib{min-width:38px;min-height:38px;padding:0 8px;font-weight:700;line-height:1}
+.btx-ib.on{border-color:var(--gold);color:var(--gold)}
+.btx-indmenu{position:absolute;top:44px;right:0;z-index:40;min-width:200px;padding:6px;border:1px solid var(--line2);border-radius:12px;background:var(--surface,#12161f);box-shadow:0 18px 50px rgba(0,0,0,.45);display:grid;gap:2px}
+.btx-indmenu[hidden]{display:none}
+.btx-indmenu label{display:flex;align-items:center;gap:9px;padding:10px 8px;font-size:13px;cursor:pointer;border-radius:8px;color:var(--text)}
+.btx-indmenu input{width:18px;height:18px}
+.btx-indmenu i{width:14px;height:4px;border-radius:2px}
+.btx-quick{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch}
+.btx-q{border:1px solid transparent;border-radius:12px;min-height:50px;padding:6px 8px;cursor:pointer;font-family:var(--fb);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:filter .15s,transform .05s}
+.btx-q small{font-size:11px;font-weight:800;letter-spacing:.08em}
+.btx-q b{font:700 16px var(--fm);color:var(--text)}
+.btx-q.buy{background:color-mix(in srgb,var(--green) 18%,transparent);border-color:color-mix(in srgb,var(--green) 55%,transparent);color:var(--green)}
+.btx-q.sell{background:color-mix(in srgb,var(--red) 18%,transparent);border-color:color-mix(in srgb,var(--red) 55%,transparent);color:var(--red)}
+.btx-q:active{transform:translateY(1px)}
+.btx-lotbox{display:flex;align-items:center;border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:var(--surface2,rgba(255,255,255,.03))}
+.btx-lotbox button{width:30px;align-self:stretch;border:0;background:transparent;color:var(--text);font-size:20px;cursor:pointer}
+.btx-lotbox input{width:66px;text-align:center;border:0;background:transparent;color:var(--text);font:700 15px var(--fm);padding:0;min-width:0}
+.btx-mini{display:flex;gap:6px 16px;flex-wrap:wrap;font:12px var(--fm);color:var(--muted)}
+.btx-mini b{color:var(--text)}.btx-mini b.pos{color:var(--green)}.btx-mini b.neg{color:var(--red)}
+.btx-stage{display:flex;gap:8px;min-height:0;min-width:0}
+.btx-rail{display:flex;flex-direction:column;gap:4px;flex:0 0 46px;width:46px;max-height:clamp(320px,58dvh,620px);overflow-y:auto;scrollbar-width:none}
+.btx-rail::-webkit-scrollbar{display:none}
+.btx-rail button{flex:0 0 auto;min-height:40px;border:1px solid var(--line);border-radius:10px;background:var(--surface2,rgba(255,255,255,.03));color:var(--muted);font:700 15px var(--fb);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.btx-rail button.on{border-color:var(--gold);color:var(--gold);background:var(--gold-soft,rgba(217,176,104,.14))}
+.btx-rail .sep{flex:0 0 1px;height:1px;background:var(--line);margin:2px 6px}
+.btx-plot{position:relative;flex:1 1 auto;min-width:0;height:clamp(320px,58dvh,620px);border:1px solid var(--line);border-radius:12px;background:var(--bg0,#080a0f);overflow:hidden}
+.btx-plot canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.btx-plot.picking canvas{cursor:crosshair}
+.btx-msg{position:absolute;left:8px;right:8px;top:34px;z-index:3;pointer-events:none;font-size:12px;line-height:1.4;padding:0}
+.btx-msg:empty{display:none}
+.btx-msg.ok,.btx-msg.err,.btx-msg:not(:empty){background:color-mix(in srgb,var(--bg0,#080a0f) 90%,transparent);border:1px solid var(--line2);border-radius:10px;padding:7px 10px;color:var(--text)}
+.btx-msg.ok{border-color:color-mix(in srgb,var(--green) 50%,transparent);color:var(--green)}
+.btx-msg.err{border-color:color-mix(in srgb,var(--red) 55%,transparent);color:var(--red)}
+.btx-menu{position:absolute;z-index:6;width:244px;max-width:calc(100% - 12px);padding:10px;border:1px solid var(--gold);border-radius:14px;background:var(--surface,#12161f);box-shadow:0 18px 50px rgba(0,0,0,.5);display:grid;gap:8px}
+.btx-menu[hidden]{display:none}
+.btx-mh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.btx-mh small{display:block;font-size:11px;color:var(--faint)}
+.btx-mh b{font:700 18px var(--fm);color:var(--gold)}
+.btx-mh em{display:block;font:12px var(--fm);font-style:normal}
+.btx-mh em.pos{color:var(--green)}.btx-mh em.neg{color:var(--red)}
+.btx-x{border:0;background:transparent;color:var(--muted);font-size:16px;min-width:34px;min-height:34px;cursor:pointer;border-radius:8px}
+.btx-lotrow{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted)}
+.btx-lot{display:flex;align-items:center;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
+.btx-lot button{width:38px;min-height:38px;border:0;background:transparent;color:var(--text);font-size:18px;cursor:pointer}
+.btx-lot b{min-width:52px;text-align:center;font:700 14px var(--fm);color:var(--text)}
+.btx-opt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:48px;padding:8px 12px;border-radius:12px;border:1px solid transparent;cursor:pointer;font-family:var(--fb);text-align:left}
+.btx-opt span{font-size:12px;font-weight:800;letter-spacing:.06em}
+.btx-opt b{font:600 12px var(--fm);color:var(--text)}
+.btx-opt.buy{background:color-mix(in srgb,var(--green) 20%,transparent);border-color:color-mix(in srgb,var(--green) 60%,transparent);color:var(--green)}
+.btx-opt.sell{background:color-mix(in srgb,var(--red) 20%,transparent);border-color:color-mix(in srgb,var(--red) 60%,transparent);color:var(--red)}
+.btx-note{font-size:12px;color:var(--muted);line-height:1.5}
+.btx-mkt{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.btx-mkt button{min-height:40px;border-radius:10px;border:1px solid var(--line2);background:transparent;font:700 11px var(--fb);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.btx-mkt button b{font:600 12px var(--fm);color:var(--text)}
+.btx-mkt .buy{color:var(--green)}.btx-mkt .sell{color:var(--red)}
+.btx-chk{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);cursor:pointer;min-height:30px}
+.btx-chk input{width:18px;height:18px}
+.btx-selbar{position:absolute;z-index:5;top:8px;right:8px;display:flex;align-items:center;gap:6px;padding:6px;border:1px solid var(--line2);border-radius:12px;background:color-mix(in srgb,var(--surface,#12161f) 94%,transparent);box-shadow:0 8px 30px rgba(0,0,0,.4);max-width:calc(100% - 16px);flex-wrap:wrap}
+.btx-selbar[hidden]{display:none}
+.btx-dot{width:24px;height:24px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
+.btx-dot.on{border-color:var(--text);box-shadow:0 0 0 2px var(--bg0,#080a0f) inset}
+.btx-sbtn{min-height:34px;padding:0 10px;border-radius:9px;border:1px solid var(--gold);background:var(--gold-soft,rgba(217,176,104,.14));color:var(--gold);font:700 12px var(--fb);cursor:pointer}
+.btx-sbtn.del{border-color:color-mix(in srgb,var(--red) 55%,transparent);background:transparent;color:var(--red)}
+.btx-replay{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.btx-rb{min-height:42px;min-width:42px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:700}
+.btx-rb .ic{font-size:15px;line-height:1}
+.btx-replay .sel{min-height:42px;width:auto;padding:0 10px}
+.btx-jump{display:flex;gap:8px;align-items:center}
+.btx-jump[hidden]{display:none}.btx-jump input{flex:1;min-width:0}
+.btx-status{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 16px;font-family:var(--fm)}
+.btx-status b{color:var(--text)}
+.btx-prog{height:4px;border-radius:99px;background:var(--surface3,rgba(255,255,255,.08));overflow:hidden}
+.btx-prog i{display:block;height:100%;width:0;background:var(--gold);border-radius:99px;transition:width .15s}
+.btx-help{font-size:11.5px;color:var(--faint);line-height:1.5}
+.btx-dl{display:flex;flex-wrap:wrap;gap:6px}
+.btx-dl-empty{font-size:11.5px;color:var(--faint)}
+.btx-chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:9px;padding:2px 4px 2px 8px;background:var(--surface2,rgba(255,255,255,.025));color:var(--muted);font-size:12px}
+.btx-chip .nm{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;min-height:30px;padding:0 4px}
+.btx-chip button:last-child{border:0;background:transparent;color:var(--red);font-weight:800;font-size:17px;min-width:30px;min-height:30px;cursor:pointer}
+.btx-chip.selected{border-color:var(--gold);color:var(--gold)}
+.bt-data .btx-datahead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.bt-data #btDataInfo{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+#btDataBody[hidden]{display:none}
+#btSelInfo{display:block;font-size:11.5px;color:var(--gold);margin-top:2px}
+#btSelInfo:empty{display:none}
+/* tabel posisi/trade: kartu di layar kecil */
+.btx-acts{display:flex;gap:6px;flex-wrap:wrap}
+.btx-acts .btn{min-height:36px;padding:0 12px}
+#btPosTable tr.sel{background:var(--gold-soft,rgba(217,176,104,.1))}
+#view-backtest table .bt-mini{min-width:86px;width:100%;min-height:36px}
+.btx-card.full{position:fixed;inset:0;z-index:2000;border-radius:0;border:0;height:100dvh;max-height:100dvh;padding:max(8px,env(safe-area-inset-top)) 8px max(8px,env(safe-area-inset-bottom));background:var(--bg0,#080a0f);overflow:hidden;gap:6px}
+.btx-card.full .btx-stage{flex:1 1 auto;min-height:0}
+.btx-card.full .btx-plot{height:auto;min-height:0}
+.btx-card.full .btx-rail{max-height:none}
+.btx-card.full .btx-dl,.btx-card.full .btx-help,.btx-card.full .btx-prog{display:none}
+html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
+@media(max-width:760px){
+  .btx-card{padding:10px;gap:8px}
+  .btx-top{flex-wrap:wrap}
+  .btx-tfs{flex:1 1 100%}
+  .btx-tools{flex:1 1 100%;justify-content:space-between}
+  .btx-tools .btx-ib{flex:1 1 0}
+  .btx-stage{flex-direction:column-reverse;gap:6px}
+  .btx-rail{flex-direction:row;flex:0 0 auto;width:auto;max-height:none;overflow-x:auto;overflow-y:hidden;padding-bottom:2px}
+  .btx-rail button{min-width:46px;min-height:42px}
+  .btx-rail .sep{flex:0 0 1px;width:1px;height:auto;margin:6px 2px}
+  .btx-plot{height:clamp(340px,56dvh,560px)}
+  .btx-rb .tx{display:none}.btx-rb#btPlay .tx{display:inline}
+  .btx-replay{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .btx-replay::-webkit-scrollbar{display:none}
+  .btx-replay>*{flex:0 0 auto}
+  .btx-menu{width:min(262px,calc(100% - 12px))}
+  .btx-card.full .btx-stage{flex-direction:column-reverse}
+  .btx-card.full .btx-plot{min-height:0}
+  /* tabel -> kartu */
+  #view-backtest table.btx-tbl{min-width:0!important;width:100%}
+  #view-backtest .btx-tbl thead{display:none}
+  #view-backtest .btx-tbl,#view-backtest .btx-tbl tbody,#view-backtest .btx-tbl tr{display:block;width:100%}
+  #view-backtest .btx-tbl tr{border:1px solid var(--line);border-radius:12px;margin:0 0 10px;padding:6px 10px;background:var(--surface2,rgba(255,255,255,.02))}
+  #view-backtest .btx-tbl td{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0;border:0;text-align:right}
+  #view-backtest .btx-tbl td::before{content:attr(data-label);color:var(--faint);font-size:11px;text-align:left;flex:0 0 auto}
+  #view-backtest .btx-tbl td[colspan]{display:block;text-align:center}
+  #view-backtest .btx-tbl td[colspan]::before{content:none}
+  #view-backtest .btx-tbl td.btx-acts{justify-content:flex-end}
+  #view-backtest .btx-tbl td.btx-acts::before{content:none}
+  #view-backtest .btx-tbl .table-scroll{overflow:visible}
+  #view-backtest .table-card{padding:10px}
+}
+@media(max-height:520px) and (orientation:landscape){.btx-plot{height:max(220px,70dvh)}}
+</style>
 </head>
 <body>
 <div class="world" aria-hidden="true">
@@ -2473,7 +2613,9 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
       <div class="section-head"><div><h2>Backtest Lab</h2><p>Replay chart candle demi candle, buka posisi seperti live, lalu lihat statistik dan kurva equity. Terintegrasi dengan aturan prop firm: margin rule, daily loss, overall loss, dan target profit.</p></div></div>
 
       <div class="card panel bt-data">
-        <div class="panel-title"><h3>Data Historis</h3><span id="btDataInfo">Belum ada data</span></div>
+        <div class="panel-title btx-datahead"><h3>Data Historis</h3><button id="btDataToggle" class="btn ghost" type="button" aria-expanded="true">Sembunyikan</button></div>
+        <div id="btDataInfo" class="bt-hint" style="margin:0 0 10px">Belum ada data</div>
+        <div id="btDataBody">
         <div class="bt-form bt-form-data">
           <label>Sumber<select id="btSrc" class="sel"><option value="csv">File CSV (ekspor MT5 / lainnya)</option><option value="binance">Binance (online)</option></select></label>
           <label class="bt-src bt-src-csv">Pilih beberapa file CSV<input id="btFile" type="file" accept=".csv,.txt,.tsv" class="sel" multiple><small class="bt-file-sub">Pilih beberapa file sekaligus. Candle akan digabung, diurutkan berdasarkan waktu, dan duplikat timestamp dibuang.</small></label>
@@ -2485,56 +2627,61 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
           <button id="btLoadBin" class="btn primary bt-src bt-src-bin" type="button">Muat dari Binance</button>
         </div>
         <p class="bt-hint">CSV yang didukung: ekspor MT5 (Tools → History Center → Export, atau Market Watch → Export Bars) dengan kolom tanggal, waktu, open, high, low, close; juga format <i>time,open,high,low,close</i> atau Unix timestamp. Data Binance bukan harga broker, jadi hasilnya hanya pendekatan.</p>
+        </div>
         <div id="btResume" class="bt-resume"></div>
       </div>
 
       <div class="bt-main">
-        <div class="card panel bt-chartcard">
-          <div class="bt-toolbar">
-            <div class="bt-seg" id="btTfs"></div>
-            <div class="bt-ctl">
-              <button id="btReset" class="btn ghost" type="button" title="Kembali ke awal replay (hapus posisi dan trade)">⟲ Reset</button>
-              <button id="btPickStart" class="btn ghost" type="button" title="Aktifkan, lalu ketuk candle yang ingin dijadikan awal replay (berfungsi di layar sentuh)" aria-label="Pilih candle awal replay">⌖ Pilih candle awal</button>
-              <button id="btPlay" class="btn primary" type="button" title="Spasi">▶ Play</button>
-              <button id="btStep" class="btn" type="button" title="Panah kanan">+1</button>
-              <button id="btStep10" class="btn" type="button" title="Shift + panah kanan">+10</button>
-              <select id="btSpeed" class="sel" title="Kecepatan (candle per detik)"><option value="1">1×</option><option value="3">3×</option><option value="10" selected>10×</option><option value="30">30×</option><option value="100">100×</option></select>
-              <input id="btJump" type="datetime-local" class="sel" title="Lompat maju ke waktu tertentu (UTC)">
-              <button id="btJumpGo" class="btn" type="button">Lompat</button>
-              <button id="btZoomOut" class="btn ghost" type="button" title="Perkecil">−</button>
-              <button id="btZoomIn" class="btn ghost" type="button" title="Perbesar">+</button>
+        <div class="card panel btx-card" id="btCard">
+          <div class="btx-top">
+            <div class="btx-tfs" id="btTfs" role="tablist" aria-label="Timeframe"></div>
+            <div class="btx-tools">
+              <button id="btIndBtn" class="btn ghost btx-ib" type="button" title="Indikator" aria-label="Indikator">ƒx</button>
+              <button id="btMagnet" class="btn ghost btx-ib" type="button" title="Magnet: titik drawing menempel ke O/H/L/C" aria-label="Magnet">🧲</button>
+              <button id="btAuto" class="btn ghost btx-ib" type="button" title="Reset skala &amp; posisi chart" aria-label="Auto skala">A</button>
+              <button id="btZoomOut" class="btn ghost btx-ib" type="button" title="Perkecil" aria-label="Perkecil">−</button>
+              <button id="btZoomIn" class="btn ghost btx-ib" type="button" title="Perbesar" aria-label="Perbesar">+</button>
+              <button id="btFull" class="btn ghost btx-ib" type="button" title="Layar penuh" aria-label="Layar penuh">⛶</button>
+              <div id="btIndMenu" class="btx-indmenu" hidden></div>
             </div>
           </div>
-          <div class="bt-drawbar" aria-label="Drawing tools">
-            <span class="bt-draw-label">DRAW</span>
-            <button class="btn ghost bt-draw on" data-draw="cursor" type="button" title="Cursor / navigasi">↖ Cursor</button>
-            <button class="btn ghost bt-draw" data-draw="trend" type="button" title="Trend line">╱ Trend</button>
-            <button class="btn ghost bt-draw" data-draw="ray" type="button" title="Ray line extending to the right">↗ Ray</button>
-            <button class="btn ghost bt-draw" data-draw="hline" type="button" title="Horizontal price line">━ Horizontal</button>
-            <button class="btn ghost bt-draw" data-draw="vline" type="button" title="Vertical time line">┃ Vertical</button>
-            <button class="btn ghost bt-draw" data-draw="rect" type="button" title="Rectangle / zona">▱ Zona</button>
-            <button class="btn ghost bt-draw" data-draw="fib" type="button" title="Fibonacci retracement">Fibo</button>
-            <button class="btn ghost bt-draw" id="btDrawUndo" type="button" title="Hapus drawing terakhir">↶ Undo</button>
-            <button class="btn ghost" id="btDrawClear" type="button" title="Hapus semua drawing">Hapus semua</button>
-            <span class="bt-draw-help" id="btDrawHelp">Pilih alat lalu klik chart. Trend/Zona/Fibo: klik dua titik.</span>
+          <div class="btx-quick">
+            <button id="btQSell" class="btx-q sell" type="button"><small>SELL</small><b>—</b></button>
+            <div class="btx-lotbox"><button id="btLotMinus" type="button" aria-label="Kurangi lot">−</button><input id="btQLot" type="text" inputmode="decimal" value="0.10" aria-label="Lot"><button id="btLotPlus" type="button" aria-label="Tambah lot">+</button></div>
+            <button id="btQBuy" class="btx-q buy" type="button"><small>BUY</small><b>—</b></button>
           </div>
-          <div class="bt-chartwrap"><canvas id="btChart"></canvas></div>
-          <div id="btDrawingList" class="bt-drawing-list" aria-label="Daftar drawing"></div>
-          <div class="bt-status" id="btStatus">Muat data untuk mulai replay.</div>
-          <div class="bt-prog"><i id="btProg"></i></div>
-          <div id="btMsg" class="bt-msg" role="status"></div>
+          <div class="btx-mini" id="btMini">—</div>
+          <div class="btx-stage">
+            <div class="btx-rail" id="btRail" aria-label="Drawing tools"><button type="button" data-draw="cursor" title="Cursor (geser chart, pilih & seret)" aria-label="Cursor">↖</button><button type="button" data-draw="trend" title="Trendline" aria-label="Trendline">╱</button><button type="button" data-draw="ray" title="Ray" aria-label="Ray">↗</button><button type="button" data-draw="hline" title="Garis horizontal" aria-label="Horizontal">━</button><button type="button" data-draw="vline" title="Garis vertikal" aria-label="Vertical">┃</button><button type="button" data-draw="rect" title="Zona / kotak" aria-label="Zona">▱</button><button type="button" data-draw="fib" title="Fibonacci" aria-label="Fibonacci">Fib</button><button type="button" data-draw="measure" title="Ukur jarak harga/waktu" aria-label="Ukur">↔</button><button type="button" data-draw="long" title="Long position (RR)" aria-label="Long">▲</button><button type="button" data-draw="short" title="Short position (RR)" aria-label="Short">▼</button><span class="sep"></span><button type="button" id="btDrawUndo" title="Hapus drawing terakhir" aria-label="Undo">↶</button><button type="button" id="btDrawClear" title="Hapus semua drawing" aria-label="Hapus semua">🗑</button></div>
+            <div class="btx-plot"><canvas id="btChart" aria-label="Chart replay"></canvas><div id="btMenu" class="btx-menu" hidden></div><div id="btSelBar" class="btx-selbar" hidden></div><div id="btMsg" class="bt-msg btx-msg" role="status"></div></div>
+          </div>
+          <div class="btx-replay">
+            <button id="btReset" class="btn ghost btx-rb" type="button" title="Kembali ke awal replay (hapus posisi dan trade)"><span class="ic">⟲</span><span class="tx">Reset</span></button>
+            <button id="btPickStart" class="btn ghost btx-rb" type="button" title="Pilih candle awal replay lalu ketuk chart"><span class="ic">⌖</span><span class="tx">Awal</span></button>
+            <button id="btPlay" class="btn primary btx-rb" type="button" title="Spasi"><span class="ic">▶</span><span class="tx">Play</span></button>
+            <button id="btStep" class="btn btx-rb" type="button" title="+1 candle (panah kanan)"><span class="ic">+1</span></button>
+            <button id="btStep10" class="btn btx-rb" type="button" title="+10 candle (Shift + panah kanan)"><span class="ic">+10</span></button>
+            <button id="btStepBar" class="btn btx-rb" type="button" title="Maju sampai bar timeframe aktif selesai"><span class="ic">⏭</span><span class="tx">Bar</span></button>
+            <select id="btSpeed" class="sel" title="Kecepatan (candle per detik)" aria-label="Kecepatan"><option value="1">1×</option><option value="3">3×</option><option value="10" selected>10×</option><option value="30">30×</option><option value="100">100×</option></select>
+            <button id="btJumpToggle" class="btn ghost btx-rb" type="button" title="Lompat ke waktu tertentu"><span class="ic">🕒</span><span class="tx">Lompat</span></button>
+          </div>
+          <div class="btx-jump" id="btJumpRow" hidden><input id="btJump" type="datetime-local" class="sel" title="Lompat maju ke waktu tertentu (UTC)"><button id="btJumpGo" class="btn" type="button">Lompat</button></div>
+          <div class="btx-status" id="btStatus">Muat data untuk mulai replay.</div>
+          <div class="btx-prog"><i id="btProg"></i></div>
+          <div class="btx-help" id="btDrawHelp"></div>
+          <div id="btDrawingList" class="btx-dl" aria-label="Daftar drawing"></div>
         </div>
 
         <div class="bt-side">
           <div class="card panel bt-ticket">
-            <div class="panel-title"><h3>Order Ticket</h3><span id="btPrice" class="mono">—</span></div>
+            <div class="panel-title"><h3>Order Ticket<span id="btSelInfo"></span></h3><span id="btPrice" class="mono">—</span></div>
             <div class="bt-form bt-form-ticket">
-              <label>Jenis pending pada chart<select id="btChartOrderType" class="sel" aria-label="Jenis pending order"><option value="buy-limit">BUY LIMIT</option><option value="buy-stop">BUY STOP</option><option value="sell-limit">SELL LIMIT</option><option value="sell-stop">SELL STOP</option></select></label>
               <label>Lot<input id="btLots" class="sel" type="number" min="0.01" step="0.01" value="0.10" inputmode="decimal"></label>
               <label>Harga entry (kosong = market)<span class="bt-row"><input id="btEntry" class="sel" type="number" step="any" inputmode="decimal" placeholder="market"><button class="btn bt-pick" data-pick="entry" type="button" title="Pilih di chart">🎯</button></span></label>
               <label>Stop Loss<span class="bt-row"><input id="btSL" class="sel" type="number" step="any" inputmode="decimal" placeholder="opsional"><button class="btn bt-pick" data-pick="sl" type="button" title="Pilih di chart">🎯</button></span></label>
               <label>Take Profit<span class="bt-row"><input id="btTP" class="sel" type="number" step="any" inputmode="decimal" placeholder="opsional"><button class="btn bt-pick" data-pick="tp" type="button" title="Pilih di chart">🎯</button></span></label>
               <label>Preset Risk : Reward<select id="btRR" class="sel"><option value="custom">Custom / manual</option><option value="0.5">1 : 0.5</option><option value="1" selected>1 : 1</option><option value="1.5">1 : 1.5</option><option value="2">1 : 2</option></select></label>
+              <label>Jarak SL otomatis (satuan harga, kosong = ATR)<input id="btAutoSL" class="sel" type="number" min="0" step="any" inputmode="decimal" placeholder="mis. 5.00"></label>
               <label>Risk % per trade<span class="bt-row"><input id="btRisk" class="sel" type="number" min="0.1" step="0.1" value="1" inputmode="decimal"><button id="btCalcLot" class="btn" type="button" title="Hitung lot dari jarak SL">Lot dari risk</button></span></label>
             </div>
             <div class="bt-maxlot" id="btMaxLot">—</div>
@@ -2553,15 +2700,15 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
         </div>
       </div>
 
-      <div class="section-head"><div><h2>Posisi &amp; Order</h2><p>Posisi terisi menampilkan floating P/L berdasarkan candle replay saat ini. Limit/Stop menunggu trigger sampai harga menyentuh level; preset RR otomatis menyesuaikan TP saat SL atau entry pending digeser.</p></div></div>
-      <div class="card table-card"><div class="table-scroll"><table id="btPosTable"></table></div></div>
+      <div class="section-head"><div><h2>Posisi &amp; Order</h2><p>Posisi terisi menampilkan floating P/L berdasarkan candle replay saat ini. Limit/Stop menunggu trigger sampai harga menyentuh level; pasang pending lewat tombol + di sumbu harga chart, seret garis untuk mengubah level, dan gunakan ⇄ untuk membalik arah.</p></div></div>
+      <div class="card table-card"><div class="table-scroll"><table id="btPosTable" class="btx-tbl"></table></div></div>
 
       <div class="section-head"><div><h2>Hasil Backtest</h2><p>Statistik dihitung dari trade yang sudah tertutup.</p></div><div class="bt-actions"><button id="btExportCsv" class="btn" type="button">↓ CSV trade</button><button id="btExportPng" class="btn primary" type="button">↓ Kartu PNG</button></div></div>
       <div class="grid2 bt-results">
         <div class="card panel"><div class="panel-title"><h3>Statistik</h3><span id="btStatInfo"></span></div><div class="metrics" id="btStats"></div></div>
         <div class="card panel"><div class="panel-title"><h3>Kurva Equity</h3><span id="btEqInfo"></span></div><div class="bt-eqwrap"><canvas id="btEq"></canvas></div></div>
       </div>
-      <div class="card table-card" style="margin-top:16px"><div class="table-scroll"><table id="btTrades"></table></div></div>
+      <div class="card table-card" style="margin-top:16px"><div class="table-scroll"><table id="btTrades" class="btx-tbl"></table></div></div>
 
       <div class="section-head"><div><h2>Pengaturan Simulasi</h2><p>Atur akun dan aturan prop firm. Perubahan berlaku langsung, kecuali balance awal yang berlaku setelah Reset.</p></div></div>
       <div class="card panel bt-settings">
@@ -8037,8 +8184,8 @@ const root=document.getElementById('view-backtest'); if(!root) return;
 const $=id=>document.getElementById(id);
 const TFS=[['M1',60],['M5',300],['M15',900],['M30',1800],['H1',3600],['H4',14400],['D1',86400]];
 const BIN_TF={'1m':60,'5m':300,'15m':900,'30m':1800,'1h':3600,'4h':14400,'1d':86400};
-const LS_CFG='ffx_bt_cfg', LS_MG='ffx_marginrule';
-const DEF={balance:10000,contract:100,leverage:100,spread:0.3,comm:0,prop:true,marginPct:80,marginBase:'balance',buffer:10,daily:5,overall:10,overallMode:'static',ddBasis:'equity',target:8,block:true,stop:true,risk:1};
+const LS_CFG='ffx_bt_cfg', LS_MG='ffx_marginrule', LS_IND='ffx_bt_ind';
+const DEF={balance:10000,contract:100,leverage:100,spread:0.3,comm:0,prop:true,marginPct:80,marginBase:'balance',buffer:10,daily:5,overall:10,overallMode:'static',ddBasis:'equity',target:8,block:true,stop:true,risk:1,autoBr:false,autoSL:0,magnet:false};
 
 function loadCfg(){
   let c=Object.assign({},DEF), saved=null;
@@ -8051,11 +8198,17 @@ let cfg=loadCfg();
 const saveCfg=()=>{ try{ localStorage.setItem(LS_CFG,JSON.stringify(cfg)); }catch(e){} };
 
 const S={ B:null,n:0,baseSec:0,name:'',dec:2,i:0,start:0,playing:false,raf:0,last:0,acc:0,speed:10,tf:0,tfCache:{},
-  view:{n:110,off:0,yShift:0},hover:null,pick:null,drawTool:'cursor',drawings:[],drawDraft:null,selectedOrder:null,dragLine:null,rrPreset:'1',orderCursor:false,orderMode:'buy-limit',
+  view:{n:110,off:0,yShift:0,yZoom:1},hover:null,cur:null,menu:null,touch:false,full:false,pick:null,
+  drawTool:'cursor',drawings:[],drawDraft:null,selDraw:null,dragId:1,magnet:false,ind:{},
+  sel:null,rrPreset:'1',hits:[],lines:[],
   pos:[],pend:[],closed:[],balance:0,initial:0,nextId:1,
   eq:[],eqStride:1,peak:0,maxDD:0,maxDDpct:0,dayKey:'',dayStartEq:0,breach:null,violations:[],vioKeys:{},targetHit:false,
   sig:{pos:'',closed:-1},dirty:true,saveT:0 };
+try{S.touch=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches);}catch(e){}
+try{S.ind=JSON.parse(localStorage.getItem(LS_IND)||'{}')||{};}catch(e){S.ind={};}
+S.magnet=!!cfg.magnet;
 window.__BT={state:S};
+if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Array.isArray(r)?r:[r,r,r,r];while(r.length<4)r.push(r[r.length-1]);const[a,b,c,d]=r.map(v=>Math.max(0,Math.min(v||0,Math.min(w,h)/2)));this.moveTo(x+a,y);this.lineTo(x+w-b,y);this.arcTo(x+w,y,x+w,y+b,b);this.lineTo(x+w,y+h-c);this.arcTo(x+w,y+h,x+w-c,y+h,c);this.lineTo(x+d,y+h);this.arcTo(x,y+h,x,y+h-d,d);this.lineTo(x,y+a);this.arcTo(x,y,x+a,y,a);this.closePath();return this;};}
 
 /* ---------- util ---------- */
 const nz=v=>{const x=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(x)?x:0;};
@@ -8070,7 +8223,7 @@ const p2=n=>String(n).padStart(2,'0');
 function fdt(sec,short){const d=new Date(sec*1000);return short?`${p2(d.getUTCDate())} ${MON[d.getUTCMonth()]} ${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`:`${p2(d.getUTCDate())} ${MON[d.getUTCMonth()]} ${d.getUTCFullYear()} ${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;}
 const tfName=s=>{const f=TFS.find(x=>x[1]===s);return f?f[0]:(s%86400===0?'D'+s/86400:s%3600===0?'H'+s/3600:'M'+s/60);};
 let msgT=0;
-function msg(t,kind){const e=$('btMsg');if(!e)return;e.textContent=t;e.className='bt-msg'+(kind?' '+kind:'');clearTimeout(msgT);if(t)msgT=setTimeout(()=>{e.textContent='';e.className='bt-msg';},kind==='err'?7000:4500);}
+function msg(t,kind){const e=$('btMsg');if(!e)return;e.textContent=t;e.className='bt-msg btx-msg'+(kind?' '+kind:'');clearTimeout(msgT);if(t)msgT=setTimeout(()=>{e.textContent='';e.className='bt-msg btx-msg';},kind==='err'?7000:4500);}
 function pal(){const cs=getComputedStyle(document.documentElement),g=(n,d)=>(cs.getPropertyValue(n)||'').trim()||d;
   return {up:g('--green','#3dcf94'),dn:g('--red','#ef6270'),text:g('--text','#eef1f6'),mut:g('--muted','#a3adbf'),faint:g('--faint','#6f7a8e'),line:'rgba(128,140,165,.16)',gold:g('--gold','#d9b068'),blue:g('--blue','#6fa3ff')||'#6fa3ff',bg:g('--bg0','#080a0f'),amber:g('--amber','#ffb02e')};}
 
@@ -8159,39 +8312,50 @@ function tfData(){
     bidx[i]=cur;
   }
   return S.tfCache[sec]={sec,t,o,h,l,c,s,bidx};
+
 }
 function getBar(T,k,out){
-  if(k===T.bidx[S.i]){ // bar berjalan: gabungkan hanya sampai kursor
+  if(k===T.bidx[S.i]){ // bar berjalan: gabungkan hanya sampai kursor (tanpa melihat masa depan)
     let hh=-Infinity,ll=Infinity;for(let j=T.s[k];j<=S.i;j++){if(S.B.h[j]>hh)hh=S.B.h[j];if(S.B.l[j]<ll)ll=S.B.l[j];}
     out[0]=T.t[k];out[1]=T.o[k];out[2]=hh;out[3]=ll;out[4]=S.B.c[S.i];
   } else {out[0]=T.t[k];out[1]=T.o[k];out[2]=T.h[k];out[3]=T.l[k];out[4]=T.c[k];}
   return out;
 }
+const toLocal=sec=>{const d=new Date(sec*1000);return `${d.getUTCFullYear()}-${p2(d.getUTCMonth()+1)}-${p2(d.getUTCDate())}T${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;};
 
 /* ---------- engine ---------- */
 const sp=()=>nz(cfg.spread);
 const px=(k)=>S.B.c[k==null?S.i:k];
+const tick=()=>Math.pow(10,-Math.max(0,S.dec));
+const epsP=()=>Math.max(tick()/2,1e-9);
+const band=()=>Math.max(sp()*1.2,tick()*2);          // zona "terlalu dekat market" untuk pending
+const rp=v=>+(+v).toFixed(Math.max(0,S.dec));        // bulatkan ke desimal instrumen
+const ready=()=>{if(!S.B){msg('Muat data terlebih dahulu.','err');return false;}if(S.breach){msg('Akun sudah breach. Tekan Reset.','err');return false;}return true;};
+const fail=m=>{msg(m,'err');return null;};
 const marginPerLot=(price)=>nz(cfg.contract)*price/Math.max(1,nz(cfg.leverage));
 function floatPnl(p,k){const mark=p.side==='buy'?px(k):px(k)+sp();return (p.side==='buy'?mark-p.entry:p.entry-mark)*p.lots*nz(cfg.contract);}
 const floating=k=>S.pos.reduce((s,p)=>s+floatPnl(p,k),0);
 const equity=k=>S.balance+floating(k);
 const usedMargin=k=>S.pos.reduce((s,p)=>s+marginPerLot(px(k))*p.lots,0);
 function marginLimit(k){const base=cfg.marginBase==='equity'?equity(k):S.balance;return base*nz(cfg.marginPct)/100;}
+const lvPnl=(side,entry,level,lots)=>(side==='buy'?level-entry:entry-level)*lots*nz(cfg.contract);
 
+function dropSel(kind,id){if(S.sel&&S.sel.kind===kind&&S.sel.id===id){S.sel=null;syncTicketFromSel();}}
 function closePos(p,price,reason,k){
   const dir=p.side==='buy'?1:-1;
   const gross=dir*(price-p.entry)*p.lots*nz(cfg.contract),comm=nz(cfg.comm)*p.lots,pnl=gross-comm;
   S.balance+=pnl;
-  S.pos=S.pos.filter(x=>x!==p);
+  S.pos=S.pos.filter(x=>x!==p);dropSel('pos',p.id);
   const risk=p.sl0>0?Math.abs(p.entry-p.sl0)*p.lots*nz(cfg.contract):0;
   S.closed.push({id:p.id,side:p.side,lots:p.lots,entry:p.entry,exit:price,sl:p.sl,tp:p.tp,openT:p.openT,closeT:S.B.t[k],openI:p.openI,closeI:k,pnl,comm,reason,R:risk>0?pnl/risk:null,mfe:p.side==='buy'?p.hi-p.entry:p.entry-p.lo,mae:p.side==='buy'?p.entry-p.lo:p.hi-p.entry});
+  return pnl;
 }
-function openPos(side,lots,entry,sl,tp,k){
-  const p={id:S.nextId++,side,lots,entry,sl:sl||0,tp:tp||0,sl0:sl||0,openI:k,openT:S.B.t[k],hi:entry,lo:entry};
+function openPos(side,lots,entry,sl,tp,k,id){
+  const p={id:id||S.nextId++,side,lots,entry,sl:sl||0,tp:tp||0,sl0:sl||0,openI:k,openT:S.B.t[k],hi:entry,lo:entry};
   S.pos.push(p);return p;
 }
 function processCandle(k){
-  const B=S.B,o=B.o[k],h=B.h[k],l=B.l[k],s=sp();
+  const B=S.B,o=B.o[k],h=B.h[k],l=B.l[k],c=B.c[k],s=sp();
   // 1) pending order
   for(const q of S.pend.slice()){
     let fill=null;
@@ -8202,14 +8366,21 @@ function processCandle(k){
       if(q.type==='limit'&&h>=q.price)fill=Math.max(q.price,o);
       else if(q.type==='stop'&&l<=q.price)fill=Math.min(q.price,o);
     }
-    if(fill!=null){
-      S.pend=S.pend.filter(x=>x!==q);
-      if(rrValue()!=null&&q.sl>0)q.tp=autoTpFromSL(fill,q.sl,q.side)||q.tp;
-      const p=openPos(q.side,q.lots,fill,q.sl,q.tp,k);p.id=q.id;
-      // Jika SL dan TP sama-sama tersentuh di candle fill, asumsi konservatif: SL lebih dulu.
-      const slHit=p.sl>0&&(p.side==='buy'?l<=p.sl:h+s>=p.sl),tpHit=p.tp>0&&(p.side==='buy'?h>=p.tp:l+s<=p.tp);
-      if(slHit)closePos(p,p.sl,'SL',k);else if(tpHit)closePos(p,p.tp,'TP',k);
+    if(fill==null)continue;
+    S.pend=S.pend.filter(x=>x!==q);dropSel('pend',q.id);
+    // pending yang terpicu tetap tunduk pada margin rule
+    const used=usedMargin(k)+marginPerLot(fill)*q.lots;
+    if(used>equity(k)+1e-9||(cfg.prop&&cfg.block&&used>marginLimit(k)+1e-9)){
+      msg(`${q.side.toUpperCase()} ${q.type.toUpperCase()} #${q.id} terpicu tetapi dibatalkan: margin tidak cukup / melanggar margin rule.`,'err');continue;
     }
+    const p=openPos(q.side,q.lots,fill,q.sl,q.tp,k,q.id);
+    // Candle yang sama dengan fill: SL dianggap kena lebih dulu (konservatif). TP pada order LIMIT baru dihitung bila close melewatinya,
+    // karena high/low bisa terjadi sebelum order terisi.
+    const slHit=p.sl>0&&(p.side==='buy'?l<=p.sl:h+s>=p.sl);
+    const tpRaw=p.tp>0&&(p.side==='buy'?h>=p.tp:l+s<=p.tp);
+    const tpHit=tpRaw&&(q.type==='stop'||(p.side==='buy'?c>=p.tp:c+s<=p.tp));
+    if(slHit)closePos(p,p.side==='buy'?Math.min(p.sl,fill):Math.max(p.sl,fill),'SL',k);
+    else if(tpHit)closePos(p,p.side==='buy'?Math.max(p.tp,fill):Math.min(p.tp,fill),'TP',k);
   }
   // 2) exit posisi yang dibuka pada candle sebelumnya
   for(const p of S.pos.slice()){
@@ -8234,7 +8405,9 @@ function recordEq(k){
   S.balancePeak=Math.max(S.balancePeak||S.initial,S.balance);
   const dd=S.peak-eq;if(dd>S.maxDD){S.maxDD=dd;}
   const ddp=S.peak>0?dd/S.peak*100:0;if(ddp>S.maxDDpct)S.maxDDpct=ddp;
-  if(k%S.eqStride===0)S.eq.push([S.B.t[k],eq,S.balance]);
+  const last=S.eq[S.eq.length-1],t=S.B.t[k];
+  if(last&&last[0]===t){last[1]=eq;last[2]=S.balance;}   // aksi manual pada candle yang sama: perbarui titik, jangan duplikasi
+  else if(k%S.eqStride===0)S.eq.push([t,eq,S.balance]);
 }
 function addViolation(type,detail,k){
   const key=type+'|'+new Date(S.B.t[k]*1000).toISOString().slice(0,10);
@@ -8251,7 +8424,6 @@ function checkRules(k){
   const dLoss=S.dayStartEq-eq;
   const ddPeak=cfg.ddBasis==='balance'?(S.balancePeak||S.initial):S.peak;
   const ddFloor=cfg.overallMode==='trailing'?(ddPeak-oLim):(S.initial-oLim);
-  const oLoss=cfg.overallMode==='trailing'?(ddPeak-eq):(S.initial-eq);
   if(nz(cfg.daily)>0&&dLoss>=dLim-1e-9)why=['Daily loss limit',`Equity ${fm(eq)} mencapai/melewati batas daily ${fm(dLim)} dari patokan hari ${fm(S.dayStartEq)}.`];
   else if(nz(cfg.overall)>0&&eq<=ddFloor+1e-9)why=[cfg.overallMode==='trailing'?'Trailing drawdown':'Static drawdown',`Equity ${fm(eq)} mencapai/melewati floor ${fm(ddFloor)}. Peak acuan ${fm(ddPeak)}, allowance ${fm(oLim)}; mode ${cfg.overallMode==='trailing'?'trailing':'static'} berbasis ${cfg.overallMode==='trailing'?cfg.ddBasis:'initial balance'}.`];
   else if(S.pos.length){const u=usedMargin(k),lim=marginLimit(k);if(u>lim+1e-9)why=['Margin rule',`Margin terpakai ${fm(u)} melewati batas ${fm(lim)} (${f2(cfg.marginPct)}% dari ${cfg.marginBase==='equity'?'equity':'balance'}).`];}
@@ -8259,8 +8431,8 @@ function checkRules(k){
   addViolation(why[0],why[1],k);
   if(cfg.stop){
     for(const p of S.pos.slice())closePos(p,p.side==='buy'?px(k):px(k)+sp(),'BREACH',k);
-    S.pend=[];S.breach={type:why[0],detail:why[1],t:S.B.t[k]};
-    pause();
+    S.pend=[];S.breach={type:why[0],detail:why[1],t:S.B.t[k]};S.sel=null;syncTicketFromSel();
+    pause();closeMenu();
     msg('Akun breach: '+why[0]+'. Tekan Reset untuk mengulang.','err');
   }
 }
@@ -8272,16 +8444,23 @@ function step(cnt){
     S.i++;done++;processCandle(S.i);
     if(S.breach)break;
   }
-  if(done){S.view.off=Math.max(0,S.view.off);dirty();persist();}
+  if(done){dirty();persist();}
   return done;
 }
+/* maju sampai penutupan bar timeframe aktif (atau bar berikutnya bila bar sekarang sudah lengkap) */
+function stepBar(){
+  if(!S.B||S.breach)return;
+  const T=tfData(),cur=T.bidx[S.i],endIdx=(cur+1<T.s.length?T.s[cur+1]-1:S.n-1);
+  const need=(endIdx>S.i)?endIdx-S.i:(cur+1<T.s.length?((cur+2<T.s.length?T.s[cur+2]-1:S.n-1)-S.i):0);
+  if(need>0)step(need);else msg('Data habis — akhir replay.','ok');
+}
 function dirty(){S.dirty=true;if(!S.raf)S.raf=requestAnimationFrame(frame);}
-function pause(){S.playing=false;const b=$('btPlay');if(b){b.textContent='▶ Play';b.classList.add('primary');}}
+function pause(){S.playing=false;const b=$('btPlay');if(b){b.innerHTML='<span class="ic">▶</span><span class="tx">Play</span>';b.classList.add('primary');}}
 function play(){
   if(!S.B)return msg('Muat data dulu.','err');
   if(S.breach)return msg('Akun sudah breach. Tekan Reset.','err');
   if(S.i>=S.n-1)return msg('Data habis.','err');
-  S.playing=true;S.last=performance.now();S.acc=0;const b=$('btPlay');b.textContent='⏸ Pause';
+  S.playing=true;S.last=performance.now();S.acc=0;const b=$('btPlay');b.innerHTML='<span class="ic">⏸</span><span class="tx">Pause</span>';b.classList.remove('primary');
   const loop=(now)=>{
     if(!S.playing)return;
     const dt=Math.min(250,now-S.last);S.last=now;S.acc+=dt/1000*S.speed;
@@ -8291,7 +8470,7 @@ function play(){
   requestAnimationFrame(loop);
 }
 
-/* ---------- orders ---------- */
+/* ---------- ticket & helper harga ---------- */
 function readTicket(){return {lots:Math.round(nz($('btLots').value)*100)/100,entry:nz($('btEntry').value),sl:nz($('btSL').value),tp:nz($('btTP').value)};}
 function maxLotInfo(){
   if(!S.B)return null;
@@ -8300,88 +8479,227 @@ function maxLotInfo(){
   const fl=(v)=>Math.max(0,Math.floor(v/mpl*100+1e-9)/100);
   return {mpl,lim,used,safe:fl(lim*(1-buf/100)-used),max:fl(lim-used),freeLots:fl(equity(S.i)-used)};
 }
-function placeChartPending(mode,price){
-  if(!S.B)return msg('Muat data terlebih dahulu.','err');
-  if(S.breach)return msg('Akun sudah breach. Tekan Reset.','err');
-  const parts=String(mode||'').split('-'),side=parts[0];let type=parts[1];const t=readTicket();
-  if(!['buy','sell'].includes(side)||!['limit','stop'].includes(type))return msg('Pilih sisi BUY/SELL dan tipe pending order terlebih dahulu.','err');
-  if(!(t.lots>=0.01))return msg('Lot minimal 0.01. Atur Lot di Order Ticket.','err');
-  const bid=px(),ask=bid+sp(),eps=Math.max(sp()*0.05,Math.pow(10,-Math.max(0,S.dec))/2);
-  // Smart price-axis placement: pertahankan arah BUY/SELL, lalu tentukan LIMIT/STOP dari sisi harga terhadap market.
-  // Ini mencegah semua tipe selain BUY LIMIT terasa rusak ketika pengguna mengklik sisi harga yang tidak cocok.
-  const desiredType=side==='buy'?(price<ask-eps?'limit':price>ask+eps?'stop':null):(price>bid+eps?'limit':price<bid-eps?'stop':null);
-  if(!desiredType){return msg(`Harga ${fp(price)} terlalu dekat dengan market ${fp(bid)}. Geser kursor sedikit ke atas/bawah agar pending order punya level pemicu yang valid.`, 'err');}
-  const requestedType=type;
-  if(type!==desiredType){type=desiredType;const sel=$('btChartOrderType');if(sel)sel.value=`${side}-${type}`;S.orderMode=`${side}-${type}`;}
-  const actualMode=`${side}-${type}`;
-  let sl=t.sl>0?t.sl:0,tp=t.tp>0?t.tp:0;
-  if(sl>0){if(side==='buy'&&sl>=price)return msg('SL BUY harus di bawah entry. Drag entry ke sisi bawah untuk memasang SL.', 'err');if(side==='sell'&&sl<=price)return msg('SL SELL harus di atas entry. Drag entry ke sisi atas untuk memasang SL.','err');if(rrValue()!=null){tp=autoTpFromSL(price,sl,side)||tp;}}
-  if(tp>0&&(side==='buy'?tp<=price:tp>=price))return msg('TP berada di sisi yang salah terhadap entry. Pilih preset RR atau kosongkan TP.','err');
-  const addM=marginPerLot(price)*t.lots,newUsed=usedMargin(S.i)+addM;
-  if(newUsed>equity(S.i)+1e-9)return msg(`Margin tidak cukup: butuh ${fm(newUsed)}, equity ${fm(equity(S.i))}.`,'err');
-  if(cfg.prop&&cfg.block&&newUsed>marginLimit(S.i)+1e-9){const mi=maxLotInfo();return msg(`Order ditolak oleh margin rule. Lot tambahan maksimal ${mi?f2(mi.max):'0.00'}.`,'err');}
-  const q={id:S.nextId++,side,lots:t.lots,type,price,sl,tp,openI:S.i};S.pend.push(q);S.selectedOrder={kind:'pend',id:q.id};
-  $('btEntry').value=price.toFixed(S.dec);$('btSL').value=sl>0?sl.toFixed(S.dec):'';$('btTP').value=tp>0?tp.toFixed(S.dec):'';
-  const autoNote=requestedType!==type?` (harga berada di sisi market untuk ${type.toUpperCase()}, tipe otomatis disesuaikan dari ${requestedType.toUpperCase()})`:'';
-  msg(`${side.toUpperCase()} ${type.toUpperCase()} #${q.id} dipasang di ${fp(price)}${autoNote}. Drag garis entry ke sisi proteksi untuk memasang SL; TP mengikuti preset RR.`, 'ok');dirty();persist();
+function marginCheck(price,lots){
+  const newUsed=usedMargin(S.i)+marginPerLot(price)*lots;
+  if(newUsed>equity(S.i)+1e-9)return `Margin tidak cukup: butuh ${fm(newUsed)}, equity ${fm(equity(S.i))}.`;
+  if(cfg.prop&&cfg.block&&newUsed>marginLimit(S.i)+1e-9){const mi=maxLotInfo();return `Ditolak margin rule (${fm(newUsed)} > batas ${fm(marginLimit(S.i))}). Lot tambahan maksimal ${mi?f2(mi.max):'0.00'}.`;}
+  return '';
+}
+function atr14(){
+  const T=tfData(),last=T.bidx[S.i];let sum=0,cnt=0;
+  for(let k=Math.max(1,last-14);k<last;k++){sum+=Math.max(T.h[k]-T.l[k],Math.abs(T.h[k]-T.c[k-1]),Math.abs(T.l[k]-T.c[k-1]));cnt++;}
+  return cnt?sum/cnt:px()*0.003;
+}
+function defSLDist(){const u=nz($('btAutoSL')&&$('btAutoSL').value);return Math.max(u>0?u:atr14(),tick()*5);}
+function rrValue(){const v=$('btRR')?.value??'custom';return v==='custom'?null:nz(v);}
+function autoTpFromSL(entry,sl,side){
+  const rr=rrValue();if(rr==null||!(entry>0&&sl>0)||entry===sl)return null;
+  const dist=Math.abs(entry-sl);let direction=side;
+  if(!direction)direction=sl<entry?'buy':'sell';
+  return entry+(direction==='buy'?1:-1)*dist*rr;
+}
+function bracketFor(side,entry){
+  const d=defSLDist(),rr=rrValue()??1.5,dir=side==='buy'?1:-1;
+  return {sl:rp(entry-dir*d),tp:rp(entry+dir*d*rr)};
+}
+/* jenis pending yang valid untuk sisi + harga; null bila terlalu dekat market */
+function pendTypeFor(side,price){
+  const bid=px(),ask=bid+sp();
+  if(price>bid-band()&&price<ask+band())return null;
+  return side==='buy'?(price<ask?'limit':'stop'):(price>bid?'limit':'stop');
+}
+function typeValid(side,type,price){return pendTypeFor(side,price)===type;}
+/* opsi pending yang valid pada sebuah harga: dipakai menu "+" di chart */
+function menuOptions(price){
+  const bt=pendTypeFor('buy',price),st=pendTypeFor('sell',price);
+  const out=[];if(bt)out.push({side:'buy',type:bt});if(st)out.push({side:'sell',type:st});
+  return out;
 }
 
-function placeOrder(side){
-  if(!S.B)return msg('Muat data dulu.','err');
-  if(S.breach)return msg('Akun sudah breach. Tekan Reset.','err');
+/* ---------- order ---------- */
+function openMarket(side,lots,sl,tp){
+  if(!ready())return null;
+  if(!(lots>=0.01))return fail('Lot minimal 0.01. Atur Lot di Order Ticket.');
+  const bid=px(),ask=bid+sp(),entry=side==='buy'?ask:bid;
+  if(sl>0){if(side==='buy'&&!(sl<entry))return fail('Stop Loss BUY harus di bawah harga entry.');if(side==='sell'&&!(sl>entry))return fail('Stop Loss SELL harus di atas harga entry.');}
+  if(tp>0){if(side==='buy'&&!(tp>entry))return fail('Take Profit BUY harus di atas harga entry.');if(side==='sell'&&!(tp<entry))return fail('Take Profit SELL harus di bawah harga entry.');}
+  const er=marginCheck(entry,lots);if(er)return fail(er);
+  const p=openPos(side,lots,entry,sl,tp,S.i);
+  recordEq(S.i);dirty();persist();
+  msg(`${side.toUpperCase()} ${f2(lots)} @ ${fp(entry)} dibuka (#${p.id}).`,'ok');
+  return p;
+}
+function createPending(side,type,price,lots,sl,tp){
+  if(!ready())return null;
+  if(!(lots>=0.01))return fail('Lot minimal 0.01. Atur Lot di Order Ticket.');
+  price=rp(price);
+  if(!typeValid(side,type,price)){
+    const nt=pendTypeFor(side,price);
+    return fail(nt?`${side.toUpperCase()} ${type.toUpperCase()} tidak valid di ${fp(price)}; di harga ini jenis yang valid adalah ${side.toUpperCase()} ${nt.toUpperCase()}.`:`Harga ${fp(price)} terlalu dekat dengan market ${fp(px())}. Geser sedikit atau gunakan order market.`);
+  }
+  if(sl>0&&(side==='buy'?sl>=price:sl<=price))return fail(`SL ${side.toUpperCase()} harus di ${side==='buy'?'bawah':'atas'} harga entry.`);
+  if(tp>0&&(side==='buy'?tp<=price:tp>=price))return fail(`TP ${side.toUpperCase()} harus di ${side==='buy'?'atas':'bawah'} harga entry.`);
+  const er=marginCheck(price,lots);if(er)return fail(er);
+  const q={id:S.nextId++,side,lots,type,price,sl:sl||0,tp:tp||0,openI:S.i};S.pend.push(q);
+  S.sig.pos='';dirty();persist();
+  msg(`${side.toUpperCase()} ${type.toUpperCase()} #${q.id} ${f2(lots)} lot dipasang di ${fp(price)}. Seret garis untuk mengubah level.`,'ok');
+  return q;
+}
+/* dipanggil dari menu "+" di chart: pending dari harga kursor */
+function placeFromMenu(side,type){
+  if(!S.menu)return;
+  const price=S.menu.price,lots=menuLots();
+  let sl=0,tp=0;
+  if(cfg.autoBr){const b=bracketFor(side,rp(price));sl=b.sl;tp=b.tp;}
+  const q=createPending(side,type,price,lots,sl,tp);
+  if(q){closeMenu();setSel('pend',q.id);}else renderMenu(true);
+}
+function marketFromMenu(side){
+  const lots=menuLots();let sl=0,tp=0;
+  if(cfg.autoBr){const e=side==='buy'?px()+sp():px(),b=bracketFor(side,e);sl=b.sl;tp=b.tp;}
+  const p=openMarket(side,lots,sl,tp);if(p){closeMenu();setSel('pos',p.id);}
+}
+/* tombol Buy/Sell (ticket & bar cepat). quick=true: selalu market, abaikan isian harga di ticket */
+function placeOrder(side,quick){
+  if(!ready())return;
+  if(S.sel){clearSel();}
   const t=readTicket();
   if(!(t.lots>=0.01))return msg('Lot minimal 0.01.','err');
-  const price=px(),ask=price+sp();
-  let type='market',entry=side==='buy'?ask:price;
-  if(t.entry>0){
-    // Harga yang dipilih tepat di sekitar harga berjalan diperlakukan sebagai market,
-    // bukan pending yang menunggu candle berikutnya dan terlihat seperti gagal dieksekusi.
-    const nearMarket=Math.max(sp()*1.05,Math.pow(10,-Math.max(0,S.dec))/2);
-    if(Math.abs(t.entry-(side==='buy'?ask:price))>nearMarket){
-      if(side==='buy'){type=t.entry<ask?'limit':'stop';}
-      else{type=t.entry>price?'limit':'stop';}
-      entry=t.entry;
-    }
+  const bid=px(),ask=bid+sp();
+  let type='market',entry=side==='buy'?ask:bid,sl=quick?0:t.sl,tp=quick?0:t.tp;
+  if(!quick&&t.entry>0){
+    const want=pendTypeFor(side,t.entry);
+    if(want){type=want;entry=t.entry;}
+    else if(Math.abs(t.entry-(side==='buy'?ask:bid))>band()*2)return msg('Harga entry terlalu dekat market; kosongkan untuk order market.','err');
   }
-  if(t.sl>0&&rrValue()!=null){const rr=rrValue();t.tp=entry+(side==='buy'?1:-1)*Math.abs(entry-t.sl)*rr;$('btTP').value=t.tp.toFixed(S.dec||2);}
-  const ref=entry;
-  if(t.sl>0){if(side==='buy'&&!(t.sl<ref))return msg('Stop Loss BUY harus di bawah harga entry.','err');if(side==='sell'&&!(t.sl>ref))return msg('Stop Loss SELL harus di atas harga entry.','err');}
-  if(t.tp>0){if(side==='buy'&&!(t.tp>ref))return msg('Take Profit BUY harus di atas harga entry.','err');if(side==='sell'&&!(t.tp<ref))return msg('Take Profit SELL harus di bawah harga entry.','err');}
-  const addM=marginPerLot(ref)*t.lots,newUsed=usedMargin(S.i)+addM;
-  if(newUsed>equity(S.i)+1e-9)return msg(`Margin tidak cukup: butuh ${fm(newUsed)}, equity ${fm(equity(S.i))}.`,'err');
-  if(cfg.prop&&cfg.block&&newUsed>marginLimit(S.i)+1e-9){
-    const mi=maxLotInfo();
-    return msg(`Ditolak: melanggar margin rule (${fm(newUsed)} > batas ${fm(marginLimit(S.i))}). Lot tambahan maksimal ${mi?f2(mi.max):'0.00'}.`,'err');
-  }
-  if(type==='market'){const p=openPos(side,t.lots,entry,t.sl,t.tp,S.i);msg(`${side.toUpperCase()} ${f2(t.lots)} @ ${fp(entry)} dibuka (#${p.id}).`,'ok');}
-  else{const q={id:S.nextId++,side,lots:t.lots,type,price:entry,sl:t.sl,tp:t.tp,openI:S.i};S.pend.push(q);msg(`Order ${side.toUpperCase()} ${type.toUpperCase()} ${f2(t.lots)} @ ${fp(entry)} dipasang.`,'ok');}
-  dirty();persist();
+  if(quick&&cfg.autoBr){const b=bracketFor(side,entry);sl=b.sl;tp=b.tp;}
+  if(sl>0&&rrValue()!=null&&!quick){const rr=rrValue();tp=entry+(side==='buy'?1:-1)*Math.abs(entry-sl)*rr;$('btTP').value=tp.toFixed(S.dec||2);}
+  const q=type==='market'?openMarket(side,t.lots,sl,tp):createPending(side,type,entry,t.lots,sl,tp);
+  if(q&&!quick){['btEntry','btSL','btTP'].forEach(id=>$(id).value='');}
+  if(q)setSel(type==='market'?'pos':'pend',q.id);
 }
 function closeAll(){
   if(!S.B)return;let n=0;
   for(const p of S.pos.slice()){closePos(p,p.side==='buy'?px():px()+sp(),'MANUAL',S.i);n++;}
-  n+=S.pend.length;S.pend=[];
+  n+=S.pend.length;S.pend=[];S.sel=null;syncTicketFromSel();
   if(n)msg('Semua posisi ditutup dan order dibatalkan.','ok');
-  recordEq(S.i);dirty();persist();
+  recordEq(S.i);S.sig.pos='';dirty();persist();
+}
+function getObj(kind,id){return (kind==='pos'?S.pos:S.pend).find(x=>x.id===id)||null;}
+function closeById(id){
+  const p=getObj('pos',id);if(!p)return;
+  const pnl=closePos(p,p.side==='buy'?px():px()+sp(),'MANUAL',S.i);
+  recordEq(S.i);S.sig.pos='';dirty();persist();msg(`Posisi #${id} ditutup · ${fm(pnl,true)}.`,pnl>=0?'ok':'');
+}
+function cancelById(id){
+  const q=getObj('pend',id);if(!q)return;
+  S.pend=S.pend.filter(x=>x!==q);dropSel('pend',id);S.sig.pos='';dirty();persist();msg(`Pending #${id} dibatalkan.`,'ok');
+}
+/* pembalikan posisi: tutup di harga market lalu buka arah sebaliknya dengan lot yang sama */
+function reverseById(id){
+  if(!ready())return;
+  const p=getObj('pos',id);if(!p)return;
+  const wasSide=p.side,newSide=wasSide==='buy'?'sell':'buy';let lots=p.lots;
+  const pnl=closePos(p,wasSide==='buy'?px():px()+sp(),'REVERSE',S.i);
+  if(cfg.prop&&cfg.block){const mi=maxLotInfo();if(mi)lots=Math.min(lots,mi.max);}
+  lots=Math.round(lots*100)/100;
+  if(lots<0.01){recordEq(S.i);S.sig.pos='';dirty();persist();return msg(`Posisi #${id} ditutup (${fm(pnl,true)}); order balik ditolak oleh margin rule.`,'err');}
+  const entry=newSide==='buy'?px()+sp():px();
+  const np=openPos(newSide,lots,entry,0,0,S.i);
+  recordEq(S.i);setSel('pos',np.id);dirty();persist();
+  msg(`Balik arah: ${wasSide.toUpperCase()} #${id} ditutup (${fm(pnl,true)}), ${newSide.toUpperCase()} ${f2(lots)} @ ${fp(entry)} dibuka (#${np.id})${lots<p.lots?' · lot dikurangi sesuai margin rule':''}. SL/TP perlu dipasang ulang.`,'ok');
+}
+/* pending: Buy Limit ⇄ Sell Stop dan Buy Stop ⇄ Sell Limit pada harga yang sama */
+function flipPending(id){
+  if(!ready())return;
+  const q=getObj('pend',id);if(!q)return;
+  const side=q.side==='buy'?'sell':'buy',want=pendTypeFor(side,q.price);
+  if(!want)return msg('Pending tidak bisa dibalik: harga terlalu dekat market.','err');
+  q.side=side;q.type=want;q.sl=0;q.tp=0;
+  S.sig.pos='';syncTicketFromSel();dirty();persist();
+  msg(`Pending #${id} dibalik menjadi ${side.toUpperCase()} ${want.toUpperCase()} @ ${fp(q.price)}. SL/TP dihapus; pasang ulang bila perlu.`,'ok');
 }
 function calcLotFromRisk(){
   const t=readTicket();if(!S.B)return msg('Muat data dulu.','err');
   if(!(t.sl>0))return msg('Isi Stop Loss dulu untuk menghitung lot dari risk.','err');
   const ref=t.entry>0?t.entry:px(),dist=Math.abs(ref-t.sl);if(!(dist>0))return msg('Jarak SL tidak valid.','err');
   const riskMoney=S.balance*nz($('btRisk').value)/100,lots=Math.floor(riskMoney/(dist*nz(cfg.contract))*100)/100;
-  $('btLots').value=Math.max(0.01,lots).toFixed(2);
+  setLots(Math.max(0.01,lots));
   msg(`Risk ${f2(nz($('btRisk').value))}% = ${fm(riskMoney)} → ${$('btLots').value} lot.`,'ok');
   dirty();
 }
+function setLots(v){v=Math.max(0.01,Math.round(v*100)/100);$('btLots').value=v.toFixed(2);const q=$('btQLot');if(q&&document.activeElement!==q)q.value=v.toFixed(2);if(S.menu)renderMenu(true);dirty();}
+const menuLots=()=>Math.round(nz($('btLots').value)*100)/100;
 
+/* ---------- seleksi & edit level ---------- */
+function setSel(kind,id){S.sel=kind?{kind,id}:null;S.selDraw=null;syncTicketFromSel();S.sig.pos='';renderSelBar();dirty();}
+function clearSel(){if(S.sel||S.selDraw!=null){S.sel=null;S.selDraw=null;syncTicketFromSel();S.sig.pos='';renderSelBar();dirty();}}
+function getSel(){if(!S.sel)return null;const o=getObj(S.sel.kind,S.sel.id);if(!o){S.sel=null;}return o;}
+function syncTicketFromSel(){
+  const o=getSel(),set=(id,v)=>{const e=$(id);if(e)e.value=v>0?(+v).toFixed(S.dec):'';};
+  const info=$('btSelInfo'),en=$('btEntry');
+  if(!o){set('btEntry',0);set('btSL',0);set('btTP',0);if(info)info.textContent='';if(en)en.readOnly=false;return;}
+  set('btEntry',S.sel.kind==='pos'?o.entry:o.price);set('btSL',o.sl);set('btTP',o.tp);
+  if(en)en.readOnly=S.sel.kind==='pos';
+  if(info)info.textContent=`Mengedit ${S.sel.kind==='pos'?'posisi':'pending'} #${o.id}`;
+}
+/* validasi level SL/TP: posisi terhadap harga berjalan, pending terhadap harga entry */
+function validLevel(kind,o,field,price){
+  const bid=px(),ask=bid+sp(),e=epsP(),entry=kind==='pos'?o.entry:o.price;
+  if(field==='sl'){
+    if(kind==='pos')return o.side==='buy'?price<bid-e:price>ask+e;
+    return o.side==='buy'?price<entry-e:price>entry+e;
+  }
+  if(kind==='pos')return o.side==='buy'?price>bid+e:price<ask-e;
+  return o.side==='buy'?price>entry+e:price<entry-e;
+}
+function setLevel(kind,o,field,price,quiet){
+  price=rp(price);
+  if(!validLevel(kind,o,field,price)){if(!quiet)msg(`${field.toUpperCase()} tidak valid di ${fp(price)} untuk ${o.side.toUpperCase()}${kind==='pos'?' (terhadap harga berjalan)':' (terhadap harga entry)'}.`,'err');return false;}
+  const entry=kind==='pos'?o.entry:o.price;
+  o[field]=price;
+  if(field==='sl'&&rrValue()!=null&&(o.side==='buy'?price<entry:price>entry)){const tp=autoTpFromSL(entry,price,o.side);if(tp!=null)o.tp=rp(tp);}
+  return true;
+}
+function addLevel(kind,id,field){
+  const o=getObj(kind,id);if(!o)return;
+  const entry=kind==='pos'?o.entry:o.price,dir=o.side==='buy'?1:-1;
+  let dist=defSLDist();
+  if(field==='sl'){setLevel(kind,o,'sl',entry-dir*dist);}
+  else{const base=o.sl>0?Math.abs(entry-o.sl):dist,rr=rrValue()??(o.sl>0?1:1.5);setLevel(kind,o,'tp',entry+dir*base*rr);}
+  setSel(kind,id);S.sig.pos='';syncTicketFromSel();persist();dirty();
+}
+function removeLevel(kind,id,field){const o=getObj(kind,id);if(!o)return;o[field]=0;S.sig.pos='';syncTicketFromSel();persist();dirty();}
+/* geser level lewat drag di chart */
+function applyDrag(L,price){
+  const o=getObj(L.kind,L.id);if(!o)return;price=rp(price);
+  if(L.field==='entry'&&L.kind==='pend'){
+    const type=pendTypeFor(o.side,price);if(!type)return;
+    const d=price-o.price;o.price=price;o.type=type;if(o.sl>0)o.sl=rp(o.sl+d);if(o.tp>0)o.tp=rp(o.tp+d);
+  }else if(L.field==='sl'||L.field==='tp'){setLevel(L.kind,o,L.field,price,true);}
+  syncTicketFromSel();S.sig.pos='';
+}
+/* edit dari kolom ticket saat ada order terpilih */
+function ticketEdit(field){
+  const o=getSel();if(!o)return;
+  const kind=S.sel.kind,v=nz($(field==='entry'?'btEntry':field==='sl'?'btSL':'btTP').value);
+  if(field==='entry'){
+    if(kind==='pos'){syncTicketFromSel();return;}
+    const type=pendTypeFor(o.side,v);if(!(v>0)||!type){msg('Harga entry pending tidak valid / terlalu dekat market.','err');syncTicketFromSel();return;}
+    const d=v-o.price;o.price=rp(v);o.type=type;if(o.sl>0)o.sl=rp(o.sl+d);if(o.tp>0)o.tp=rp(o.tp+d);
+  }else if(v>0){if(!setLevel(kind,o,field,v)){syncTicketFromSel();return;}}
+  else o[field]=0;
+  syncTicketFromSel();S.sig.pos='';persist();dirty();
+}
 /* ---------- reset / load ---------- */
 function resetSession(keepIdx){
-  pause();
-  S.pos=[];S.pend=[];S.closed=[];S.selectedOrder=null;S.dragLine=null;S.nextId=1;S.eq=[];S.violations=[];S.vioKeys={};S.breach=null;S.targetHit=false;
+  pause();closeMenu();
+  S.pos=[];S.pend=[];S.closed=[];S.sel=null;S.cur=null;S.nextId=1;S.eq=[];S.violations=[];S.vioKeys={};S.breach=null;S.targetHit=false;
   S.balance=nz(cfg.balance);S.initial=S.balance;S.peak=S.balance;S.balancePeak=S.balance;S.maxDD=0;S.maxDDpct=0;
   S.eqStride=S.B?Math.max(1,Math.ceil(S.n/4000)):1;
   if(S.B){S.i=keepIdx==null?S.start:keepIdx;S.dayKey=new Date(S.B.t[S.i]*1000).toISOString().slice(0,10);S.dayStartEq=S.balance;S.eq.push([S.B.t[S.i],S.balance,S.balance]);}
-  S.view.off=0;S.view.yShift=0;S.sig={pos:'',closed:-1};
+  S.view.off=0;S.view.yShift=0;S.view.yZoom=1;S.sig={pos:'',closed:-1};
+  syncTicketFromSel();renderSelBar();
   dirty();persist();
 }
 function applyData(d,name){
@@ -8393,9 +8711,13 @@ function applyData(d,name){
   const info=`${name} · ${tfName(S.baseSec)} · ${d.n.toLocaleString('en-US')} candle · ${fdt(S.B.t[0])} → ${fdt(S.B.t[d.n-1])}`;
   $('btDataInfo').textContent=info;
   const j=$('btJump');j.min=toLocal(S.B.t[0]);j.max=toLocal(S.B.t[d.n-1]);
+  setDataCollapsed(true);
   msg(`Data dimuat: ${d.n.toLocaleString('en-US')} candle. Replay dimulai dari ${fdt(S.B.t[S.i])}.`,'ok');
 }
-const toLocal=sec=>{const d=new Date(sec*1000);return `${d.getUTCFullYear()}-${p2(d.getUTCMonth()+1)}-${p2(d.getUTCDate())}T${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;};
+function setDataCollapsed(on){
+  const box=$('btDataBody'),b=$('btDataToggle');if(!box||!b)return;
+  box.hidden=!!on;b.textContent=on?'Ganti data':'Sembunyikan';b.setAttribute('aria-expanded',on?'false':'true');
+}
 function guessInstrument(name){
   const n=(name||'').toUpperCase();
   if(/XAU|GOLD|PAXG/.test(n)){cfg.contract=100;if(!/PAXG/.test(n)||true)cfg.spread=cfg.spread||0.3;}
@@ -8449,6 +8771,7 @@ function jumpTo(){
   pause();const c=idx-S.i;step(c);msg(`Melompat ${c.toLocaleString('en-US')} candle ke ${fdt(S.B.t[S.i])}.`,'ok');
 }
 
+
 /* ---------- stats ---------- */
 function stats(){
   const T=S.closed,n=T.length,w=T.filter(t=>t.pnl>0),ls=T.filter(t=>t.pnl<0);
@@ -8459,98 +8782,184 @@ function stats(){
     best:n?Math.max(...T.map(t=>t.pnl)):0,worst:n?Math.min(...T.map(t=>t.pnl)):0,maxL,avgR:rs.length?rs.reduce((s,t)=>s+t.R,0)/rs.length:null,
     ret:S.initial>0?(S.balance-S.initial)/S.initial*100:0,bars:n?T.reduce((s,t)=>s+(t.closeI-t.openI),0)/n:0};
 }
-
-/* ---------- chart ---------- */
 function niceStep(raw){const e=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/e;return (f<1.5?1:f<3.5?2:f<7.5?5:10)*e;}
 function fmtAxisT(sec,tfs){const d=new Date(sec*1000);return tfs>=86400?`${p2(d.getUTCDate())} ${MON[d.getUTCMonth()]} ${String(d.getUTCFullYear()).slice(2)}`:`${p2(d.getUTCDate())} ${MON[d.getUTCMonth()]} ${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;}
+
+
+/* ---------- indikator overlay (dihitung hanya sampai candle replay saat ini) ---------- */
+const IND_DEFS=[
+  {id:'ema20',label:'EMA 20',col:'#4fa3ff',t:'ema',n:20},
+  {id:'ema50',label:'EMA 50',col:'#ffb02e',t:'ema',n:50},
+  {id:'ema200',label:'EMA 200',col:'#d86bff',t:'ema',n:200},
+  {id:'sma50',label:'SMA 50',col:'#2de0c3',t:'sma',n:50},
+  {id:'bb',label:'Bollinger 20,2',col:'#9aa7ff',t:'bb',n:20,k:2}
+];
+function indCompute(T,def,first,lastVis,last){
+  const n=def.n,warm=Math.max(0,first-(def.t==='ema'?5*n:n)),len=lastVis-warm+1;
+  if(len<=0)return null;
+  const c=new Float64Array(len);for(let k=warm;k<=lastVis;k++)c[k-warm]=(k===last)?S.B.c[S.i]:T.c[k];
+  const mid=new Float64Array(len).fill(NaN),up=def.t==='bb'?new Float64Array(len).fill(NaN):null,lo=def.t==='bb'?new Float64Array(len).fill(NaN):null;
+  if(def.t==='ema'){const a=2/(n+1);let e=c[0];for(let i=0;i<len;i++){e=i?a*c[i]+(1-a)*e:c[0];if(i>=n-1)mid[i]=e;}}
+  else{let sum=0;for(let i=0;i<len;i++){sum+=c[i];if(i>=n)sum-=c[i-n];if(i>=n-1){const m=sum/n;mid[i]=m;if(up){let v=0;for(let j=i-n+1;j<=i;j++)v+=(c[j]-m)*(c[j]-m);const sd=Math.sqrt(v/n);up[i]=m+def.k*sd;lo[i]=m-def.k*sd;}}}}
+  return {warm,mid,up,lo};
+}
+
+/* ---------- chart ---------- */
 let geo=null; // geometri terakhir untuk interaksi
+const fmtDur=s=>{s=Math.abs(Math.round(s));const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return (d?d+'h ':'')+(h?h+'j ':'')+((m||(!d&&!h))?m+'m':'');};
+const fmtCd=s=>{s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),c=s%60;return (h?p2(h)+':':'')+p2(m)+':'+p2(c);};
+function drawingHandles(d){
+  if(!geo)return [];const T=geo.T,X=i=>geo.x(T.bidx[cl(Math.round(i),0,S.n-1)]);
+  const x1=X(d.i1),x2=X(d.i2??d.i1);
+  if(d.type==='hline'||d.type==='vline')return [];
+  if(d.type==='long'||d.type==='short'){const xm=(x1+x2)/2;return [{n:'entry',x:x1,y:geo.y(d.p1)},{n:'sl',x:xm,y:geo.y(d.sl)},{n:'tp',x:xm,y:geo.y(d.tp)},{n:'right',x:x2,y:geo.y(d.p1)}];}
+  return [{n:'p1',x:x1,y:geo.y(d.p1)},{n:'p2',x:x2,y:geo.y(d.p2??d.p1)}];
+}
+const FIB_LEVELS=[['SL',-.236],['Wick',0],['Entry',.236],['OTE',.336],['OTE',.382],['50.0',.500],['Entry',.618],['Body',1.000],['TP 1',1.618],['TP 2',2.618],['TP 3',4.236]];
 function drawChart(){
   const cv=$('btChart'),wrap=cv.parentElement,W=wrap.clientWidth,H=wrap.clientHeight;if(!W||!H)return;
   const dpr=window.devicePixelRatio||1;
   if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
   const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
-  const C=pal();g.font='11px '+(getComputedStyle(document.body).fontFamily||'sans-serif');
-  if(!S.B){g.fillStyle=C.faint;g.textAlign='center';g.font='13px sans-serif';g.fillText('Muat data (CSV atau Binance) untuk memulai replay',W/2,H/2);geo=null;return;}
+  const C=pal(),FF=getComputedStyle(document.body).fontFamily||'sans-serif';
+  S.hits=[];S.lines=[];
+  if(!S.B){g.fillStyle=C.faint;g.textAlign='center';g.textBaseline='middle';g.font='13px '+FF;g.fillText('Muat data (CSV atau Binance) untuk memulai replay',W/2,H/2);geo=null;return;}
+  const touch=S.touch,fs=touch?12:11,LH=touch?28:22;
   const T=tfData(),last=T.bidx[S.i],N=S.view.n;
-  const padL=10,padR=74,padT=14,padB=26,cw=W-padL-padR,chh=H-padT-padB;
+  g.font=`600 ${fs}px ${FF}`;
+  const padL=6,padT=8,padB=22,padR=Math.ceil(g.measureText(px().toFixed(S.dec)).width)+(touch?48:44);
+  const cw=W-padL-padR,chh=H-padT-padB;if(cw<40||chh<40)return;
   const rightPad=Math.max(3,Math.round(N*0.07)),step=cw/(N+rightPad);
   const lastVis=Math.max(0,last-S.view.off),first=lastVis-N+1;
   const bar=[0,0,0,0,0];
   let hi=-Infinity,lo=Infinity;
   for(let k=Math.max(0,first);k<=lastVis;k++){getBar(T,k,bar);if(bar[2]>hi)hi=bar[2];if(bar[3]<lo)lo=bar[3];}
+  if(!isFinite(hi)||!isFinite(lo)){hi=px()+1;lo=px()-1;}
   if(!(hi>lo)){hi=lo+1;}
-  const ext=(v)=>{if(v>0){if(v>hi)hi=v;if(v<lo)lo=v;}};
-  S.pos.forEach(p=>{ext(p.entry);ext(p.sl);ext(p.tp);});
-  S.pend.forEach(q=>{ext(q.price);ext(q.sl);ext(q.tp);});
-  (S.drawings||[]).forEach(d=>{if(d.p1)ext(d.p1);if(d.p2)ext(d.p2);});if(S.drawDraft){if(S.drawDraft.p1)ext(S.drawDraft.p1);if(S.drawDraft.p2)ext(S.drawDraft.p2);}
-  // Vertical pan: drag chart up/down to move the visible price scale without changing candle data.
-  const rawRange=Math.max(1e-9,hi-lo),pricePan=(S.view.yShift||0)*rawRange;hi+=pricePan;lo+=pricePan;
-  const rng=hi-lo;hi+=rng*0.06;lo-=rng*0.06;
-  const y=p=>padT+(hi-p)/(hi-lo)*chh,x=k=>padL+(k-first+0.5)*step;
-  geo={W,H,padL,padR,padT,padB,cw,chh,step,first,lastVis,hi,lo,T,last};
-  const axisPlusHover=!!(S.hover&&S.hover.x>=padL+cw&&S.hover.x<=W&&S.hover.y>=padT&&S.hover.y<=padT+chh);
+  const cHi=hi,cLo=lo,cR=Math.max(hi-lo,1e-9);
+  // order/drawing jauh di luar layar tidak ikut autoscale (supaya candle tidak terjepit)
+  const ext=(v,force)=>{if(v>0&&(force||(v>cLo-cR*1.5&&v<cHi+cR*1.5))){if(v>hi)hi=v;if(v<lo)lo=v;}};
+  const selO=getSel();
+  S.pos.forEach(p=>{const f=selO===p;ext(p.entry,f);ext(p.sl,f);ext(p.tp,f);});
+  S.pend.forEach(q=>{const f=selO===q;ext(q.price,f);ext(q.sl,f);ext(q.tp,f);});
+  const extD=d=>{if(!d)return;ext(d.p1);ext(d.p2);if(d.sl)ext(d.sl);if(d.tp)ext(d.tp);};
+  S.drawings.forEach(extD);extD(S.drawDraft);
+  const raw=Math.max(1e-9,hi-lo),mid=(hi+lo)/2+(S.view.yShift||0)*raw,half=raw/2*1.12*(S.view.yZoom||1);
+  hi=mid+half;lo=mid-half;
+  const y=p=>padT+(hi-p)/(hi-lo)*chh,x=k=>padL+(k-first+0.5)*step,priceAt=yy=>hi-(yy-padT)/chh*(hi-lo);
+  const plotR=padL+cw;
+  geo={W,H,padL,padR,padT,padB,cw,chh,step,first,lastVis,hi,lo,T,last,x,y,priceAt,rightPad,LH};
+  const hv=touch?null:S.hover;
+  const hvIn=!!(hv&&hv.x>=padL&&hv.x<=W&&hv.y>=padT&&hv.y<=padT+chh);
   // grid
   g.textBaseline='middle';g.lineWidth=1;
-  const ps=niceStep((hi-lo)/6);
+  const ps=niceStep((hi-lo)/cl(chh/55,3,9)),dp=Math.max(0,Math.min(S.dec,-Math.floor(Math.log10(ps)+1e-9)));
   g.strokeStyle=C.line;g.fillStyle=C.faint;g.textAlign='left';
-  for(let v=Math.ceil(lo/ps)*ps;v<=hi;v+=ps){const yy=Math.round(y(v))+.5;g.beginPath();g.moveTo(padL,yy);g.lineTo(padL+cw,yy);g.stroke();g.fillText(v.toFixed(S.dec>ps.toString().split('.')[1]?.length?S.dec:Math.min(S.dec,Math.max(0,(ps.toString().split('.')[1]||'').length))),padL+cw+(axisPlusHover?24:8),yy);}
+  for(let v=Math.ceil(lo/ps)*ps;v<=hi;v+=ps){const yy=Math.round(y(v))+.5;g.beginPath();g.moveTo(padL,yy);g.lineTo(plotR,yy);g.stroke();g.fillText(v.toFixed(dp),plotR+8,yy);}
   g.textAlign='center';g.textBaseline='alphabetic';
   const everyBars=Math.max(1,Math.ceil(120/step));
-  for(let k=Math.ceil(first/everyBars)*everyBars;k<=lastVis;k+=everyBars){if(k<0||k>=T.t.length)continue;const xx=Math.round(x(k))+.5;g.beginPath();g.moveTo(xx,padT);g.lineTo(xx,padT+chh);g.stroke();g.fillStyle=C.faint;g.fillText(fmtAxisT(T.t[k],T.sec),xx,H-8);}
+  for(let k=Math.ceil(first/everyBars)*everyBars;k<=lastVis;k+=everyBars){if(k<0||k>=T.t.length)continue;const xx=Math.round(x(k))+.5;g.beginPath();g.moveTo(xx,padT);g.lineTo(xx,padT+chh);g.stroke();g.fillStyle=C.faint;g.fillText(fmtAxisT(T.t[k],T.sec),xx,H-7);}
   // candles
   const bw=Math.max(1,Math.floor(step*0.72));
   for(let k=Math.max(0,first);k<=lastVis;k++){
     getBar(T,k,bar);const up=bar[4]>=bar[1],xx=x(k),col=up?C.up:C.dn;
-    g.fillStyle=col;g.strokeStyle=col;
+    g.fillStyle=col;
     const yh=y(bar[2]),yl=y(bar[3]);g.fillRect(Math.round(xx)-0.5,Math.round(yh),1,Math.max(1,Math.round(yl-yh)));
     const yo=y(bar[1]),yc=y(bar[4]),top=Math.min(yo,yc),hh=Math.max(1,Math.abs(yo-yc));
     g.fillRect(Math.round(xx-bw/2),Math.round(top),bw,Math.round(hh));
   }
-  // clip utk overlay
+  // overlay (di-clip ke area plot)
   g.save();g.beginPath();g.rect(padL,padT,cw,chh);g.clip();
-  // User drawings: anchors are stored in base-candle indices so they survive timeframe changes.
-  const drawX=bi=>{const q=cl(T.bidx[cl(Math.round(bi),0,T.bidx.length-1)]??0,0,T.t.length-1);return x(q);};
+  // indikator
+  const legend=[];
+  IND_DEFS.forEach(def=>{
+    if(!S.ind[def.id])return;const r=indCompute(T,def,Math.max(0,first),lastVis,last);if(!r)return;
+    legend.push([def.label,def.col]);
+    const line=(arr,w,al,dash)=>{g.beginPath();let pen=false;for(let k=Math.max(0,first);k<=lastVis;k++){const v=arr[k-r.warm];if(!(v===v)){pen=false;continue;}const xx=x(k),yy=y(v);if(pen)g.lineTo(xx,yy);else{g.moveTo(xx,yy);pen=true;}}g.strokeStyle=def.col;g.lineWidth=w;g.globalAlpha=al;g.setLineDash(dash||[]);g.stroke();g.setLineDash([]);g.globalAlpha=1;};
+    line(r.mid,1.5,.95);if(r.up){line(r.up,1,.7);line(r.lo,1,.7);}
+  });
+  // drawing
+  const dX=i=>x(T.bidx[cl(Math.round(i),0,S.n-1)]);
   const paintDrawing=(d,di)=>{
-    const x1=drawX(d.i1),y1=y(d.p1),x2=drawX(d.i2??d.i1),y2=y(d.p2??d.p1);
-    g.save();g.lineWidth=S.selectedDrawing===di?2.6:1.5;g.strokeStyle=d.color||C.gold;g.fillStyle=d.color||C.gold;
-    if(d.type==='hline'){g.setLineDash([5,4]);g.beginPath();g.moveTo(padL,y1);g.lineTo(padL+cw,y1);g.stroke();g.setLineDash([]);g.fillStyle=d.color||C.gold;g.fillText(' '+fp(d.p1),padL+6,y1-5);}
+    const sel=S.selDraw===di&&di>=0,x1=dX(d.i1),y1=y(d.p1),x2=dX(d.i2??d.i1),y2=y(d.p2??d.p1),col=d.color||C.gold;
+    g.save();g.lineWidth=sel?2.4:1.5;g.strokeStyle=col;g.fillStyle=col;g.font=`600 ${fs-1}px ${FF}`;g.textBaseline='middle';g.textAlign='left';
+    if(d.type==='hline'){g.setLineDash([5,4]);g.beginPath();g.moveTo(padL,y1);g.lineTo(plotR,y1);g.stroke();g.setLineDash([]);g.fillText(fp(d.p1),padL+6,y1-8);tagList.push([d.p1,fp(d.p1),'#0b0d12',col]);}
     else if(d.type==='vline'){g.setLineDash([5,4]);g.beginPath();g.moveTo(x1,padT);g.lineTo(x1,padT+chh);g.stroke();g.setLineDash([]);}
     else if(d.type==='rect'){const xx=Math.min(x1,x2),yy=Math.min(y1,y2),ww=Math.abs(x2-x1),hh=Math.abs(y2-y1);g.globalAlpha=.12;g.fillRect(xx,yy,ww,hh);g.globalAlpha=1;g.strokeRect(xx,yy,ww,hh);}
-    else if(d.type==='trend'||d.type==='ray'){g.beginPath();g.moveTo(x1,y1);if(d.type==='ray'&&Math.abs(x2-x1)>1){const slope=(y2-y1)/(x2-x1),endX=padL+cw;g.lineTo(endX,y1+slope*(endX-x1));}else g.lineTo(x2,y2);g.stroke();}
-    else if(d.type==='fib'){g.strokeStyle=d.color||C.gold;/* Anchor order: first click = Body (1.000), second click = Wick (0.000). */const levels=[['SL',-.236],['Wick',0],['Entry',.236],['OTE',.336],['OTE',.382],['50.0',.500],['Entry',.618],['Body',1.000],['TP 1',1.618],['TP 2',2.618],['TP 3',4.236]];levels.forEach(([lab,r])=>{const price=d.p2+(d.p1-d.p2)*r,yy=y(price);if(yy>=padT-2&&yy<=padT+chh+2){g.globalAlpha=.85;g.beginPath();g.moveTo(Math.min(x1,x2),yy);g.lineTo(Math.max(x1,x2),yy);g.stroke();g.globalAlpha=1;g.font='10px sans-serif';g.fillText(lab+' '+r.toFixed(3),Math.min(x1,x2)+4,yy-3);}});}
+    else if(d.type==='trend'||d.type==='ray'){g.beginPath();g.moveTo(x1,y1);if(d.type==='ray'&&Math.abs(x2-x1)>1){const slope=(y2-y1)/(x2-x1),endX=x2>x1?plotR:padL;g.lineTo(endX,y1+slope*(endX-x1));}else g.lineTo(x2,y2);g.stroke();}
+    else if(d.type==='fib'){
+      FIB_LEVELS.forEach(([lab,r])=>{const price=d.p2+(d.p1-d.p2)*r,yy=y(price);if(yy>=padT-2&&yy<=padT+chh+2){g.globalAlpha=.85;g.beginPath();g.moveTo(Math.min(x1,x2),yy);g.lineTo(Math.max(x1,x2),yy);g.stroke();g.globalAlpha=1;g.fillText(`${lab} ${r.toFixed(3)} · ${fp(price)}`,Math.min(x1,x2)+4,yy-6);}});
+      g.globalAlpha=.4;g.setLineDash([3,4]);g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();g.setLineDash([]);g.globalAlpha=1;
+    }
+    else if(d.type==='measure'){
+      const dpv=d.p2-d.p1,up=dpv>=0,mc=up?C.up:C.dn,xx=Math.min(x1,x2),yy=Math.min(y1,y2),ww=Math.abs(x2-x1),hh=Math.abs(y2-y1);
+      g.fillStyle=mc;g.strokeStyle=mc;g.globalAlpha=.14;g.fillRect(xx,yy,ww,hh);g.globalAlpha=.9;g.setLineDash([4,3]);g.strokeRect(xx,yy,ww,hh);g.setLineDash([]);
+      g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();g.globalAlpha=1;
+      const bars=Math.round(Math.abs(T.bidx[cl(Math.round(d.i2),0,S.n-1)]-T.bidx[cl(Math.round(d.i1),0,S.n-1)])),sec=Math.abs(S.B.t[cl(Math.round(d.i2),0,S.n-1)]-S.B.t[cl(Math.round(d.i1),0,S.n-1)]);
+      const txt=`${dpv>=0?'+':'−'}${fp(Math.abs(dpv))} (${pc(dpv/d.p1*100,true)}) · ${bars} bar · ${fmtDur(sec)}`;
+      g.font=`600 ${fs}px ${FF}`;const tw=g.measureText(txt).width+14,bx=cl((x1+x2)/2-tw/2,padL+2,plotR-tw-2),by=cl((up?yy-LH-6:yy+hh+6),padT+2,padT+chh-LH-2);
+      g.fillStyle=mc;g.beginPath();g.roundRect(bx,by,tw,LH-4,5);g.fill();g.fillStyle=up?'#06150f':'#fff';g.textAlign='center';g.fillText(txt,bx+tw/2,by+(LH-4)/2+1);
+    }
+    else if(d.type==='long'||d.type==='short'){
+      const xa=Math.min(x1,x2),xb=Math.max(Math.max(x1,x2),xa+70),ey=y(d.p1),sy=y(d.sl),ty=y(d.tp),lots=menuLots()||0.01;
+      g.globalAlpha=.16;g.fillStyle=C.up;g.fillRect(xa,Math.min(ey,ty),xb-xa,Math.abs(ty-ey));g.fillStyle=C.dn;g.fillRect(xa,Math.min(ey,sy),xb-xa,Math.abs(sy-ey));g.globalAlpha=1;
+      g.lineWidth=sel?2:1.2;g.strokeStyle=col;g.beginPath();g.moveTo(xa,ey);g.lineTo(xb,ey);g.stroke();
+      g.strokeStyle=C.up;g.beginPath();g.moveTo(xa,ty);g.lineTo(xb,ty);g.stroke();g.strokeStyle=C.dn;g.beginPath();g.moveTo(xa,sy);g.lineTo(xb,sy);g.stroke();
+      const sd=d.type==='long'?'buy':'sell',pTP=lvPnl(sd,d.p1,d.tp,lots),pSL=lvPnl(sd,d.p1,d.sl,lots),rr=Math.abs(d.p1-d.sl)>0?Math.abs(d.tp-d.p1)/Math.abs(d.p1-d.sl):0;
+      g.font=`600 ${fs-1}px ${FF}`;g.textAlign='left';g.fillStyle=C.up;g.fillText(`TP ${fp(d.tp)} · ${fm(pTP,true)}`,xa+6,ty+(ty<ey?10:-10));g.fillStyle=C.dn;g.fillText(`SL ${fp(d.sl)} · ${fm(pSL,true)}`,xa+6,sy+(sy>ey?10:-10));
+      g.fillStyle=col;g.fillText(`${d.type==='long'?'LONG':'SHORT'} · RR 1:${rr.toFixed(2)} · ${f2(lots)} lot`,xa+6,ey+(ty<ey?-9:9));
+    }
+    if(sel){g.fillStyle='#fff';g.strokeStyle=col;g.lineWidth=2;drawingHandles(d).forEach(h=>{g.beginPath();g.arc(h.x,h.y,touch?7:5,0,6.283);g.fill();g.stroke();});}
     g.restore();
   };
-  (S.drawings||[]).forEach((d,i)=>paintDrawing(d,i));if(S.drawDraft)paintDrawing(S.drawDraft,-1);
-  const hl=(price,col,dash,label,lblCol)=>{
-    if(!(price>0))return;const yy=Math.round(y(price))+.5;if(yy<padT-20||yy>padT+chh+20)return;
-    g.strokeStyle=col;g.setLineDash(dash||[]);g.lineWidth=1;g.beginPath();g.moveTo(padL,yy);g.lineTo(padL+cw,yy);g.stroke();g.setLineDash([]);
+  const tagList=[];
+  S.drawings.forEach((d,i)=>paintDrawing(d,i));if(S.drawDraft)paintDrawing(S.drawDraft,-1);
+  const hl=(price,col,dash,w)=>{
+    if(!(price>0))return null;const yy=Math.round(y(price))+.5;if(yy<padT-2||yy>padT+chh+2)return null;
+    g.strokeStyle=col;g.setLineDash(dash||[]);g.lineWidth=w||1;g.beginPath();g.moveTo(padL,yy);g.lineTo(plotR,yy);g.stroke();g.setLineDash([]);g.lineWidth=1;return yy;
   };
-  const tags=[];
-  const tag=(price,text,fg,bgc)=>{if(price>0)tags.push([price,text,fg,bgc]);};
-  // harga berjalan
+  const tags=tagList;const tag=(price,text,fg,bgc)=>{if(price>0)tags.push([price,text,fg,bgc]);};
   const cur=px();hl(cur,C.mut,[2,3]);tag(cur,fp(cur),'#0b0d12',C.text);
-  // posisi
+  // ---- label order (digambar setelah garis) ----
+  const jobs=[],LBG='rgba(11,14,22,.94)';
+  const isSel=(kind,id)=>!!(S.sel&&S.sel.kind===kind&&S.sel.id===id);
+  const zone=(a,b,col)=>{if(!(a>0&&b>0))return;const ya=y(a),yb=y(b);g.globalAlpha=.1;g.fillStyle=col;g.fillRect(padL,Math.min(ya,yb),cw,Math.abs(yb-ya));g.globalAlpha=1;};
+  const levelLabel=(kind,o,field,entry)=>{
+    const price=o[field];if(!(price>0))return;const isSL=field==='sl',col=isSL?C.dn:C.up,yy=hl(price,col,[6,4],isSel(kind,o.id)?1.8:1.2);if(yy==null)return;
+    S.lines.push({y:yy,kind,id:o.id,field,drag:true});
+    const pl=lvPnl(o.side,entry,price,o.lots);tag(price,fp(price),isSL?'#fff':'#06150f',col);
+    const L={kind,id:o.id,field,drag:true};
+    jobs.push({y:yy,tag:field,segs:[{t:`${isSL?'SL':'TP'} ${fm(pl,true)}`,bg:col,fg:isSL?'#fff':'#06150f',act:{t:'line',L}},{t:'✕',bg:LBG,fg:C.mut,bd:col,act:{t:field==='sl'?'rmsl':'rmtp',kind,id:o.id}}]});
+  };
   S.pos.forEach(p=>{
-    const fl=floatPnl(p,S.i),col=p.side==='buy'?C.up:C.dn;
-    hl(p.entry,col,S.selectedOrder&&S.selectedOrder.kind==='pos'&&S.selectedOrder.id===p.id?[4,2]:[]);tag(p.entry,`${S.selectedOrder&&S.selectedOrder.kind==='pos'&&S.selectedOrder.id===p.id?'● ':''}${p.side.toUpperCase()} #${p.id} ${f2(p.lots)}  ${fm(fl,true)}`,'#0b0d12',fl>=0?C.up:C.dn);
-    if(p.sl>0){hl(p.sl,C.dn,[5,4]);tag(p.sl,'SL '+fp(p.sl),'#fff',C.dn);}
-    if(p.tp>0){hl(p.tp,C.up,[5,4]);tag(p.tp,'TP '+fp(p.tp),'#0b0d12',C.up);}
+    const sel=isSel('pos',p.id),fl=floatPnl(p,S.i),col=p.side==='buy'?C.up:C.dn,fg=p.side==='buy'?'#06150f':'#fff';
+    if(sel){zone(p.entry,p.tp,C.up);zone(p.entry,p.sl,C.dn);}
+    const yy=hl(p.entry,col,[],sel?2:1.4);
+    if(yy!=null){
+      S.lines.push({y:yy,kind:'pos',id:p.id,field:'entry',drag:false});tag(p.entry,fp(p.entry),fg,col);
+      const segs=[{t:`${p.side.toUpperCase()} ${f2(p.lots)}`,bg:col,fg,act:{t:'sel',kind:'pos',id:p.id}},{t:fm(fl,true),bg:LBG,fg:fl>=0?C.up:C.dn,bd:col,act:{t:'sel',kind:'pos',id:p.id}}];
+      if(sel){if(!(p.sl>0))segs.push({t:'SL+',bg:LBG,fg:C.dn,bd:C.dn,act:{t:'addsl',kind:'pos',id:p.id}});if(!(p.tp>0))segs.push({t:'TP+',bg:LBG,fg:C.up,bd:C.up,act:{t:'addtp',kind:'pos',id:p.id}});segs.push({t:'⇄',bg:LBG,fg:C.gold,bd:col,act:{t:'rev',id:p.id}});segs.push({t:'✕',bg:LBG,fg:C.mut,bd:col,act:{t:'close',id:p.id}});}
+      jobs.push({y:yy,tag:'entry',segs,split:2});
+    }
+    levelLabel('pos',p,'sl',p.entry);levelLabel('pos',p,'tp',p.entry);
   });
-  S.pend.forEach(q=>{hl(q.price,C.amber,S.selectedOrder&&S.selectedOrder.kind==='pend'&&S.selectedOrder.id===q.id?[4,2]:[2,4]);tag(q.price,`${S.selectedOrder&&S.selectedOrder.kind==='pend'&&S.selectedOrder.id===q.id?'● ':''}${q.side.toUpperCase()} ${q.type.toUpperCase()} #${q.id} ${f2(q.lots)}`,'#0b0d12',C.amber);if(q.sl>0){hl(q.sl,C.dn,[2,4]);}if(q.tp>0){hl(q.tp,C.up,[2,4]);}});
-  // pratinjau ticket
-  const tk=readTicket();
-  if(tk.entry>0){hl(tk.entry,C.blue,[3,3]);tag(tk.entry,'ENTRY '+fp(tk.entry),'#0b0d12',C.blue);}
-  if(tk.sl>0){hl(tk.sl,C.dn,[3,3]);tag(tk.sl,'SL ticket',C.dn,'transparent');}
-  if(tk.tp>0){hl(tk.tp,C.up,[3,3]);tag(tk.tp,'TP ticket',C.up,'transparent');}
-  // Kursor order: crosshair dengan tanda + yang jelas saat mode pemasangan order aktif.
-  if(S.orderCursor&&S.hover&&S.hover.x>=padL&&S.hover.x<=padL+cw&&S.hover.y>=padT&&S.hover.y<=padT+chh){
-    const ox=S.hover.x,oy=S.hover.y;g.save();g.strokeStyle=C.gold;g.fillStyle=C.gold;g.lineWidth=2;
-    g.beginPath();g.arc(ox,oy,9,0,Math.PI*2);g.stroke();g.beginPath();g.moveTo(ox-5,oy);g.lineTo(ox+5,oy);g.moveTo(ox,oy-5);g.lineTo(ox,oy+5);g.stroke();
-    g.font='bold 10px sans-serif';g.textAlign='left';g.fillText(S.orderMode.toUpperCase().replace('-',' '),ox+13,oy-10);g.restore();
-  }
-  // marker trade
+  S.pend.forEach(q=>{
+    const sel=isSel('pend',q.id),col=q.side==='buy'?C.up:C.dn,fg=q.side==='buy'?'#06150f':'#fff';
+    if(sel){zone(q.price,q.tp,C.up);zone(q.price,q.sl,C.dn);}
+    const yy=hl(q.price,col,[3,4],sel?2:1.4);
+    if(yy!=null){
+      S.lines.push({y:yy,kind:'pend',id:q.id,field:'entry',drag:true});tag(q.price,fp(q.price),fg,col);
+      const L={kind:'pend',id:q.id,field:'entry',drag:true};
+      const segs=[{t:`${q.side.toUpperCase()} ${q.type.toUpperCase()} ${f2(q.lots)}`,bg:col,fg,act:{t:'line',L}}];
+      if(sel){if(!(q.sl>0))segs.push({t:'SL+',bg:LBG,fg:C.dn,bd:C.dn,act:{t:'addsl',kind:'pend',id:q.id}});if(!(q.tp>0))segs.push({t:'TP+',bg:LBG,fg:C.up,bd:C.up,act:{t:'addtp',kind:'pend',id:q.id}});segs.push({t:'⇄',bg:LBG,fg:C.gold,bd:col,act:{t:'flip',id:q.id}});}
+      segs.push({t:'✕',bg:LBG,fg:C.mut,bd:col,act:{t:'cancel',id:q.id}});
+      jobs.push({y:yy,tag:'entry',segs,split:1});
+    }
+    levelLabel('pend',q,'sl',q.price);levelLabel('pend',q,'tp',q.price);
+  });
+  // marker trade tertutup
   const mark=(k,price,kind,col)=>{
-    if(k<first||k>lastVis)return;const xx=x(k),yy=y(price);g.fillStyle=col;g.strokeStyle=col;
+    if(k<first||k>lastVis)return;const xx=x(k),yy=y(price);g.fillStyle=col;
     if(kind==='buy'){g.beginPath();g.moveTo(xx,yy-1);g.lineTo(xx-5,yy+9);g.lineTo(xx+5,yy+9);g.closePath();g.fill();}
     else if(kind==='sell'){g.beginPath();g.moveTo(xx,yy+1);g.lineTo(xx-5,yy-9);g.lineTo(xx+5,yy-9);g.closePath();g.fill();}
     else{g.beginPath();g.arc(xx,yy,3.5,0,6.283);g.fill();}
@@ -8559,59 +8968,78 @@ function drawChart(){
   for(let q=lo2;q<S.closed.length;q++){const t=S.closed[q];mark(T.bidx[t.openI],t.entry,t.side,C.text);mark(T.bidx[t.closeI],t.exit,'x',t.pnl>=0?C.up:C.dn);
     if(T.bidx[t.openI]>=first&&T.bidx[t.closeI]<=lastVis+1){g.strokeStyle=t.pnl>=0?C.up:C.dn;g.globalAlpha=.55;g.setLineDash([3,3]);g.beginPath();g.moveTo(x(T.bidx[t.openI]),y(t.entry));g.lineTo(x(T.bidx[t.closeI]),y(t.exit));g.stroke();g.setLineDash([]);g.globalAlpha=1;}}
   S.pos.forEach(p=>mark(T.bidx[p.openI],p.entry,p.side,C.text));
-  // crosshair
-  if(S.hover&&S.hover.x>=padL&&S.hover.x<=padL+cw&&S.hover.y>=padT&&S.hover.y<=padT+chh){
-    g.strokeStyle=S.pick?C.gold:C.faint;g.setLineDash([3,3]);g.beginPath();g.moveTo(S.hover.x+.5,padT);g.lineTo(S.hover.x+.5,padT+chh);g.moveTo(padL,S.hover.y+.5);g.lineTo(padL+cw,S.hover.y+.5);g.stroke();g.setLineDash([]);
-  }
+  // kursor harga: crosshair (mouse) / garis kursor (sentuh) / harga menu
+  const toolCursor=S.drawTool==='cursor'&&!S.pick;
+  let cPrice=null;
+  if(S.menu)cPrice=S.menu.price;else if(S.cur)cPrice=S.cur.price;else if(hvIn)cPrice=priceAt(hv.y);
+  if(hvIn&&hv.x<=plotR){g.strokeStyle=S.pick?C.gold:C.faint;g.setLineDash([3,3]);g.beginPath();g.moveTo(hv.x+.5,padT);g.lineTo(hv.x+.5,padT+chh);g.stroke();g.setLineDash([]);}
+  if(cPrice!=null){const yy=Math.round(y(cPrice))+.5;if(yy>=padT&&yy<=padT+chh){g.strokeStyle=(S.menu||S.cur)?C.gold:(S.pick?C.gold:C.faint);g.lineWidth=(S.menu||S.cur)?1.4:1;g.setLineDash([(S.menu||S.cur)?5:3,3]);g.beginPath();g.moveTo(padL,yy);g.lineTo(plotR,yy);g.stroke();g.setLineDash([]);g.lineWidth=1;}}
+  // label order
+  g.font=`700 ${fs}px ${FF}`;g.textAlign='center';g.textBaseline='middle';
+  const entryEnd={};
+  jobs.sort((a,b)=>(a.tag==='entry'?0:1)-(b.tag==='entry'?0:1));
+  const placed=[];
+  const measureSegs=segs=>segs.map(sg=>Math.ceil(g.measureText(sg.t).width)+(sg.t.length<=2?16:14)+(touch&&sg.t.length<=3?6:0));
+  const drawRow=(segs,x0,top,yc)=>{
+    const widths=measureSegs(segs);let cx=x0;
+    segs.forEach((sg,i)=>{
+      const w=widths[i],rad=[i===0?5:0,i===segs.length-1?5:0,i===segs.length-1?5:0,i===0?5:0];
+      g.fillStyle=sg.bg;g.beginPath();g.roundRect(cx,top,w,LH,rad);g.fill();
+      if(sg.bd){g.strokeStyle=sg.bd;g.lineWidth=1;g.beginPath();g.roundRect(cx+.5,top+.5,w-1,LH-1,rad);g.stroke();}
+      g.fillStyle=sg.fg;g.fillText(sg.t,cx+w/2,yc+1);
+      S.hits.push({x:cx,y:top,w,h:LH,act:sg.act});cx+=w;
+    });
+    return cx;
+  };
+  jobs.forEach(job=>{
+    const avail=plotR-padL-14,split=job.split||2;
+    let rows=[job.segs];
+    if(measureSegs(job.segs).reduce((a,b2)=>a+b2,0)>avail&&job.segs.length>split)rows=[job.segs.slice(0,split),job.segs.slice(split)];
+    const total=Math.max(...rows.map(r=>measureSegs(r).reduce((a,b2)=>a+b2,0)));let x0=padL+8;
+    placed.forEach(pl=>{if(Math.abs(pl.y-job.y)<LH+1&&x0<pl.x1+4&&x0+total>pl.x0-4)x0=pl.x1+6;});
+    if(x0+total>plotR-2)x0=Math.max(padL+2,plotR-2-total);
+    let endX=x0;
+    rows.forEach((r,ri)=>{const top=job.y-LH/2+ri*(LH+2);endX=Math.max(endX,drawRow(r,x0,top,top+LH/2));});
+    placed.push({y:job.y,x0,x1:endX});
+  });
   g.restore();
-  // tag harga di sumbu kanan (hindari tumpang tindih)
-  tags.sort((a,b)=>b[0]-a[0]);let lastY=-99;g.textAlign='left';g.textBaseline='middle';g.font='600 11px '+(getComputedStyle(document.body).fontFamily||'sans-serif');
-  tags.forEach(t=>{let yy=y(t[0]);if(yy<padT-8||yy>padT+chh+8)return;if(yy-lastY<16)yy=lastY+16;lastY=yy;const tw=Math.min(padR+90,g.measureText(t[1]).width+12);
-    if(t[3]==='transparent'){g.fillStyle=t[2];g.textAlign='right';g.fillText(t[1],padL+cw-6,yy-9);g.textAlign='left';return;}
-    g.fillStyle=t[3];g.beginPath();g.roundRect(padL+cw+2,yy-8,Math.max(tw,padR-4),16,4);g.fill();g.fillStyle=t[2];g.fillText(t[1],padL+cw+7,yy);});
-  // label crosshair
-  if(S.hover&&S.hover.y>=padT&&S.hover.y<=padT+chh&&S.hover.x>=padL&&S.hover.x<=padL+cw){
-    const pr=hi-(S.hover.y-padT)/chh*(hi-lo);g.fillStyle=S.pick?C.gold:C.mut;g.beginPath();g.roundRect(padL+cw+2,S.hover.y-8,padR-4,16,4);g.fill();g.fillStyle='#0b0d12';g.textAlign='left';g.fillText(fp(pr),padL+cw+7,S.hover.y);
-    const kx=Math.round((S.hover.x-padL)/step-0.5+first);
-    if(kx>=0&&kx<=lastVis){getBar(T,kx,bar);const txt=W<520?`${fdt(bar[0],true)}  C ${fp(bar[4])}`:`${fdt(bar[0],true)}   O ${fp(bar[1])}  H ${fp(bar[2])}  L ${fp(bar[3])}  C ${fp(bar[4])}`;g.textAlign='left';g.fillStyle=C.mut;g.font='11px '+(getComputedStyle(document.body).fontFamily||'sans-serif');g.fillText(txt,padL+6,padT+8);}
-  } else {
-    getBar(T,last,bar);g.textAlign='left';g.textBaseline='middle';g.fillStyle=C.mut;g.font='11px '+(getComputedStyle(document.body).fontFamily||'sans-serif');
-    g.fillText(W<520?`${S.name} · ${tfName(T.sec)}   C ${fp(bar[4])}`:`${S.name} · ${tfName(T.sec)}   O ${fp(bar[1])}  H ${fp(bar[2])}  L ${fp(bar[3])}  C ${fp(bar[4])}`,padL+6,padT+8);
+  // tag harga di sumbu kanan
+  tags.sort((a,b)=>b[0]-a[0]);let lastY=-99;g.textAlign='left';g.textBaseline='middle';g.font=`600 ${fs}px ${FF}`;
+  let curTagY=null;
+  tags.forEach(t=>{let yy=y(t[0]);if(yy<padT-8||yy>padT+chh+8)return;if(yy-lastY<16)yy=lastY+16;lastY=yy;if(t[0]===cur&&t[3]===C.text)curTagY=yy;
+    g.fillStyle=t[3];g.beginPath();g.roundRect(plotR+2,yy-8,padR-4,16,4);g.fill();g.fillStyle=t[2];g.fillText(t[1],plotR+7,yy);});
+  if(curTagY!=null&&T.sec>S.baseSec){const rem=T.t[last]+T.sec-(S.B.t[S.i]+S.baseSec);if(rem>0){const yy=curTagY+16;g.fillStyle=C.text;g.globalAlpha=.85;g.beginPath();g.roundRect(plotR+2,yy-7,padR-4,14,4);g.fill();g.globalAlpha=1;g.fillStyle='#0b0d12';g.font=`600 ${fs-1}px ${FF}`;g.fillText(fmtCd(rem),plotR+7,yy);}}
+  // label kursor di sumbu + tombol "+"
+  if(cPrice!=null){
+    const yy=y(cPrice);
+    if(yy>=padT&&yy<=padT+chh){
+      const gold=C.gold;g.font=`700 ${fs}px ${FF}`;
+      g.fillStyle=gold;g.beginPath();g.roundRect(plotR+2,yy-9,padR-4,18,4);g.fill();g.fillStyle='#17130b';g.textAlign='left';g.textBaseline='middle';g.fillText(fp(cPrice),plotR+(toolCursor?30:7),yy);
+      if(toolCursor){
+        const cy=cl(yy,padT+10,padT+chh-10),r=touch?11:9;
+        g.fillStyle='#17130b';g.beginPath();g.arc(plotR+5+r,cy,r,0,6.283);g.fill();g.strokeStyle=gold;g.lineWidth=2;g.stroke();
+        g.beginPath();g.moveTo(plotR+5+r-4.5,cy);g.lineTo(plotR+5+r+4.5,cy);g.moveTo(plotR+5+r,cy-4.5);g.lineTo(plotR+5+r,cy+4.5);g.stroke();g.lineWidth=1;
+        S.hits.push({x:plotR,y:cy-(touch?20:14),w:touch?36:30,h:touch?40:28,act:{t:'chip',price:cPrice}});
+      }
+    }
   }
-  if(S.pick){g.fillStyle=C.gold;g.textAlign='right';g.fillText(S.pick==='start'?'Klik candle untuk mulai replay dari sana':'Klik di chart untuk mengisi '+({entry:'harga entry',sl:'Stop Loss',tp:'Take Profit'}[S.pick]),padL+cw-8,padT+8);}
-  // Tombol order ala terminal: muncul di skala harga kanan, tepat di kiri angka harga.
-  // Klik area ini akan memasang jenis pending order yang dipilih tanpa perlu mengaktifkan mode cursor.
-  if(axisPlusHover){
-    const by=cl(S.hover.y,padT+9,padT+chh-9),bx=padL+cw+10,pr=hi-(S.hover.y-padT)/chh*(hi-lo);
-    g.save();g.fillStyle=C.gold;g.strokeStyle='#17130b';g.lineWidth=1.5;g.beginPath();g.arc(bx,by,8.5,0,Math.PI*2);g.fill();g.stroke();
-    g.strokeStyle='#17130b';g.lineWidth=1.8;g.beginPath();g.moveTo(bx-4,by);g.lineTo(bx+4,by);g.moveTo(bx,by-4);g.lineTo(bx,by+4);g.stroke();
-    g.fillStyle='rgba(217,176,104,.96)';g.beginPath();g.roundRect(padL+cw+21,S.hover.y-8,Math.max(35,padR-25),16,4);g.fill();
-    g.fillStyle='#17130b';g.font='600 10px '+(getComputedStyle(document.body).fontFamily||'sans-serif');g.textAlign='left';g.textBaseline='middle';g.fillText(fp(pr),padL+cw+25,S.hover.y);
-    g.restore();
+  // label waktu crosshair di sumbu bawah
+  if(hvIn&&hv.x<=plotR){
+    const kx=Math.round((hv.x-padL)/step-0.5+first);
+    if(kx>=0&&kx<=lastVis){getBar(T,kx,bar);const txt=fdt(bar[0],true),tw=g.measureText(txt).width+12;g.fillStyle=C.mut;g.beginPath();g.roundRect(cl(hv.x-tw/2,padL,plotR-tw),H-padB+2,tw,16,4);g.fill();g.fillStyle='#0b0d12';g.textAlign='center';g.fillText(txt,cl(hv.x,padL+tw/2,plotR-tw/2),H-padB+10);}
   }
+  // legenda OHLC
+  const kx=hvIn&&hv.x<=plotR?cl(Math.round((hv.x-padL)/step-0.5+first),0,lastVis):last;
+  getBar(T,kx,bar);const prevC=kx>0?T.c[kx-1]:bar[1],chg=prevC>0?(bar[4]-prevC)/prevC*100:0,upc=bar[4]>=bar[1]?C.up:C.dn;
+  g.textAlign='left';g.textBaseline='middle';g.font=`600 ${fs}px ${FF}`;
+  const head=W<420?tfName(T.sec):`${S.name} · ${tfName(T.sec)}`;g.fillStyle=C.mut;g.fillText(head,padL+6,padT+9);let lx=padL+6+g.measureText(head).width+10;
+  const parts=W<520?[['C',bar[4]]]:[['O',bar[1]],['H',bar[2]],['L',bar[3]],['C',bar[4]]];
+  parts.forEach(([l,v])=>{g.fillStyle=C.faint;g.fillText(l,lx,padT+9);lx+=g.measureText(l).width+3;const s=fp(v);g.fillStyle=upc;g.fillText(s,lx,padT+9);lx+=g.measureText(s).width+8;});
+  g.fillStyle=upc;g.fillText(pc(chg,true),lx,padT+9);
+  let ly=padT+9+15;g.font=`600 ${fs-1}px ${FF}`;legend.forEach(([t,c])=>{g.fillStyle=c;g.fillText('▬ '+t,padL+6,ly);ly+=13;});
+  if(S.pick){g.fillStyle=C.gold;g.textAlign='right';g.font=`700 ${fs}px ${FF}`;g.fillText(S.pick==='start'?'Ketuk candle untuk mulai replay dari sana':'Ketuk chart untuk mengisi '+({entry:'harga entry',sl:'Stop Loss',tp:'Take Profit'}[S.pick]),plotR-8,padT+9);}
 }
-function drawEq(){
-  const cv=$('btEq'),wrap=cv.parentElement,W=wrap.clientWidth,H=wrap.clientHeight;if(!W||!H)return;
-  const dpr=window.devicePixelRatio||1;if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
-  const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);const C=pal();
-  const d=S.eq;g.font='11px sans-serif';
-  if(d.length<2){g.fillStyle=C.faint;g.textAlign='center';g.fillText('Kurva equity muncul setelah replay berjalan',W/2,H/2);return;}
-  const padL=8,padR=62,padT=10,padB=18;let lo=Infinity,hi=-Infinity;d.forEach(r=>{lo=Math.min(lo,r[1],r[2]);hi=Math.max(hi,r[1],r[2]);});lo=Math.min(lo,S.initial);hi=Math.max(hi,S.initial);if(hi-lo<1){hi+=1;lo-=1;}const pad=(hi-lo)*.08;lo-=pad;hi+=pad;
-  const x=i=>padL+i/(d.length-1)*(W-padL-padR),y=v=>padT+(hi-v)/(hi-lo)*(H-padT-padB);
-  g.strokeStyle=C.line;g.lineWidth=1;g.fillStyle=C.faint;g.textAlign='left';g.textBaseline='middle';
-  const ps=niceStep((hi-lo)/4);for(let v=Math.ceil(lo/ps)*ps;v<=hi;v+=ps){const yy=Math.round(y(v))+.5;g.beginPath();g.moveTo(padL,yy);g.lineTo(W-padR,yy);g.stroke();g.fillText('$'+Math.round(v).toLocaleString('en-US'),W-padR+6,yy);}
-  g.strokeStyle=C.mut;g.setLineDash([4,4]);g.beginPath();g.moveTo(padL,y(S.initial));g.lineTo(W-padR,y(S.initial));g.stroke();g.setLineDash([]);
-  const up=d[d.length-1][1]>=S.initial,col=up?C.up:C.dn;
-  const grad=g.createLinearGradient(0,padT,0,H-padB);grad.addColorStop(0,col+'55');grad.addColorStop(1,col+'00');
-  g.beginPath();d.forEach((r,i)=>{i?g.lineTo(x(i),y(r[1])):g.moveTo(x(i),y(r[1]));});g.lineTo(x(d.length-1),H-padB);g.lineTo(x(0),H-padB);g.closePath();g.fillStyle=grad;g.fill();
-  g.beginPath();d.forEach((r,i)=>{i?g.lineTo(x(i),y(r[1])):g.moveTo(x(i),y(r[1]));});g.strokeStyle=col;g.lineWidth=1.6;g.stroke();
-  g.beginPath();d.forEach((r,i)=>{i?g.lineTo(x(i),y(r[2])):g.moveTo(x(i),y(r[2]));});g.strokeStyle=C.blue;g.globalAlpha=.8;g.lineWidth=1;g.stroke();g.globalAlpha=1;
-  g.fillStyle=col;g.textAlign='left';g.fillText(fm(d[d.length-1][1]),W-padR+6,Math.max(padT+6,Math.min(H-padB-6,y(d[d.length-1][1])-12)));
-  g.fillStyle=C.faint;g.textAlign='left';g.textBaseline='alphabetic';g.fillText(fdt(d[0][0],true),padL,H-4);g.textAlign='right';g.fillText(fdt(d[d.length-1][0],true),W-padR,H-4);
-}
-
-/* ---------- UI update ---------- */
-function tfCheck(){const dis=sec=>sec<S.baseSec;return dis;}
+/* ---------- timeframe buttons ---------- */
 function buildTfButtons(){
   const box=$('btTfs');box.innerHTML='';
   const base=S.baseSec||0;
@@ -8619,9 +9047,10 @@ function buildTfButtons(){
     const b=document.createElement('button');b.type='button';b.textContent=n;b.dataset.sec=sec;
     const ok=!S.B||(sec>=base&&sec%base===0);b.disabled=!ok;
     if((S.tf||base)===sec)b.classList.add('on');
-    b.onclick=()=>{S.tf=sec;box.querySelectorAll('button').forEach(x=>x.classList.toggle('on',+x.dataset.sec===sec));S.view.off=0;dirty();};
+    b.onclick=()=>{S.tf=sec;b.scrollIntoView({inline:'center',block:'nearest'});box.querySelectorAll('button').forEach(x=>x.classList.toggle('on',+x.dataset.sec===sec));S.view.off=0;S.sig.pos='';dirty();persist();};
     box.appendChild(b);
   });
+  const on=box.querySelector('.on');if(on)requestAnimationFrame(()=>{box.scrollLeft=Math.max(0,on.offsetLeft-box.clientWidth/2+on.offsetWidth/2);});
 }
 function kpi(l,v,cls){return `<div class="metric"><label>${l}</label><strong class="${cls||''}">${v}</strong></div>`;}
 function ruleBar(label,val,lim,pctUsed,sub,warn){
@@ -8650,34 +9079,24 @@ function updateAccount(){
   }
   $('btRules').innerHTML=html;updateDDExplain();$('btRuleState').textContent=state;$('btRuleState').className=cls;
 }
-function updateTicket(){
-  const bb=$('btBuy').querySelector('b'),sb=$('btSell').querySelector('b'),pr=$('btPrice');
-  if(!S.B){bb.textContent='—';sb.textContent='—';pr.textContent='—';$('btMaxLot').textContent='Muat data untuk melihat lot maksimal.';return;}
-  bb.textContent=fp(px()+sp());sb.textContent=fp(px());pr.textContent=fp(px());
-  const mi=maxLotInfo();
-  if(!mi){$('btMaxLot').textContent='—';return;}
-  const lim=cfg.prop?`Lot tambahan maks (margin rule ${f2(cfg.marginPct)}%): <b>${f2(mi.max)}</b> · aman: <b>${f2(mi.safe)}</b> <button class="btn" type="button" id="btUseMax">Pakai ${f2(mi.safe)}</button>`:`Lot maks sesuai free margin: <b>${f2(mi.freeLots)}</b>`;
-  $('btMaxLot').innerHTML=lim+`<br><span style="color:var(--faint)">Margin per lot ${fm(mi.mpl)} · terpakai ${fm(mi.used)} dari batas ${fm(mi.lim)}</span>`;
-  const u=$('btUseMax');if(u)u.onclick=()=>{$('btLots').value=Math.max(0.01,mi.safe).toFixed(2);dirty();};
-}
-function updateStatus(){
-  if(!S.B){$('btStatus').innerHTML='Muat data untuk mulai replay.';$('btProg').style.width='0%';return;}
-  $('btStatus').innerHTML=`<span><b>${fdt(S.B.t[S.i])}</b> UTC</span><span>Candle <b>${(S.i+1).toLocaleString('en-US')}</b> / ${S.n.toLocaleString('en-US')}</span><span>${S.playing?'▶ berjalan':'⏸ jeda'}</span>`;
-  $('btProg').style.width=(S.i/(S.n-1)*100).toFixed(2)+'%';
-}
-function updatePos(){
-  const sig=S.pos.map(p=>[p.id,p.side,p.lots,p.entry,p.sl,p.tp].join(':')).join(',')+'|'+S.pend.map(q=>[q.id,q.side,q.type,q.lots,q.price,q.sl,q.tp].join(':')).join(',');
-  const tbl=$('btPosTable');
-  if(sig!==S.sig.pos){
-    S.sig.pos=sig;
-    let h='<thead><tr><th>#</th><th>Status</th><th>Tipe</th><th>Lot</th><th>Entry / Trigger</th><th>SL</th><th>TP</th><th>Realtime P/L</th><th>Aksi</th></tr></thead><tbody>';
-    S.pos.forEach(p=>{const fl=floatPnl(p,S.i);h+=`<tr><td class="mono">#${p.id}</td><td><span class="tag buy">TERISI · BERJALAN</span></td><td><span class="tag ${p.side}">${p.side.toUpperCase()}</span></td><td class="mono">${f2(p.lots)}</td><td class="mono">${fp(p.entry)}</td><td><input class="sel bt-mini" data-f="sl" data-id="${p.id}" type="number" step="any" value="${p.sl>0?p.sl:''}" placeholder="—" aria-label="SL posisi ${p.id}"></td><td><input class="sel bt-mini" data-f="tp" data-id="${p.id}" type="number" step="any" value="${p.tp>0?p.tp:''}" placeholder="—" aria-label="TP posisi ${p.id}"></td><td class="mono ${fl>=0?'pos':'neg'}" data-pl="${p.id}">${fm(fl,true)}</td><td style="white-space:nowrap"><button class="btn" data-select-pos="${p.id}" type="button">Pilih</button> <button class="btn" data-be="${p.id}" type="button">BE</button> <button class="btn danger" data-close="${p.id}" type="button">Tutup</button></td></tr>`;});
-    S.pend.forEach(q=>{const crossed=pendingTouched(q,S.i);const dist=Math.abs(q.price-px());h+=`<tr><td class="mono">#${q.id}</td><td><span class="tag ${crossed?'buy':'warn'}" data-pstatus="${q.id}">${crossed?'TRIGGER TERDETEKSI':'MENUNGGU TRIGGER'}</span></td><td><span class="tag ${q.side}">${q.side.toUpperCase()} ${q.type.toUpperCase()}</span></td><td class="mono">${f2(q.lots)}</td><td class="mono">${fp(q.price)}<small data-pdist="${q.id}" style="display:block;color:var(--faint)">${fm(dist)} dari harga</small></td><td class="mono">${q.sl>0?fp(q.sl):'—'}</td><td class="mono">${q.tp>0?fp(q.tp):'—'}</td><td class="mono" style="color:var(--faint)">Belum terisi</td><td style="white-space:nowrap"><button class="btn" data-select-pend="${q.id}" type="button">Pilih</button> <button class="btn danger" data-cancel="${q.id}" type="button">Batalkan</button></td></tr>`;});
-    if(!S.pos.length&&!S.pend.length)h+='<tr><td colspan="9" class="empty" style="color:var(--faint)">Belum ada posisi atau pending order. Market terisi pada candle sekarang; limit/stop menunggu trigger saat replay bergerak.</td></tr>';
-    tbl.innerHTML=h+'</tbody>';
-  }
-  S.pos.forEach(p=>{const c=tbl.querySelector(`[data-pl="${p.id}"]`);if(c){const v=floatPnl(p,S.i);c.textContent=fm(v,true);c.className='mono '+(v>=0?'pos':'neg');}});
-  S.pend.forEach(q=>{const st=tbl.querySelector(`[data-pstatus="${q.id}"]`),di=tbl.querySelector(`[data-pdist="${q.id}"]`),hit=pendingTouched(q,S.i);if(st){st.textContent=hit?'TRIGGER TERDETEKSI':'MENUNGGU TRIGGER';st.className='tag '+(hit?'buy':'warn');}if(di)di.textContent=`${fm(Math.abs(q.price-px()))} dari harga`;});
+function drawEq(){
+  const cv=$('btEq'),wrap=cv.parentElement,W=wrap.clientWidth,H=wrap.clientHeight;if(!W||!H)return;
+  const dpr=window.devicePixelRatio||1;if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+  const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);const C=pal();
+  const d=S.eq;g.font='11px sans-serif';
+  if(d.length<2){g.fillStyle=C.faint;g.textAlign='center';g.fillText('Kurva equity muncul setelah replay berjalan',W/2,H/2);return;}
+  const padL=8,padR=62,padT=10,padB=18;let lo=Infinity,hi=-Infinity;d.forEach(r=>{lo=Math.min(lo,r[1],r[2]);hi=Math.max(hi,r[1],r[2]);});lo=Math.min(lo,S.initial);hi=Math.max(hi,S.initial);if(hi-lo<1){hi+=1;lo-=1;}const pad=(hi-lo)*.08;lo-=pad;hi+=pad;
+  const x=i=>padL+i/(d.length-1)*(W-padL-padR),y=v=>padT+(hi-v)/(hi-lo)*(H-padT-padB);
+  g.strokeStyle=C.line;g.lineWidth=1;g.fillStyle=C.faint;g.textAlign='left';g.textBaseline='middle';
+  const ps=niceStep((hi-lo)/4);for(let v=Math.ceil(lo/ps)*ps;v<=hi;v+=ps){const yy=Math.round(y(v))+.5;g.beginPath();g.moveTo(padL,yy);g.lineTo(W-padR,yy);g.stroke();g.fillText('$'+Math.round(v).toLocaleString('en-US'),W-padR+6,yy);}
+  g.strokeStyle=C.mut;g.setLineDash([4,4]);g.beginPath();g.moveTo(padL,y(S.initial));g.lineTo(W-padR,y(S.initial));g.stroke();g.setLineDash([]);
+  const up=d[d.length-1][1]>=S.initial,col=up?C.up:C.dn;
+  const grad=g.createLinearGradient(0,padT,0,H-padB);grad.addColorStop(0,col+'55');grad.addColorStop(1,col+'00');
+  g.beginPath();d.forEach((r,i)=>{i?g.lineTo(x(i),y(r[1])):g.moveTo(x(i),y(r[1]));});g.lineTo(x(d.length-1),H-padB);g.lineTo(x(0),H-padB);g.closePath();g.fillStyle=grad;g.fill();
+  g.beginPath();d.forEach((r,i)=>{i?g.lineTo(x(i),y(r[1])):g.moveTo(x(i),y(r[1]));});g.strokeStyle=col;g.lineWidth=1.6;g.stroke();
+  g.beginPath();d.forEach((r,i)=>{i?g.lineTo(x(i),y(r[2])):g.moveTo(x(i),y(r[2]));});g.strokeStyle=C.blue;g.globalAlpha=.8;g.lineWidth=1;g.stroke();g.globalAlpha=1;
+  g.fillStyle=col;g.textAlign='left';g.fillText(fm(d[d.length-1][1]),W-padR+6,Math.max(padT+6,Math.min(H-padB-6,y(d[d.length-1][1])-12)));
+  g.fillStyle=C.faint;g.textAlign='left';g.textBaseline='alphabetic';g.fillText(fdt(d[0][0],true),padL,H-4);g.textAlign='right';g.fillText(fdt(d[d.length-1][0],true),W-padR,H-4);
 }
 function pendingTouched(q,k){if(!S.B||k<0||k>=S.n)return false;const B=S.B,hi=B.h[k],lo=B.l[k],spr=sp();if(q.side==='buy')return q.type==='limit'?(lo+spr<=q.price):(hi+spr>=q.price);return q.type==='limit'?(hi>=q.price):(lo<=q.price);}
 function updateResults(){
@@ -8687,20 +9106,213 @@ function updateResults(){
   $('btStats').innerHTML=m('Net profit',fm(st.net,true),st.net>=0?'pos':'neg')+m('Return',pc(st.ret,true),st.ret>=0?'pos':'neg')+m('Win rate',st.n?f2(st.wr)+'%':'—')+m('Profit factor',st.n?(st.pf===Infinity?'∞':f2(st.pf)):'—')+m('Expectancy',st.n?fm(st.exp,true):'—',st.exp>=0?'pos':'neg')+m('Rata-rata win',st.n?fm(st.avgW):'—','pos')+m('Rata-rata loss',st.n?fm(st.avgL):'—','neg')+m('Avg R',st.avgR!=null?f2(st.avgR)+'R':'—')+m('Max drawdown',`${fm(S.maxDD)} (${f2(S.maxDDpct)}%)`,'neg')+m('Trade terbaik',st.n?fm(st.best,true):'—','pos')+m('Trade terburuk',st.n?fm(st.worst,true):'—','neg')+m('Loss beruntun maks',st.n?String(st.maxL):'—');
   $('btEqInfo').textContent=S.eq.length>1?`${fm(S.initial)} → ${fm(S.eq[S.eq.length-1][1])}`:'';
   let h='<thead><tr><th>#</th><th>Tipe</th><th>Lot</th><th>Buka</th><th>Entry</th><th>Tutup</th><th>Exit</th><th>Alasan</th><th>R</th><th>P/L</th></tr></thead><tbody>';
-  S.closed.slice(-200).reverse().forEach(t=>{h+=`<tr><td class="mono">${t.id}</td><td><span class="tag ${t.side}">${t.side}</span></td><td class="mono">${f2(t.lots)}</td><td class="mono">${fdt(t.openT,true)}</td><td class="mono">${fp(t.entry)}</td><td class="mono">${fdt(t.closeT,true)}</td><td class="mono">${fp(t.exit)}</td><td>${esc(t.reason)}</td><td class="mono">${t.R!=null?f2(t.R)+'R':'—'}</td><td class="mono ${t.pnl>=0?'pos':'neg'}">${fm(t.pnl,true)}</td></tr>`;});
+  S.closed.slice(-200).reverse().forEach(t=>{h+=`<tr><td data-label="#" class="mono">${t.id}</td><td data-label="Tipe"><span class="tag ${t.side}">${t.side}</span></td><td data-label="Lot" class="mono">${f2(t.lots)}</td><td data-label="Buka" class="mono">${fdt(t.openT,true)}</td><td data-label="Entry" class="mono">${fp(t.entry)}</td><td data-label="Tutup" class="mono">${fdt(t.closeT,true)}</td><td data-label="Exit" class="mono">${fp(t.exit)}</td><td data-label="Alasan">${esc(t.reason)}</td><td data-label="R" class="mono">${t.R!=null?f2(t.R)+'R':'—'}</td><td data-label="P/L" class="mono ${t.pnl>=0?'pos':'neg'}">${fm(t.pnl,true)}</td></tr>`;});
   if(!S.closed.length)h+='<tr><td colspan="10" class="empty" style="color:var(--faint)">Belum ada trade tertutup.</td></tr>';
   $('btTrades').innerHTML=h+'</tbody>';
 }
+function setText(el,t){if(el&&el.__t!==t){el.__t=t;el.textContent=t;}}
+function updateMini(){
+  if(!S.B){setText($('btMini'),'—');return;}
+  const eq=equity(S.i),fl=floating(S.i),used=usedMargin(S.i),lim=marginLimit(S.i);
+  const el=$('btMini'),h=`<span>Equity <b class="${eq>=S.initial?'pos':'neg'}">${fm(eq)}</b></span><span>Float <b class="${fl>=0?'pos':'neg'}">${fm(fl,true)}</b></span><span>Margin <b>${lim>0?f2(used/lim*100):'0.00'}%</b></span>`;
+  if(el.__h!==h){el.__h=h;el.innerHTML=h;}
+}
+let accSig='';
+function updateTicket(){
+  const bid=S.B?px():0,ask=bid+sp(),set=(id,t)=>{const b=$(id)&&$(id).querySelector('b');setText(b,t);};
+  if(!S.B){['btBuy','btQBuy','btSell','btQSell'].forEach(id=>set(id,'—'));setText($('btPrice'),'—');setText($('btMaxLot'),'Muat data untuk melihat lot maksimal.');return;}
+  set('btBuy',fp(ask));set('btQBuy',fp(ask));set('btSell',fp(bid));set('btQSell',fp(bid));setText($('btPrice'),fp(bid));
+  const ql=$('btQLot');if(ql&&document.activeElement!==ql&&ql.value!==$('btLots').value)ql.value=$('btLots').value;
+  const mi=maxLotInfo(),box=$('btMaxLot');
+  if(!mi){setText(box,'—');return;}
+  const lim=cfg.prop?`Lot tambahan maks (margin rule ${f2(cfg.marginPct)}%): <b>${f2(mi.max)}</b> · aman: <b>${f2(mi.safe)}</b> <button class="btn" type="button" id="btUseMax">Pakai ${f2(mi.safe)}</button>`:`Lot maks sesuai free margin: <b>${f2(mi.freeLots)}</b>`;
+  const h=lim+`<br><span style="color:var(--faint)">Margin per lot ${fm(mi.mpl)} · terpakai ${fm(mi.used)} dari batas ${fm(mi.lim)}</span>`;
+  if(box.__h!==h){box.__h=h;box.innerHTML=h;const u=$('btUseMax');if(u)u.onclick=()=>setLots(Math.max(0.01,mi.safe));}
+}
+function updateStatus(){
+  if(!S.B){setText($('btStatus'),'Muat data untuk mulai replay.');$('btProg').style.width='0%';return;}
+  const el=$('btStatus'),h=`<span><b>${fdt(S.B.t[S.i])}</b> UTC</span><span>Candle <b>${(S.i+1).toLocaleString('en-US')}</b>/${S.n.toLocaleString('en-US')}</span><span>${S.playing?'▶ berjalan':'⏸ jeda'}</span>`;
+  if(el.__h!==h){el.__h=h;el.innerHTML=h;}
+  $('btProg').style.width=(S.i/Math.max(1,S.n-1)*100).toFixed(2)+'%';
+}
+function updatePos(){
+  const sig=S.pos.map(p=>[p.id,p.side,p.lots,p.entry,p.sl,p.tp].join(':')).join(',')+'|'+S.pend.map(q=>[q.id,q.side,q.type,q.lots,q.price,q.sl,q.tp].join(':')).join(',')+'|'+(S.sel?S.sel.kind+S.sel.id:'');
+  const tbl=$('btPosTable');
+  if(sig!==S.sig.pos){
+    S.sig.pos=sig;
+    const isS=(k,id)=>S.sel&&S.sel.kind===k&&S.sel.id===id;
+    let h='<thead><tr><th>#</th><th>Status</th><th>Tipe</th><th>Lot</th><th>Entry / Trigger</th><th>SL</th><th>TP</th><th>P/L</th><th>Aksi</th></tr></thead><tbody>';
+    S.pos.forEach(p=>{const fl=floatPnl(p,S.i);h+=`<tr class="${isS('pos',p.id)?'sel':''}"><td data-label="#" class="mono">#${p.id}</td><td data-label="Status"><span class="tag buy">TERISI</span></td><td data-label="Tipe"><span class="tag ${p.side}">${p.side.toUpperCase()}</span></td><td data-label="Lot" class="mono">${f2(p.lots)}</td><td data-label="Entry" class="mono">${fp(p.entry)}</td><td data-label="SL"><input class="sel bt-mini" data-f="sl" data-id="${p.id}" type="number" step="any" value="${p.sl>0?p.sl:''}" placeholder="—" aria-label="SL posisi ${p.id}"></td><td data-label="TP"><input class="sel bt-mini" data-f="tp" data-id="${p.id}" type="number" step="any" value="${p.tp>0?p.tp:''}" placeholder="—" aria-label="TP posisi ${p.id}"></td><td data-label="P/L" class="mono ${fl>=0?'pos':'neg'}" data-pl="${p.id}">${fm(fl,true)}</td><td data-label="Aksi" class="btx-acts"><button class="btn" data-select-pos="${p.id}" type="button">Pilih</button><button class="btn" data-be="${p.id}" type="button">BE</button><button class="btn" data-rev="${p.id}" type="button" title="Balik arah">⇄ Balik</button><button class="btn danger" data-close="${p.id}" type="button">Tutup</button></td></tr>`;});
+    S.pend.forEach(q=>{const hit=pendingTouched(q,S.i);h+=`<tr class="${isS('pend',q.id)?'sel':''}"><td data-label="#" class="mono">#${q.id}</td><td data-label="Status"><span class="tag ${hit?'buy':'warn'}" data-pstatus="${q.id}">${hit?'TRIGGER':'MENUNGGU'}</span></td><td data-label="Tipe"><span class="tag ${q.side}">${q.side.toUpperCase()} ${q.type.toUpperCase()}</span></td><td data-label="Lot" class="mono">${f2(q.lots)}</td><td data-label="Trigger" class="mono">${fp(q.price)}<small data-pdist="${q.id}" style="display:block;color:var(--faint)">${fm(Math.abs(q.price-px()))} dari harga</small></td><td data-label="SL" class="mono">${q.sl>0?fp(q.sl):'—'}</td><td data-label="TP" class="mono">${q.tp>0?fp(q.tp):'—'}</td><td data-label="P/L" class="mono" style="color:var(--faint)">Belum terisi</td><td data-label="Aksi" class="btx-acts"><button class="btn" data-select-pend="${q.id}" type="button">Pilih</button><button class="btn" data-flip="${q.id}" type="button" title="Balik arah">⇄ Balik</button><button class="btn danger" data-cancel="${q.id}" type="button">Batalkan</button></td></tr>`;});
+    if(!S.pos.length&&!S.pend.length)h+='<tr><td colspan="9" class="empty" style="color:var(--faint)">Belum ada posisi atau pending order. Tekan tombol + di sumbu harga chart untuk memasang Buy/Sell Limit/Stop.</td></tr>';
+    tbl.innerHTML=h+'</tbody>';
+  }
+  S.pos.forEach(p=>{const c=tbl.querySelector(`[data-pl="${p.id}"]`);if(c){const v=floatPnl(p,S.i);c.textContent=fm(v,true);c.className='mono '+(v>=0?'pos':'neg');}});
+  S.pend.forEach(q=>{const st=tbl.querySelector(`[data-pstatus="${q.id}"]`),di=tbl.querySelector(`[data-pdist="${q.id}"]`),hit=pendingTouched(q,S.i);if(st){st.textContent=hit?'TRIGGER':'MENUNGGU';st.className='tag '+(hit?'buy':'warn');}if(di)di.textContent=`${fm(Math.abs(q.price-px()))} dari harga`;});
+}
 let frameN=0;
 function frame(){
-  S.raf=0;if(!root.classList.contains('active')&&!S.force)return;
+  S.raf=0;
+  if(S.full&&!root.classList.contains('active'))setFull(false);
+  if(!root.classList.contains('active')&&!S.force)return;
   S.dirty=false;frameN++;
-  drawChart();updateStatus();updateAccount();updateTicket();updatePos();
+  drawChart();updateStatus();updateMini();updateTicket();updatePos();
+  const sg=[S.i,S.pos.length,S.pend.length,S.balance.toFixed(2),S.B?floating(S.i).toFixed(2):0,S.breach?1:0,S.violations.length,S.targetHit,JSON.stringify(cfg)].join('|');
+  if(sg!==accSig){accSig=sg;updateAccount();}
+  if(S.menu)renderMenu(false);
   if(S.sig.closed!==S.closed.length){S.sig.closed=S.closed.length;updateResults();drawEq();}
   else if(frameN%8===0){drawEq();}
 }
 
-/* ---------- export ---------- */
+/* ---------- menu "+" di harga ---------- */
+function openMenu(price){
+  if(!S.B||!geo)return;if(S.breach)return msg('Akun sudah breach. Tekan Reset.','err');
+  S.menu={price:rp(price)};S.cur=null;S.uiT=performance.now();renderMenu(true);dirty();
+}
+function closeMenu(){S.menu=null;const m=$('btMenu');if(m){m.hidden=true;m.__sig='';}dirty();}
+function renderMenu(force){
+  const m=$('btMenu');if(!m)return;
+  if(!S.menu||!geo||!S.B){m.hidden=true;return;}
+  const price=S.menu.price,bid=px(),ask=bid+sp(),opts=menuOptions(price),lots=menuLots(),diff=price-(price>=bid?ask:bid);
+  const sig=[price,opts.map(o=>o.side+o.type).join(),lots,!!cfg.autoBr,fp(bid),fp(ask)].join('|');
+  if(!force&&m.__sig===sig&&!m.hidden)return;m.__sig=sig;
+  const row=(o)=>{const c=o.side==='buy'?'buy':'sell';return `<button type="button" class="btx-opt ${c}" data-m="pend:${o.side}:${o.type}"><span>${o.side.toUpperCase()} ${o.type.toUpperCase()}</span><b>${f2(lots)} @ ${fp(price)}</b></button>`;};
+  let h=`<div class="btx-mh"><div><small>Harga di kursor</small><b>${fp(price)}</b><em class="${diff>=0?'pos':'neg'}">${diff>=0?'+':'−'}${fp(Math.abs(diff))} dari market</em></div><button type="button" class="btx-x" data-m="x" aria-label="Tutup">✕</button></div>`;
+  h+=`<div class="btx-lotrow"><span>Lot</span><div class="btx-lot"><button type="button" data-m="lot-">−</button><b>${f2(lots)}</b><button type="button" data-m="lot+">+</button></div></div>`;
+  h+=opts.length?opts.map(row).join(''):`<div class="btx-note">Harga terlalu dekat dengan market — pakai order market di bawah.</div>`;
+  h+=`<div class="btx-mkt"><button type="button" class="buy" data-m="mkt:buy">Buy market<b>${fp(ask)}</b></button><button type="button" class="sell" data-m="mkt:sell">Sell market<b>${fp(bid)}</b></button></div>`;
+  h+=`<label class="btx-chk"><input type="checkbox" data-m="br" ${cfg.autoBr?'checked':''}> SL/TP otomatis (${$('btAutoSL')&&nz($('btAutoSL').value)>0?'jarak manual':'ATR'} × RR ${rrValue()??1.5})</label>`;
+  m.innerHTML=h;m.hidden=false;
+  const y=geo.y(price),w=m.offsetWidth,hh=m.offsetHeight;
+  m.style.left=Math.max(6,Math.min(geo.padL+geo.cw-w-8,geo.W-w-6))+'px';
+  m.style.top=cl(y-hh/2,6,Math.max(6,geo.H-hh-6))+'px';
+}
+function menuClick(e){
+  if(performance.now()-(S.uiT||0)<400){e.preventDefault();return;}   // abaikan 'ghost click' dari ketukan yang membuka menu
+  const b=e.target.closest('[data-m]');if(!b)return;const a=b.dataset.m;
+  if(a==='x')return closeMenu();
+  if(a==='lot+'||a==='lot-'){const v=menuLots(),st=v>=1?0.5:v>=0.1?0.1:0.01;return setLots(a==='lot+'?v+st:v-st);}
+  if(a==='br'){cfg.autoBr=b.checked;saveCfg();return renderMenu(true);}
+  if(a.startsWith('pend:')){const [,side,type]=a.split(':');return placeFromMenu(side,type);}
+  if(a.startsWith('mkt:'))return marketFromMenu(a.split(':')[1]);
+}
+
+/* ---------- bar seleksi drawing ---------- */
+const DCOL=['#ffc94a','#5aa8ff','#2df5a3','#ff4b6e','#ffffff'];
+function renderSelBar(){
+  const el=$('btSelBar');if(!el)return;
+  const d=S.selDraw!=null?S.drawings[S.selDraw]:null;
+  if(!d){el.hidden=true;return;}
+  const isPos=d.type==='long'||d.type==='short';
+  el.innerHTML=DCOL.map(c=>`<button type="button" class="btx-dot${d.color===c?' on':''}" data-c="${c}" style="background:${c}" aria-label="Warna"></button>`).join('')+(isPos?`<button type="button" class="btx-sbtn" data-sb="order">Pasang order</button>`:'')+`<button type="button" class="btx-sbtn del" data-sb="del" aria-label="Hapus drawing">🗑 Hapus</button>`;
+  el.hidden=false;S.uiT=performance.now();
+}
+function deleteDrawing(i){if(!S.drawings[i])return;S.drawings.splice(i,1);S.selDraw=null;renderSelBar();renderDrawingList();dirty();persist();}
+function orderFromDrawing(d){
+  if(!ready())return;const side=d.type==='long'?'buy':'sell',lots=menuLots(),entry=rp(d.p1),bid=px(),ask=bid+sp();
+  const mk=Math.abs(entry-(side==='buy'?ask:bid))<=band();
+  const q=mk?openMarket(side,lots,rp(d.sl),rp(d.tp)):createPending(side,pendTypeFor(side,entry)||'limit',entry,lots,rp(d.sl),rp(d.tp));
+  if(q)setSel(mk?'pos':'pend',q.id);
+}
+function renderDrawingList(){
+  const box=$('btDrawingList');if(!box)return;
+  if(!S.drawings.length){box.innerHTML='<span class="btx-dl-empty">Belum ada drawing. Pilih satu di chart untuk memindah, mengubah warna, atau menghapusnya.</span>';return;}
+  const names={trend:'Trendline',ray:'Ray',hline:'Horizontal',vline:'Vertical',rect:'Zona',fib:'Fibonacci',measure:'Ukur',long:'Long',short:'Short'};
+  box.innerHTML=S.drawings.map((d,i)=>`<span class="btx-chip ${S.selDraw===i?'selected':''}"><button type="button" class="nm" data-sel-drawing="${i}">${i+1}. ${names[d.type]||d.type}</button><button type="button" data-del-drawing="${i}" aria-label="Hapus drawing ${i+1}" title="Hapus">×</button></span>`).join('');
+}
+
+/* ---------- alat gambar ---------- */
+const HELP={cursor:'Cursor: geser chart, seret garis order, pilih drawing. Tombol + di sumbu harga untuk pasang order.',trend:'Trendline: ketuk dua titik atau seret.',ray:'Ray: ketuk dua titik atau seret.',hline:'Garis horizontal: ketuk chart.',vline:'Garis vertikal: ketuk chart.',rect:'Zona: ketuk dua titik atau seret.',fib:'Fibonacci: titik 1 = Body (1.000), titik 2 = Wick (0.000).',measure:'Ukur: ketuk dua titik untuk jarak harga, % dan waktu.',long:'Long position: ketuk chart untuk menaruh entry/SL/TP, lalu seret handle.',short:'Short position: ketuk chart untuk menaruh entry/SL/TP, lalu seret handle.'};
+function setTool(t){
+  S.drawTool=t;S.drawDraft=null;if(t!=='cursor'){S.cur=null;closeMenu();}
+  document.querySelectorAll('#btCard [data-draw]').forEach(x=>x.classList.toggle('on',x.dataset.draw===t));
+  const hp=$('btDrawHelp');if(hp)hp.textContent=HELP[t]||'';
+  if(S.pick)setPick(S.pick);
+  dirty();
+}
+const barAtX=x=>cl(Math.round((x-geo.padL)/geo.step-0.5+geo.first),0,geo.last);
+function snapPoint(p){
+  const k=barAtX(p.x);let price=geo.priceAt(p.y);
+  if(S.magnet){const b=getBar(geo.T,k,[0,0,0,0,0]);let best=null,bd=24;[b[1],b[2],b[3],b[4]].forEach(v=>{const dd=Math.abs(geo.y(v)-p.y);if(dd<bd){bd=dd;best=v;}});if(best!=null)price=best;}
+  return {k,i:geo.T.s[k],price};
+}
+function mkDraw(tool,pt){return {type:tool,i1:pt.i,p1:pt.price,i2:pt.i,p2:pt.price,color:DCOL[0],id:S.dragId++};}
+function mkPos(tool,pt){const dist=defSLDist(),dir=tool==='long'?1:-1,k2=Math.min(geo.T.s.length-1,pt.k+10);return {type:tool,i1:pt.i,i2:geo.T.s[k2],p1:rp(pt.price),p2:rp(pt.price),sl:rp(pt.price-dir*dist),tp:rp(pt.price+dir*dist*2),color:tool==='long'?'#2df5a3':'#ff4b6e',id:S.dragId++};}
+function finishDraw(d){
+  if(d.type==='measure')S.drawings=S.drawings.filter(x=>x.type!=='measure');
+  S.drawings.push(d);S.selDraw=S.drawings.length-1;S.sel=null;syncTicketFromSel();
+  setTool('cursor');renderSelBar();renderDrawingList();dirty();persist();
+}
+function segDist(px_,py,x1,y1,x2,y2,ray){const dx=x2-x1,dy=y2-y1,l=dx*dx+dy*dy;let t=l?((px_-x1)*dx+(py-y1)*dy)/l:0;t=ray?Math.max(0,t):cl(t,0,1);return Math.hypot(px_-(x1+t*dx),py-(y1+t*dy));}
+function bodyHit(d,p,thr){
+  const T=geo.T,X=i=>geo.x(T.bidx[cl(Math.round(i),0,S.n-1)]),x1=X(d.i1),x2=X(d.i2??d.i1),y1=geo.y(d.p1),y2=geo.y(d.p2??d.p1);
+  switch(d.type){
+    case 'hline':return Math.abs(p.y-y1)<=thr;
+    case 'vline':return Math.abs(p.x-x1)<=thr;
+    case 'trend':return segDist(p.x,p.y,x1,y1,x2,y2,false)<=thr;
+    case 'ray':return segDist(p.x,p.y,x1,y1,x2,y2,true)<=thr;
+    case 'rect':case 'measure':return p.x>=Math.min(x1,x2)-thr&&p.x<=Math.max(x1,x2)+thr&&p.y>=Math.min(y1,y2)-thr&&p.y<=Math.max(y1,y2)+thr;
+    case 'fib':if(p.x<Math.min(x1,x2)-thr||p.x>Math.max(x1,x2)+thr)return false;return FIB_LEVELS.some(([,r])=>Math.abs(p.y-geo.y(d.p2+(d.p1-d.p2)*r))<=thr);
+    case 'long':case 'short':{const xa=Math.min(x1,x2),xb=Math.max(Math.max(x1,x2),xa+70),ya=Math.min(geo.y(d.sl),geo.y(d.tp)),yb=Math.max(geo.y(d.sl),geo.y(d.tp));return p.x>=xa&&p.x<=xb&&p.y>=ya&&p.y<=yb;}
+  }
+  return false;
+}
+function drawHit(p){
+  const thr=S.touch?14:7,hr=S.touch?18:10;
+  if(S.selDraw!=null&&S.drawings[S.selDraw]){for(const h of drawingHandles(S.drawings[S.selDraw]))if(Math.hypot(p.x-h.x,p.y-h.y)<=hr)return {idx:S.selDraw,part:h.n};}
+  for(let i=S.drawings.length-1;i>=0;i--)if(bodyHit(S.drawings[i],p,thr))return {idx:i,part:'body'};
+  return null;
+}
+function dragDraw(dd,p){
+  const d=S.drawings[dd.idx];if(!d)return;const pt=snapPoint(p),o=dd.orig,T=geo.T,part=dd.part;
+  if(part==='body'){
+    const dk=pt.k-dd.k0,dz=geo.priceAt(p.y)-dd.price0,mv=i=>T.s[cl(T.bidx[cl(Math.round(i),0,S.n-1)]+dk,0,T.s.length-1)];
+    d.i1=mv(o.i1);d.i2=mv(o.i2??o.i1);d.p1=o.p1+dz;d.p2=(o.p2??o.p1)+dz;if(o.sl)d.sl=o.sl+dz;if(o.tp)d.tp=o.tp+dz;
+  }else if(part==='p1'){d.i1=pt.i;d.p1=pt.price;}
+  else if(part==='p2'){d.i2=pt.i;d.p2=pt.price;}
+  else if(part==='entry'){const dz=pt.price-o.p1;d.i1=pt.i;d.p1=pt.price;d.sl=o.sl+dz;d.tp=o.tp+dz;}
+  else if(part==='sl'){const v=pt.price;if(d.type==='long'?v<d.p1:v>d.p1)d.sl=v;}
+  else if(part==='tp'){const v=pt.price;if(d.type==='long'?v>d.p1:v<d.p1)d.tp=v;}
+  else if(part==='right'){d.i2=pt.i;}
+}
+function syncTicketTP(){
+  if(S.sel)return;const e=nz($('btEntry').value)||px(),sl=nz($('btSL').value),rr=rrValue();
+  if(rr==null||!(e>0&&sl>0)||e===sl)return;const tp=autoTpFromSL(e,sl,sl<e?'buy':'sell');if(tp!=null)$('btTP').value=tp.toFixed(S.dec||2);
+}
+function setPick(k){
+  S.pick=(S.pick===k)?null:k;
+  document.querySelectorAll('#view-backtest .bt-pick').forEach(b=>b.classList.toggle('on',b.dataset.pick===S.pick));
+  $('btPickStart')?.classList.toggle('on',S.pick==='start');
+  $('btChart').parentElement.classList.toggle('picking',!!S.pick);dirty();
+}
+function handlePick(p){
+  const pt=snapPoint(p);
+  if(S.pick==='start'){
+    const baseIdx=geo.T.s[pt.k];
+    if(Number.isFinite(baseIdx)&&baseIdx<S.n-1){pause();if(S.closed.length&&!confirm('Memulai ulang dari candle ini akan menghapus posisi dan hasil sesi saat ini. Lanjutkan?')){setPick(null);return;}S.start=baseIdx;resetSession(baseIdx);$('btJump').value=toLocal(S.B.t[baseIdx]);msg(`Awal replay dipindahkan ke ${fdt(S.B.t[baseIdx])} UTC.`,'ok');}
+    else msg('Pilih candle yang memiliki data setelahnya.','err');
+    setPick(null);
+  }else{
+    const f={entry:'entry',sl:'sl',tp:'tp'}[S.pick],id={entry:'btEntry',sl:'btSL',tp:'btTP'}[S.pick];
+    $(id).value=rp(geo.priceAt(p.y)).toFixed(S.dec);setPick(null);
+    if(S.sel)ticketEdit(f);else if(f==='sl')syncTicketTP();
+  }
+  dirty();
+}
+function runAct(a){
+  switch(a.t){
+    case 'chip':openMenu(a.price);break;
+    case 'sel':setSel(a.kind,a.id);break;
+    case 'close':closeById(a.id);break;
+    case 'rev':reverseById(a.id);break;
+    case 'cancel':cancelById(a.id);break;
+    case 'flip':flipPending(a.id);break;
+    case 'addsl':addLevel(a.kind,a.id,'sl');break;
+    case 'addtp':addLevel(a.kind,a.id,'tp');break;
+    case 'rmsl':removeLevel(a.kind,a.id,'sl');break;
+    case 'rmtp':removeLevel(a.kind,a.id,'tp');break;
+  }
+}
 function download(name,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
 function exportCsv(){
   if(!S.closed.length)return msg('Belum ada trade untuk diekspor.','err');
@@ -8734,8 +9346,6 @@ function exportPng(){
   txt('Simulasi berbasis candle, bukan jaminan hasil nyata',W-48,H-34,14,'#6f7a8e',500,'right');
   cv.toBlob(b=>b&&download(`backtest_${(S.name||'data').replace(/\W+/g,'_')}.png`,b),'image/png');
 }
-
-/* ---------- persistence (IndexedDB) ---------- */
 const idb={open(){return new Promise((res,rej)=>{if(!window.indexedDB)return rej(new Error('no idb'));const r=indexedDB.open('ffx_bt',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});},
   async get(k){const db=await this.open();return new Promise((res,rej)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});},
   async set(k,v){const db=await this.open();return new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});}};
@@ -8758,11 +9368,10 @@ async function offerResume(){
       S.dayKey=s.dayKey;S.dayStartEq=s.dayStartEq;S.breach=s.breach;S.violations=s.violations||[];S.vioKeys=s.vioKeys||{};S.targetHit=!!s.targetHit;S.tf=(s.tf&&s.tf>=s.baseSec)?s.tf:0;S.view.off=0;S.sig={pos:'',closed:-1};
       buildTfButtons();$('btDataInfo').textContent=`${s.name} · ${tfName(s.baseSec)} · ${s.n.toLocaleString('en-US')} candle · ${fdt(s.B.t[0])} → ${fdt(s.B.t[s.n-1])}`;
       const j=$('btJump');j.min=toLocal(s.B.t[0]);j.max=toLocal(s.B.t[s.n-1]);
-      box.innerHTML='';msg('Sesi terakhir dipulihkan.','ok');S.force=true;dirty();
+      box.innerHTML='';S.sel=null;S.cur=null;setDataCollapsed(true);syncTicketFromSel();msg('Sesi terakhir dipulihkan.','ok');S.force=true;dirty();
     };
   }catch(e){}
 }
-
 /* ---------- settings ---------- */
 const CFG_MAP={btBal:['balance',1],btContract:['contract',1],btLev:['leverage',1],btSpread:['spread',1],btComm:['comm',1],btMPct:['marginPct',1],btBuf:['buffer',1],btDaily:['daily',1],btOverall:['overall',1],btTarget:['target',1],btMBase:['marginBase',0],btDDMode:['overallMode',0],btDDBasis:['ddBasis',0],btProp:['prop','c'],btBlock:['block','c'],btStop:['stop','c']};
 function syncCfgInputs(){Object.keys(CFG_MAP).forEach(id=>{const [k,t]=CFG_MAP[id],el=$(id);if(!el)return;if(t==='c')el.checked=!!cfg[k];else el.value=cfg[k];});$('btRisk').value=cfg.risk;}
@@ -8770,26 +9379,6 @@ function updateDDExplain(){
   const e=$('btDDExplain');if(!e)return;
   if(cfg.overallMode==='trailing'){e.innerHTML=`<b>Trailing DD:</b> floor bergerak mengikuti peak ${cfg.ddBasis==='equity'?'equity (termasuk floating P/L)':'balance (closed P/L)'}. Allowance = ${f2(cfg.overall)}% × balance awal (${fm(S.initial||cfg.balance)}). Floor saat ini: <b>${fm((cfg.ddBasis==='balance'?(S.balancePeak||S.initial||cfg.balance):(S.peak||S.initial||cfg.balance))-(S.initial||cfg.balance)*nz(cfg.overall)/100)}</b>. Equity menyentuh floor = breach.`;}
   else {e.innerHTML=`<b>Static DD:</b> floor breach tetap di <b>${fm((S.initial||cfg.balance)*(1-nz(cfg.overall)/100))}</b> (${f2(cfg.overall)}% di bawah balance awal). Profit tidak menggeser floor.`;}
-}
-function rrValue(){const v=$('btRR')?.value??'custom';return v==='custom'?null:nz(v);}
-function autoTpFromSL(entry,sl,side){
-  const rr=rrValue();if(rr==null||!(entry>0&&sl>0)||entry===sl)return null;
-  const dist=Math.abs(entry-sl);let direction=side;
-  if(!direction)direction=sl<entry?'buy':'sell';
-  return entry+(direction==='buy'?1:-1)*dist*rr;
-}
-function ticketSide(){if(S.selectedOrder){const arr=S.selectedOrder.kind==='pos'?S.pos:S.pend;const o=arr.find(x=>x.id===S.selectedOrder.id);if(o)return o.side;}const e=nz($('btEntry').value)||px(),sl=nz($('btSL').value);return sl<e?'buy':'sell';}
-function syncTicketTP(){const e=nz($('btEntry').value)||px(),sl=nz($('btSL').value),rr=rrValue();if(rr==null||!(e>0&&sl>0)||e===sl)return;const tp=autoTpFromSL(e,sl,ticketSide());if(tp!=null)$('btTP').value=tp.toFixed(S.dec||2);}
-
-function syncPositionTP(p){
-  const rr=rrValue();if(rr==null||!(p.entry>0&&p.sl>0)||p.entry===p.sl)return;
-  const side=p.side||(p.sl<p.entry?'buy':'sell');p.tp=autoTpFromSL(p.entry,p.sl,side)||p.tp;
-}
-function renderDrawingList(){
-  const box=$('btDrawingList');if(!box)return;
-  if(!S.drawings.length){box.innerHTML='<span style="font-size:10.5px;color:var(--faint)">Belum ada drawing. Setiap drawing dapat dihapus satu per satu di sini.</span>';return;}
-  const names={trend:'Trendline',ray:'Ray',hline:'Horizontal',vline:'Vertical',rect:'Zona',fib:'Fibonacci'};
-  box.innerHTML=S.drawings.map((d,i)=>`<span class="bt-drawing-chip ${S.selectedDrawing===i?'selected':''}"><span>${i+1}. ${names[d.type]||d.type}</span><button type="button" data-del-drawing="${i}" aria-label="Hapus drawing ${i+1}" title="Hapus drawing ini">×</button></span>`).join('');
 }
 function bindSettings(){
   syncCfgInputs();updateDDExplain();
@@ -8804,189 +9393,207 @@ function bindSettings(){
     el.addEventListener('input',on);el.addEventListener('change',on);
   });
   $('btRisk').addEventListener('input',()=>{cfg.risk=nz($('btRisk').value);saveCfg();});
-  ['btLots','btEntry','btSL','btTP'].forEach(id=>$(id).addEventListener('input',()=>{if(id==='btSL'||id==='btEntry')syncTicketTP();dirty();}));
+  $('btAutoSL').value=cfg.autoSL>0?cfg.autoSL:'';
+  $('btAutoSL').addEventListener('input',()=>{cfg.autoSL=nz($('btAutoSL').value);saveCfg();});
+  $('btLots').addEventListener('input',()=>{const q=$('btQLot');if(q)q.value=$('btLots').value;dirty();});
+  ['btSL','btEntry'].forEach(id=>$(id).addEventListener('input',()=>{syncTicketTP();dirty();}));
+  $('btEntry').addEventListener('change',()=>ticketEdit('entry'));$('btSL').addEventListener('change',()=>ticketEdit('sl'));$('btTP').addEventListener('change',()=>ticketEdit('tp'));
+  $('btTP').addEventListener('input',dirty);
+}
+
+/* ---------- layar penuh ---------- */
+function setFull(on){
+  const card=$('btCard');if(!card||on===S.full)return;S.full=on;
+  if(on){S.ph=document.createComment('btx');card.parentNode.insertBefore(S.ph,card);document.body.appendChild(card);card.classList.add('full');document.documentElement.classList.add('btx-noscroll');}
+  else{if(S.ph&&S.ph.parentNode){S.ph.parentNode.insertBefore(card,S.ph);S.ph.remove();}card.classList.remove('full');document.documentElement.classList.remove('btx-noscroll');}
+  const b=$('btFull');if(b){b.textContent=on?'✕':'⛶';b.title=on?'Keluar layar penuh':'Layar penuh';}
+  dirty();setTimeout(dirty,80);
 }
 
 /* ---------- interaksi chart ---------- */
 function bindChart(){
   const cv=$('btChart'),wrap=cv.parentElement;
-  const ptrs=new Map();let dragStart=null,pinch0=0,moved=false,draggingOrder=false;
+  const ptrs=new Map();let drag=null,pinch0=0;
   const rel=e=>{const r=cv.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
-  const priceAt=p=>geo.hi-(p.y-geo.padT)/geo.chh*(geo.hi-geo.lo);
-  const lineHit=(p)=>{
-    if(!geo||S.drawTool!=='cursor'||S.pick)return null;
-    const candidates=[];const add=(kind,obj,id,field,price)=>{if(price>0){const d=Math.abs(p.y-(geo.padT+(geo.hi-price)/(geo.hi-geo.lo)*geo.chh));if(d<10)candidates.push({kind,obj,id,field,price,d});}};
-    S.pos.forEach(o=>{add('pos',o,o.id,'entry',o.entry);add('pos',o,o.id,'sl',o.sl);add('pos',o,o.id,'tp',o.tp);});
-    S.pend.forEach(o=>{add('pend',o,o.id,'entry',o.price);add('pend',o,o.id,'sl',o.sl);add('pend',o,o.id,'tp',o.tp);});
-    candidates.sort((a,b)=>a.d-b.d);return candidates[0]||null;
-  };
-  const selectOrder=(hit)=>{
-    S.selectedOrder={kind:hit.kind,id:hit.id};
-    const o=hit.obj;
-    if(hit.kind==='pos'){
-      $('btEntry').value=o.entry.toFixed(S.dec);$('btSL').value=o.sl>0?o.sl.toFixed(S.dec):'';$('btTP').value=o.tp>0?o.tp.toFixed(S.dec):'';
-      msg(`Posisi #${o.id} dipilih. Klik dan seret garis Entry ke sisi risiko untuk memasang/mengubah SL; TP mengikuti preset RR. Garis SL/TP tetap bisa diseret langsung.`,'ok');
-    }else{
-      $('btEntry').value=o.price.toFixed(S.dec);$('btSL').value=o.sl>0?o.sl.toFixed(S.dec):'';$('btTP').value=o.tp>0?o.tp.toFixed(S.dec):'';
-      msg(`Pending order #${o.id} dipilih. Seret Entry ke sisi risiko untuk memasang/mengubah SL; TP mengikuti preset RR. Seret Entry ke sisi sebaliknya untuk mengubah harga pending.`,'ok');
+  const inPlot=p=>geo&&p.x>=geo.padL&&p.x<=geo.padL+geo.cw&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh;
+  const inAxis=p=>geo&&p.x>geo.padL+geo.cw&&p.x<=geo.W&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh;
+  function hitTest(p){
+    for(let i=S.hits.length-1;i>=0;i--){const h=S.hits[i];if(p.x>=h.x&&p.x<=h.x+h.w&&p.y>=h.y&&p.y<=h.y+h.h)return {k:'hit',h};}
+    if(S.drawTool==='cursor'&&!S.pick&&inPlot(p)){
+      const thr=S.touch?16:8;let best=null;
+      for(const L of S.lines){const d=Math.abs(p.y-L.y);if(d<=thr&&(!best||d<best.d||(d===best.d&&L.field!=='entry')))best={d,L};}
+      if(best)return {k:'line',L:best.L};
+      const dh=drawHit(p);if(dh)return {k:'draw',...dh};
     }
-    S.sig.pos='';dirty();
-  };
+    return null;
+  }
   cv.addEventListener('pointerdown',e=>{
-    const p=rel(e);
-    try{cv.setPointerCapture(e.pointerId);}catch(_){/* Safari may reject capture after tab/layout changes */}
-    ptrs.set(e.pointerId,p);moved=false;draggingOrder=false;
-    const hit=ptrs.size===1&&(!geo||p.x<geo.padL+geo.cw)?lineHit(p):null;
-    if(hit){selectOrder(hit);
-      // Entry adalah handle besar untuk mengatur SL tanpa perlu mengisi angka.
-      if(hit.field==='entry'){S.dragLine={...hit,field:hit.kind==='pos'?'sl-arm':'entry-smart',pointerId:e.pointerId};draggingOrder=true;dragStart=null;}
-      else if(hit.field==='sl'||hit.field==='tp'){S.dragLine={...hit,pointerId:e.pointerId};draggingOrder=true;dragStart=null;}
-      else{S.dragLine=null;dragStart=null;}}
-    // Saat memilih candle awal, memasang drawing, atau memakai alat gambar, satu sentuhan
-    // harus menjadi tap, bukan dianggap pan. Ini menghindari tap Android/iOS berubah jadi drag.
-    else if(ptrs.size===1 && !S.pick && (!S.drawTool || S.drawTool==='cursor'))dragStart={x:p.x,y:p.y,off:S.view.off,yShift:S.view.yShift||0,pointerType:e.pointerType||'mouse'};
-    else if(ptrs.size===1)dragStart=null;
-    if(ptrs.size===2){const a=[...ptrs.values()];pinch0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);dragStart=null;S.dragLine=null;draggingOrder=false;}
+    if(!S.B||!geo)return;if(e.pointerType==='mouse'&&e.button!==0)return;
+    S.touch=e.pointerType!=='mouse';
+    const p=rel(e);try{cv.setPointerCapture(e.pointerId);}catch(_){}
+    ptrs.set(e.pointerId,p);
+    if(S.menu)closeMenu();
+    if(ptrs.size===2){const a=[...ptrs.values()];pinch0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);drag={t:'pinch'};return;}
+    const base={sx:p.x,sy:p.y,moved:false,id:e.pointerId},h=hitTest(p);
+    if(h&&h.k==='hit'){const a=h.h.act;if(a.t==='line'){setSel(a.L.kind,a.L.id);drag={...base,t:'line',L:a.L};}else drag={...base,t:'btn',act:a};}
+    else if(h&&h.k==='line'){setSel(h.L.kind,h.L.id);drag=h.L.drag?{...base,t:'line',L:h.L}:{...base,t:'linetap'};}
+    else if(h&&h.k==='draw'){S.selDraw=h.idx;S.sel=null;S.cur=null;syncTicketFromSel();renderSelBar();renderDrawingList();drag={...base,t:'draw',idx:h.idx,part:h.part,orig:JSON.parse(JSON.stringify(S.drawings[h.idx])),k0:barAtX(p.x),price0:geo.priceAt(p.y)};}
+    else if(inAxis(p))drag={...base,t:'axis',z0:S.view.yZoom||1};
+    else if(S.drawTool!=='cursor'&&!S.pick&&inPlot(p)){
+      const tl=S.drawTool;
+      if(['hline','vline','long','short'].includes(tl))drag={...base,t:'tool',single:true};
+      else{const pt=snapPoint(p);if(!S.drawDraft){S.drawDraft=mkDraw(tl,pt);drag={...base,t:'tool',first:true};}else drag={...base,t:'tool',first:false};}
+    }
+    else drag={...base,t:'pan',off:S.view.off,ys:S.view.yShift||0};
+    dirty();
   });
   cv.addEventListener('pointermove',e=>{
-    const p=rel(e);S.hover=p;
-    if(S.drawDraft&&geo&&S.drawTool!=='cursor'&&p.x>=geo.padL&&p.x<=geo.padL+geo.cw&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh){const kx=cl(Math.round((p.x-geo.padL)/geo.step-0.5+geo.first),0,geo.T.t.length-1);S.drawDraft.i2=geo.T.s[kx]??S.i;S.drawDraft.p2=priceAt(p);}
+    const p=rel(e);if(e.pointerType==='mouse')S.hover=p;
     if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,p);
-    if(S.dragLine&&S.dragLine.pointerId===e.pointerId&&geo&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh){
-      const hit=S.dragLine,price=priceAt(p),o=hit.obj;moved=true;draggingOrder=true;
-      if(hit.field==='sl-arm'){
-        const entry=o.entry,valid=o.side==='buy'?price<entry:price>entry;
-        if(valid){o.sl=price;const tp=autoTpFromSL(entry,o.sl,o.side);if(tp!=null)o.tp=tp;}
-      }else if(hit.field==='entry-smart'){
-        const entry=o.price,validSL=o.side==='buy'?price<entry:price>entry;
-        if(validSL){o.sl=price;const tp=autoTpFromSL(entry,o.sl,o.side);if(tp!=null)o.tp=tp;}
-        else{
-          const bid=px(),ask=bid+sp(),eps=Math.max(sp()*0.05,Math.pow(10,-Math.max(0,S.dec))/2);
-          const validEntry=o.side==='buy'?(o.type==='limit'?price<ask-eps:price>ask+eps):(o.type==='limit'?price>bid+eps:price<bid-eps);
-          if(validEntry){o.price=price;if(o.sl>0&&rrValue()!=null)o.tp=autoTpFromSL(o.price,o.sl,o.side)||o.tp;}
-        }
-      }else if(hit.field==='sl'){const entry=hit.kind==='pos'?o.entry:o.price;const valid=o.side==='buy'?price<entry:price>entry;if(valid){o.sl=price;if(rrValue()!=null){const tp=autoTpFromSL(entry,o.sl,o.side);if(tp!=null)o.tp=tp;}}}
-      else if(hit.field==='tp'){const entry=hit.kind==='pos'?o.entry:o.price;const valid=o.side==='buy'?price>entry:price<entry;if(valid)o.tp=price;}
-      if(hit.kind==='pos'){$('btEntry').value=o.entry.toFixed(S.dec);$('btSL').value=o.sl>0?o.sl.toFixed(S.dec):'';$('btTP').value=o.tp>0?o.tp.toFixed(S.dec):'';}
-      else{$('btEntry').value=o.price.toFixed(S.dec);$('btSL').value=o.sl>0?o.sl.toFixed(S.dec):'';$('btTP').value=o.tp>0?o.tp.toFixed(S.dec):'';}
-      S.sig.pos='';dirty();
-    }else if(ptrs.size===2&&pinch0>0){const a=[...ptrs.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(Math.abs(d-pinch0)>6){S.view.n=cl(Math.round(S.view.n*pinch0/d),20,800);pinch0=d;moved=true;}}
-    else if(dragStart&&geo&&!S.dragLine){
-      const dx=p.x-dragStart.x,dy=p.y-dragStart.y;
-      // Threshold lebih toleran untuk jari; tap candle tidak lagi salah terbaca sebagai pan.
-      const threshold=dragStart.pointerType==='touch'?11:4;
-      if(Math.abs(dx)>threshold||Math.abs(dy)>threshold)moved=true;
-      if(moved){const maxOff=Math.max(0,geo.last-10);S.view.off=cl(Math.round(dragStart.off+dx/geo.step),0,maxOff);S.view.yShift=cl(dragStart.yShift+dy/Math.max(1,geo.chh),-3,3);}
+    if(!drag){dirty();return;}
+    if(drag.t==='pinch'){if(ptrs.size>=2&&pinch0>0){const a=[...ptrs.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(Math.abs(d-pinch0)>4){S.view.n=cl(Math.round(S.view.n*pinch0/d),20,800);pinch0=d;}}dirty();return;}
+    if(e.pointerId!==drag.id)return;
+    const th=S.touch?10:4;if(!drag.moved&&Math.hypot(p.x-drag.sx,p.y-drag.sy)>th)drag.moved=true;
+    switch(drag.t){
+      case 'pan':if(drag.moved){const maxOff=Math.max(0,geo.last-10);S.view.off=cl(Math.round(drag.off+(p.x-drag.sx)/geo.step),0,maxOff);S.view.yShift=cl(drag.ys+(p.y-drag.sy)/geo.chh*1.12*(S.view.yZoom||1),-3,3);}break;
+      case 'axis':if(drag.moved)S.view.yZoom=cl(drag.z0*Math.exp((p.y-drag.sy)/200),0.15,10);break;
+      case 'line':if(drag.moved&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh)applyDrag(drag.L,geo.priceAt(p.y));break;
+      case 'draw':if(drag.moved)dragDraw(drag,p);break;
+      case 'tool':if(S.drawDraft&&!drag.single){const pt=snapPoint(p);S.drawDraft.i2=pt.i;S.drawDraft.p2=pt.price;}break;
+      case 'btn':if(drag.moved&&drag.act.t==='chip'&&S.touch)S.cur={price:geo.priceAt(p.y)};break;
     }
     dirty();
   });
   const up=e=>{
-    const wasClick=!moved&&ptrs.size===1,p=rel(e),hadDrag=!!S.dragLine;
-    if(hadDrag&&S.dragLine.pointerId===e.pointerId){S.dragLine=null;draggingOrder=false;persist();dirty();}
-    ptrs.delete(e.pointerId);if(ptrs.size<2)pinch0=0;if(!ptrs.size)dragStart=null;
-    if(wasClick&&!hadDrag&&!S.pick&&geo&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh&&p.x>=geo.padL+geo.cw&&p.x<=geo.W){
-      const price=priceAt(p);const mode=$('btChartOrderType').value||S.orderMode||'buy-limit';S.orderMode=mode;placeChartPending(mode,price);moved=false;return;
-    }
-    // Mode chart opsional: klik di dalam plot untuk memasang pending order.
-    if(wasClick&&!hadDrag&&S.orderCursor&&!S.pick&&geo&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh&&p.x>=geo.padL&&p.x<=geo.padL+geo.cw){
-      const price=priceAt(p);placeChartPending(S.orderMode,price);moved=false;return;
-    }
-    if(wasClick&&!hadDrag&&S.drawTool==='cursor'&&!S.pick&&geo){
-      const hit=lineHit(p);
-      if(hit){selectOrder(hit);if(hit.field==='entry')msg(`Entry #${hit.id} dipilih. Seret ke sisi risiko untuk memasang/mengubah SL; TP mengikuti preset RR.`,'ok');}
-      else if(S.selectedOrder){S.selectedOrder=null;dirty();}
-    }
-    if(wasClick&&S.drawTool&&S.drawTool!=='cursor'&&!S.pick&&geo){
-      if(p.y>=geo.padT&&p.y<=geo.padT+geo.chh&&p.x>=geo.padL&&p.x<=geo.padL+geo.cw){
-        const kx=cl(Math.round((p.x-geo.padL)/geo.step-0.5+geo.first),0,geo.T.t.length-1),baseIdx=geo.T.s[kx]??S.i,price=priceAt(p),tool=S.drawTool;
-        if(tool==='hline'||tool==='vline'){S.drawings.push({type:tool,i1:baseIdx,i2:baseIdx,p1:tool==='hline'?price:geo.T.c[kx],p2:tool==='hline'?price:geo.T.c[kx],color:pal().gold});renderDrawingList();}
-        else if(!S.drawDraft){S.drawDraft={type:tool,i1:baseIdx,i2:baseIdx,p1:price,p2:price,color:pal().gold};$('btDrawHelp').textContent='Klik titik kedua untuk menyelesaikan '+({trend:'trendline',rect:'zona',fib:'Fibonacci'}[tool]||'drawing')+'.';}
-        else{S.drawDraft.i2=baseIdx;S.drawDraft.p2=price;S.drawings.push(S.drawDraft);S.drawDraft=null;$('btDrawHelp').textContent=tool==='fib'?'Fibonacci tersimpan: titik pertama = Body 1.000, titik kedua = Wick 0.000.':'Drawing tersimpan. Pilih alat lain atau lanjut gambar.';renderDrawingList();}
-        dirty();persist();
+    const p=rel(e);ptrs.delete(e.pointerId);if(ptrs.size<2)pinch0=0;
+    if(!drag)return;
+    if(drag.t==='pinch'){if(!ptrs.size)drag=null;return;}
+    if(e.pointerId!==drag.id)return;
+    const d=drag;drag=null;if(e.pointerType!=='mouse')S.hover=null;
+    if(d.t==='btn'){if(!d.moved)runAct(d.act);}
+    else if(d.t==='line'||d.t==='draw'){if(d.moved)persist();}
+    else if(d.t==='axis'){if(!d.moved&&S.drawTool==='cursor'&&!S.pick&&inAxis(p))openMenu(geo.priceAt(p.y));}
+    else if(d.t==='tool'){
+      if(d.single){const pt=snapPoint(p),tl=S.drawTool;finishDraw(tl==='hline'||tl==='vline'?{type:tl,i1:pt.i,i2:pt.i,p1:pt.price,p2:pt.price,color:DCOL[0],id:S.dragId++}:mkPos(tl,pt));}
+      else if(S.drawDraft){
+        if(d.first&&!d.moved){const hp=$('btDrawHelp');if(hp)hp.textContent='Ketuk titik kedua untuk menyelesaikan.';}
+        else{const pt=snapPoint(p);S.drawDraft.i2=pt.i;S.drawDraft.p2=pt.price;const dd=S.drawDraft;S.drawDraft=null;finishDraw(dd);}
       }
     }
-    if(wasClick&&S.pick&&geo){
-      if(p.y>=geo.padT&&p.y<=geo.padT+geo.chh&&p.x>=geo.padL&&p.x<=geo.padL+geo.cw){
-        const kx=Math.round((p.x-geo.padL)/geo.step-0.5+geo.first);
-        if(S.pick==='start'){
-          const baseIdx=geo.T.s[Math.max(0,Math.min(geo.T.s.length-1,kx))];
-          if(Number.isFinite(baseIdx)&&baseIdx<S.n-1){pause();if(S.closed.length&&!confirm('Memulai ulang dari candle ini akan menghapus posisi dan hasil sesi saat ini. Lanjutkan?')){setPick(null);return;}S.start=baseIdx;resetSession(baseIdx);const j=$('btJump');j.value=toLocal(S.B.t[baseIdx]);msg(`Awal replay dipindahkan ke ${fdt(S.B.t[baseIdx])} UTC.`,'ok');}
-          else msg('Pilih candle yang memiliki data setelahnya.','err');setPick(null);dirty();
-        }else{const price=priceAt(p),id={entry:'btEntry',sl:'btSL',tp:'btTP'}[S.pick];$(id).value=price.toFixed(S.dec);if(S.pick==='sl')syncTicketTP();setPick(null);dirty();}
-      }
+    else if(d.t==='pan'&&!d.moved&&inPlot(p)){
+      if(S.pick)handlePick(p);
+      else if(S.sel||S.selDraw!=null)clearSel();
+      else if(S.touch)S.cur={price:geo.priceAt(p.y)};
     }
-    moved=false;
+    dirty();
   };
   cv.addEventListener('pointerup',up);
-  const cancelPointer=e=>{ptrs.delete(e.pointerId);if(S.dragLine&&S.dragLine.pointerId===e.pointerId)S.dragLine=null;if(ptrs.size<2)pinch0=0;if(!ptrs.size)dragStart=null;draggingOrder=false;dirty();};
-  cv.addEventListener('pointercancel',cancelPointer);
-  cv.addEventListener('lostpointercapture',cancelPointer);
-  cv.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch'){S.hover=null;dirty();}});
-  cv.addEventListener('wheel',e=>{e.preventDefault();S.view.n=cl(Math.round(S.view.n*(e.deltaY>0?1.12:0.89)),20,800);dirty();},{passive:false});
+  const cancel=e=>{ptrs.delete(e.pointerId);if(drag&&(drag.id===e.pointerId||drag.t==='pinch'))drag=null;if(ptrs.size<2)pinch0=0;dirty();};
+  cv.addEventListener('pointercancel',cancel);
+  cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){S.hover=null;dirty();}});
+  cv.addEventListener('contextmenu',e=>{e.preventDefault();if(!geo||!S.B)return;const p=rel(e);if((inPlot(p)||inAxis(p))&&S.drawTool==='cursor')openMenu(geo.priceAt(p.y));});
+  cv.addEventListener('dblclick',e=>{if(!geo)return;S.view.yShift=0;S.view.yZoom=1;S.view.off=0;dirty();});
+  cv.addEventListener('wheel',e=>{
+    e.preventDefault();if(!geo)return;const p=rel(e);
+    if(inAxis(p))S.view.yZoom=cl((S.view.yZoom||1)*(e.deltaY>0?1.1:0.9),0.15,10);
+    else if(e.shiftKey)S.view.off=cl(S.view.off+(e.deltaY>0?-3:3),0,Math.max(0,geo.last-10));
+    else S.view.n=cl(Math.round(S.view.n*(e.deltaY>0?1.12:0.89)),20,800);
+    dirty();
+  },{passive:false});
   new ResizeObserver(()=>dirty()).observe(wrap);new ResizeObserver(()=>{S.sig.closed=-1;dirty();}).observe($('btEq').parentElement);
-}
-function setPick(k){
-  S.pick=(S.pick===k)?null:k;
-  root.querySelectorAll('.bt-pick').forEach(b=>b.classList.toggle('on',b.dataset.pick===S.pick));
-  $('btPickStart')?.classList.toggle('on',S.pick==='start');
-  $('btChart').parentElement.classList.toggle('picking',!!S.pick);dirty();
 }
 
 /* ---------- binding ---------- */
 function bind(){
+  const card=$('btCard');
   root.dataset.src='csv';
   $('btSrc').addEventListener('change',()=>{root.dataset.src=$('btSrc').value;});
   $('btFile').addEventListener('change',e=>onFiles(e.target.files));
-  $('btPickStart').addEventListener('click',()=>{if(!S.B)return msg('Muat data terlebih dahulu.','err');setPick('start');msg('Mode pilih candle awal aktif. Klik candle yang diinginkan pada chart.','ok');});
-  $('btChartOrderType').addEventListener('change',e=>{S.orderMode=e.target.value;dirty();});
-  root.querySelectorAll('[data-draw]').forEach(b=>b.addEventListener('click',()=>{S.drawTool=b.dataset.draw;S.drawDraft=null;if(S.drawTool!=='cursor'){S.orderCursor=false;}root.querySelectorAll('[data-draw]').forEach(x=>x.classList.toggle('on',x===b));$('btDrawHelp').textContent=S.drawTool==='cursor'?'Cursor aktif: drag horizontal/vertikal untuk menggeser chart; scroll/pinch untuk zoom.':(S.drawTool==='fib'?'Fibonacci: klik titik pertama di Body (1.000), lalu titik kedua di Wick (0.000). Level SL, Entry, OTE, 50%, dan TP akan dihitung dari dua titik ini.':(['trend','ray','rect'].includes(S.drawTool)?'Klik dua titik pada chart untuk menyelesaikan drawing.':'Klik chart sekali untuk menempatkan drawing.'));setPick(null);dirty();}));
-  $('btDrawUndo').addEventListener('click',()=>{if(S.drawDraft){S.drawDraft=null;}else S.drawings.pop();renderDrawingList();dirty();persist();});
-  $('btDrawClear').addEventListener('click',()=>{if(!S.drawings.length&&!S.drawDraft)return;if(confirm('Hapus semua drawing pada chart ini?')){S.drawings=[];S.drawDraft=null;S.selectedDrawing=null;renderDrawingList();dirty();persist();}});
-  $('btDrawingList').addEventListener('click',e=>{const b=e.target.closest('[data-del-drawing]');if(!b)return;const i=+b.dataset.delDrawing;if(Number.isInteger(i)&&S.drawings[i]){S.drawings.splice(i,1);if(S.selectedDrawing===i)S.selectedDrawing=null;else if(Number.isInteger(S.selectedDrawing)&&S.selectedDrawing>i)S.selectedDrawing--;renderDrawingList();dirty();persist();msg('Drawing dihapus.','ok');}});
-  $('btRR').addEventListener('change',()=>{S.rrPreset=$('btRR').value;syncTicketTP();if(S.selectedOrder){const o=(S.selectedOrder.kind==='pos'?S.pos:S.pend).find(x=>x.id===S.selectedOrder.id);if(o&&o.sl>0){const entry=S.selectedOrder.kind==='pos'?o.entry:o.price;const tp=autoTpFromSL(entry,o.sl,o.side);if(tp!=null)o.tp=tp;}}S.sig.pos='';dirty();persist();});
+  $('btDataToggle').addEventListener('click',()=>setDataCollapsed(!$('btDataBody').hidden));
+  $('btPickStart').addEventListener('click',()=>{if(!S.B)return msg('Muat data terlebih dahulu.','err');if(S.drawTool!=='cursor')setTool('cursor');setPick('start');if(S.pick)msg('Ketuk candle yang ingin dijadikan awal replay.','ok');});
+  card.querySelectorAll('[data-draw]').forEach(b=>b.addEventListener('click',()=>{setTool(b.dataset.draw);}));
+  $('btDrawUndo').addEventListener('click',()=>{if(S.drawDraft){S.drawDraft=null;}else if(S.drawings.length){S.drawings.pop();S.selDraw=null;renderSelBar();}renderDrawingList();dirty();persist();});
+  $('btDrawClear').addEventListener('click',()=>{if(!S.drawings.length&&!S.drawDraft)return;if(confirm('Hapus semua drawing pada chart ini?')){S.drawings=[];S.drawDraft=null;S.selDraw=null;renderSelBar();renderDrawingList();dirty();persist();}});
+  $('btDrawingList').addEventListener('click',e=>{
+    const d=e.target.closest('[data-del-drawing]');if(d){deleteDrawing(+d.dataset.delDrawing);msg('Drawing dihapus.','ok');return;}
+    const s=e.target.closest('[data-sel-drawing]');if(s){S.selDraw=+s.dataset.selDrawing;S.sel=null;syncTicketFromSel();renderSelBar();renderDrawingList();dirty();}
+  });
+  $('btSelBar').addEventListener('click',e=>{
+    if(performance.now()-(S.uiT||0)<400)return;
+    const d=S.selDraw!=null?S.drawings[S.selDraw]:null;if(!d)return;
+    const c=e.target.closest('[data-c]');if(c){d.color=c.dataset.c;renderSelBar();dirty();persist();return;}
+    const b=e.target.closest('[data-sb]');if(!b)return;
+    if(b.dataset.sb==='del')deleteDrawing(S.selDraw);else if(b.dataset.sb==='order')orderFromDrawing(d);
+  });
+  $('btMenu').addEventListener('click',menuClick);
+  $('btMenu').addEventListener('pointerdown',e=>e.stopPropagation());
+  $('btMagnet').addEventListener('click',()=>{S.magnet=!S.magnet;cfg.magnet=S.magnet;saveCfg();$('btMagnet').classList.toggle('on',S.magnet);msg(S.magnet?'Magnet aktif: titik drawing menempel ke O/H/L/C.':'Magnet nonaktif.','ok');});
+  $('btMagnet').classList.toggle('on',S.magnet);
+  $('btAuto').addEventListener('click',()=>{S.view.yShift=0;S.view.yZoom=1;S.view.off=0;dirty();});
+  $('btFull').addEventListener('click',()=>setFull(!S.full));
+  // indikator
+  const im=$('btIndMenu');
+  im.innerHTML=IND_DEFS.map(d=>`<label><input type="checkbox" data-ind="${d.id}" ${S.ind[d.id]?'checked':''}><i style="background:${d.col}"></i>${d.label}</label>`).join('');
+  $('btIndBtn').addEventListener('click',e=>{e.stopPropagation();im.hidden=!im.hidden;});
+  im.addEventListener('change',e=>{const c=e.target.closest('[data-ind]');if(!c)return;S.ind[c.dataset.ind]=c.checked;try{localStorage.setItem(LS_IND,JSON.stringify(S.ind));}catch(_){}dirty();});
+  document.addEventListener('click',e=>{if(!im.hidden&&!im.contains(e.target)&&e.target!==$('btIndBtn'))im.hidden=true;});
+  $('btRR').addEventListener('change',()=>{S.rrPreset=$('btRR').value;const o=getSel();if(o&&o.sl>0){const entry=S.sel.kind==='pos'?o.entry:o.price,tp=autoTpFromSL(entry,o.sl,o.side);if(tp!=null)o.tp=rp(tp);syncTicketFromSel();}else syncTicketTP();S.sig.pos='';dirty();persist();});
   $('btLoadBin').addEventListener('click',onBinance);
   $('btPlay').addEventListener('click',()=>S.playing?pause():play());
   $('btStep').addEventListener('click',()=>{if(!S.B)return msg('Muat data dulu.','err');pause();step(1);});
   $('btStep10').addEventListener('click',()=>{if(!S.B)return msg('Muat data dulu.','err');pause();step(10);});
+  $('btStepBar').addEventListener('click',()=>{if(!S.B)return msg('Muat data dulu.','err');pause();stepBar();});
   $('btSpeed').addEventListener('change',()=>{S.speed=+$('btSpeed').value;});
+  $('btJumpToggle').addEventListener('click',()=>{const r=$('btJumpRow');r.hidden=!r.hidden;});
   $('btJumpGo').addEventListener('click',jumpTo);
   $('btReset').addEventListener('click',()=>{if(!S.B)return;if(S.closed.length&&!confirm('Reset sesi? Semua trade dan posisi akan dihapus.'))return;resetSession(S.start);msg('Sesi di-reset ke awal replay.','ok');});
   $('btZoomIn').addEventListener('click',()=>{S.view.n=cl(Math.round(S.view.n*0.8),20,800);dirty();});
   $('btZoomOut').addEventListener('click',()=>{S.view.n=cl(Math.round(S.view.n*1.25),20,800);dirty();});
-  $('btBuy').addEventListener('click',()=>placeOrder('buy'));
-  $('btSell').addEventListener('click',()=>placeOrder('sell'));
+  $('btBuy').addEventListener('click',()=>placeOrder('buy',false));
+  $('btSell').addEventListener('click',()=>placeOrder('sell',false));
+  $('btQBuy').addEventListener('click',()=>placeOrder('buy',true));
+  $('btQSell').addEventListener('click',()=>placeOrder('sell',true));
+  $('btLotPlus').addEventListener('click',()=>{const v=menuLots();setLots(v+(v>=1?0.5:v>=0.1?0.1:0.01));});
+  $('btLotMinus').addEventListener('click',()=>{const v=menuLots();setLots(v-(v>1?0.5:v>0.1?0.1:0.01));});
+  $('btQLot').addEventListener('input',()=>{const v=nz($('btQLot').value);if(v>0){$('btLots').value=v.toFixed(2);if(S.menu)renderMenu(true);}});
+  $('btQLot').addEventListener('change',()=>setLots(nz($('btQLot').value)||0.01));
   $('btCloseAll').addEventListener('click',closeAll);
   $('btCalcLot').addEventListener('click',calcLotFromRisk);
   root.querySelectorAll('.bt-pick').forEach(b=>b.addEventListener('click',()=>setPick(b.dataset.pick)));
   $('btExportCsv').addEventListener('click',exportCsv);
   $('btExportPng').addEventListener('click',exportPng);
   $('btPosTable').addEventListener('click',e=>{
-    const t=e.target.closest('button');if(!t)return;
-    if(t.dataset.selectPos){const p=S.pos.find(x=>x.id==t.dataset.selectPos);if(p){S.selectedOrder={kind:'pos',id:p.id};$('btEntry').value=p.entry.toFixed(S.dec);$('btSL').value=p.sl>0?p.sl.toFixed(S.dec):'';$('btTP').value=p.tp>0?p.tp.toFixed(S.dec):'';msg(`Posisi #${p.id} dimuat ke Order Ticket. Preset RR aktif saat SL digeser.`,'ok');dirty();}}
-    else if(t.dataset.selectPend){const q=S.pend.find(x=>x.id==t.dataset.selectPend);if(q){S.selectedOrder={kind:'pend',id:q.id};$('btEntry').value=q.price.toFixed(S.dec);$('btSL').value=q.sl>0?q.sl.toFixed(S.dec):'';$('btTP').value=q.tp>0?q.tp.toFixed(S.dec):'';msg(`Pending order #${q.id} dimuat ke Order Ticket. Entry/SL/TP dapat digeser di chart.`,'ok');dirty();}}
-    else if(t.dataset.close){const p=S.pos.find(x=>x.id==t.dataset.close);if(p){closePos(p,p.side==='buy'?px():px()+sp(),'MANUAL',S.i);recordEq(S.i);dirty();persist();}}
-    else if(t.dataset.be){const p=S.pos.find(x=>x.id==t.dataset.be);if(p){p.sl=p.entry;S.sig.pos='';dirty();persist();msg('SL dipindah ke harga entry (break-even).','ok');}}
-    else if(t.dataset.cancel){S.pend=S.pend.filter(x=>x.id!=t.dataset.cancel);S.sig.pos='';dirty();persist();}
+    const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+    if(d.selectPos)setSel('pos',+d.selectPos);
+    else if(d.selectPend)setSel('pend',+d.selectPend);
+    else if(d.close)closeById(+d.close);
+    else if(d.rev)reverseById(+d.rev);
+    else if(d.flip)flipPending(+d.flip);
+    else if(d.cancel)cancelById(+d.cancel);
+    else if(d.be){const p=getObj('pos',+d.be);if(p&&setLevel('pos',p,'sl',p.entry)){S.sig.pos='';syncTicketFromSel();dirty();persist();msg('SL dipindah ke harga entry (break-even).','ok');}}
   });
   $('btPosTable').addEventListener('change',e=>{
-    const el=e.target;if(!el.dataset||!el.dataset.f)return;const p=S.pos.find(x=>x.id==el.dataset.id);if(!p)return;
-    const v=nz(el.value),f=el.dataset.f,ref=p.entry;
-    if(v>0){const bad=f==='sl'?(p.side==='buy'?v>=px():v<=px()+sp()):(p.side==='buy'?v<=px():v>=px()+sp());
-      if(bad){msg(`${f.toUpperCase()} tidak valid terhadap harga saat ini.`,'err');el.value=p[f]>0?p[f]:'';return;}}
-    p[f]=v>0?v:0;S.sig.pos='';dirty();persist();
+    const el=e.target;if(!el.dataset||!el.dataset.f)return;const p=getObj('pos',+el.dataset.id);if(!p)return;
+    const v=nz(el.value),f=el.dataset.f;
+    if(v>0){if(!setLevel('pos',p,f,v)){el.value=p[f]>0?p[f]:'';return;}}else p[f]=0;
+    S.sig.pos='';syncTicketFromSel();dirty();persist();
   });
   document.addEventListener('keydown',e=>{
-    if(!root.classList.contains('active'))return;
+    if(!root.classList.contains('active')&&!S.full)return;
     const t=e.target;if(t&&/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName))return;
-    if(e.code==='Space'){e.preventDefault();S.playing?pause():play();}
+    if(e.code==='Space'){if(t&&t.tagName==='BUTTON')return;e.preventDefault();S.playing?pause():play();}
     else if(e.code==='ArrowRight'){e.preventDefault();pause();step(e.shiftKey?10:1);}
+    else if(e.code==='Escape'){if(!$('btIndMenu').hidden)$('btIndMenu').hidden=true;else if(S.menu)closeMenu();else if(S.drawDraft||S.drawTool!=='cursor'||S.pick){S.pick&&setPick(S.pick);setTool('cursor');}else if(S.sel||S.selDraw!=null||S.cur){S.cur=null;clearSel();}else if(S.full)setFull(false);dirty();}
+    else if(e.code==='Delete'||e.code==='Backspace'){if(S.selDraw!=null){e.preventDefault();deleteDrawing(S.selDraw);}else if(S.sel&&S.sel.kind==='pend'){e.preventDefault();cancelById(S.sel.id);}}
   });
-  document.querySelector('.tab[data-view="backtest"]')?.addEventListener('click',()=>{S.force=false;setTimeout(()=>{dirty();},30);setTimeout(dirty,250);});
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{if(S.full)setFull(false);if(t.dataset.view==='backtest'){S.force=false;setTimeout(dirty,30);setTimeout(dirty,250);}}));
   window.addEventListener('resize',()=>dirty());
-  bindSettings();bindChart();buildTfButtons();renderDrawingList();
+  bindSettings();bindChart();buildTfButtons();renderDrawingList();renderSelBar();setTool('cursor');
 }
+window.__BT.geo=()=>geo;window.__BT.api={openMenu,placeFromMenu,reverseById,flipPending,step};
 bind();offerResume();dirty();
 })();
+
 </script>
 
 </body>
