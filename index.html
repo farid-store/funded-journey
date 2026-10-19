@@ -2237,6 +2237,42 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
  #view-backtest #btJump{grid-column:1/-1}
 }
 
+/* ---------- Mobile & touch hardening: Backtest Lab ---------- */
+@media (hover:none) and (pointer:coarse){
+  #view-backtest .bt-chartwrap{height:clamp(340px,58dvh,560px);min-height:320px;}
+  #view-backtest .bt-chartwrap canvas{touch-action:none;-webkit-user-select:none;user-select:none;}
+  #view-backtest .bt-ctl .btn,#view-backtest .bt-draw,#view-backtest .bt-orderbar .btn,
+  #view-backtest #btPickStart,#view-backtest .bt-seg button{min-height:42px;}
+  #view-backtest .bt-pick{min-height:42px;}
+  #view-backtest .bt-poswrap,#view-backtest .bt-table-wrap,#view-backtest .table-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  #view-backtest table{min-width:620px;}
+  #view-backtest .bt-status{font-size:11px;gap:5px 10px;}
+  #view-backtest .bt-form label{font-size:12px;}
+  #view-backtest input,#view-backtest select,#view-backtest textarea{font-size:16px;}
+}
+@media(max-width:600px){
+  #view-backtest{padding-left:8px;padding-right:8px;}
+  #view-backtest .bt-chartcard{padding:9px;}
+  #view-backtest .bt-toolbar{gap:7px;}
+  #view-backtest .bt-ctl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;}
+  #view-backtest .bt-ctl>*{min-width:0;max-width:100%;}
+  #view-backtest .bt-seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;}
+  #view-backtest .bt-seg button{min-width:0;padding:9px 6px;}
+  #view-backtest .bt-drawbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  #view-backtest .bt-drawbar .bt-draw-label,#view-backtest .bt-drawbar .bt-draw-help{grid-column:1/-1;margin:0;}
+  #view-backtest .bt-draw{width:100%;min-width:0;min-height:42px;}
+  #view-backtest .bt-orderbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
+  #view-backtest .bt-orderbar>*{min-width:0;width:100%;}
+  #view-backtest .bt-order-help{grid-column:1/-1;}
+  #view-backtest .bt-chartwrap{height:54dvh;min-height:320px;max-height:520px;}
+  #view-backtest .bt-form-ticket{grid-template-columns:repeat(2,minmax(0,1fr));}
+  #view-backtest .bt-main,#view-backtest .bt-side{gap:10px;}
+}
+@media(max-width:380px){
+  #view-backtest .bt-form-data,#view-backtest .bt-form-set,#view-backtest .bt-form-ticket{grid-template-columns:minmax(0,1fr);}
+  #view-backtest .bt-form-ticket label{grid-column:1/-1!important;}
+  #view-backtest .bt-drawbar{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
 </style>
 </head>
 <body>
@@ -2458,7 +2494,7 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
             <div class="bt-seg" id="btTfs"></div>
             <div class="bt-ctl">
               <button id="btReset" class="btn ghost" type="button" title="Kembali ke awal replay (hapus posisi dan trade)">⟲ Reset</button>
-              <button id="btPickStart" class="btn ghost" type="button" title="Klik tombol ini lalu klik candle yang ingin dijadikan awal replay">⌖ Pilih candle awal</button>
+              <button id="btPickStart" class="btn ghost" type="button" title="Aktifkan, lalu ketuk candle yang ingin dijadikan awal replay (berfungsi di layar sentuh)" aria-label="Pilih candle awal replay">⌖ Pilih candle awal</button>
               <button id="btPlay" class="btn primary" type="button" title="Spasi">▶ Play</button>
               <button id="btStep" class="btn" type="button" title="Panah kanan">+1</button>
               <button id="btStep10" class="btn" type="button" title="Shift + panah kanan">+10</button>
@@ -8267,12 +8303,17 @@ function maxLotInfo(){
 function placeChartPending(mode,price){
   if(!S.B)return msg('Muat data terlebih dahulu.','err');
   if(S.breach)return msg('Akun sudah breach. Tekan Reset.','err');
-  const parts=String(mode||'').split('-'),side=parts[0],type=parts[1],t=readTicket();
-  if(!['buy','sell'].includes(side)||!['limit','stop'].includes(type))return msg('Pilih tipe pending order terlebih dahulu.','err');
+  const parts=String(mode||'').split('-'),side=parts[0];let type=parts[1];const t=readTicket();
+  if(!['buy','sell'].includes(side)||!['limit','stop'].includes(type))return msg('Pilih sisi BUY/SELL dan tipe pending order terlebih dahulu.','err');
   if(!(t.lots>=0.01))return msg('Lot minimal 0.01. Atur Lot di Order Ticket.','err');
   const bid=px(),ask=bid+sp(),eps=Math.max(sp()*0.05,Math.pow(10,-Math.max(0,S.dec))/2);
-  const valid=side==='buy'?(type==='limit'?price<ask-eps:price>ask+eps):(type==='limit'?price>bid+eps:price<bid-eps);
-  if(!valid){const rule=mode.toUpperCase().replace('-',' ');return msg(`${rule}: level tidak valid pada harga sekarang (${fp(bid)}). BUY LIMIT/SELL STOP harus di bawah market; BUY STOP/SELL LIMIT harus di atas market.`, 'err');}
+  // Smart price-axis placement: pertahankan arah BUY/SELL, lalu tentukan LIMIT/STOP dari sisi harga terhadap market.
+  // Ini mencegah semua tipe selain BUY LIMIT terasa rusak ketika pengguna mengklik sisi harga yang tidak cocok.
+  const desiredType=side==='buy'?(price<ask-eps?'limit':price>ask+eps?'stop':null):(price>bid+eps?'limit':price<bid-eps?'stop':null);
+  if(!desiredType){return msg(`Harga ${fp(price)} terlalu dekat dengan market ${fp(bid)}. Geser kursor sedikit ke atas/bawah agar pending order punya level pemicu yang valid.`, 'err');}
+  const requestedType=type;
+  if(type!==desiredType){type=desiredType;const sel=$('btChartOrderType');if(sel)sel.value=`${side}-${type}`;S.orderMode=`${side}-${type}`;}
+  const actualMode=`${side}-${type}`;
   let sl=t.sl>0?t.sl:0,tp=t.tp>0?t.tp:0;
   if(sl>0){if(side==='buy'&&sl>=price)return msg('SL BUY harus di bawah entry. Drag entry ke sisi bawah untuk memasang SL.', 'err');if(side==='sell'&&sl<=price)return msg('SL SELL harus di atas entry. Drag entry ke sisi atas untuk memasang SL.','err');if(rrValue()!=null){tp=autoTpFromSL(price,sl,side)||tp;}}
   if(tp>0&&(side==='buy'?tp<=price:tp>=price))return msg('TP berada di sisi yang salah terhadap entry. Pilih preset RR atau kosongkan TP.','err');
@@ -8281,7 +8322,8 @@ function placeChartPending(mode,price){
   if(cfg.prop&&cfg.block&&newUsed>marginLimit(S.i)+1e-9){const mi=maxLotInfo();return msg(`Order ditolak oleh margin rule. Lot tambahan maksimal ${mi?f2(mi.max):'0.00'}.`,'err');}
   const q={id:S.nextId++,side,lots:t.lots,type,price,sl,tp,openI:S.i};S.pend.push(q);S.selectedOrder={kind:'pend',id:q.id};
   $('btEntry').value=price.toFixed(S.dec);$('btSL').value=sl>0?sl.toFixed(S.dec):'';$('btTP').value=tp>0?tp.toFixed(S.dec):'';
-  msg(`${side.toUpperCase()} ${type.toUpperCase()} #${q.id} dipasang di ${fp(price)}. Drag garis entry ke sisi proteksi untuk memasang SL; TP mengikuti preset RR.`, 'ok');dirty();persist();
+  const autoNote=requestedType!==type?` (harga berada di sisi market untuk ${type.toUpperCase()}, tipe otomatis disesuaikan dari ${requestedType.toUpperCase()})`:'';
+  msg(`${side.toUpperCase()} ${type.toUpperCase()} #${q.id} dipasang di ${fp(price)}${autoNote}. Drag garis entry ke sisi proteksi untuk memasang SL; TP mengikuti preset RR.`, 'ok');dirty();persist();
 }
 
 function placeOrder(side){
@@ -8791,15 +8833,19 @@ function bindChart(){
     S.sig.pos='';dirty();
   };
   cv.addEventListener('pointerdown',e=>{
-    const p=rel(e);cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,p);moved=false;draggingOrder=false;
+    const p=rel(e);
+    try{cv.setPointerCapture(e.pointerId);}catch(_){/* Safari may reject capture after tab/layout changes */}
+    ptrs.set(e.pointerId,p);moved=false;draggingOrder=false;
     const hit=ptrs.size===1&&(!geo||p.x<geo.padL+geo.cw)?lineHit(p):null;
     if(hit){selectOrder(hit);
-      // Entry pada posisi aktif menjadi handle visual untuk memasang/mengubah SL.
-      // Untuk pending: drag ke sisi risiko mengatur SL; drag ke sisi sebaliknya memindahkan harga entry.
+      // Entry adalah handle besar untuk mengatur SL tanpa perlu mengisi angka.
       if(hit.field==='entry'){S.dragLine={...hit,field:hit.kind==='pos'?'sl-arm':'entry-smart',pointerId:e.pointerId};draggingOrder=true;dragStart=null;}
       else if(hit.field==='sl'||hit.field==='tp'){S.dragLine={...hit,pointerId:e.pointerId};draggingOrder=true;dragStart=null;}
       else{S.dragLine=null;dragStart=null;}}
-    else if(ptrs.size===1)dragStart={x:p.x,y:p.y,off:S.view.off,yShift:S.view.yShift||0};
+    // Saat memilih candle awal, memasang drawing, atau memakai alat gambar, satu sentuhan
+    // harus menjadi tap, bukan dianggap pan. Ini menghindari tap Android/iOS berubah jadi drag.
+    else if(ptrs.size===1 && !S.pick && (!S.drawTool || S.drawTool==='cursor'))dragStart={x:p.x,y:p.y,off:S.view.off,yShift:S.view.yShift||0,pointerType:e.pointerType||'mouse'};
+    else if(ptrs.size===1)dragStart=null;
     if(ptrs.size===2){const a=[...ptrs.values()];pinch0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);dragStart=null;S.dragLine=null;draggingOrder=false;}
   });
   cv.addEventListener('pointermove',e=>{
@@ -8825,7 +8871,13 @@ function bindChart(){
       else{$('btEntry').value=o.price.toFixed(S.dec);$('btSL').value=o.sl>0?o.sl.toFixed(S.dec):'';$('btTP').value=o.tp>0?o.tp.toFixed(S.dec):'';}
       S.sig.pos='';dirty();
     }else if(ptrs.size===2&&pinch0>0){const a=[...ptrs.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(Math.abs(d-pinch0)>6){S.view.n=cl(Math.round(S.view.n*pinch0/d),20,800);pinch0=d;moved=true;}}
-    else if(dragStart&&geo&&!S.dragLine){const dx=p.x-dragStart.x,dy=p.y-dragStart.y;if(Math.abs(dx)>4||Math.abs(dy)>4)moved=true;if(moved){const maxOff=Math.max(0,geo.last-10);S.view.off=cl(Math.round(dragStart.off+dx/geo.step),0,maxOff);S.view.yShift=cl(dragStart.yShift+dy/Math.max(1,geo.chh),-3,3);}}
+    else if(dragStart&&geo&&!S.dragLine){
+      const dx=p.x-dragStart.x,dy=p.y-dragStart.y;
+      // Threshold lebih toleran untuk jari; tap candle tidak lagi salah terbaca sebagai pan.
+      const threshold=dragStart.pointerType==='touch'?11:4;
+      if(Math.abs(dx)>threshold||Math.abs(dy)>threshold)moved=true;
+      if(moved){const maxOff=Math.max(0,geo.last-10);S.view.off=cl(Math.round(dragStart.off+dx/geo.step),0,maxOff);S.view.yShift=cl(dragStart.yShift+dy/Math.max(1,geo.chh),-3,3);}
+    }
     dirty();
   });
   const up=e=>{
@@ -8865,8 +8917,11 @@ function bindChart(){
     }
     moved=false;
   };
-  cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',e=>{ptrs.delete(e.pointerId);dragStart=null;S.dragLine=null;});
-  cv.addEventListener('pointerleave',()=>{S.hover=null;dirty();});
+  cv.addEventListener('pointerup',up);
+  const cancelPointer=e=>{ptrs.delete(e.pointerId);if(S.dragLine&&S.dragLine.pointerId===e.pointerId)S.dragLine=null;if(ptrs.size<2)pinch0=0;if(!ptrs.size)dragStart=null;draggingOrder=false;dirty();};
+  cv.addEventListener('pointercancel',cancelPointer);
+  cv.addEventListener('lostpointercapture',cancelPointer);
+  cv.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch'){S.hover=null;dirty();}});
   cv.addEventListener('wheel',e=>{e.preventDefault();S.view.n=cl(Math.round(S.view.n*(e.deltaY>0?1.12:0.89)),20,800);dirty();},{passive:false});
   new ResizeObserver(()=>dirty()).observe(wrap);new ResizeObserver(()=>{S.sig.closed=-1;dirty();}).observe($('btEq').parentElement);
 }
