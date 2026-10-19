@@ -2369,6 +2369,22 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
 #btDataBody[hidden]{display:none}
 #btSelInfo{display:block;font-size:11.5px;color:var(--gold);margin-top:2px}
 #btSelInfo:empty{display:none}
+/* Data Historis: metadata and import controls stay readable at every width */
+#view-backtest .bt-data{gap:12px}
+#view-backtest .bt-data .btx-datahead{align-items:center;flex-direction:row;flex-wrap:nowrap}
+#view-backtest .bt-data .btx-datahead h3{min-width:0;line-height:1.3}
+#view-backtest .bt-data #btDataInfo{display:block;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--surface2,rgba(255,255,255,.025));font-size:11.5px;line-height:1.65;overflow-wrap:anywhere;word-break:normal}
+#view-backtest .bt-data .bt-form-data{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,205px),1fr));gap:12px;align-items:start}
+#view-backtest .bt-data .bt-form-data label{display:flex;flex-direction:column;gap:6px;min-width:0;line-height:1.45;overflow-wrap:anywhere}
+#view-backtest .bt-data .bt-form-data .sel{width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+#view-backtest .bt-data .bt-file-sub{font-size:11px;line-height:1.55;overflow-wrap:anywhere}
+#view-backtest .bt-data .bt-hint{font-size:11.5px;line-height:1.65;overflow-wrap:anywhere}
+#view-backtest .bt-data #btDataBody>.bt-hint{margin-top:12px!important;padding-top:10px;border-top:1px solid var(--line)}
+#view-backtest .bt-consistency-custom{display:none}
+#view-backtest .bt-consistency-custom.on{display:flex}
+#view-backtest .bt-chartwrap canvas{cursor:crosshair}
+#view-backtest .bt-consistency-state{padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--surface2,rgba(255,255,255,.025));font-size:11.5px;line-height:1.6;color:var(--muted)}
+@media(max-width:760px){#view-backtest .bt-data .btx-datahead{align-items:center;flex-direction:row}#view-backtest .bt-data .bt-form-data{grid-template-columns:minmax(0,1fr)}#view-backtest .bt-data .bt-form-data label{grid-column:1/-1}}
 /* tabel posisi/trade: kartu di layar kecil */
 .btx-acts{display:flex;gap:6px;flex-wrap:wrap}
 .btx-acts .btn{min-height:36px;padding:0 12px}
@@ -2700,7 +2716,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
         </div>
       </div>
 
-      <div class="section-head"><div><h2>Posisi &amp; Order</h2><p>Posisi terisi menampilkan floating P/L berdasarkan candle replay saat ini. Limit/Stop menunggu trigger sampai harga menyentuh level; pasang pending lewat tombol + di sumbu harga chart, seret garis untuk mengubah level, dan gunakan ⇄ untuk membalik arah.</p></div></div>
+      <div class="section-head"><div><h2>Posisi &amp; Order</h2><p>Posisi terisi menampilkan floating P/L berdasarkan candle replay saat ini. Ketuk harga pada chart untuk membuka popup BUY/SELL LIMIT/STOP atau market; pending menunggu trigger sampai harga menyentuh level. Seret garis untuk mengubah level, dan gunakan ⇄ untuk membalik arah.</p></div></div>
       <div class="card table-card"><div class="table-scroll"><table id="btPosTable" class="btx-tbl"></table></div></div>
 
       <div class="section-head"><div><h2>Hasil Backtest</h2><p>Statistik dihitung dari trade yang sudah tertutup.</p></div><div class="bt-actions"><button id="btExportCsv" class="btn" type="button">↓ CSV trade</button><button id="btExportPng" class="btn primary" type="button">↓ Kartu PNG</button></div></div>
@@ -2728,6 +2744,13 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
           <label>Dasar trailing peak<select id="btDDBasis" class="sel"><option value="equity">Equity tertinggi (termasuk floating)</option><option value="balance">Balance tertinggi (closed P/L)</option></select></label>
           <div class="bt-dd-explain" id="btDDExplain"><b>Static DD:</b> floor breach tetap dihitung dari balance awal. Profit tidak menggeser floor. Pastikan pilihan ini sama dengan rule prop firm yang kamu gunakan.</div>
           <label>Target profit (%)<input id="btTarget" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
+          <label>Konsistensi profit maksimum
+            <select id="btConsistencyPreset" class="sel">
+              <option value="15">15% dari total profit</option><option value="20">20% dari total profit</option><option value="40" selected>40% dari total profit</option><option value="50">50% dari total profit</option><option value="custom">Custom</option>
+            </select>
+          </label>
+          <label id="btConsistencyCustomWrap" class="bt-consistency-custom">Konsistensi custom (%)<input id="btConsistency" class="sel" type="number" min="1" max="100" step="1" inputmode="numeric" value="40" placeholder="1–100"></label>
+          <div class="bt-consistency-state" id="btConsistencyState" style="grid-column:1/-1">Batas konsistensi: hari profit terbesar tidak boleh melebihi 40% dari total profit bersih saat target profit tercapai.</div>
           <label class="bt-check"><input id="btBlock" type="checkbox"> Tolak order yang melanggar margin rule</label>
           <label class="bt-check"><input id="btStop" type="checkbox"> Hentikan akun saat rule dilanggar (breach)</label>
         </div>
@@ -8185,7 +8208,7 @@ const $=id=>document.getElementById(id);
 const TFS=[['M1',60],['M5',300],['M15',900],['M30',1800],['H1',3600],['H4',14400],['D1',86400]];
 const BIN_TF={'1m':60,'5m':300,'15m':900,'30m':1800,'1h':3600,'4h':14400,'1d':86400};
 const LS_CFG='ffx_bt_cfg', LS_MG='ffx_marginrule', LS_IND='ffx_bt_ind';
-const DEF={balance:10000,contract:100,leverage:100,spread:0.3,comm:0,prop:true,marginPct:80,marginBase:'balance',buffer:10,daily:5,overall:10,overallMode:'static',ddBasis:'equity',target:8,block:true,stop:true,risk:1,autoBr:false,autoSL:0,magnet:false};
+const DEF={balance:10000,contract:100,leverage:100,spread:0.3,comm:0,prop:true,marginPct:80,marginBase:'balance',buffer:10,daily:5,overall:10,overallMode:'static',ddBasis:'equity',target:8,consistencyPct:40,block:true,stop:true,risk:1,autoBr:false,autoSL:0,magnet:false};
 
 function loadCfg(){
   let c=Object.assign({},DEF), saved=null;
@@ -8198,7 +8221,7 @@ let cfg=loadCfg();
 const saveCfg=()=>{ try{ localStorage.setItem(LS_CFG,JSON.stringify(cfg)); }catch(e){} };
 
 const S={ B:null,n:0,baseSec:0,name:'',dec:2,i:0,start:0,playing:false,raf:0,last:0,acc:0,speed:10,tf:0,tfCache:{},
-  view:{n:110,off:0,yShift:0,yZoom:1},hover:null,cur:null,menu:null,touch:false,full:false,pick:null,
+  view:{n:110,off:0,yShift:0,yZoom:1},hover:null,hoverLine:null,cur:null,menu:null,touch:false,full:false,pick:null,
   drawTool:'cursor',drawings:[],drawDraft:null,selDraw:null,dragId:1,magnet:false,ind:{},
   sel:null,rrPreset:'1',hits:[],lines:[],
   pos:[],pend:[],closed:[],balance:0,initial:0,nextId:1,
@@ -8676,7 +8699,19 @@ function applyDrag(L,price){
   if(L.field==='entry'&&L.kind==='pend'){
     const type=pendTypeFor(o.side,price);if(!type)return;
     const d=price-o.price;o.price=price;o.type=type;if(o.sl>0)o.sl=rp(o.sl+d);if(o.tp>0)o.tp=rp(o.tp+d);
-  }else if(L.field==='sl'||L.field==='tp'){setLevel(L.kind,o,L.field,price,true);}
+  }else if(L.field==='sl'||L.field==='tp'){
+    // Keep the level on the valid side of live price/entry instead of silently
+    // rejecting the whole drag when the pointer crosses the entry line.
+    const e=L.kind==='pos'?o.entry:o.price,eps=Math.max(epsP(),tick());
+    if(L.field==='sl'){
+      if(L.kind==='pos')price=o.side==='buy'?Math.min(price,px()-eps):Math.max(price,px()+sp()+eps);
+      else price=o.side==='buy'?Math.min(price,e-eps):Math.max(price,e+eps);
+    }else{
+      if(L.kind==='pos')price=o.side==='buy'?Math.max(price,px()+sp()+eps):Math.min(price,px()-eps);
+      else price=o.side==='buy'?Math.max(price,e+eps):Math.min(price,e-eps);
+    }
+    setLevel(L.kind,o,L.field,price,true);
+  }
   syncTicketFromSel();S.sig.pos='';
 }
 /* edit dari kolom ticket saat ada order terpilih */
@@ -8925,7 +8960,9 @@ function drawChart(){
   const isSel=(kind,id)=>!!(S.sel&&S.sel.kind===kind&&S.sel.id===id);
   const zone=(a,b,col)=>{if(!(a>0&&b>0))return;const ya=y(a),yb=y(b);g.globalAlpha=.1;g.fillStyle=col;g.fillRect(padL,Math.min(ya,yb),cw,Math.abs(yb-ya));g.globalAlpha=1;};
   const levelLabel=(kind,o,field,entry)=>{
-    const price=o[field];if(!(price>0))return;const isSL=field==='sl',col=isSL?C.dn:C.up,yy=hl(price,col,[6,4],isSel(kind,o.id)?1.8:1.2);if(yy==null)return;
+    const price=o[field];if(!(price>0))return;const isSL=field==='sl',col=isSL?C.dn:C.up;
+    const hov=S.hoverLine&&S.hoverLine.kind===kind&&S.hoverLine.id===o.id&&S.hoverLine.field===field;
+    const yy=hl(price,hov?'#ffffff':col,[6,4],hov?2.8:(isSel(kind,o.id)?2.2:1.4));if(yy==null)return;
     S.lines.push({y:yy,kind,id:o.id,field,drag:true});
     const pl=lvPnl(o.side,entry,price,o.lots);tag(price,fp(price),isSL?'#fff':'#06150f',col);
     const L={kind,id:o.id,field,drag:true};
@@ -9073,6 +9110,10 @@ function updateAccount(){
     html+=ruleBar(cfg.overallMode==='trailing'?'Trailing drawdown':'Static drawdown',fm(oUsed),fm(oLim),oLim>0?oUsed/oLim*100:0,`Floor ${fm(ddFloor)} · ${cfg.overallMode==='trailing'?`peak ${cfg.ddBasis} ${fm(ddPeak)}`:'tetap dari balance awal'} · allowance ${f2(cfg.overall)}%`);
     const tg=S.initial*nz(cfg.target)/100,pr=Math.max(0,eq-S.initial);
     html+=`<div class="bt-rule"><div class="r1"><span>Target profit</span><b>${fm(pr)} / ${fm(tg)}</b></div><div class="riskbar"><i style="width:${cl(tg>0?pr/tg*100:0,0,100)}%;background:var(--gold)"></i></div><small>${S.targetHit?'Target tercapai ✔':'Target '+f2(cfg.target)+'% dari balance awal'}</small></div>`;
+    const dayProfits=new Map();let totalNet=0;
+    for(const tr of S.closed){totalNet+=nz(tr.pnl);const day=new Date(tr.closeT*1000).toISOString().slice(0,10);dayProfits.set(day,(dayProfits.get(day)||0)+nz(tr.pnl));}
+    let bestDay=0;for(const dayProfit of dayProfits.values())bestDay=Math.max(bestDay,dayProfit);const consPct=totalNet>0?bestDay/totalNet*100:0,consLimit=cl(nz(cfg.consistencyPct)||40,1,100),consFail=!!S.targetHit&&totalNet>0&&consPct>consLimit+1e-9;
+    html+=`<div class="bt-rule"><div class="r1"><span>Konsistensi profit</span><b>${totalNet>0?f2(consPct)+'%':'—'} / ${f2(consLimit)}%</b></div><div class="riskbar"><i style="width:${cl(consLimit>0?consPct/consLimit*100:0,0,100)}%;background:${consFail?'var(--red)':'var(--green)'}"></i></div><small>${!S.targetHit?'Dievaluasi ketika target profit tercapai.':consFail?'Belum memenuhi rule: profit hari terbesar terlalu dominan.':'Memenuhi rule konsistensi.'} Hari profit terbesar ${fm(bestDay)} · total profit bersih ${fm(totalNet)}.</small></div>`;
     if(S.breach){state='BREACH';cls='tag sell';html+=`<div class="bt-breach"><b>Akun gagal: ${esc(S.breach.type)}</b><br>${esc(S.breach.detail)}<br>Waktu: ${fdt(S.breach.t)}. Tekan <b>Reset</b> untuk mengulang.</div>`;}
     else if((lim>0&&used/lim>=1-nz(cfg.buffer)/100)||(dLim>0&&dLoss/dLim>=.8)||(oLim>0&&oLoss/oLim>=.8)){state='WASPADA';cls='tag warn';}
     if(S.violations.length&&!S.breach)html+=`<div class="bt-breach"><b>${S.violations.length} pelanggaran tercatat</b><br>${S.violations.slice(-3).map(v=>`${fdt(v.t,true)} · ${esc(v.type)}: ${esc(v.detail)}`).join('<br>')}</div>`;
@@ -9173,13 +9214,16 @@ function closeMenu(){S.menu=null;const m=$('btMenu');if(m){m.hidden=true;m.__sig
 function renderMenu(force){
   const m=$('btMenu');if(!m)return;
   if(!S.menu||!geo||!S.B){m.hidden=true;return;}
-  const price=S.menu.price,bid=px(),ask=bid+sp(),opts=menuOptions(price),lots=menuLots(),diff=price-(price>=bid?ask:bid);
-  const sig=[price,opts.map(o=>o.side+o.type).join(),lots,!!cfg.autoBr,fp(bid),fp(ask)].join('|');
+  const price=S.menu.price,bid=px(),ask=bid+sp(),lots=menuLots(),diff=price-(price>=bid?ask:bid);
+  const sig=[price,lots,!!cfg.autoBr,fp(bid),fp(ask)].join('|');
   if(!force&&m.__sig===sig&&!m.hidden)return;m.__sig=sig;
-  const row=(o)=>{const c=o.side==='buy'?'buy':'sell';return `<button type="button" class="btx-opt ${c}" data-m="pend:${o.side}:${o.type}"><span>${o.side.toUpperCase()} ${o.type.toUpperCase()}</span><b>${f2(lots)} @ ${fp(price)}</b></button>`;};
-  let h=`<div class="btx-mh"><div><small>Harga di kursor</small><b>${fp(price)}</b><em class="${diff>=0?'pos':'neg'}">${diff>=0?'+':'−'}${fp(Math.abs(diff))} dari market</em></div><button type="button" class="btx-x" data-m="x" aria-label="Tutup">✕</button></div>`;
+  // Selalu tampilkan keempat tipe pending. Saat dipilih, tipe akan disesuaikan
+  // dengan sisi harga terhadap market agar BUY/SELL STOP/LIMIT semuanya bisa dipakai.
+  const choices=[['buy','limit'],['buy','stop'],['sell','limit'],['sell','stop']];
+  const row=([side,type])=>{const c=side==='buy'?'buy':'sell';return `<button type="button" class="btx-opt ${c}" data-m="pend-choice:${side}:${type}"><span>${side.toUpperCase()} ${type.toUpperCase()}</span><b>${f2(lots)} @ ${fp(price)}</b></button>`;};
+  let h=`<div class="btx-mh"><div><small>Harga entry dipilih</small><b>${fp(price)}</b><em class="${diff>=0?'pos':'neg'}">${diff>=0?'+':'−'}${fp(Math.abs(diff))} dari market</em></div><button type="button" class="btx-x" data-m="x" aria-label="Tutup">✕</button></div>`;
   h+=`<div class="btx-lotrow"><span>Lot</span><div class="btx-lot"><button type="button" data-m="lot-">−</button><b>${f2(lots)}</b><button type="button" data-m="lot+">+</button></div></div>`;
-  h+=opts.length?opts.map(row).join(''):`<div class="btx-note">Harga terlalu dekat dengan market — pakai order market di bawah.</div>`;
+  h+=choices.map(row).join('');
   h+=`<div class="btx-mkt"><button type="button" class="buy" data-m="mkt:buy">Buy market<b>${fp(ask)}</b></button><button type="button" class="sell" data-m="mkt:sell">Sell market<b>${fp(bid)}</b></button></div>`;
   h+=`<label class="btx-chk"><input type="checkbox" data-m="br" ${cfg.autoBr?'checked':''}> SL/TP otomatis (${$('btAutoSL')&&nz($('btAutoSL').value)>0?'jarak manual':'ATR'} × RR ${rrValue()??1.5})</label>`;
   m.innerHTML=h;m.hidden=false;
@@ -9188,11 +9232,20 @@ function renderMenu(force){
   m.style.top=cl(y-hh/2,6,Math.max(6,geo.H-hh-6))+'px';
 }
 function menuClick(e){
-  if(performance.now()-(S.uiT||0)<400){e.preventDefault();return;}   // abaikan 'ghost click' dari ketukan yang membuka menu
+  // Menu memakai pointerdown stopPropagation; jangan menolak klik pertama pada order.
   const b=e.target.closest('[data-m]');if(!b)return;const a=b.dataset.m;
   if(a==='x')return closeMenu();
   if(a==='lot+'||a==='lot-'){const v=menuLots(),st=v>=1?0.5:v>=0.1?0.1:0.01;return setLots(a==='lot+'?v+st:v-st);}
   if(a==='br'){cfg.autoBr=b.checked;saveCfg();return renderMenu(true);}
+  if(a.startsWith('pend-choice:')){
+    const [,side,requested]=a.split(':');
+    const price=S.menu?.price;if(!(price>0))return closeMenu();
+    const valid=pendTypeFor(side,price);
+    if(!valid){return msg(`Harga ${fp(price)} terlalu dekat dengan market. Pilih Buy/Sell Market atau ketuk harga lain.`,'err');}
+    const actual=valid;
+    if(actual!==requested)msg(`${side.toUpperCase()} ${requested.toUpperCase()} tidak sesuai posisi harga; digunakan ${side.toUpperCase()} ${actual.toUpperCase()} agar order valid.`,'ok');
+    return placeFromMenu(side,actual);
+  }
   if(a.startsWith('pend:')){const [,side,type]=a.split(':');return placeFromMenu(side,type);}
   if(a.startsWith('mkt:'))return marketFromMenu(a.split(':')[1]);
 }
@@ -9222,7 +9275,7 @@ function renderDrawingList(){
 }
 
 /* ---------- alat gambar ---------- */
-const HELP={cursor:'Cursor: geser chart, seret garis order, pilih drawing. Tombol + di sumbu harga untuk pasang order.',trend:'Trendline: ketuk dua titik atau seret.',ray:'Ray: ketuk dua titik atau seret.',hline:'Garis horizontal: ketuk chart.',vline:'Garis vertikal: ketuk chart.',rect:'Zona: ketuk dua titik atau seret.',fib:'Fibonacci: titik 1 = Body (1.000), titik 2 = Wick (0.000).',measure:'Ukur: ketuk dua titik untuk jarak harga, % dan waktu.',long:'Long position: ketuk chart untuk menaruh entry/SL/TP, lalu seret handle.',short:'Short position: ketuk chart untuk menaruh entry/SL/TP, lalu seret handle.'};
+const HELP={cursor:'Cursor: ketuk harga pada chart untuk membuka popup order; tombol + sumbu harga juga tersedia. Seret untuk menggeser chart/garis order.',trend:'Trendline: ketuk dua titik atau seret.',ray:'Ray: ketuk dua titik atau seret.',hline:'Garis horizontal: ketuk chart.',vline:'Garis vertikal: ketuk chart.',rect:'Zona: ketuk dua titik atau seret.',fib:'Fibonacci: titik 1 = Body (1.000), titik 2 = Wick (0.000).',measure:'Ukur: ketuk dua titik untuk jarak harga, % dan waktu.',long:'Long position: ketuk chart untuk menaruh entry/SL/TP, lalu seret handle.',short:'Short position: ketuk chart untuk menaruh entry/SL/TP, lalu seret handle.'};
 function setTool(t){
   S.drawTool=t;S.drawDraft=null;if(t!=='cursor'){S.cur=null;closeMenu();}
   document.querySelectorAll('#btCard [data-draw]').forEach(x=>x.classList.toggle('on',x.dataset.draw===t));
@@ -9373,7 +9426,7 @@ async function offerResume(){
   }catch(e){}
 }
 /* ---------- settings ---------- */
-const CFG_MAP={btBal:['balance',1],btContract:['contract',1],btLev:['leverage',1],btSpread:['spread',1],btComm:['comm',1],btMPct:['marginPct',1],btBuf:['buffer',1],btDaily:['daily',1],btOverall:['overall',1],btTarget:['target',1],btMBase:['marginBase',0],btDDMode:['overallMode',0],btDDBasis:['ddBasis',0],btProp:['prop','c'],btBlock:['block','c'],btStop:['stop','c']};
+const CFG_MAP={btBal:['balance',1],btContract:['contract',1],btLev:['leverage',1],btSpread:['spread',1],btComm:['comm',1],btMPct:['marginPct',1],btBuf:['buffer',1],btDaily:['daily',1],btOverall:['overall',1],btTarget:['target',1],btConsistency:['consistencyPct',1],btMBase:['marginBase',0],btDDMode:['overallMode',0],btDDBasis:['ddBasis',0],btProp:['prop','c'],btBlock:['block','c'],btStop:['stop','c']};
 function syncCfgInputs(){Object.keys(CFG_MAP).forEach(id=>{const [k,t]=CFG_MAP[id],el=$(id);if(!el)return;if(t==='c')el.checked=!!cfg[k];else el.value=cfg[k];});$('btRisk').value=cfg.risk;}
 function updateDDExplain(){
   const e=$('btDDExplain');if(!e)return;
@@ -9382,7 +9435,17 @@ function updateDDExplain(){
 }
 function bindSettings(){
   syncCfgInputs();updateDDExplain();
-  Object.keys(CFG_MAP).forEach(id=>{
+  const cp=$('btConsistencyPreset'),cc=$('btConsistency'),cw=$('btConsistencyCustomWrap');
+  const syncConsistencyUI=()=>{
+    const v=cl(nz(cfg.consistencyPct)||40,1,100);if(cc)cc.value=v;
+    const preset=[15,20,40,50].includes(v)?String(v):'custom';if(cp)cp.value=preset;
+    if(cw)cw.classList.toggle('on',preset==='custom');
+    const st=$('btConsistencyState');if(st)st.textContent=`Batas konsistensi: hari profit terbesar maksimal ${v}% dari total profit bersih. Evaluasi saat target profit tercapai.`;
+  };
+  syncConsistencyUI();
+  cp?.addEventListener('change',()=>{if(cp.value!=='custom'){cfg.consistencyPct=+cp.value;saveCfg();}syncConsistencyUI();dirty();});
+  cc?.addEventListener('input',()=>{cfg.consistencyPct=cl(nz(cc.value)||40,1,100);saveCfg();syncConsistencyUI();dirty();});
+  Object.keys(CFG_MAP).filter(id=>id!=='btConsistency').forEach(id=>{
     const [k,t]=CFG_MAP[id],el=$(id),on=()=>{
       if(t==='c')cfg[k]=el.checked;else if(t===1)cfg[k]=nz(el.value);else cfg[k]=el.value;
       if(k==='leverage'&&!(cfg[k]>=1))cfg[k]=1;if(k==='contract'&&!(cfg[k]>0))cfg[k]=DEF.contract;
@@ -9414,18 +9477,37 @@ function setFull(on){
 function bindChart(){
   const cv=$('btChart'),wrap=cv.parentElement;
   const ptrs=new Map();let drag=null,pinch0=0;
+  // Keep pointer events (including touch drags) on the chart canvas.
+  cv.style.touchAction='none';
   const rel=e=>{const r=cv.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
   const inPlot=p=>geo&&p.x>=geo.padL&&p.x<=geo.padL+geo.cw&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh;
   const inAxis=p=>geo&&p.x>geo.padL+geo.cw&&p.x<=geo.W&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh;
   function hitTest(p){
+    if(S.drawTool==='cursor'&&!S.pick&&inPlot(p)){
+      // SL/TP get hit priority over the price tag underneath, so the very first
+      // pointer press starts dragging rather than merely selecting the order.
+      const thr=S.touch?30:16;let best=null;
+      for(const L of S.lines){
+        const d=Math.abs(p.y-L.y);if(d>thr)continue;
+        const priority=(L.field==='sl'||L.field==='tp')?0:(L.field==='entry'&&L.drag?1:2);
+        if(!best||priority<best.priority||(priority===best.priority&&d<best.d))best={d,L,priority};
+      }
+      if(best&&(best.L.field==='sl'||best.L.field==='tp'))return {k:'line',L:best.L};
+    }
     for(let i=S.hits.length-1;i>=0;i--){const h=S.hits[i];if(p.x>=h.x&&p.x<=h.x+h.w&&p.y>=h.y&&p.y<=h.y+h.h)return {k:'hit',h};}
     if(S.drawTool==='cursor'&&!S.pick&&inPlot(p)){
-      const thr=S.touch?16:8;let best=null;
-      for(const L of S.lines){const d=Math.abs(p.y-L.y);if(d<=thr&&(!best||d<best.d||(d===best.d&&L.field!=='entry')))best={d,L};}
+      const thr=S.touch?30:16;let best=null;
+      for(const L of S.lines){const d=Math.abs(p.y-L.y);if(d>thr)continue;const priority=(L.field==='entry'&&L.drag)?0:1;if(!best||priority<best.priority||(priority===best.priority&&d<best.d))best={d,L,priority};}
       if(best)return {k:'line',L:best.L};
       const dh=drawHit(p);if(dh)return {k:'draw',...dh};
     }
     return null;
+  }
+  function updateHover(p){
+    if(S.drawTool!=='cursor'||S.pick||!inPlot(p)){S.hoverLine=null;cv.style.cursor='crosshair';return;}
+    let best=null;for(const L of S.lines){if(L.field!=='sl'&&L.field!=='tp')continue;const d=Math.abs(p.y-L.y),thr=S.touch?30:16;if(d<=thr&&(!best||d<best.d))best={d,L};}
+    const next=best?{kind:best.L.kind,id:best.L.id,field:best.L.field}:null;
+    const changed=JSON.stringify(next)!==JSON.stringify(S.hoverLine||null);S.hoverLine=next;cv.style.cursor=best?'ns-resize':'crosshair';if(changed)dirty();
   }
   cv.addEventListener('pointerdown',e=>{
     if(!S.B||!geo)return;if(e.pointerType==='mouse'&&e.button!==0)return;
@@ -9450,14 +9532,19 @@ function bindChart(){
   cv.addEventListener('pointermove',e=>{
     const p=rel(e);if(e.pointerType==='mouse')S.hover=p;
     if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,p);
-    if(!drag){dirty();return;}
+    if(!drag){updateHover(p);dirty();return;}
     if(drag.t==='pinch'){if(ptrs.size>=2&&pinch0>0){const a=[...ptrs.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(Math.abs(d-pinch0)>4){S.view.n=cl(Math.round(S.view.n*pinch0/d),20,800);pinch0=d;}}dirty();return;}
     if(e.pointerId!==drag.id)return;
     const th=S.touch?10:4;if(!drag.moved&&Math.hypot(p.x-drag.sx,p.y-drag.sy)>th)drag.moved=true;
     switch(drag.t){
       case 'pan':if(drag.moved){const maxOff=Math.max(0,geo.last-10);S.view.off=cl(Math.round(drag.off+(p.x-drag.sx)/geo.step),0,maxOff);S.view.yShift=cl(drag.ys+(p.y-drag.sy)/geo.chh*1.12*(S.view.yZoom||1),-3,3);}break;
       case 'axis':if(drag.moved)S.view.yZoom=cl(drag.z0*Math.exp((p.y-drag.sy)/200),0.15,10);break;
-      case 'line':if(drag.moved&&p.y>=geo.padT&&p.y<=geo.padT+geo.chh)applyDrag(drag.L,geo.priceAt(p.y));break;
+      case 'line':
+        if(drag.moved&&p.y>=geo.padT-4&&p.y<=geo.padT+geo.chh+4){
+          const price=geo.priceAt(cl(p.y,geo.padT,geo.padT+geo.chh));
+          applyDrag(drag.L,price);
+        }
+        break;
       case 'draw':if(drag.moved)dragDraw(drag,p);break;
       case 'tool':if(S.drawDraft&&!drag.single){const pt=snapPoint(p);S.drawDraft.i2=pt.i;S.drawDraft.p2=pt.price;}break;
       case 'btn':if(drag.moved&&drag.act.t==='chip'&&S.touch)S.cur={price:geo.priceAt(p.y)};break;
@@ -9471,7 +9558,9 @@ function bindChart(){
     if(e.pointerId!==drag.id)return;
     const d=drag;drag=null;if(e.pointerType!=='mouse')S.hover=null;
     if(d.t==='btn'){if(!d.moved)runAct(d.act);}
-    else if(d.t==='line'||d.t==='draw'){if(d.moved)persist();}
+    else if(d.t==='line'||d.t==='draw'){
+      if(d.moved){S.sig.pos='';syncTicketFromSel();dirty();persist();}
+    }
     else if(d.t==='axis'){if(!d.moved&&S.drawTool==='cursor'&&!S.pick&&inAxis(p))openMenu(geo.priceAt(p.y));}
     else if(d.t==='tool'){
       if(d.single){const pt=snapPoint(p),tl=S.drawTool;finishDraw(tl==='hline'||tl==='vline'?{type:tl,i1:pt.i,i2:pt.i,p1:pt.price,p2:pt.price,color:DCOL[0],id:S.dragId++}:mkPos(tl,pt));}
@@ -9483,14 +9572,15 @@ function bindChart(){
     else if(d.t==='pan'&&!d.moved&&inPlot(p)){
       if(S.pick)handlePick(p);
       else if(S.sel||S.selDraw!=null)clearSel();
+      else if(S.drawTool==='cursor')openMenu(geo.priceAt(p.y));
       else if(S.touch)S.cur={price:geo.priceAt(p.y)};
     }
-    dirty();
+    updateHover(p);dirty();
   };
   cv.addEventListener('pointerup',up);
   const cancel=e=>{ptrs.delete(e.pointerId);if(drag&&(drag.id===e.pointerId||drag.t==='pinch'))drag=null;if(ptrs.size<2)pinch0=0;dirty();};
   cv.addEventListener('pointercancel',cancel);
-  cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){S.hover=null;dirty();}});
+  cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){S.hover=null;S.hoverLine=null;cv.style.cursor='crosshair';dirty();}});
   cv.addEventListener('contextmenu',e=>{e.preventDefault();if(!geo||!S.B)return;const p=rel(e);if((inPlot(p)||inAxis(p))&&S.drawTool==='cursor')openMenu(geo.priceAt(p.y));});
   cv.addEventListener('dblclick',e=>{if(!geo)return;S.view.yShift=0;S.view.yZoom=1;S.view.off=0;dirty();});
   cv.addEventListener('wheel',e=>{
