@@ -2739,6 +2739,8 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
           <label>Margin rule (% dari dasar)<input id="btMPct" class="sel" type="number" min="1" step="0.5" inputmode="decimal"></label>
           <label>Dasar margin rule<select id="btMBase" class="sel"><option value="balance">Balance</option><option value="equity">Equity</option></select></label>
           <label>Buffer keamanan lot (%)<input id="btBuf" class="sel" type="number" min="0" max="90" step="1" inputmode="decimal"></label>
+          <label>Max floating loss per order (%)<input id="btMaxFL" class="sel" type="number" min="0" max="100" step="0.1" inputmode="decimal"></label>
+          <label>Buffer floating loss / slippage (%)<input id="btFLBuffer" class="sel" type="number" min="0" max="99" step="0.1" inputmode="decimal"></label>
           <label>Daily loss limit (%)<input id="btDaily" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
           <label>Overall loss limit (%)<input id="btOverall" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
           <label>Mode overall drawdown<select id="btDDMode" class="sel"><option value="static">Static DD — batas tetap</option><option value="trailing">Trailing DD — mengikuti peak</option></select></label>
@@ -2755,7 +2757,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
           <label class="bt-check"><input id="btBlock" type="checkbox"> Tolak order yang melanggar margin rule</label>
           <label class="bt-check"><input id="btStop" type="checkbox"> Hentikan akun saat rule dilanggar (breach)</label>
         </div>
-        <p class="bt-hint">Contoh contract size: XAUUSD 100, BTC/ETH 1. Pair dengan quote non-USD tidak dikonversi ke dolar. Angka daily/overall/target hanya contoh awal, samakan dengan aturan firm kamu. Margin rule memakai pengaturan yang sama dengan Margin Rule Guard di tab Risk.</p>
+        <p class="bt-hint">Contoh contract size: XAUUSD 100, BTC/ETH 1. Pair dengan quote non-USD tidak dikonversi ke dolar. Angka daily/overall/target hanya contoh awal, samakan dengan aturan firm kamu. Margin rule memakai pengaturan yang sama dengan Margin Rule Guard di tab Risk. Max FL efektif = Max FL per order dikurangi buffer slippage; order tanpa SL atau dengan risiko SL di atas batas akan ditolak.</p>
         <div class="bt-apply-row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">
           <button id="btApplySettings" class="btn primary" type="button">✓ Terapkan Pengaturan</button>
           <span id="btApplyStatus" role="status" aria-live="polite" style="font-size:11px;color:var(--muted)">Pengaturan tersimpan lokal; tekan Terapkan untuk menyegarkan Akun &amp; Aturan Prop.</span>
@@ -8213,7 +8215,7 @@ const $=id=>document.getElementById(id);
 const TFS=[['M1',60],['M5',300],['M15',900],['M30',1800],['H1',3600],['H4',14400],['D1',86400]];
 const BIN_TF={'1m':60,'5m':300,'15m':900,'30m':1800,'1h':3600,'4h':14400,'1d':86400};
 const LS_CFG='ffx_bt_cfg', LS_MG='ffx_marginrule', LS_IND='ffx_bt_ind';
-const DEF={balance:10000,contract:100,leverage:100,spread:0.3,comm:0,prop:true,marginPct:80,marginBase:'balance',buffer:10,daily:5,overall:10,overallMode:'static',ddBasis:'equity',target:8,consistencyPct:40,block:true,stop:true,risk:1,autoBr:false,autoSL:0,magnet:false};
+const DEF={balance:10000,contract:100,leverage:100,spread:0.3,comm:0,prop:true,marginPct:80,marginBase:'balance',buffer:10,maxFL:1,flBuffer:0.5,daily:5,overall:10,overallMode:'static',ddBasis:'equity',target:8,consistencyPct:40,block:true,stop:true,risk:1,autoBr:false,autoSL:0,magnet:false};
 
 function loadCfg(){
   let c=Object.assign({},DEF), saved=null;
@@ -8377,7 +8379,7 @@ function closePos(p,price,reason,k){
   const gross=dir*(price-p.entry)*p.lots*nz(cfg.contract),comm=nz(cfg.comm)*p.lots,pnl=gross-comm;
   S.balance+=pnl;
   S.pos=S.pos.filter(x=>x!==p);dropSel('pos',p.id);
-  const risk=p.sl0>0?Math.abs(p.entry-p.sl0)*p.lots*nz(cfg.contract):0;
+  const riskSL=p.sl0>0?p.sl0:(p.sl>0?p.sl:0);const risk=riskSL>0?Math.abs(p.entry-riskSL)*p.lots*nz(cfg.contract):0;
   S.closed.push({id:p.id,side:p.side,lots:p.lots,entry:p.entry,exit:price,sl:p.sl,tp:p.tp,openT:p.openT,closeT:S.B.t[k],openI:p.openI,closeI:k,pnl,comm,reason,R:risk>0?pnl/risk:null,mfe:p.side==='buy'?p.hi-p.entry:p.entry-p.lo,mae:p.side==='buy'?p.entry-p.lo:p.hi-p.entry});
   return pnl;
 }
@@ -8610,6 +8612,26 @@ function marketFromMenu(side){
   const p=openMarket(side,lots,sl,tp);if(p){closeMenu();setSel('pos',p.id);}
 }
 /* tombol Buy/Sell (ticket & bar cepat). quick=true: selalu market, abaikan isian harga di ticket */
+function floatingLossRisk(side,lots,entry,sl){
+  if(!(sl>0) || !(entry>0) || !(lots>0)) return null;
+  const distance = Math.abs(entry-sl);
+  return distance * lots * nz(cfg.contract);
+}
+function validateFloatingLossOrder(side,lots,entry,sl){
+  if(!cfg.prop || !(nz(cfg.maxFL)>0)) return true;
+  if(!(sl>0)) { msg('Order ditolak: Stop Loss wajib diisi saat aturan Max Floating Loss aktif.','err'); return false; }
+  const risk = floatingLossRisk(side,lots,entry,sl);
+  const base = Math.max(0,nz(S.initial)||nz(cfg.balance));
+  const maxPct = Math.max(0,nz(cfg.maxFL));
+  const bufferPct = cl(nz(cfg.flBuffer),0,Math.max(0,maxPct));
+  const allowedPct = Math.max(0,maxPct-bufferPct);
+  const allowedMoney = base*allowedPct/100;
+  if(risk==null || risk > allowedMoney + 1e-8){
+    msg(`Order ditolak: risiko SL ${fm(risk||0)} melebihi Max FL efektif ${f2(allowedPct)}% (${fm(allowedMoney)}). Batas ${f2(maxPct)}% dikurangi buffer ${f2(bufferPct)}%.`, 'err');
+    return false;
+  }
+  return true;
+}
 function placeOrder(side,quick){
   if(!ready())return;
   if(S.sel){clearSel();}
@@ -9174,7 +9196,7 @@ function updateResults(){
   $('btStats').innerHTML=m('Net profit',fm(st.net,true),st.net>=0?'pos':'neg')+m('Return',pc(st.ret,true),st.ret>=0?'pos':'neg')+m('Win rate',st.n?f2(st.wr)+'%':'—')+m('Profit factor',st.n?(st.pf===Infinity?'∞':f2(st.pf)):'—')+m('Expectancy',st.n?fm(st.exp,true):'—',st.exp>=0?'pos':'neg')+m('Rata-rata win',st.n?fm(st.avgW):'—','pos')+m('Rata-rata loss',st.n?fm(st.avgL):'—','neg')+m('Avg R',st.avgR!=null?f2(st.avgR)+'R':'—')+m('Max drawdown',`${fm(S.maxDD)} (${f2(S.maxDDpct)}%)`,'neg')+m('Trade terbaik',st.n?fm(st.best,true):'—','pos')+m('Trade terburuk',st.n?fm(st.worst,true):'—','neg')+m('Loss beruntun maks',st.n?String(st.maxL):'—');
   $('btEqInfo').textContent=S.eq.length>1?`${fm(S.initial)} → ${fm(S.eq[S.eq.length-1][1])}`:'';
   let h='<thead><tr><th>#</th><th>Tipe</th><th>Lot</th><th>Buka</th><th>Entry</th><th>Tutup</th><th>Exit</th><th>Alasan</th><th>R</th><th>P/L</th></tr></thead><tbody>';
-  S.closed.slice(-200).reverse().forEach(t=>{h+=`<tr><td data-label="#" class="mono">${t.id}</td><td data-label="Tipe"><span class="tag ${t.side}">${t.side}</span></td><td data-label="Lot" class="mono">${f2(t.lots)}</td><td data-label="Buka" class="mono">${fdt(t.openT,true)}</td><td data-label="Entry" class="mono">${fp(t.entry)}</td><td data-label="Tutup" class="mono">${fdt(t.closeT,true)}</td><td data-label="Exit" class="mono">${fp(t.exit)}</td><td data-label="Alasan">${esc(t.reason)}</td><td data-label="R" class="mono">${t.R!=null?f2(t.R)+'R':'—'}</td><td data-label="P/L" class="mono ${t.pnl>=0?'pos':'neg'}">${fm(t.pnl,true)}</td></tr>`;});
+  S.closed.slice(-200).reverse().forEach(t=>{h+=`<tr><td data-label="#" class="mono">${t.id}</td><td data-label="Tipe"><span class="tag ${t.side}">${t.side}</span></td><td data-label="Lot" class="mono">${f2(t.lots)}</td><td data-label="Buka" class="mono">${fdt(t.openT,true)}</td><td data-label="Entry" class="mono">${fp(t.entry)}</td><td data-label="Tutup" class="mono">${fdt(t.closeT,true)}</td><td data-label="Exit" class="mono">${fp(t.exit)}</td><td data-label="Alasan">${esc(t.reason)}</td><td data-label="R" class="mono">${(t.R!=null?Number(t.R):(t.sl>0&&t.entry>0&&t.lots>0&&nz(cfg.contract)>0?(t.pnl/(Math.abs(t.entry-t.sl)*t.lots*nz(cfg.contract))):NaN))!=null&&Number.isFinite(t.R!=null?Number(t.R):(t.sl>0&&t.entry>0&&t.lots>0&&nz(cfg.contract)>0?(t.pnl/(Math.abs(t.entry-t.sl)*t.lots*nz(cfg.contract))):NaN))?f2(t.R!=null?Number(t.R):(t.pnl/(Math.abs(t.entry-t.sl)*t.lots*nz(cfg.contract))))+'R':'—'}</td><td data-label="P/L" class="mono ${t.pnl>=0?'pos':'neg'}">${fm(t.pnl,true)}</td></tr>`;});
   if(!S.closed.length)h+='<tr><td colspan="10" class="empty" style="color:var(--faint)">Belum ada trade tertutup.</td></tr>';
   $('btTrades').innerHTML=h+'</tbody>';
 }
@@ -9665,7 +9687,7 @@ async function offerResume(){
   }catch(e){}
 }
 /* ---------- settings ---------- */
-const CFG_MAP={btBal:['balance',1],btContract:['contract',1],btLev:['leverage',1],btSpread:['spread',1],btComm:['comm',1],btMPct:['marginPct',1],btBuf:['buffer',1],btDaily:['daily',1],btOverall:['overall',1],btTarget:['target',1],btConsistency:['consistencyPct',1],btMBase:['marginBase',0],btDDMode:['overallMode',0],btDDBasis:['ddBasis',0],btProp:['prop','c'],btBlock:['block','c'],btStop:['stop','c']};
+const CFG_MAP={btBal:['balance',1],btContract:['contract',1],btLev:['leverage',1],btSpread:['spread',1],btComm:['comm',1],btMPct:['marginPct',1],btBuf:['buffer',1],btMaxFL:['maxFL',1],btFLBuffer:['flBuffer',1],btDaily:['daily',1],btOverall:['overall',1],btTarget:['target',1],btConsistency:['consistencyPct',1],btMBase:['marginBase',0],btDDMode:['overallMode',0],btDDBasis:['ddBasis',0],btProp:['prop','c'],btBlock:['block','c'],btStop:['stop','c']};
 function syncCfgInputs(){Object.keys(CFG_MAP).forEach(id=>{const [k,t]=CFG_MAP[id],el=$(id);if(!el)return;if(t==='c')el.checked=!!cfg[k];else el.value=cfg[k];});$('btRisk').value=cfg.risk;}
 function updateDDExplain(){
   const e=$('btDDExplain');if(!e)return;
