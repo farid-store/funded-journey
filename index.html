@@ -9437,10 +9437,38 @@ const cloudUser=()=>{try{return firebase.auth&&firebase.auth().currentUser||null
 function cloudStatus(t,k){const e=$('btCloudStatus');if(e){e.textContent=t;e.dataset.kind=k||'info';}}
 /* Observe Firebase auth asynchronously; currentUser can be null on first render. */
 let cloudAuthUnsub=null;
+let cloudRedirectFinishStarted=false;
+async function finishCloudRedirect(){
+ if(cloudRedirectFinishStarted||!window.firebase||!firebase.auth)return;
+ cloudRedirectFinishStarted=true;
+ try{
+  const au=firebase.auth();
+  const result=await au.getRedirectResult();
+  if(!result||!result.user)return;
+  let pending=null;
+  try{pending=JSON.parse(localStorage.getItem('ffx_bt_cloud_redirect_migration')||'null');}catch(e){}
+  if(pending&&pending.raw&&pending.sourceUid&&result.user.uid!==pending.sourceUid){
+   await migrateAnonymousBackup(pending.raw,pending.sourceUid);
+  }else if(result.user.isAnonymous===false){
+   cloudStatus('Login Google berhasil · cloud siap','ok');
+   msg('Login Google berhasil.','ok');
+  }else{
+   cloudStatus('Google terhubung · backup anonim tetap terjaga','ok');
+   msg('Google berhasil dihubungkan ke akun anonim yang sama.','ok');
+  }
+  try{localStorage.removeItem('ffx_bt_cloud_redirect_migration');}catch(e){}
+ }catch(e){
+  if(e&&e.code&&e.code!=='auth/no-auth-event'){
+   console.warn('Cloud redirect result',e);
+   cloudStatus('Hasil login redirect: '+e.code,'warn');
+  }
+ }
+}
 function initCloudAuthStatus(){
  try{
   if(!window.firebase||!firebase.auth)return;
   const au=firebase.auth();
+  finishCloudRedirect();
   if(cloudAuthUnsub)return;
   cloudAuthUnsub=au.onAuthStateChanged(async u=>{
    if(u){cloudStatus(u.isAnonymous?'Login anonim aktif · cloud tersedia di perangkat ini':'Login Firebase aktif · cloud siap','ok');}
@@ -9500,11 +9528,30 @@ async function cloudLoginGoogle(){
   cloudStatus('Membuka login Google…','info');
   if(anonymous){
    try{await old.linkWithPopup(provider);cloudStatus('Google terhubung · backup anonim tetap memakai UID yang sama','ok');msg('Akun Google terhubung. Backup anonim lama tetap terjaga.','ok');return;}
-   catch(e){if(!['auth/credential-already-in-use','auth/email-already-in-use','auth/account-exists-with-different-credential'].includes(e.code))throw e;}
+   catch(e){
+    if(e.code==='auth/popup-blocked'||e.code==='auth/cancelled-popup-request'){
+     cloudStatus('Mengalihkan ke login Google…','info');
+     await old.linkWithRedirect(provider);return;
+    }
+    if(!['auth/credential-already-in-use','auth/email-already-in-use','auth/account-exists-with-different-credential'].includes(e.code))throw e;
+   }
   }
-  const result=await au.signInWithPopup(provider);
-  if(anonymous&&oldRaw&&result.user.uid!==sourceUid)await migrateAnonymousBackup(oldRaw,sourceUid);
-  else cloudStatus('Login Google aktif · cloud siap','ok');
+  try{
+   const result=await au.signInWithPopup(provider);
+   if(anonymous&&oldRaw&&result.user.uid!==sourceUid)await migrateAnonymousBackup(oldRaw,sourceUid);
+   else cloudStatus('Login Google aktif · cloud siap','ok');
+  }catch(e){
+   if(e.code==='auth/popup-blocked'||e.code==='auth/cancelled-popup-request'){
+    // Preserve the anonymous backup across the full-page redirect before changing auth users.
+    if(anonymous&&oldRaw){
+     try{localStorage.setItem('ffx_bt_cloud_redirect_migration',JSON.stringify({sourceUid,raw:oldRaw}));}
+     catch(storageErr){throw Error('Backup anonim terlalu besar untuk disiapkan sebelum redirect. Gunakan login email atau buka terminal di Safari lalu coba lagi.');}
+    }
+    cloudStatus('Mengalihkan ke login Google…','info');
+    await au.signInWithRedirect(provider);return;
+   }
+   throw e;
+  }
  }catch(e){console.warn('Cloud Google login',e);cloudStatus('Login Google gagal: '+(e.code||e.message),'err');msg('Login Google gagal: '+(e.code||e.message),'err');}
 }
 async function cloudEmailLinkOrCreate(){
