@@ -1266,6 +1266,8 @@ module.exports = async (req, res) => {
         lv,
         stats,
         lastReason: reason,
+        dataSource: 'mt5_ea',
+        webhookReceivedAt: new Date().toISOString(),
         receivedAt: new Date().toISOString(),
         updatedAt: FieldValue.serverTimestamp(),
         createdAt:
