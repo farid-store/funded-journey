@@ -2516,7 +2516,6 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
       <button class="tab" data-view="backtest"><span class="tico" style="--c1:#9ef0ff;--c2:#2b8fd6"><span>⏪</span></span><span>Backtest</span></button>
       <button class="tab" data-view="journal"><span class="tico" style="--c1:#8ef0c4;--c2:#1f9c6c"><span>📝</span></span><span>Journal</span></button>
       <button class="tab" data-view="challenge"><span class="tico" style="--c1:#ffb86a;--c2:#e0701a"><span>🏆</span></span><span>Challenge</span></button>
-      <button class="tab" data-view="risk"><span class="tico" style="--c1:#ff9a8a;--c2:#d8433a"><span>🛡️</span></span><span>Risk</span></button>
       <button class="tab" data-view="wallet"><span class="tico" style="--c1:#ffe27a;--c2:#d9a21c"><span>💰</span></span><span>Wallet</span></button>
       <button class="tab" data-view="news"><span class="tico" style="--c1:#ffd0f0;--c2:#d05aa8"><span>🔔</span></span><span>News</span></button>
       <button class="tab" data-view="accounts"><span class="tico" style="--c1:#b5b8ff;--c2:#5b61d6"><span>🏯</span></span><span>Akun</span></button>
@@ -2540,6 +2539,19 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
         <div class="arena-tip" id="arenaTip"></div>
       </div>
       <div id="integrityCard"></div>
+      <div class="section-head" style="margin-top:12px"><div><h2>Risk &amp; Sync Status</h2><p>Konfigurasi LIVE dari snapshot EA; pengaturan Backtest tetap simulasi lokal.</p></div></div>
+      <div class="grid2" style="margin-bottom:14px">
+        <div class="card panel">
+          <div class="panel-title"><h3>Max Floating Loss · LIVE</h3><span id="liveMaxFLState" class="tag neutral">Menunggu EA</span></div>
+          <div class="metrics" id="liveMaxFLMetrics"><div class="info"><small>Konfigurasi</small><b>Belum ada snapshot</b></div></div>
+          <div class="note" id="liveMaxFLNote">Nilai live harus berasal dari input EA MT5, bukan dari pengaturan Backtest.</div>
+        </div>
+        <div class="card panel">
+          <div class="panel-title"><h3>Sinkronisasi</h3><span id="liveSyncState" class="tag neutral">Menunggu snapshot</span></div>
+          <div class="metrics" id="liveSyncMetrics"><div class="info"><small>Sumber</small><b>EA → Webhook → Firestore</b></div></div>
+          <div class="note" id="liveCommandState">Status perintah remote akan tampil setelah EA mengirim acknowledgement.</div>
+        </div>
+      </div>
       <div class="section-head" style="margin-top:6px"><div><h2>Quest Board</h2><p>Target permainan berdasarkan data akun (ambang acuan, bukan aturan firm).</p></div></div>
       <div class="quests" id="questBoard"></div>
       <div class="section-head"><div><h2>Account Overview</h2><p>Snapshot kondisi akun saat ini</p></div></div>
@@ -2608,7 +2620,9 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
       <div class="card panel" style="margin-top:14px">
         <div class="panel-title"><h3>Order Manual</h3><span>Masuk lewat sistem manajemen yang sama (SL/TP fibo, BE, reentry). Diblokir otomatis saat EA off / lockout / news blackout.</span></div>
         <div class="toolbar">
-          <input id="ctlLot" class="search" style="max-width:110px;min-width:0;flex:none" type="number" step="0.01" min="0.01" value="0.01" placeholder="Lot">
+          <input id="ctlLot" class="search" style="max-width:90px;min-width:0;flex:none" type="number" step="0.01" min="0.01" value="0.01" placeholder="Lot">
+          <input id="ctlSL" class="search" style="max-width:125px;min-width:0;flex:none" type="number" step="any" placeholder="Stop Loss (wajib Max FL)">
+          <input id="ctlTP" class="search" style="max-width:125px;min-width:0;flex:none" type="number" step="any" placeholder="Take Profit (opsional)">
           <button class="btn primary" id="ctlBuy" style="border-color:rgba(52,224,161,.45);background:var(--green-soft);color:#7fe8c1">▲ BUY Market</button>
           <button class="btn danger" id="ctlSell">▼ SELL Market</button>
         </div>
@@ -2626,7 +2640,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
     </section>
 
     <section id="view-backtest" class="view">
-      <div class="section-head"><div><h2>Backtest Lab</h2><p>Replay chart candle demi candle, buka posisi seperti live, lalu lihat statistik dan kurva equity. Terintegrasi dengan aturan prop firm: margin rule, daily loss, overall loss, dan target profit.</p></div></div>
+      <div class="section-head"><div><h2>Backtest Lab <span class="tag neutral">SIMULASI LOKAL</span></h2><p>Replay chart candle demi candle, buka posisi seperti live, lalu lihat statistik dan kurva equity. Terintegrasi dengan aturan prop firm: margin rule, daily loss, overall loss, dan target profit.</p></div></div>
 
       <div class="card panel bt-data">
         <div class="panel-title btx-datahead"><h3>Data Historis</h3><button id="btDataToggle" class="btn ghost" type="button" aria-expanded="true">Sembunyikan</button></div>
@@ -2823,9 +2837,8 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
         <div class="panel-title"><h3>Drawdown</h3><span>% dari peak equity</span></div>
         <div class="chart" id="drawdownChart"></div>
       </div>
-    </section>
-
-    <section id="view-risk" class="view">
+      <div class="section-head" style="margin-top:18px"><div><h2>Risk Monitor Lengkap</h2><p>Semua fitur risk dipusatkan di Overview.</p></div></div>
+    <div id="view-risk" class="risk-overview-section">
       <div class="hero" data-scene="risk"><div class="hero-info"><b>Defense Walls</b><span>Tembok pertahanan: makin tinggi makin dekat ke limit. Merah = bahaya.</span><em id="hn-risk"></em></div><div class="hero-scene"></div></div>
       <div class="section-head"><div><h2>Risk Monitor</h2><p>Daily / overall loss limit (langsung dari EA), risiko terbuka, dan exposure per pair</p></div></div>
       <div class="grid3">
@@ -2891,7 +2904,10 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
 
       <div class="section-head"><div><h2>Exposure per Pair</h2><p>Agregasi posisi terbuka per simbol</p></div></div>
       <div class="card table-card"><div class="table-scroll"><table id="exposureTable"></table></div></div>
+    </div>
     </section>
+
+
 
     <section id="view-news" class="view">
       <div class="hero" data-scene="news"><div class="hero-info"><b>Alarm Bell</b><span>Event berdampak tinggi yang akan datang. Tinggi = tingkat dampak.</span><em id="hn-news"></em></div><div class="hero-scene"></div></div>
@@ -4263,12 +4279,56 @@ window.__THEME = { apply, get };
     return `<span class="pill2 ${cls}"><span class="dotmini"></span><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></span>`;
   }
 
+  let webhookHealth = {ok:null, at:0, service:''};
+  async function probeWebhookHealth(){
+    try {
+      const r = await fetch(EP, { method:'GET', cache:'no-store' });
+      const j = await r.json();
+      webhookHealth = { ok: !!(r.ok && j && j.ok === true), at: Date.now(), service: j?.service || '' };
+    } catch (e) {
+      webhookHealth = { ok:false, at:Date.now(), service:'' };
+    }
+    if (currentAccount) renderOverview();
+  }
+  probeWebhookHealth();
+  setInterval(probeWebhookHealth, 15000);
+
   function renderOverview(){
     const a=currentAccount, p=a.positions||[], o=a.pendingOrders||[], s=calcStats();
     $('accLogin').textContent=a.login??'—'; $('accServer').textContent=a.server??'—';
     $('accCompany').textContent=a.company??'—'; $('accCurrency').textContent=a.currency??'—';
     $('accLev').textContent=a.leverage?'1:'+a.leverage:'—';
     $('lastSnapshot').textContent = receivedAt ? new Date(receivedAt).toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
+
+    const snapAgeSec = receivedAt ? Math.max(0, (Date.now() - Number(receivedAt))/1000) : Infinity;
+    const syncState = snapAgeSec <= 20 ? ['LIVE','buy'] : snapAgeSec <= 60 ? ['STALE','medium'] : ['OFFLINE','sell'];
+    const syncEl = $('liveSyncState');
+    if (syncEl) { syncEl.textContent = syncState[0]; syncEl.className = 'tag ' + (syncState[1] === 'buy' ? 'buy' : syncState[1] === 'sell' ? 'sell' : 'medium'); }
+    const snapText = receivedAt ? new Date(receivedAt).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'medium'}) : 'Belum ada snapshot';
+    const lastCmd = (commandsCache || []).slice().sort((x,y) => {
+      const tx=x.createdAt?.toMillis ? x.createdAt.toMillis() : Number(x.createdAt||0);
+      const ty=y.createdAt?.toMillis ? y.createdAt.toMillis() : Number(y.createdAt||0); return ty-tx;
+    })[0];
+    if ($('liveSyncMetrics')) $('liveSyncMetrics').innerHTML = [
+      ['Sumber data',a.dataSource === 'mt5_ea' ? 'MT5 EA' : 'EA → Webhook → Firestore'],
+      ['Snapshot terakhir',snapText],
+      ['Umur snapshot',Number.isFinite(snapAgeSec) ? Math.round(snapAgeSec)+' detik' : '—'],
+      ['Webhook',webhookHealth.ok === true ? 'HTTP OK · ' + (webhookHealth.service || 'endpoint aktif') : webhookHealth.ok === false ? 'Tidak terjangkau' : 'Memeriksa endpoint…']
+    ].map(x=>`<div class="info"><small>${x[0]}</small><b>${esc(x[1])}</b></div>`).join('');
+    if ($('liveCommandState')) $('liveCommandState').textContent = lastCmd
+      ? `Perintah terakhir: ${lastCmd.action || '—'} · ${lastCmd.status || 'pending'} · ${lastCmd.message || 'menunggu acknowledgement EA'}`
+      : 'Belum ada perintah remote yang tercatat.';
+    const maxFlOn = a.maxFloatingLossEnabled === true && Number(a.maxFloatingLossPct||0)>0;
+    if ($('liveMaxFLState')) { $('liveMaxFLState').textContent = maxFlOn ? 'AKTIF DI EA' : (a.maxFloatingLossEnabled === false ? 'NONAKTIF DI EA' : 'BELUM DIKIRIM EA'); $('liveMaxFLState').className = 'tag ' + (maxFlOn ? 'buy' : 'neutral'); }
+    if ($('liveMaxFLMetrics')) $('liveMaxFLMetrics').innerHTML = [
+      ['Max FL',a.maxFloatingLossPct!=null ? pct(a.maxFloatingLossPct) : 'Belum dikirim'],
+      ['Buffer slippage',a.floatingLossSlippageBufferPct!=null ? pct(a.floatingLossSlippageBufferPct) : 'Belum dikirim'],
+      ['Batas efektif',a.maxFloatingLossEffectivePct!=null ? pct(a.maxFloatingLossEffectivePct) : 'Belum dikirim'],
+      ['Baseline',a.maxFloatingLossBaseline!=null ? money(a.maxFloatingLossBaseline) : 'Belum dikirim']
+    ].map(x=>`<div class="info"><small>${x[0]}</small><b>${esc(x[1])}</b></div>`).join('');
+    if ($('liveMaxFLNote')) $('liveMaxFLNote').textContent = maxFlOn
+      ? `Baseline: ${a.maxFloatingLossBaselineSource || 'sesuai EA'}. Buffer adalah percentage points. Nilai ini read-only dari snapshot live.`
+      : 'Belum dapat dipastikan aktif: kompilasi dan pasang EA versi Max FL, lalu tunggu snapshot baru. Pengaturan Backtest tidak mengubah input EA.';
 
     $('accountKpis').innerHTML=[
       ['Balance',money(a.balance),'','Account balance'],
@@ -4411,7 +4471,29 @@ window.__THEME = { apply, get };
   // ================= CONTROL TAB =================
   function sendCommand(action, params){
     if (!currentAccountId) { toast('Pilih akun dulu'); return; }
-    callApi({ accountId: currentAccountId, action, params: params || [] })
+    params = params || [];
+    if (action === 'open_order' && currentAccount &&
+        currentAccount.maxFloatingLossEnabled === true &&
+        Number(currentAccount.maxFloatingLossPct || 0) > 0) {
+      const dir = String(params[0] || '');
+      const lot = Number(params[1] || 0);
+      const sl = Number(params[2] || 0);
+      const entry = dir === 'buy' ? Number(currentAccount.ask || 0) : Number(currentAccount.bid || 0);
+      const baseline = Number(currentAccount.maxFloatingLossBaseline || 0);
+      const effectivePct = Number(currentAccount.maxFloatingLossEffectivePct ??
+        Math.max(0, Number(currentAccount.maxFloatingLossPct || 0) - Number(currentAccount.floatingLossSlippageBufferPct || 0)));
+      if (!(sl > 0)) { toast('Order ditolak di web: Max FL aktif, Stop Loss wajib diisi.'); return; }
+      if (!(entry > 0) || !(lot > 0) || !(baseline > 0)) { toast('Order ditolak di web: snapshot harga/baseline EA belum lengkap. Tunggu sinkronisasi EA.'); return; }
+      if ((dir === 'buy' && sl >= entry) || (dir === 'sell' && sl <= entry)) { toast('Order ditolak di web: posisi SL tidak valid terhadap entry.'); return; }
+      const tickSize = Number(currentAccount.tickSize || 0), tickValueLoss = Number(currentAccount.tickValueLoss || 0);
+      let riskMoney = -1;
+      if (tickSize > 0 && tickValueLoss > 0) riskMoney = Math.abs(entry - sl) / tickSize * tickValueLoss * lot;
+      else if (Number(currentAccount.contractSize || 0) > 0 && String(currentAccount.currency || '').toUpperCase() === 'USD') riskMoney = Math.abs(entry - sl) * Number(currentAccount.contractSize) * lot;
+      if (!(riskMoney >= 0)) { toast('Order ditahan di web: spesifikasi tick/contract belum tersedia untuk estimasi risiko. EA tetap menjadi validator final.'); return; }
+      const allowed = baseline * effectivePct / 100;
+      if (riskMoney > allowed + 1e-8) { toast(`Order ditolak di web: estimasi risiko ${money(riskMoney)} > batas Max FL efektif ${money(allowed)} (${pct(effectivePct)}).`); return; }
+    }
+    callApi({ accountId: currentAccountId, action, params })
       .then(() => toast(`Perintah "${action}" terkirim — EA mengambilnya dlm ±5 detik.`))
       .catch(e => toast('Gagal kirim perintah: ' + e.message));
   }
@@ -4443,8 +4525,8 @@ window.__THEME = { apply, get };
   $('ctlEaOn').addEventListener('click', () => armOrFire($('ctlEaOn'), () => sendCommand('ea_on')));
   $('ctlSyncOn').addEventListener('click', () => sendCommand('sync_on'));
   $('ctlSyncOff').addEventListener('click', () => sendCommand('sync_off'));
-  $('ctlBuy').addEventListener('click', () => sendCommand('open_order', ['buy', $('ctlLot').value || '0.01']));
-  $('ctlSell').addEventListener('click', () => sendCommand('open_order', ['sell', $('ctlLot').value || '0.01']));
+  $('ctlBuy').addEventListener('click', () => sendCommand('open_order', ['buy', $('ctlLot').value || '0.01', $('ctlSL').value || '0', $('ctlTP').value || '0']));
+  $('ctlSell').addEventListener('click', () => sendCommand('open_order', ['sell', $('ctlLot').value || '0.01', $('ctlSL').value || '0', $('ctlTP').value || '0']));
 
   $('positionsTable').addEventListener('click', e => {
     const btn = e.target.closest('[data-close-ticket]');
@@ -8574,7 +8656,8 @@ function openMarket(side,lots,sl,tp){
   if(!(lots>=0.01))return fail('Lot minimal 0.01. Atur Lot di Order Ticket.');
   const bid=px(),ask=bid+sp(),entry=side==='buy'?ask:bid;
   if(sl>0){if(side==='buy'&&!(sl<entry))return fail('Stop Loss BUY harus di bawah harga entry.');if(side==='sell'&&!(sl>entry))return fail('Stop Loss SELL harus di atas harga entry.');}
-  if(tp>0){if(side==='buy'&&!(tp>entry))return fail('Take Profit BUY harus di atas harga entry.');if(side==='sell'&&!(tp<entry))return fail('Take Profit SELL harus di bawah harga entry.');}
+  if(tp>0){if(side==='buy'&&!(tp>entry))return fail('Take Profit BUY harus di atas harga entry.');if(side==='sell'&&!(tp<entry))return fail('Take Profit SELL harus di bawah harga entry.')}
+  if(!validateFloatingLossOrder(side,lots,entry,sl))return null;
   const er=marginCheck(entry,lots);if(er)return fail(er);
   const p=openPos(side,lots,entry,sl,tp,S.i);
   recordEq(S.i);dirty();persist();
@@ -8591,6 +8674,7 @@ function createPending(side,type,price,lots,sl,tp){
   }
   if(sl>0&&(side==='buy'?sl>=price:sl<=price))return fail(`SL ${side.toUpperCase()} harus di ${side==='buy'?'bawah':'atas'} harga entry.`);
   if(tp>0&&(side==='buy'?tp<=price:tp>=price))return fail(`TP ${side.toUpperCase()} harus di ${side==='buy'?'atas':'bawah'} harga entry.`);
+  if(!validateFloatingLossOrder(side,lots,price,sl))return null;
   const er=marginCheck(price,lots);if(er)return fail(er);
   const q={id:S.nextId++,side,lots,type,price,sl:sl||0,tp:tp||0,openI:S.i};S.pend.push(q);
   S.sig.pos='';dirty();persist();
