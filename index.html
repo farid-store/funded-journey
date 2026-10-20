@@ -9435,6 +9435,23 @@ let cloudSaveTimer=0, cloudBusy=false;
 const cloudDb=()=>{try{return window.firebase&&firebase.apps&&firebase.apps.length&&firebase.firestore?firebase.firestore():null}catch(e){return null}};
 const cloudUser=()=>{try{return firebase.auth&&firebase.auth().currentUser||null}catch(e){return null}};
 function cloudStatus(t,k){const e=$('btCloudStatus');if(e){e.textContent=t;e.dataset.kind=k||'info';}}
+/* Observe Firebase auth asynchronously; currentUser can be null on first render. */
+let cloudAuthUnsub=null;
+function initCloudAuthStatus(){
+ try{
+  if(!window.firebase||!firebase.auth)return;
+  const au=firebase.auth();
+  if(cloudAuthUnsub)return;
+  cloudAuthUnsub=au.onAuthStateChanged(async u=>{
+   if(u){cloudStatus(u.isAnonymous?'Login anonim aktif · cloud tersedia di perangkat ini':'Login Firebase aktif · cloud siap','ok');}
+   else{
+    cloudStatus('Cloud: menunggu login','warn');
+    // Preserve existing anonymous sign-in fallback. Anonymous UIDs differ across devices.
+    try{await au.signInAnonymously();}catch(e){cloudStatus('Cloud: login diperlukan ('+(e.code||'auth-error')+')','warn');}
+   }
+  },e=>cloudStatus('Cloud auth gagal: '+(e.code||e.message||'unknown'),'err'));
+ }catch(e){cloudStatus('Cloud auth tidak tersedia','warn');}
+}
 function cloudSnapshot(){return {v:2,name:S.name,baseSec:S.baseSec,dec:S.dec,n:S.n,B:S.B,i:S.i,start:S.start,pos:S.pos,pend:S.pend,closed:S.closed,balance:S.balance,initial:S.initial,nextId:S.nextId,eq:S.eq,eqStride:S.eqStride,peak:S.peak,balancePeak:S.balancePeak,maxDD:S.maxDD,maxDDpct:S.maxDDpct,drawings:S.drawings,dayKey:S.dayKey,dayStartEq:S.dayStartEq,breach:S.breach,violations:S.violations,vioKeys:S.vioKeys,targetHit:S.targetHit,tf:S.tf,view:S.view,ind:S.ind,cfg:cfg,savedAt:Date.now()};}
 async function cloudSaveNow(showToast=false){
  if(cloudBusy||!S.B)return;
@@ -9777,7 +9794,8 @@ function bind(){
   bindSettings();bindChart();buildTfButtons();renderDrawingList();renderSelBar();setTool('cursor');
   $('btCloudSave')?.addEventListener('click',()=>cloudSaveNow(true));
   $('btCloudRestore')?.addEventListener('click',cloudRestore);
-  try{if(cloudUser())cloudStatus('Firebase login aktif','ok');}catch(e){}
+  initCloudAuthStatus();
+  try{if(cloudUser())cloudStatus(cloudUser().isAnonymous?'Login anonim aktif · cloud tersedia di perangkat ini':'Login Firebase aktif · cloud siap','ok');}catch(e){}
 }
 window.__BT.geo=()=>geo;window.__BT.api={openMenu,placeFromMenu,reverseById,flipPending,step,rewindOne};
 bind();offerResume();dirty();
