@@ -9478,8 +9478,26 @@ async function cloudRestore(){
   const m=await ref.get();if(!m.exists)throw Error('Backup cloud belum tersedia untuk akun ini.');
   const meta=m.data(),q=await ref.collection('chunks').get(),parts=q.docs.map(d=>d.data()).sort((a,b)=>a.i-b.i);
   if(parts.length!==meta.chunkCount)throw Error('Backup belum lengkap. Coba lagi.');
-  const x=JSON.parse(parts.map(a=>a.data).join(''));if(!x.B||!Array.isArray(x.B.t))throw Error('Data candle tidak valid.');
-  pause();S.B=x.B;S.n=x.n;S.baseSec=x.baseSec;S.dec=x.dec;S.name=x.name;S.tfCache={};S.i=x.i;S.start=x.start;
+  const x=JSON.parse(parts.map(a=>a.data).join(''));
+  // JSON.stringify mengubah typed arrays (Float64Array) menjadi objek numerik.
+  // Hidrasikan kembali ke Float64Array yang dipakai chart/backtest.
+  if(!x.B||typeof x.B!=='object')throw Error('Data candle tidak valid: struktur tidak ditemukan.');
+  const candleField=(v)=>{
+    if(ArrayBuffer.isView(v))return new Float64Array(v);
+    if(Array.isArray(v))return Float64Array.from(v,Number);
+    if(v&&typeof v==='object'){
+      const keys=Object.keys(v).filter(k=>/^\d+$/.test(k)).sort((a,b)=>Number(a)-Number(b));
+      if(keys.length){const out=new Float64Array(Number(keys[keys.length-1])+1);for(const k of keys)out[Number(k)]=Number(v[k]);return out;}
+    }
+    return null;
+  };
+  const restoredB={t:candleField(x.B.t),o:candleField(x.B.o),h:candleField(x.B.h),l:candleField(x.B.l),c:candleField(x.B.c)};
+  const candleLen=restoredB.t&&restoredB.t.length;
+  if(!candleLen||!restoredB.o||!restoredB.h||!restoredB.l||!restoredB.c||![restoredB.o.length,restoredB.h.length,restoredB.l.length,restoredB.c.length].every(n=>n===candleLen))throw Error('Data candle tidak valid: field OHLC/time tidak lengkap atau panjangnya berbeda.');
+  const restoredN=Number(x.n)||candleLen;
+  if(restoredN>candleLen)throw Error('Data candle tidak lengkap: jumlah candle tidak cocok.');
+  x.B=restoredB;x.n=Math.min(restoredN,candleLen);
+  pause();S.B=x.B;S.n=x.n;S.baseSec=x.baseSec;S.dec=x.dec;S.name=x.name;S.tfCache={};S.i=Math.max(0,Math.min(Number(x.i)||0,S.n-1));S.start=Math.max(0,Math.min(Number(x.start)||0,S.n-1));
   S.pos=x.pos||[];S.pend=x.pend||[];S.closed=x.closed||[];S.balance=x.balance;S.initial=x.initial;S.nextId=x.nextId||1;
   S.eq=x.eq||[];S.eqStride=x.eqStride||1;S.peak=x.peak;S.balancePeak=x.balancePeak||x.peak;S.maxDD=x.maxDD||0;S.maxDDpct=x.maxDDpct||0;
   S.drawings=x.drawings||[];S.dayKey=x.dayKey||'';S.dayStartEq=x.dayStartEq||0;S.breach=x.breach||null;S.violations=x.violations||[];S.vioKeys=x.vioKeys||{};S.targetHit=!!x.targetHit;S.tf=(x.tf&&x.tf>=S.baseSec)?x.tf:0;
