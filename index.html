@@ -2654,8 +2654,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
             <div class="btx-tools">
               <button id="btIndBtn" class="btn ghost btx-ib" type="button" title="Indikator" aria-label="Indikator">ƒx</button>
               <button id="btMagnet" class="btn ghost btx-ib" type="button" title="Magnet: titik drawing menempel ke O/H/L/C" aria-label="Magnet">🧲</button>
-              <button id="btAuto" class="btn ghost btx-ib" type="button" title="Auto scale: pas-kan harga dan posisi chart (A)" aria-label="Auto skala">A</button>
-              <button id="btLog" class="btn ghost btx-ib" type="button" title="Skala logaritmik (L)" aria-label="Skala logaritmik">L</button>
+              <button id="btAuto" class="btn ghost btx-ib" type="button" title="Reset skala &amp; posisi chart" aria-label="Auto skala">A</button>
               <button id="btZoomOut" class="btn ghost btx-ib" type="button" title="Perkecil" aria-label="Perkecil">−</button>
               <button id="btZoomIn" class="btn ghost btx-ib" type="button" title="Perbesar" aria-label="Perbesar">+</button>
               <button id="btFull" class="btn ghost btx-ib" type="button" title="Layar penuh" aria-label="Layar penuh">⛶</button>
@@ -8903,17 +8902,9 @@ function drawChart(){
   S.pend.forEach(q=>{const f=selO===q;ext(q.price,f);ext(q.sl,f);ext(q.tp,f);});
   const extD=d=>{if(!d)return;ext(d.p1);ext(d.p2);if(d.sl)ext(d.sl);if(d.tp)ext(d.tp);};
   S.drawings.forEach(extD);extD(S.drawDraft);
-  const useLog=!!S.view.log && lo>0 && hi>0;
-  if(useLog){
-    let lhi=Math.log(hi),llo=Math.log(lo),raw=Math.max(1e-9,lhi-llo),mid=(lhi+llo)/2+(S.view.yShift||0)*raw,half=raw/2*1.12*(S.view.yZoom||1);
-    lhi=mid+half;llo=mid-half;hi=Math.exp(lhi);lo=Math.max(Number.MIN_VALUE,Math.exp(llo));
-  }else{
-    const raw=Math.max(1e-9,hi-lo),mid=(hi+lo)/2+(S.view.yShift||0)*raw,half=raw/2*1.12*(S.view.yZoom||1);
-    hi=mid+half;lo=mid-half;
-  }
-  const y=p=>useLog&&p>0?padT+(Math.log(hi)-Math.log(p))/(Math.log(hi)-Math.log(lo))*chh:padT+(hi-p)/(hi-lo)*chh;
-  const x=k=>padL+(k-first+0.5)*step;
-  const priceAt=yy=>useLog?Math.exp(Math.log(hi)-(yy-padT)/chh*(Math.log(hi)-Math.log(lo))):hi-(yy-padT)/chh*(hi-lo);
+  const raw=Math.max(1e-9,hi-lo),mid=(hi+lo)/2+(S.view.yShift||0)*raw,half=raw/2*1.12*(S.view.yZoom||1);
+  hi=mid+half;lo=mid-half;
+  const y=p=>padT+(hi-p)/(hi-lo)*chh,x=k=>padL+(k-first+0.5)*step,priceAt=yy=>hi-(yy-padT)/chh*(hi-lo);
   const plotR=padL+cw;
   geo={W,H,padL,padR,padT,padB,cw,chh,step,first,lastVis,hi,lo,T,last,x,y,priceAt,rightPad,LH};
   const hv=touch?null:S.hover;
@@ -8922,11 +8913,7 @@ function drawChart(){
   g.textBaseline='middle';g.lineWidth=1;
   const ps=niceStep((hi-lo)/cl(chh/55,3,9)),dp=Math.max(0,Math.min(S.dec,-Math.floor(Math.log10(ps)+1e-9)));
   g.strokeStyle=C.line;g.fillStyle=C.faint;g.textAlign='left';
-  if(useLog){
-    const ticks=[];const p10=Math.floor(Math.log10(lo))-1,p11=Math.ceil(Math.log10(hi))+1;
-    for(let e=p10;e<=p11;e++){const base=Math.pow(10,e);for(const m of [1,2,5]){const v=m*base;if(v>=lo&&v<=hi)ticks.push(v);}}
-    ticks.forEach(v=>{const yy=Math.round(y(v))+.5;g.beginPath();g.moveTo(padL,yy);g.lineTo(plotR,yy);g.stroke();g.fillText(v.toLocaleString('en-US',{maximumSignificantDigits:6}),plotR+8,yy);});
-  }else for(let v=Math.ceil(lo/ps)*ps;v<=hi;v+=ps){const yy=Math.round(y(v))+.5;g.beginPath();g.moveTo(padL,yy);g.lineTo(plotR,yy);g.stroke();g.fillText(v.toFixed(dp),plotR+8,yy);}
+  for(let v=Math.ceil(lo/ps)*ps;v<=hi;v+=ps){const yy=Math.round(y(v))+.5;g.beginPath();g.moveTo(padL,yy);g.lineTo(plotR,yy);g.stroke();g.fillText(v.toFixed(dp),plotR+8,yy);}
   g.textAlign='center';g.textBaseline='alphabetic';
   const everyBars=Math.max(1,Math.ceil(120/step));
   for(let k=Math.ceil(first/everyBars)*everyBars;k<=lastVis;k+=everyBars){if(k<0||k>=T.t.length)continue;const xx=Math.round(x(k))+.5;g.beginPath();g.moveTo(xx,padT);g.lineTo(xx,padT+chh);g.stroke();g.fillStyle=C.faint;g.fillText(fmtAxisT(T.t[k],T.sec),xx,H-7);}
@@ -9556,7 +9543,6 @@ function bindChart(){
     if(h&&h.k==='hit'){const a=h.h.act;if(a.t==='line'){setSel(a.L.kind,a.L.id);drag={...base,t:'line',L:a.L};}else drag={...base,t:'btn',act:a};}
     else if(h&&h.k==='line'){setSel(h.L.kind,h.L.id);drag=h.L.drag?{...base,t:'line',L:h.L}:{...base,t:'linetap'};}
     else if(h&&h.k==='draw'){S.selDraw=h.idx;S.sel=null;S.cur=null;syncTicketFromSel();renderSelBar();renderDrawingList();drag={...base,t:'draw',idx:h.idx,part:h.part,orig:JSON.parse(JSON.stringify(S.drawings[h.idx])),k0:barAtX(p.x),price0:geo.priceAt(p.y)};}
-    else if(p.y>=H-geo.padB&&p.y<=H&&p.x>=geo.padL&&p.x<=geo.padL+geo.cw)drag={...base,t:'timeaxis',z0:S.view.n};
     else if(inAxis(p))drag={...base,t:'axis',z0:S.view.yZoom||1};
     else if(S.drawTool!=='cursor'&&!S.pick&&inPlot(p)){
       const tl=S.drawTool;
@@ -9569,14 +9555,13 @@ function bindChart(){
   cv.addEventListener('pointermove',e=>{
     const p=rel(e);if(e.pointerType==='mouse')S.hover=p;
     if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,p);
-    if(!drag){if(geo&&p.y>=H-geo.padB&&p.x>=geo.padL&&p.x<=geo.padL+geo.cw&&S.drawTool==='cursor'&&!S.pick)cv.style.cursor='ew-resize';else updateHover(p);dirty();return;}
+    if(!drag){updateHover(p);dirty();return;}
     if(drag.t==='pinch'){if(ptrs.size>=2&&pinch0>0){const a=[...ptrs.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(Math.abs(d-pinch0)>4){S.view.n=cl(Math.round(S.view.n*pinch0/d),20,800);pinch0=d;}}dirty();return;}
     if(e.pointerId!==drag.id)return;
     const th=S.touch?10:4;if(!drag.moved&&Math.hypot(p.x-drag.sx,p.y-drag.sy)>th)drag.moved=true;
     switch(drag.t){
       case 'pan':if(drag.moved){const maxOff=Math.max(0,geo.last-10);S.view.off=cl(Math.round(drag.off+(p.x-drag.sx)/geo.step),0,maxOff);S.view.yShift=cl(drag.ys+(p.y-drag.sy)/geo.chh*1.12*(S.view.yZoom||1),-3,3);}break;
       case 'axis':if(drag.moved)S.view.yZoom=cl(drag.z0*Math.exp((p.y-drag.sy)/200),0.15,10);break;
-      case 'timeaxis':if(drag.moved)S.view.n=cl(Math.round(drag.z0*Math.exp(-(p.x-drag.sx)/180)),20,800);break;
       case 'line':
         if(drag.moved&&p.y>=geo.padT-4&&p.y<=geo.padT+geo.chh+4){
           const price=geo.priceAt(cl(p.y,geo.padT,geo.padT+geo.chh));
@@ -9624,7 +9609,6 @@ function bindChart(){
   cv.addEventListener('wheel',e=>{
     e.preventDefault();if(!geo)return;const p=rel(e);
     if(inAxis(p))S.view.yZoom=cl((S.view.yZoom||1)*(e.deltaY>0?1.1:0.9),0.15,10);
-    else if(p.y>=H-geo.padB&&p.x>=geo.padL&&p.x<=geo.padL+geo.cw)S.view.n=cl(Math.round(S.view.n*(e.deltaY>0?1.12:0.89)),20,800);
     else if(e.shiftKey)S.view.off=cl(S.view.off+(e.deltaY>0?-3:3),0,Math.max(0,geo.last-10));
     else S.view.n=cl(Math.round(S.view.n*(e.deltaY>0?1.12:0.89)),20,800);
     dirty();
@@ -9658,10 +9642,7 @@ function bind(){
   $('btMenu').addEventListener('pointerdown',e=>e.stopPropagation());
   $('btMagnet').addEventListener('click',()=>{S.magnet=!S.magnet;cfg.magnet=S.magnet;saveCfg();$('btMagnet').classList.toggle('on',S.magnet);msg(S.magnet?'Magnet aktif: titik drawing menempel ke O/H/L/C.':'Magnet nonaktif.','ok');});
   $('btMagnet').classList.toggle('on',S.magnet);
-  $('btAuto').addEventListener('click',()=>{S.view.yShift=0;S.view.yZoom=1;S.view.off=0;S.view.n=cl(S.view.n||110,40,800);S.view.auto=true;dirty();msg('Auto scale aktif: rentang harga dan posisi chart dipaskan.','ok');});
-  $('btLog').addEventListener('click',()=>{S.view.log=!S.view.log;$('btLog').classList.toggle('on',S.view.log);$('btLog').setAttribute('aria-pressed',String(!!S.view.log));S.view.yShift=0;S.view.yZoom=1;dirty();msg(S.view.log?'Skala logaritmik aktif.':'Skala linear aktif.','ok');});
-  $('btLog').classList.toggle('on',!!S.view.log);
-  $('btLog').setAttribute('aria-pressed',String(!!S.view.log));
+  $('btAuto').addEventListener('click',()=>{S.view.yShift=0;S.view.yZoom=1;S.view.off=0;dirty();});
   $('btFull').addEventListener('click',()=>setFull(!S.full));
   // indikator
   const im=$('btIndMenu');
