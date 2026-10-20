@@ -8928,8 +8928,15 @@ function drawChart(){
   S.pend.forEach(q=>{const f=selO===q;ext(q.price,f);ext(q.sl,f);ext(q.tp,f);});
   const extD=d=>{if(!d)return;ext(d.p1);ext(d.p2);if(d.sl)ext(d.sl);if(d.tp)ext(d.tp);};
   S.drawings.forEach(extD);extD(S.drawDraft);
-  const raw=Math.max(1e-9,hi-lo),mid=(hi+lo)/2+(S.view.yShift||0)*raw,half=raw/2*1.12*(S.view.yZoom||1);
-  hi=mid+half;lo=mid-half;
+  // Saat SL/TP diseret, kunci skala harga pada range awal agar autoscale
+  // tidak mengejar level yang sedang bergerak (penyebab chart/candle berkedut).
+  let raw=Math.max(1e-9,hi-lo),mid,half;
+  if(S.dragPriceRange){
+    hi=S.dragPriceRange.hi;lo=S.dragPriceRange.lo;
+  }else{
+    mid=(hi+lo)/2+(S.view.yShift||0)*raw;half=raw/2*1.12*(S.view.yZoom||1);
+    hi=mid+half;lo=mid-half;
+  }
   const y=p=>padT+(hi-p)/(hi-lo)*chh,x=k=>padL+(k-first+0.5)*step,priceAt=yy=>hi-(yy-padT)/chh*(hi-lo);
   const plotR=padL+cw;
   geo={W,H,padL,padR,padT,padB,cw,chh,step,first,lastVis,hi,lo,T,last,x,y,priceAt,rightPad,LH};
@@ -9780,6 +9787,7 @@ function bindChart(){
     const base={sx:p.x,sy:p.y,moved:false,id:e.pointerId},h=hitTest(p);
     if(h&&h.k==='hit'){const a=h.h.act;if(a.t==='line'){setSel(a.L.kind,a.L.id);drag={...base,t:'line',L:a.L};}else drag={...base,t:'btn',act:a};}
     else if(h&&h.k==='line'){setSel(h.L.kind,h.L.id);drag=h.L.drag?{...base,t:'line',L:h.L}:{...base,t:'linetap'};}
+    if(drag&&drag.t==='line'&&(drag.L.field==='sl'||drag.L.field==='tp')&&geo){S.dragPriceRange={hi:geo.hi,lo:geo.lo};}
     else if(h&&h.k==='draw'){S.selDraw=h.idx;S.sel=null;S.cur=null;syncTicketFromSel();renderSelBar();renderDrawingList();drag={...base,t:'draw',idx:h.idx,part:h.part,orig:JSON.parse(JSON.stringify(S.drawings[h.idx])),k0:barAtX(p.x),price0:geo.priceAt(p.y)};}
     else if(inAxis(p))drag={...base,t:'axis',z0:S.view.yZoom||1};
     else if(S.drawTool!=='cursor'&&!S.pick&&inPlot(p)){
@@ -9817,7 +9825,7 @@ function bindChart(){
     if(!drag)return;
     if(drag.t==='pinch'){if(!ptrs.size)drag=null;return;}
     if(e.pointerId!==drag.id)return;
-    const d=drag;drag=null;if(e.pointerType!=='mouse')S.hover=null;
+    const d=drag;drag=null;S.dragPriceRange=null;if(e.pointerType!=='mouse')S.hover=null;
     if(d.t==='btn'){if(!d.moved)runAct(d.act);}
     else if(d.t==='line'||d.t==='draw'){
       if(d.moved){S.sig.pos='';syncTicketFromSel();dirty();persist();}
@@ -9839,7 +9847,7 @@ function bindChart(){
     updateHover(p);dirty();
   };
   cv.addEventListener('pointerup',up);
-  const cancel=e=>{ptrs.delete(e.pointerId);if(drag&&(drag.id===e.pointerId||drag.t==='pinch'))drag=null;if(ptrs.size<2)pinch0=0;dirty();};
+  const cancel=e=>{ptrs.delete(e.pointerId);if(drag&&(drag.id===e.pointerId||drag.t==='pinch')){drag=null;S.dragPriceRange=null;}if(ptrs.size<2)pinch0=0;dirty();};
   cv.addEventListener('pointercancel',cancel);
   cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){S.hover=null;S.hoverLine=null;cv.style.cursor='crosshair';dirty();}});
   cv.addEventListener('contextmenu',e=>{e.preventDefault();if(!geo||!S.B)return;const p=rel(e);if((inPlot(p)||inAxis(p))&&S.drawTool==='cursor')openMenu(geo.priceAt(p.y));});
