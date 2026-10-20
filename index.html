@@ -2430,7 +2430,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
 }
 @media(max-height:520px) and (orientation:landscape){.btx-plot{height:max(220px,70dvh)}}
 </style>
-<style id="bt-cloud-sync-style">#btCloudStatus{font-size:11px;color:var(--muted);max-width:100%;overflow-wrap:anywhere}#btCloudStatus[data-kind="ok"]{color:var(--green)}#btCloudStatus[data-kind="warn"]{color:var(--amber)}#btCloudStatus[data-kind="err"]{color:var(--red)}</style></head>
+<style id="bt-cloud-sync-style">#btCloudStatus{font-size:11px;color:var(--muted);max-width:100%;overflow-wrap:anywhere}#btCloudStatus[data-kind="ok"]{color:var(--green)}#btCloudStatus[data-kind="warn"]{color:var(--amber)}#btCloudStatus[data-kind="err"]{color:var(--red)}#btCloudAuthBox{display:flex;flex:1 1 100%;align-items:center;gap:7px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface2,rgba(255,255,255,.025))}#btCloudAuthBox .bt-auth-note{flex:1 1 100%;font-size:11px;color:var(--muted);line-height:1.5}#btCloudAuthBox input{min-width:150px;max-width:230px;flex:1 1 150px}#btCloudAuthBox .btn{white-space:nowrap}#btCloudEmail,#btCloudPassword{height:34px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:12px}#btCloudPassword{max-width:170px}@media(max-width:700px){#btCloudAuthBox input{max-width:none;flex:1 1 100%}#btCloudAuthBox .btn{flex:1 1 auto}}</style></head>
 <body>
 <div class="world" aria-hidden="true">
   <div class="stars"></div><div class="horizon"></div><div class="floor"></div><div class="sparks"></div>
@@ -2672,7 +2672,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
             <div class="btx-plot"><canvas id="btChart" aria-label="Chart replay"></canvas><div id="btMenu" class="btx-menu" hidden></div><div id="btSelBar" class="btx-selbar" hidden></div><div id="btMsg" class="bt-msg btx-msg" role="status"></div></div>
           </div>
           <div class="btx-replay">
-            <button id="btCloudSave" class="btn ghost" type="button" title="Simpan backtest dan drawing ke Firestore">☁ Simpan Cloud</button><button id="btCloudRestore" class="btn ghost" type="button" title="Pulihkan sesi dari Firestore">↻ Pulihkan Cloud</button><span id="btCloudStatus" role="status" aria-live="polite">Cloud: menunggu login</span><button id="btReset" class="btn ghost btx-rb" type="button" title="Kembali ke awal replay (hapus posisi dan trade)"><span class="ic">⟲</span><span class="tx">Reset</span></button>
+            <button id="btCloudSave" class="btn ghost" type="button" title="Simpan backtest dan drawing ke Firestore">☁ Simpan Cloud</button><button id="btCloudRestore" class="btn ghost" type="button" title="Pulihkan sesi dari Firestore">↻ Pulihkan Cloud</button><span id="btCloudStatus" role="status" aria-live="polite">Cloud: menunggu login</span><div id="btCloudAuthBox"><span class="bt-auth-note">Login lintas perangkat: Google atau email/password. Jika memakai login anonim lama, hubungkan akun untuk mempertahankan UID/backup; bila akun sudah ada, backup anonim dapat disalin dengan konfirmasi.</span><input id="btCloudEmail" type="email" autocomplete="username" placeholder="Email" aria-label="Email akun Cloud"><input id="btCloudPassword" type="password" autocomplete="current-password" placeholder="Password (min. 6 karakter)" aria-label="Password akun Cloud"><button id="btCloudGoogle" class="btn ghost" type="button">G Login / Hubungkan</button><button id="btCloudEmailLink" class="btn ghost" type="button">Hubungkan / Daftar Email</button><button id="btCloudEmailLogin" class="btn ghost" type="button">Masuk Email</button></div><button id="btReset" class="btn ghost btx-rb" type="button" title="Kembali ke awal replay (hapus posisi dan trade)"><span class="ic">⟲</span><span class="tx">Reset</span></button>
             <button id="btPickStart" class="btn ghost btx-rb" type="button" title="Pilih candle awal replay lalu ketuk chart"><span class="ic">⌖</span><span class="tx">Awal</span></button>
             <button id="btPlay" class="btn primary btx-rb" type="button" title="Spasi"><span class="ic">▶</span><span class="tx">Play</span></button>
             <button id="btRewind" class="btn btx-rb" type="button" title="Mundur 1 candle dan pulihkan keadaan transaksi sebelumnya (panah kiri)"><span class="ic">◀−1</span></button>
@@ -9452,6 +9452,90 @@ function initCloudAuthStatus(){
   },e=>cloudStatus('Cloud auth gagal: '+(e.code||e.message||'unknown'),'err'));
  }catch(e){cloudStatus('Cloud auth tidak tersedia','warn');}
 }
+
+// Read/write helpers used when an anonymous backup must be moved to an existing account.
+// Reads only the currently authorized user's own backup; destination writes obey Firestore Rules.
+async function readCloudRaw(uid){
+ const db=cloudDb();if(!db||!uid)throw Error('Firebase belum siap.');
+ const ref=db.collection('users').doc(uid).collection('backtestSnapshots').doc('latest');
+ const m=await ref.get();if(!m.exists)return null;
+ const meta=m.data()||{},q=await ref.collection('chunks').get(),parts=q.docs.map(d=>d.data()).sort((a,b)=>Number(a.i)-Number(b.i));
+ if(!Number.isFinite(Number(meta.chunkCount))||parts.length!==Number(meta.chunkCount))throw Error('Backup sumber belum lengkap; simpan ulang dari perangkat asal.');
+ for(let i=0;i<parts.length;i++)if(Number(parts[i].i)!==i||typeof parts[i].data!=='string')throw Error('Potongan backup tidak lengkap atau urutannya salah.');
+ const raw=parts.map(a=>a.data).join('');JSON.parse(raw);return {raw,meta};
+}
+async function writeCloudRaw(uid,raw,sourceLabel){
+ const db=cloudDb();if(!db||!uid)throw Error('Akun tujuan belum login.');
+ const ref=db.collection('users').doc(uid).collection('backtestSnapshots').doc('latest');
+ const existing=await ref.get();
+ if(existing.exists&&!confirm('Akun tujuan sudah memiliki backup Cloud. Ganti backup tujuan dengan salinan backup anonim dari '+sourceLabel+'? Backup sumber anonim tidak dihapus.'))return false;
+ const size=350000,chunks=[];for(let i=0;i<raw.length;i+=size)chunks.push(raw.slice(i,i+size));
+ const old=await ref.collection('chunks').get();
+ for(let i=0;i<old.docs.length;i+=450){const b=db.batch();old.docs.slice(i,i+450).forEach(d=>b.delete(d.ref));await b.commit();}
+ for(let i=0;i<chunks.length;i++)await ref.collection('chunks').doc(String(i).padStart(5,'0')).set({i,data:chunks[i]});
+ let parsed;try{parsed=JSON.parse(raw)}catch(e){throw Error('Data backup tidak valid.');}
+ await ref.set({v:2,name:parsed.name||'Backtest',savedAtMs:Date.now(),chunkCount:chunks.length,bytes:raw.length,n:parsed.n||0,i:parsed.i||0,drawingsCount:(parsed.drawings||[]).length,migratedFrom:sourceLabel});
+ return true;
+}
+async function preserveCurrentAnonymousBackup(uid){
+ let found=await readCloudRaw(uid);
+ // If this device has a loaded session but the anonymous cloud copy hasn't been created yet,
+ // save it under the current anonymous UID before attempting account linking/migration.
+ if(!found&&S.B){const raw=JSON.stringify(cloudSnapshot());await writeCloudRaw(uid,raw,'sesi anonim saat ini');found={raw,meta:{}};}
+ return found&&found.raw||null;
+}
+async function migrateAnonymousBackup(raw,sourceUid){
+ const target=cloudUser();if(!target||target.isAnonymous||target.uid===sourceUid||!raw)return false;
+ cloudStatus('Memindahkan backup anonim ke akun baru…','info');
+ const ok=await writeCloudRaw(target.uid,raw,sourceUid);
+ if(ok){cloudStatus('Backup anonim berhasil disalin ke akun login ('+(target.email||target.displayName||'akun Google')+')','ok');msg('Backup anonim berhasil disalin. Backup sumber tetap tersimpan.','ok');}
+ return ok;
+}
+async function cloudLoginGoogle(){
+ const au=firebase.auth(),old=au.currentUser,anonymous=!!old?.isAnonymous,sourceUid=old?.uid;
+ let oldRaw=null;
+ try{
+  if(anonymous){oldRaw=await preserveCurrentAnonymousBackup(sourceUid);}
+  const provider=new firebase.auth.GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});
+  cloudStatus('Membuka login Google…','info');
+  if(anonymous){
+   try{await old.linkWithPopup(provider);cloudStatus('Google terhubung · backup anonim tetap memakai UID yang sama','ok');msg('Akun Google terhubung. Backup anonim lama tetap terjaga.','ok');return;}
+   catch(e){if(!['auth/credential-already-in-use','auth/email-already-in-use','auth/account-exists-with-different-credential'].includes(e.code))throw e;}
+  }
+  const result=await au.signInWithPopup(provider);
+  if(anonymous&&oldRaw&&result.user.uid!==sourceUid)await migrateAnonymousBackup(oldRaw,sourceUid);
+  else cloudStatus('Login Google aktif · cloud siap','ok');
+ }catch(e){console.warn('Cloud Google login',e);cloudStatus('Login Google gagal: '+(e.code||e.message),'err');msg('Login Google gagal: '+(e.code||e.message),'err');}
+}
+async function cloudEmailLinkOrCreate(){
+ const email=($('btCloudEmail')?.value||'').trim(),password=$('btCloudPassword')?.value||'';
+ if(!email||password.length<6){msg('Isi email dan password minimal 6 karakter.','err');return;}
+ const au=firebase.auth(),old=au.currentUser,anonymous=!!old?.isAnonymous,sourceUid=old?.uid;let oldRaw=null;
+ try{
+  const cred=firebase.auth.EmailAuthProvider.credential(email,password);
+  if(anonymous){
+   oldRaw=await preserveCurrentAnonymousBackup(sourceUid);
+   try{await old.linkWithCredential(cred);cloudStatus('Email terhubung · backup anonim tetap memakai UID yang sama','ok');msg('Email berhasil dihubungkan. Backup lama tetap terjaga.','ok');return;}
+   catch(e){if(!['auth/email-already-in-use','auth/credential-already-in-use'].includes(e.code))throw e;}
+   const result=await au.signInWithEmailAndPassword(email,password);
+   if(oldRaw&&result.user.uid!==sourceUid)await migrateAnonymousBackup(oldRaw,sourceUid);else cloudStatus('Login email aktif · cloud siap','ok');
+  }else{
+   try{const result=await au.createUserWithEmailAndPassword(email,password);cloudStatus('Akun email dibuat · cloud siap','ok');msg('Akun email dibuat. Simpan kredensial dengan aman.','ok');}
+   catch(e){if(e.code==='auth/email-already-in-use'){msg('Email sudah terdaftar. Gunakan tombol Masuk Email.','err');}else throw e;}
+  }
+ }catch(e){console.warn('Cloud email link/create',e);cloudStatus('Email gagal: '+(e.code||e.message),'err');msg('Email gagal: '+(e.code||e.message),'err');}
+}
+async function cloudEmailLogin(){
+ const email=($('btCloudEmail')?.value||'').trim(),password=$('btCloudPassword')?.value||'';
+ if(!email||!password){msg('Isi email dan password.','err');return;}
+ const au=firebase.auth(),old=au.currentUser,anonymous=!!old?.isAnonymous,sourceUid=old?.uid;let oldRaw=null;
+ try{
+  if(anonymous){oldRaw=await preserveCurrentAnonymousBackup(sourceUid);}
+  const result=await au.signInWithEmailAndPassword(email,password);
+  if(anonymous&&oldRaw&&result.user.uid!==sourceUid)await migrateAnonymousBackup(oldRaw,sourceUid);
+  else cloudStatus('Login email aktif · cloud siap','ok');
+ }catch(e){console.warn('Cloud email login',e);cloudStatus('Masuk email gagal: '+(e.code||e.message),'err');msg('Masuk email gagal: '+(e.code||e.message),'err');}
+}
 function cloudSnapshot(){return {v:2,name:S.name,baseSec:S.baseSec,dec:S.dec,n:S.n,B:S.B,i:S.i,start:S.start,pos:S.pos,pend:S.pend,closed:S.closed,balance:S.balance,initial:S.initial,nextId:S.nextId,eq:S.eq,eqStride:S.eqStride,peak:S.peak,balancePeak:S.balancePeak,maxDD:S.maxDD,maxDDpct:S.maxDDpct,drawings:S.drawings,dayKey:S.dayKey,dayStartEq:S.dayStartEq,breach:S.breach,violations:S.violations,vioKeys:S.vioKeys,targetHit:S.targetHit,tf:S.tf,view:S.view,ind:S.ind,cfg:cfg,savedAt:Date.now()};}
 async function cloudSaveNow(showToast=false){
  if(cloudBusy||!S.B)return;
@@ -9812,6 +9896,9 @@ function bind(){
   bindSettings();bindChart();buildTfButtons();renderDrawingList();renderSelBar();setTool('cursor');
   $('btCloudSave')?.addEventListener('click',()=>cloudSaveNow(true));
   $('btCloudRestore')?.addEventListener('click',cloudRestore);
+  $('btCloudGoogle')?.addEventListener('click',cloudLoginGoogle);
+  $('btCloudEmailLink')?.addEventListener('click',cloudEmailLinkOrCreate);
+  $('btCloudEmailLogin')?.addEventListener('click',cloudEmailLogin);
   initCloudAuthStatus();
   try{if(cloudUser())cloudStatus(cloudUser().isAnonymous?'Login anonim aktif · cloud tersedia di perangkat ini':'Login Firebase aktif · cloud siap','ok');}catch(e){}
 }
