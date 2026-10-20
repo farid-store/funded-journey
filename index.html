@@ -2756,6 +2756,10 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
           <label class="bt-check"><input id="btStop" type="checkbox"> Hentikan akun saat rule dilanggar (breach)</label>
         </div>
         <p class="bt-hint">Contoh contract size: XAUUSD 100, BTC/ETH 1. Pair dengan quote non-USD tidak dikonversi ke dolar. Angka daily/overall/target hanya contoh awal, samakan dengan aturan firm kamu. Margin rule memakai pengaturan yang sama dengan Margin Rule Guard di tab Risk.</p>
+        <div class="bt-apply-row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">
+          <button id="btApplySettings" class="btn primary" type="button">✓ Terapkan Pengaturan</button>
+          <span id="btApplyStatus" role="status" aria-live="polite" style="font-size:11px;color:var(--muted)">Pengaturan tersimpan lokal; tekan Terapkan untuk menyegarkan Akun &amp; Aturan Prop.</span>
+        </div>
         <div class="bt-note">Catatan eksekusi: simulasi berbasis candle (tanpa data tick). Bila SL dan TP sama-sama tersentuh dalam satu candle, SL dianggap kena lebih dulu. Gap melewati SL terisi di harga open candle. Hasil backtest hanyalah gambaran, bukan jaminan.</div>
       </div>
     </section>
@@ -9706,6 +9710,27 @@ function bind(){
   $('btSpeed').addEventListener('change',()=>{S.speed=+$('btSpeed').value;});
   $('btJumpToggle').addEventListener('click',()=>{const r=$('btJumpRow');r.hidden=!r.hidden;});
   $('btJumpGo').addEventListener('click',jumpTo);
+  $('btApplySettings')?.addEventListener('click',()=>{
+    // Read every control again on Apply so the account panel uses one committed config.
+    Object.keys(CFG_MAP).forEach(id=>{const [k,t]=CFG_MAP[id],el=$(id);if(!el)return;if(t==='c')cfg[k]=el.checked;else if(t===1)cfg[k]=nz(el.value);else cfg[k]=el.value;});
+    cfg.consistencyPct=cl(nz($('btConsistency')?.value)||nz(cfg.consistencyPct)||40,1,100);
+    cfg.risk=nz($('btRisk')?.value)||cfg.risk;
+    cfg.autoSL=nz($('btAutoSL')?.value)||0;
+    if(!(cfg.balance>=100))cfg.balance=DEF.balance;
+    if(!(cfg.contract>0))cfg.contract=DEF.contract;
+    if(!(cfg.leverage>=1))cfg.leverage=1;
+    const balanceChanged=!!S.B&&Math.abs(nz(cfg.balance)-nz(S.initial))>0.000001;
+    let resetForBalance=false;
+    if(balanceChanged){
+      if(confirm(`Balance awal berubah dari ${fm(S.initial)} menjadi ${fm(cfg.balance)}. Agar Akun & Aturan Prop benar-benar memakai balance baru, reset sesi backtest sekarang? Semua posisi dan trade simulasi yang ada akan dihapus.`)) resetForBalance=true;
+      else {cfg.balance=nz(S.initial)||DEF.balance;const balInput=$('btBal');if(balInput)balInput.value=cfg.balance;}
+    }
+    saveCfg();syncCfgInputs();updateDDExplain();
+    if(resetForBalance)resetSession(S.start);
+    else {dirty();if(S.B)persist();else updateAccount();}
+    const st=$('btApplyStatus');if(st){st.textContent=`Terapkan berhasil · ${new Date().toLocaleTimeString()} · Akun & Aturan Prop memakai pengaturan simulasi${resetForBalance?' dan balance awal baru':''}.`;st.style.color='var(--green)';}
+    msg(resetForBalance?'Pengaturan diterapkan dan sesi di-reset dengan balance baru.':'Pengaturan diterapkan ke Akun & Aturan Prop.','ok');
+  });
   $('btReset').addEventListener('click',()=>{if(!S.B)return;if(S.closed.length&&!confirm('Reset sesi? Semua trade dan posisi akan dihapus.'))return;resetSession(S.start);msg('Sesi di-reset ke awal replay.','ok');});
   $('btZoomIn').addEventListener('click',()=>{S.view.n=cl(Math.round(S.view.n*0.8),20,800);dirty();});
   $('btZoomOut').addEventListener('click',()=>{S.view.n=cl(Math.round(S.view.n*1.25),20,800);dirty();});
