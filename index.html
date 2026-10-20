@@ -2430,7 +2430,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
 }
 @media(max-height:520px) and (orientation:landscape){.btx-plot{height:max(220px,70dvh)}}
 </style>
-</head>
+<style id="bt-cloud-sync-style">#btCloudStatus{font-size:11px;color:var(--muted);max-width:100%;overflow-wrap:anywhere}#btCloudStatus[data-kind="ok"]{color:var(--green)}#btCloudStatus[data-kind="warn"]{color:var(--amber)}#btCloudStatus[data-kind="err"]{color:var(--red)}</style></head>
 <body>
 <div class="world" aria-hidden="true">
   <div class="stars"></div><div class="horizon"></div><div class="floor"></div><div class="sparks"></div>
@@ -2672,7 +2672,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
             <div class="btx-plot"><canvas id="btChart" aria-label="Chart replay"></canvas><div id="btMenu" class="btx-menu" hidden></div><div id="btSelBar" class="btx-selbar" hidden></div><div id="btMsg" class="bt-msg btx-msg" role="status"></div></div>
           </div>
           <div class="btx-replay">
-            <button id="btReset" class="btn ghost btx-rb" type="button" title="Kembali ke awal replay (hapus posisi dan trade)"><span class="ic">⟲</span><span class="tx">Reset</span></button>
+            <button id="btCloudSave" class="btn ghost" type="button" title="Simpan backtest dan drawing ke Firestore">☁ Simpan Cloud</button><button id="btCloudRestore" class="btn ghost" type="button" title="Pulihkan sesi dari Firestore">↻ Pulihkan Cloud</button><span id="btCloudStatus" role="status" aria-live="polite">Cloud: menunggu login</span><button id="btReset" class="btn ghost btx-rb" type="button" title="Kembali ke awal replay (hapus posisi dan trade)"><span class="ic">⟲</span><span class="tx">Reset</span></button>
             <button id="btPickStart" class="btn ghost btx-rb" type="button" title="Pilih candle awal replay lalu ketuk chart"><span class="ic">⌖</span><span class="tx">Awal</span></button>
             <button id="btPlay" class="btn primary btx-rb" type="button" title="Spasi"><span class="ic">▶</span><span class="tx">Play</span></button>
             <button id="btRewind" class="btn btx-rb" type="button" title="Mundur 1 candle dan pulihkan keadaan transaksi sebelumnya (panah kiri)"><span class="ic">◀−1</span></button>
@@ -9425,11 +9425,57 @@ function exportPng(){
 const idb={open(){return new Promise((res,rej)=>{if(!window.indexedDB)return rej(new Error('no idb'));const r=indexedDB.open('ffx_bt',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});},
   async get(k){const db=await this.open();return new Promise((res,rej)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});},
   async set(k,v){const db=await this.open();return new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});}};
+/* Firestore backup: keeps chart candles, drawings, simulation settings and trade state.
+   Cloud writes are scoped to the authenticated Firebase UID and split into small docs. */
+let cloudSaveTimer=0, cloudBusy=false;
+const cloudDb=()=>{try{return window.firebase&&firebase.apps&&firebase.apps.length&&firebase.firestore?firebase.firestore():null}catch(e){return null}};
+const cloudUser=()=>{try{return firebase.auth&&firebase.auth().currentUser||null}catch(e){return null}};
+function cloudStatus(t,k){const e=$('btCloudStatus');if(e){e.textContent=t;e.dataset.kind=k||'info';}}
+function cloudSnapshot(){return {v:2,name:S.name,baseSec:S.baseSec,dec:S.dec,n:S.n,B:S.B,i:S.i,start:S.start,pos:S.pos,pend:S.pend,closed:S.closed,balance:S.balance,initial:S.initial,nextId:S.nextId,eq:S.eq,eqStride:S.eqStride,peak:S.peak,balancePeak:S.balancePeak,maxDD:S.maxDD,maxDDpct:S.maxDDpct,drawings:S.drawings,dayKey:S.dayKey,dayStartEq:S.dayStartEq,breach:S.breach,violations:S.violations,vioKeys:S.vioKeys,targetHit:S.targetHit,tf:S.tf,view:S.view,ind:S.ind,cfg:cfg,savedAt:Date.now()};}
+async function cloudSaveNow(showToast=false){
+ if(cloudBusy||!S.B)return;
+ const db=cloudDb(),u=cloudUser();if(!db||!u){cloudStatus('Perlu login Firebase untuk sinkron lintas perangkat','warn');if(showToast)msg('Login dengan akun Firebase yang sama di kedua perangkat.','err');return;}
+ cloudBusy=true;
+ try{
+  const snap=cloudSnapshot(),raw=JSON.stringify(snap),size=350000,chunks=[];
+  for(let i=0;i<raw.length;i+=size)chunks.push(raw.slice(i,i+size));
+  const ref=db.collection('users').doc(u.uid).collection('backtestSnapshots').doc('latest');
+  await ref.set({v:2,name:S.name||'Backtest',savedAtMs:Date.now(),chunkCount:chunks.length,bytes:raw.length,n:S.n,i:S.i,drawingsCount:(S.drawings||[]).length});
+  const old=await ref.collection('chunks').get();
+  for(let i=0;i<old.docs.length;i+=450){const b=db.batch();old.docs.slice(i,i+450).forEach(d=>b.delete(d.ref));await b.commit();}
+  for(let i=0;i<chunks.length;i++)await ref.collection('chunks').doc(String(i).padStart(5,'0')).set({i,data:chunks[i]});
+  cloudStatus('Tersinkron · '+new Date().toLocaleTimeString(),'ok');if(showToast)msg('Backtest dan drawing tersimpan ke Firestore.','ok');
+ }catch(e){console.warn('Backtest cloud save',e);cloudStatus('Gagal sinkron: '+(e.code||e.message||'cek Firestore Rules'),'err');if(showToast)msg('Sinkronisasi gagal. Periksa login dan Firestore Rules.','err');}
+ finally{cloudBusy=false;}
+}
+function scheduleCloudSave(){clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(()=>cloudSaveNow(false),4000);}
+async function cloudRestore(){
+ const db=cloudDb(),u=cloudUser();if(!db||!u){cloudStatus('Perlu login Firebase untuk memulihkan','warn');msg('Login dengan akun Firebase yang sama pada kedua perangkat.','err');return;}
+ if(!confirm('Pulihkan backtest terbaru dari Firestore? Sesi yang sedang terbuka akan diganti.'))return;
+ try{
+  cloudStatus('Mengambil backup…','info');const ref=db.collection('users').doc(u.uid).collection('backtestSnapshots').doc('latest');
+  const m=await ref.get();if(!m.exists)throw Error('Backup cloud belum tersedia untuk akun ini.');
+  const meta=m.data(),q=await ref.collection('chunks').get(),parts=q.docs.map(d=>d.data()).sort((a,b)=>a.i-b.i);
+  if(parts.length!==meta.chunkCount)throw Error('Backup belum lengkap. Coba lagi.');
+  const x=JSON.parse(parts.map(a=>a.data).join(''));if(!x.B||!Array.isArray(x.B.t))throw Error('Data candle tidak valid.');
+  pause();S.B=x.B;S.n=x.n;S.baseSec=x.baseSec;S.dec=x.dec;S.name=x.name;S.tfCache={};S.i=x.i;S.start=x.start;
+  S.pos=x.pos||[];S.pend=x.pend||[];S.closed=x.closed||[];S.balance=x.balance;S.initial=x.initial;S.nextId=x.nextId||1;
+  S.eq=x.eq||[];S.eqStride=x.eqStride||1;S.peak=x.peak;S.balancePeak=x.balancePeak||x.peak;S.maxDD=x.maxDD||0;S.maxDDpct=x.maxDDpct||0;
+  S.drawings=x.drawings||[];S.dayKey=x.dayKey||'';S.dayStartEq=x.dayStartEq||0;S.breach=x.breach||null;S.violations=x.violations||[];S.vioKeys=x.vioKeys||{};S.targetHit=!!x.targetHit;S.tf=(x.tf&&x.tf>=S.baseSec)?x.tf:0;
+  S.view=x.view||S.view;S.ind=x.ind||S.ind;if(x.cfg){cfg=Object.assign({},cfg,x.cfg);saveCfg();syncCfgInputs();}
+  try{localStorage.setItem(LS_IND,JSON.stringify(S.ind));}catch(e){}
+  buildTfButtons();$('btDataInfo').textContent=`${S.name} · ${tfName(S.baseSec)} · ${S.n.toLocaleString('en-US')} candle · ${fdt(S.B.t[0])} → ${fdt(S.B.t[S.n-1])}`;
+  const j=$('btJump');j.min=toLocal(S.B.t[0]);j.max=toLocal(S.B.t[S.n-1]);$('btResume').innerHTML='';
+  S.sel=null;S.cur=null;syncTicketFromSel();renderSelBar();renderDrawingList();S.force=true;dirty();persist();
+  cloudStatus('Backup dipulihkan · '+new Date().toLocaleTimeString(),'ok');msg('Backtest, transaksi simulasi, konfigurasi, dan drawing dipulihkan.','ok');
+ }catch(e){cloudStatus('Pemulihan gagal: '+(e.message||e),'err');msg('Pemulihan gagal: '+(e.message||e),'err');}
+}
 function persist(){
   if(!S.B)return;clearTimeout(S.saveT);
   S.saveT=setTimeout(()=>{
     const snap={v:1,name:S.name,baseSec:S.baseSec,dec:S.dec,n:S.n,B:S.B,i:S.i,start:S.start,pos:S.pos,pend:S.pend,closed:S.closed,balance:S.balance,initial:S.initial,nextId:S.nextId,eq:S.eq,eqStride:S.eqStride,peak:S.peak,balancePeak:S.balancePeak,maxDD:S.maxDD,maxDDpct:S.maxDDpct,drawings:S.drawings,dayKey:S.dayKey,dayStartEq:S.dayStartEq,breach:S.breach,violations:S.violations,vioKeys:S.vioKeys,targetHit:S.targetHit,tf:S.tf,savedAt:Date.now()};
     idb.set('last',snap).catch(()=>{});
+    scheduleCloudSave();
   },1500);
 }
 async function offerResume(){
@@ -9704,6 +9750,9 @@ function bind(){
   document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{if(S.full)setFull(false);if(t.dataset.view==='backtest'){S.force=false;setTimeout(dirty,30);setTimeout(dirty,250);}}));
   window.addEventListener('resize',()=>dirty());
   bindSettings();bindChart();buildTfButtons();renderDrawingList();renderSelBar();setTool('cursor');
+  $('btCloudSave')?.addEventListener('click',()=>cloudSaveNow(true));
+  $('btCloudRestore')?.addEventListener('click',cloudRestore);
+  try{if(cloudUser())cloudStatus('Firebase login aktif','ok');}catch(e){}
 }
 window.__BT.geo=()=>geo;window.__BT.api={openMenu,placeFromMenu,reverseById,flipPending,step,rewindOne};
 bind();offerResume();dirty();
