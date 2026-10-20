@@ -2675,6 +2675,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
             <button id="btReset" class="btn ghost btx-rb" type="button" title="Kembali ke awal replay (hapus posisi dan trade)"><span class="ic">⟲</span><span class="tx">Reset</span></button>
             <button id="btPickStart" class="btn ghost btx-rb" type="button" title="Pilih candle awal replay lalu ketuk chart"><span class="ic">⌖</span><span class="tx">Awal</span></button>
             <button id="btPlay" class="btn primary btx-rb" type="button" title="Spasi"><span class="ic">▶</span><span class="tx">Play</span></button>
+            <button id="btRewind" class="btn btx-rb" type="button" title="Mundur 1 candle dan pulihkan keadaan transaksi sebelumnya (panah kiri)"><span class="ic">◀−1</span></button>
             <button id="btStep" class="btn btx-rb" type="button" title="+1 candle (panah kanan)"><span class="ic">+1</span></button>
             <button id="btStep10" class="btn btx-rb" type="button" title="+10 candle (Shift + panah kanan)"><span class="ic">+10</span></button>
             <button id="btStepBar" class="btn btx-rb" type="button" title="Maju sampai bar timeframe aktif selesai"><span class="ic">⏭</span><span class="tx">Bar</span></button>
@@ -8230,6 +8231,9 @@ const S={ B:null,n:0,baseSec:0,name:'',dec:2,i:0,start:0,playing:false,raf:0,las
 try{S.touch=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches);}catch(e){}
 try{S.ind=JSON.parse(localStorage.getItem(LS_IND)||'{}')||{};}catch(e){S.ind={};}
 S.magnet=!!cfg.magnet;
+// In-memory rollback checkpoints: rewind restores positions, pending orders, closed trades,
+// equity and rule state instead of merely moving the visible candle backward.
+const rewindStack=[];const REWIND_LIMIT=1200;
 window.__BT={state:S};
 if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Array.isArray(r)?r:[r,r,r,r];while(r.length<4)r.push(r[r.length-1]);const[a,b,c,d]=r.map(v=>Math.max(0,Math.min(v||0,Math.min(w,h)/2)));this.moveTo(x+a,y);this.lineTo(x+w-b,y);this.arcTo(x+w,y,x+w,y+b,b);this.lineTo(x+w,y+h-c);this.arcTo(x+w,y+h,x+w-c,y+h,c);this.lineTo(x+d,y+h);this.arcTo(x,y+h,x,y+h-d,d);this.lineTo(x,y+a);this.arcTo(x,y,x+a,y,a);this.closePath();return this;};}
 
@@ -8459,11 +8463,30 @@ function checkRules(k){
     msg('Akun breach: '+why[0]+'. Tekan Reset untuk mengulang.','err');
   }
 }
+function captureRewindState(){
+  return {i:S.i,pos:S.pos.map(x=>({...x})),pend:S.pend.map(x=>({...x})),closedLen:S.closed.length,
+    balance:S.balance,nextId:S.nextId,eqLen:S.eq.length,eqLast:S.eq.length?[...S.eq[S.eq.length-1]]:null,
+    peak:S.peak,balancePeak:S.balancePeak,maxDD:S.maxDD,maxDDpct:S.maxDDpct,dayKey:S.dayKey,dayStartEq:S.dayStartEq,
+    breach:S.breach?{...S.breach}:null,violationsLen:S.violations.length,vioKeys:{...S.vioKeys},targetHit:S.targetHit};
+}
+function restoreRewindState(q){
+  S.i=q.i;S.pos=q.pos.map(x=>({...x}));S.pend=q.pend.map(x=>({...x}));S.closed.length=q.closedLen;
+  S.balance=q.balance;S.nextId=q.nextId;S.eq.length=q.eqLen;if(q.eqLast&&S.eq.length)S.eq[S.eq.length-1]=[...q.eqLast];
+  S.peak=q.peak;S.balancePeak=q.balancePeak;S.maxDD=q.maxDD;S.maxDDpct=q.maxDDpct;S.dayKey=q.dayKey;S.dayStartEq=q.dayStartEq;
+  S.breach=q.breach?{...q.breach}:null;S.violations.length=q.violationsLen;S.vioKeys={...q.vioKeys};S.targetHit=q.targetHit;
+  S.sel=null;S.cur=null;S.sig={pos:'',closed:-1};syncTicketFromSel();renderSelBar();dirty();persist();
+}
+function rewindOne(){
+  if(!S.B)return msg('Muat data terlebih dahulu.','err');pause();
+  if(!rewindStack.length)return msg('Belum ada riwayat mundur di sesi ini. Mundur hanya tersedia untuk candle yang diproses sejak halaman/sesi ini aktif.','err');
+  const q=rewindStack.pop();restoreRewindState(q);msg(`Replay mundur ke ${fdt(S.B.t[S.i])} UTC. Keadaan transaksi pada candle tersebut dipulihkan.`,'ok');
+}
 function step(cnt){
   if(!S.B||S.breach)return 0;
   let done=0;
   for(let j=0;j<cnt;j++){
     if(S.i>=S.n-1){pause();msg('Data habis — akhir replay.','ok');break;}
+    rewindStack.push(captureRewindState());if(rewindStack.length>REWIND_LIMIT)rewindStack.shift();
     S.i++;done++;processCandle(S.i);
     if(S.breach)break;
   }
@@ -8728,7 +8751,7 @@ function ticketEdit(field){
 }
 /* ---------- reset / load ---------- */
 function resetSession(keepIdx){
-  pause();closeMenu();
+  pause();closeMenu();rewindStack.length=0;
   S.pos=[];S.pend=[];S.closed=[];S.sel=null;S.cur=null;S.nextId=1;S.eq=[];S.violations=[];S.vioKeys={};S.breach=null;S.targetHit=false;
   S.balance=nz(cfg.balance);S.initial=S.balance;S.peak=S.balance;S.balancePeak=S.balance;S.maxDD=0;S.maxDDpct=0;
   S.eqStride=S.B?Math.max(1,Math.ceil(S.n/4000)):1;
@@ -9342,7 +9365,7 @@ function handlePick(p){
   const pt=snapPoint(p);
   if(S.pick==='start'){
     const baseIdx=geo.T.s[pt.k];
-    if(Number.isFinite(baseIdx)&&baseIdx<S.n-1){pause();if(S.closed.length&&!confirm('Memulai ulang dari candle ini akan menghapus posisi dan hasil sesi saat ini. Lanjutkan?')){setPick(null);return;}S.start=baseIdx;resetSession(baseIdx);$('btJump').value=toLocal(S.B.t[baseIdx]);msg(`Awal replay dipindahkan ke ${fdt(S.B.t[baseIdx])} UTC.`,'ok');}
+    if(Number.isFinite(baseIdx)&&baseIdx<S.n-1){pause();const hasTrades=S.closed.length||S.pos.length||S.pend.length;if(hasTrades){setPick(null);msg('Awal replay tidak diubah agar transaksi tidak terhapus. Gunakan tombol ◀−1 untuk mundur sambil memulihkan keadaan transaksi, atau Reset jika memang ingin menghapus sesi.','err');return;}S.start=baseIdx;resetSession(baseIdx);$('btJump').value=toLocal(S.B.t[baseIdx]);msg(`Awal replay dipindahkan ke ${fdt(S.B.t[baseIdx])} UTC.`,'ok');}
     else msg('Pilih candle yang memiliki data setelahnya.','err');
     setPick(null);
   }else{
@@ -9630,6 +9653,7 @@ function bind(){
   $('btRR').addEventListener('change',()=>{S.rrPreset=$('btRR').value;const o=getSel();if(o&&o.sl>0){const entry=S.sel.kind==='pos'?o.entry:o.price,tp=autoTpFromSL(entry,o.sl,o.side);if(tp!=null)o.tp=rp(tp);syncTicketFromSel();}else syncTicketTP();S.sig.pos='';dirty();persist();});
   $('btLoadBin').addEventListener('click',onBinance);
   $('btPlay').addEventListener('click',()=>S.playing?pause():play());
+  $('btRewind').addEventListener('click',rewindOne);
   $('btStep').addEventListener('click',()=>{if(!S.B)return msg('Muat data dulu.','err');pause();step(1);});
   $('btStep10').addEventListener('click',()=>{if(!S.B)return msg('Muat data dulu.','err');pause();step(10);});
   $('btStepBar').addEventListener('click',()=>{if(!S.B)return msg('Muat data dulu.','err');pause();stepBar();});
@@ -9673,6 +9697,7 @@ function bind(){
     const t=e.target;if(t&&/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName))return;
     if(e.code==='Space'){if(t&&t.tagName==='BUTTON')return;e.preventDefault();S.playing?pause():play();}
     else if(e.code==='ArrowRight'){e.preventDefault();pause();step(e.shiftKey?10:1);}
+    else if(e.code==='ArrowLeft'){e.preventDefault();rewindOne();}
     else if(e.code==='Escape'){if(!$('btIndMenu').hidden)$('btIndMenu').hidden=true;else if(S.menu)closeMenu();else if(S.drawDraft||S.drawTool!=='cursor'||S.pick){S.pick&&setPick(S.pick);setTool('cursor');}else if(S.sel||S.selDraw!=null||S.cur){S.cur=null;clearSel();}else if(S.full)setFull(false);dirty();}
     else if(e.code==='Delete'||e.code==='Backspace'){if(S.selDraw!=null){e.preventDefault();deleteDrawing(S.selDraw);}else if(S.sel&&S.sel.kind==='pend'){e.preventDefault();cancelById(S.sel.id);}}
   });
@@ -9680,7 +9705,7 @@ function bind(){
   window.addEventListener('resize',()=>dirty());
   bindSettings();bindChart();buildTfButtons();renderDrawingList();renderSelBar();setTool('cursor');
 }
-window.__BT.geo=()=>geo;window.__BT.api={openMenu,placeFromMenu,reverseById,flipPending,step};
+window.__BT.geo=()=>geo;window.__BT.api={openMenu,placeFromMenu,reverseById,flipPending,step,rewindOne};
 bind();offerResume();dirty();
 })();
 
