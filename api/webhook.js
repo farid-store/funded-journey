@@ -267,6 +267,16 @@ const TRADE_NUM_KEYS = [
   'netProfit',
   'sl',
   'tp',
+  // EA v4.17+: SL/TP awal, R-multiple, MAE/MFE (EA lama tidak mengirim -> 0)
+  'avgClosePrice',
+  'initialSl',
+  'initialTp',
+  'initialRiskMoney',
+  'rMultiple',
+  'rNet',
+  'mae',
+  'mfe',
+  'maePct',
 ];
 
 function normalizeTrade(t) {
@@ -302,6 +312,15 @@ function sameTrade(old, rec) {
     'profit',
     'sl',
     'tp',
+    'avgClosePrice',
+    'initialSl',
+    'initialTp',
+    'initialRiskMoney',
+    'rMultiple',
+    'rNet',
+    'mae',
+    'mfe',
+    'maePct',
   ].every(
     (k) =>
       old[k] !== undefined &&
