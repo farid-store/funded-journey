@@ -1,187 +1,1314 @@
-// api/commands.js  (v2)
-// Antrian perintah Dashboard -> EA MT5.  accounts/{id}/commands/{commandId}
-//   { action, params[], status: pending | sent | done | error | expired, message, createdAt, sentAt, executedAt }
-//
-// ALUR
-//   Dashboard --POST {pin, accountId, action, params}--> endpoint ini --> Firestore (pending)
-//   EA --GET ?token&login (tiap ~5 dtk)--> baris "id|action|p1;p2"  (status jadi "sent")
-//   EA --POST {token, login, commandId, status, message}--> status akhir (done/error)
-//
-// YANG DIPERBAIKI
-//  1. GET tidak lagi memakai where()+orderBy() -> TIDAK butuh composite index Firestore
-//     (penyebab utama tab Control "tidak berfungsi": query error -> HTTP 500 -> EA backoff).
-//  2. Daftar action disamakan dengan EA: ea_on, ea_off, sync_on, sync_off (dulu auto_on/auto_off).
-//  3. Perintah yang tidak diambil EA dalam COMMAND_TTL_SEC (default 90 dtk) otomatis "expired"
-//     -> tidak ada lagi "Close All" lama yang tiba-tiba tereksekusi saat EA nyala kembali.
-//  4. At-most-once: begitu dikirim ke EA statusnya "sent", tidak terkirim dua kali.
-//  5. Dashboard membuat perintah lewat endpoint ini dengan PIN (DASHBOARD_PIN), bukan menulis
-//     langsung ke Firestore -> member dashboard tidak bisa menutup posisimu.
-//  6. Validasi parameter open_order / close_ticket. Pesan error jelas utk dashboard.
-//  7. Aksi admin "save_wallets" (kelola wallet payout) juga lewat PIN.
-//
-// ENV VERCEL: FIREBASE_SERVICE_ACCOUNT, EA_WEBHOOK_SECRET, DASHBOARD_PIN (WAJIB, buat sendiri),
-//             COMMAND_TTL_SEC (opsional)
+// api/webhook.js
+// FaridFX webhook — revisi history, OHLC market bars, dashboard, dan Telegram.
 
 const admin = require('firebase-admin');
-const crypto = require('crypto');
 
-const TOKEN = process.env.EA_WEBHOOK_SECRET;
-const PIN = process.env.DASHBOARD_PIN;
-const COMMAND_TTL_SEC = Number(process.env.COMMAND_TTL_SEC || 90);
+const SHARED_TOKEN = process.env.EA_WEBHOOK_SECRET;
+// ===== Partner & Promo (link afiliasi/IB di dashboard) =====
+// Hanya pemegang PARTNERS_ADMIN_KEY (env Vercel) yang bisa menyimpan. Semua orang boleh MEMBACA (data memang publik).
+const PARTNERS_KEY = process.env.PARTNERS_ADMIN_KEY;
+const PARTNER_IDS = ['broker1','broker2','broker3','broker4','broker5','prop1','prop2','prop3','prop4','prop5'];
+function keyOk(k) {
+  if (!PARTNERS_KEY || typeof k !== 'string') return false;
+  const a = Buffer.from(k), b = Buffer.from(PARTNERS_KEY);
+  return a.length === b.length && require('crypto').timingSafeEqual(a, b);
+}
+function cleanHttpUrl(u, max) {
+  u = String(u || '').trim();
+  if (!u) return '';
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(u)) u = 'https://' + u;
+  try {
+    const x = new URL(u);
+    return (x.protocol === 'https:' || x.protocol === 'http:') && x.href.length <= max ? x.href : '';
+  } catch (e) { return ''; }
+}
+function cleanPartners(input) {
+  const src = input && Array.isArray(input.slots) ? input.slots : [];
+  const slots = PARTNER_IDS.map((id) => {
+    const o = src.find((x) => x && x.id === id) || {};
+    const logo = String(o.logo || '').trim();
+    return {
+      id,
+      group: id.startsWith('broker') ? 'broker' : 'prop',
+      name: String(o.name || '').trim().slice(0, 40),
+      url: cleanHttpUrl(o.url, 600),
+      tagline: String(o.tagline || '').trim().slice(0, 90),
+      code: String(o.code || '').trim().slice(0, 24),
+      logo: /^https:\/\//i.test(logo) && logo.length <= 500 ? logo : '',
+    };
+  });
+  return { note: String((input && input.note) || '').trim().slice(0, 400), slots };
+}
+
+const EQUITY_POINT_INTERVAL_MS = 5 * 60 * 1000;
+const BATCH_CHUNK = 400;
+const HISTORY_V = 3;
+const MAX_MARKET_BARS_PER_SYNC = 900; // chart simbol + candle per-trade (EA kirim maks ~600/sync)
+
+const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TG_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
+const TG_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
+const SIG_MIN_SCORE = Number(process.env.SIGNAL_TG_MIN_SCORE || 60);
+const SIG_TG_TFS = String(process.env.SIGNAL_TG_TFS || 'M5,M15,M30,H1')
+  .split(',')
+  .map((x) => x.trim())
+  .filter(Boolean);
 
 if (!admin.apps.length) {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (raw) admin.initializeApp({ credential: admin.credential.cert(JSON.parse(raw)) });
+  if (!raw) {
+    console.error('FIREBASE_SERVICE_ACCOUNT env var belum diset.');
+  } else {
+    admin.initializeApp({
+      credential: admin.credential.cert(JSON.parse(raw)),
+    });
+  }
 }
+
 const db = admin.firestore();
 const FieldValue = admin.firestore.FieldValue;
 
-const ALLOWED_ACTIONS = [
-  'close_all', 'close_buy', 'close_sell', 'close_profit', 'close_nearest', 'close_ticket',
-  'ea_on', 'ea_off', 'sync_on', 'sync_off', 'open_order',
-];
-const WALLET_NETWORKS = ['usdt-trc20', 'usdt-erc20', 'usdt-bep20', 'btc'];
+// ---------------------------------------------------------------- util
 
-const safeEq = (a, b) => {
-  const x = Buffer.from(String(a ?? ''));
-  const y = Buffer.from(String(b ?? ''));
-  return x.length > 0 && x.length === y.length && crypto.timingSafeEqual(x, y);
-};
+const num = (v, d = 0) =>
+  Number.isFinite(Number(v)) && v !== null && v !== ''
+    ? Number(v)
+    : d;
 
-async function resolveAccountId(login) {
-  if (!login) return null;
-  const direct = await db.collection('accounts').doc(String(login)).get();
-  if (direct.exists) return direct.id;
-  const q = await db.collection('accounts').where('login', '==', String(login)).limit(1).get();
-  return q.empty ? null : q.docs[0].id;
-}
-
-function buildParams(action, params) {
-  const p = Array.isArray(params) ? params.map((x) => String(x ?? '').trim()) : [];
-  if (action === 'open_order') {
-    const dir = (p[0] || '').toLowerCase();
-    const lot = Number(p[1]);
-    if (dir !== 'buy' && dir !== 'sell') throw new Error("arah harus 'buy' atau 'sell'");
-    if (!(lot > 0 && lot <= 100)) throw new Error('lot tidak valid (0 - 100)');
-    return [dir, String(lot)];
-  }
-  if (action === 'close_ticket') {
-    if (!/^\d{1,20}$/.test(p[0] || '')) throw new Error('ticket tidak valid');
-    return [p[0]];
-  }
-  return [];
-}
-
-function cleanWallets(list) {
-  if (!Array.isArray(list) || list.length > 12) throw new Error('daftar wallet tidak valid');
-  return list.map((w) => {
-    const network = String(w.network || '');
-    const address = String(w.address || '').trim();
-    const label = String(w.label || '').trim().slice(0, 60);
-    if (!WALLET_NETWORKS.includes(network)) throw new Error('network wallet tidak dikenal');
-    if (!label || address.length < 10 || address.length > 120 || /\s/.test(address)) throw new Error('label/alamat wallet tidak valid');
-    return { id: String(w.id || 'w_' + Date.now()), label, network, address, apiKey: w.apiKey ? String(w.apiKey).trim().slice(0, 80) : null };
+const fmt = (n, d = 2) =>
+  Number(n ?? 0).toLocaleString('en-US', {
+    minimumFractionDigits: d,
+    maximumFractionDigits: d,
   });
+
+const utcDateStr = (sec) =>
+  new Date(sec * 1000).toISOString().slice(0, 10);
+
+const mdEsc = (s) =>
+  String(s ?? '').replace(/([_*`\[])/g, '\\$1');
+
+// Hanya menyimpan nilai primitif yang aman untuk Firestore.
+function cleanObj(o) {
+  const out = {};
+
+  for (const [k, v] of Object.entries(o || {})) {
+    if (typeof v === 'number') {
+      if (Number.isFinite(v)) out[k] = v;
+    } else if (typeof v === 'string' || typeof v === 'boolean') {
+      out[k] = v;
+    }
+  }
+
+  return out;
 }
+
+async function commitInChunks(ops) {
+  for (let i = 0; i < ops.length; i += BATCH_CHUNK) {
+    const batch = db.batch();
+
+    ops
+      .slice(i, i + BATCH_CHUNK)
+      .forEach((op) => op(batch));
+
+    await batch.commit();
+  }
+}
+
+// ---------------------------------------------------------------- telegram
+
+async function tgCall(method, payload) {
+  try {
+    const r = await fetch(
+      `https://api.telegram.org/bot${TG_TOKEN}/${method}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    return await r.json();
+  } catch (e) {
+    console.error('telegram error', method, e);
+    return null;
+  }
+}
+
+async function sendTelegram(chatId, text) {
+  if (!TG_TOKEN || !chatId) return null;
+
+  let j = await tgCall('sendMessage', {
+    chat_id: chatId,
+    text,
+    parse_mode: 'Markdown',
+    disable_web_page_preview: true,
+  });
+
+  if (j && !j.ok && /parse entities/i.test(j.description || '')) {
+    j = await tgCall('sendMessage', {
+      chat_id: chatId,
+      text: text.replace(/[*_`\\]/g, ''),
+      disable_web_page_preview: true,
+    });
+  }
+
+  if (!j || !j.ok) {
+    console.error('telegram sendMessage failed', j);
+    return null;
+  }
+
+  return j;
+}
+
+async function editTelegram(chatId, messageId, text) {
+  if (!TG_TOKEN || !chatId || !messageId) return false;
+
+  let j = await tgCall('editMessageText', {
+    chat_id: chatId,
+    message_id: messageId,
+    text,
+    parse_mode: 'Markdown',
+    disable_web_page_preview: true,
+  });
+
+  if (j && !j.ok && /parse entities/i.test(j.description || '')) {
+    j = await tgCall('editMessageText', {
+      chat_id: chatId,
+      message_id: messageId,
+      text: text.replace(/[*_`\\]/g, ''),
+      disable_web_page_preview: true,
+    });
+  }
+
+  return !!(j && j.ok);
+}
+
+function liveCardText(label, p, opts = {}) {
+  const dir = String(p.type).includes('buy')
+    ? '🟢 BUY'
+    : '🔴 SELL';
+
+  let status;
+
+  if (opts.closed) {
+    const win = Number(opts.netProfit) >= 0;
+
+    status =
+      `${win ? '✅ CLOSED (Profit)' : '❌ CLOSED (Loss)'}` +
+      ` — Net P/L: *${win ? '+' : ''}$${fmt(opts.netProfit)}*`;
+  } else {
+    status =
+      '🟡 OPEN' +
+      (opts.statusNote
+        ? ` — _${mdEsc(opts.statusNote)}_`
+        : '');
+  }
+
+  const closeLine =
+    opts.closed && opts.closePrice
+      ? `\nClose: \`${opts.closePrice}\``
+      : '';
+
+  const hhmm = new Date().toISOString().slice(11, 16);
+
+  return (
+    `${dir} *${mdEsc(p.symbol)}*\n` +
+    `Lot: \`${fmt(p.volume, 2)}\`  Entry: \`${p.priceOpen}\`${closeLine}\n` +
+    `SL: \`${p.sl || '-'}\`  TP: \`${p.tp || '-'}\`\n` +
+    `Status: ${status}\n` +
+    `Akun: ${mdEsc(label)} · Ticket #${p.ticket}\n` +
+    `_update: ${hhmm} UTC_`
+  );
+}
+
+function signalCloseText(label, t) {
+  const win = Number(t.netProfit) >= 0;
+
+  return (
+    `${win ? '✅ CLOSED (Profit)' : '❌ CLOSED (Loss)'} *${mdEsc(t.symbol)}*\n` +
+    `${String(t.type).toUpperCase()} \`${fmt(t.volume, 2)}\` lot | ${t.openPrice} → ${t.closePrice}\n` +
+    `Net P/L: *${win ? '+' : ''}$${fmt(t.netProfit)}*\n` +
+    `Akun: ${mdEsc(label)} · Ticket #${t.ticket}`
+  );
+}
+
+function signalModifyText(label, p, prev) {
+  const parts = [];
+
+  if (Number(prev.sl) !== Number(p.sl)) {
+    parts.push(`SL: \`${prev.sl || '-'}\` → \`${p.sl || '-'}\``);
+  }
+
+  if (Number(prev.tp) !== Number(p.tp)) {
+    parts.push(`TP: \`${prev.tp || '-'}\` → \`${p.tp || '-'}\``);
+  }
+
+  return (
+    `✏️ *MODIFIED* ${mdEsc(p.symbol)} #${p.ticket}\n` +
+    `${parts.join('\n')}\n` +
+    `Akun: ${mdEsc(label)}`
+  );
+}
+
+const tierFor = (u) => (u >= 90 ? 90 : u >= 70 ? 70 : 0);
+
+// ---------------------------------------------------------------- history
+
+const TRADE_NUM_KEYS = [
+  'volume',
+  'openPrice',
+  'closePrice',
+  'openTime',
+  'closeTime',
+  'durationSec',
+  'profit',
+  'swap',
+  'commission',
+  'netProfit',
+  'sl',
+  'tp',
+  // EA v4.17+: SL/TP awal, R-multiple, MAE/MFE (EA lama tidak mengirim -> 0)
+  'avgClosePrice',
+  'initialSl',
+  'initialTp',
+  'initialRiskMoney',
+  'rMultiple',
+  'rNet',
+  'mae',
+  'mfe',
+  'maePct',
+];
+
+function normalizeTrade(t) {
+  const rec = cleanObj(t);
+
+  TRADE_NUM_KEYS.forEach((k) => {
+    rec[k] = num(t[k]);
+  });
+
+  rec.ticket = String(t.ticket);
+  rec.symbol = String(t.symbol || '');
+  rec.type = String(t.type || '');
+
+  rec.day =
+    typeof t.day === 'string' &&
+    /^\d{4}-\d{2}-\d{2}$/.test(t.day)
+      ? t.day
+      : utcDateStr(rec.closeTime);
+
+  return rec;
+}
+
+function sameTrade(old, rec) {
+  if (!old || old.day !== rec.day) return false;
+
+  return [
+    'netProfit',
+    'volume',
+    'closeTime',
+    'openTime',
+    'swap',
+    'commission',
+    'profit',
+    'sl',
+    'tp',
+    'avgClosePrice',
+    'initialSl',
+    'initialTp',
+    'initialRiskMoney',
+    'rMultiple',
+    'rNet',
+    'mae',
+    'mfe',
+    'maePct',
+  ].every(
+    (k) =>
+      old[k] !== undefined &&
+      Math.abs(Number(old[k]) - Number(rec[k])) < 1e-6
+  ) && String(old.exitReason || '') === String(rec.exitReason || '');
+}
+
+// ---------------------------------------------------------------- sinyal
+
+function flagText(code) {
+  const [k, pts, x1, x2, x3, x4] = String(code).split('|');
+
+  switch (k) {
+    case 'STO_ZONE':
+      return 'Stoch di zona ekstrem';
+
+    case 'STO_EXIT':
+      return `Stoch baru keluar zona (${x1} bar)`;
+
+    case 'AO_SHIFT':
+      return `AO berganti warna (${+x1 + 1} bar lalu)`;
+
+    case 'AO_LIVE':
+      return 'AO mulai berganti (bar berjalan)';
+
+    case 'STO_X':
+      return `Stoch K cross D (${+x1 + 1} bar lalu)`;
+
+    case 'DIV':
+      return `${x4 === '0' ? 'Potensi ' : ''}${x1 === '0' ? 'divergence' : 'hidden divergence'} ${x2 === '0' ? 'AO' : 'Stoch'}`;
+
+    case 'OTE':
+      return 'Harga di zona OTE fibo';
+
+    case 'HTF':
+      return String(pts).startsWith('-')
+        ? 'Melawan trend TF besar'
+        : 'Searah trend TF besar';
+
+    case 'SWEEP':
+      return `Liquidity sweep ${x1}`;
+
+    case 'CNDL':
+      return 'Candle konfirmasi';
+
+    case 'LVL':
+      return `Dekat level ${x1}`;
+
+    case 'LVLB':
+      return `Terhalang level ${x1}`;
+
+    case 'REG_CT':
+      return 'Melawan tren kuat (ADX)';
+
+    case 'REG_TR':
+      return 'Searah tren kuat (ADX)';
+
+    case 'REG_RNG':
+      return 'Pasar ranging';
+
+    case 'VOL_LOW':
+      return 'Volatilitas rendah';
+
+    case 'VOL_HIGH':
+      return 'Volatilitas sangat tinggi';
+
+    case 'SPR':
+      return 'Spread lebar';
+
+    case 'KZ':
+      return `Kill zone ${x1}`;
+
+    case 'SEPI':
+      return 'Di luar sesi utama';
+
+    case 'NEWS':
+      return 'Jendela news';
+
+    case 'MTF_AL':
+      return `Searah TF ${x1}`;
+
+    case 'MTF_CF':
+      return `Konflik TF ${x1}`;
+
+    default:
+      return k;
+  }
+}
+
+const flagList = (f) =>
+  String(f || '')
+    .split(',')
+    .filter(Boolean)
+    .map(flagText);
+
+// ---------------------------------------------------------------- handler
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method === 'GET') {
+    let wantPartners = false;
+    try { wantPartners = new URL(req.url, 'http://x').searchParams.get('partners') === '1'; } catch (e) {}
+    let calAcc = '';
+    try { const sp = new URL(req.url, 'http://x').searchParams; if (sp.get('calendar') === '1') calAcc = String(sp.get('acc') || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40); } catch (e) {}
+    if (calAcc) {
+      try {
+        const snap = await db.collection('accounts').doc(calAcc).collection('meta').doc('calendar').get();
+        res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+        if (!snap.exists) return res.status(200).json({ ok: true, events: [], updatedAt: null });
+        const d = snap.data() || {};
+        return res.status(200).json({ ok: true, events: d.events || [], updatedAt: d.updatedAt && d.updatedAt.toMillis ? d.updatedAt.toMillis() : null, source: d.source || 'mt5' });
+      } catch (e) {
+        return res.status(500).json({ ok: false, error: 'calendar read failed' });
+      }
+    }
+    if (wantPartners) {
+      try {
+        const snap = await db.collection('config').doc('partners').get();
+        res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=120');
+
+              return res.status(200).json({ ok: true, partners: snap.exists ? snap.data() : null });
+      } catch (e) {
+        return res.status(500).json({ ok: false, error: 'partners read failed' });
+      }
+    }
+    return res.status(200).json({
+      ok: true,
+      service: 'faridfx-webhook',
+      v: 2,
+      time: new Date().toISOString(),
+    });
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      ok: false,
+      error: 'method not allowed',
+    });
+  }
 
   try {
-    // ============ GET: EA mengambil perintah pending ============
-    if (req.method === 'GET') {
-      const { token, login } = req.query;
-      if (!TOKEN || !safeEq(token, TOKEN)) return res.status(401).send('');
-      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    const body =
+      req.body && typeof req.body === 'object'
+        ? req.body
+        : JSON.parse(req.body || '{}');
 
-      const accountId = await resolveAccountId(login);
-      if (!accountId) return res.status(200).send('');
-
-      // hanya filter 1 field -> pakai index otomatis Firestore, urutkan di memori
-      const snap = await db.collection('accounts').doc(accountId).collection('commands')
-        .where('status', '==', 'pending').limit(50).get();
-      if (snap.empty) return res.status(200).send('');
-
-      const now = Date.now();
-      const rows = snap.docs
-        .map((d) => ({ ref: d.ref, id: d.id, c: d.data() }))
-        .map((r) => ({ ...r, t: r.c.createdAt?.toMillis ? r.c.createdAt.toMillis() : now }))
-        .sort((a, b) => a.t - b.t);
-
-      const batch = db.batch();
-      const lines = [];
-      for (const r of rows) {
-        if (now - r.t > COMMAND_TTL_SEC * 1000) {
-          batch.update(r.ref, { status: 'expired', message: `kedaluwarsa: EA tidak mengambil dalam ${COMMAND_TTL_SEC} detik`, executedAt: FieldValue.serverTimestamp() });
-          continue;
-        }
-        if (!ALLOWED_ACTIONS.includes(r.c.action)) {
-          batch.update(r.ref, { status: 'error', message: 'action tidak dikenal', executedAt: FieldValue.serverTimestamp() });
-          continue;
-        }
-        batch.update(r.ref, { status: 'sent', sentAt: FieldValue.serverTimestamp() });
-        const params = Array.isArray(r.c.params) ? r.c.params.join(';') : String(r.c.params || '');
-        lines.push(`${r.id}|${r.c.action}|${params.replace(/[|\n\r]/g, ' ')}`);
+    if (body.action === 'partners:auth' || body.action === 'partners:save') {
+      if (!PARTNERS_KEY) {
+        return res.status(503).json({ ok: false, error: 'PARTNERS_ADMIN_KEY belum diisi di Vercel' });
       }
-      await batch.commit();
-      return res.status(200).send(lines.join('\n'));
+      if (!keyOk(body.key)) {
+        return res.status(401).json({ ok: false, error: 'kunci pemilik salah' });
+      }
+      if (body.action === 'partners:auth') return res.status(200).json({ ok: true });
+      const clean = cleanPartners(body);
+      await db.collection('config').doc('partners').set({ ...clean, updatedAt: FieldValue.serverTimestamp() });
+      return res.status(200).json({ ok: true, partners: clean });
     }
 
-    if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'method not allowed' });
 
-    const body = req.body && typeof req.body === 'object' ? req.body : JSON.parse(req.body || '{}');
+    // ===== Trading Cost & ROI Tracker (sinkron Firestore) =====
+    // Tracker menggunakan kunci pemilik yang sama dengan modul Partner.
+    // Dokumen disimpan terpisah agar tidak bercampur dengan data akun MT5.
+    if (typeof body.action === 'string' && body.action.startsWith('costroi:')) {
+      if (!['costroi:load', 'costroi:save'].includes(body.action)) {
+        return res.status(400).json({ ok: false, error: 'unknown costroi action' });
+      }
+      if (!PARTNERS_KEY) {
+        return res.status(503).json({
+          ok: false,
+          error: 'PARTNERS_ADMIN_KEY belum diisi di Vercel',
+        });
+      }
+      if (!keyOk(body.key)) {
+        return res.status(401).json({
+          ok: false,
+          error: 'Kunci pemilik tidak cocok. Masukkan kembali kunci yang sama dengan PARTNERS_ADMIN_KEY di Vercel.',
+        });
+      }
 
-    // ============ POST (a): EA melapor hasil eksekusi ============
-    if (body.commandId) {
-      if (!TOKEN || !safeEq(body.token, TOKEN)) return res.status(401).json({ ok: false, error: 'invalid token' });
-      const accountId = (await resolveAccountId(body.login)) || body.accountId;
-      if (!accountId) return res.status(200).json({ ok: true });
-      await db.collection('accounts').doc(accountId).collection('commands').doc(String(body.commandId)).set(
-        {
-          status: body.status === 'error' ? 'error' : 'done',
-          message: String(body.message || '').slice(0, 300),
-          executedAt: FieldValue.serverTimestamp(),
-        },
-        { merge: true }
-      );
-      return res.status(200).json({ ok: true });
+      const trackerRef = db.collection('config').doc('costroi_tracker');
+      if (body.action === 'costroi:load') {
+        const snap = await trackerRef.get();
+        const saved = snap.exists ? (snap.data() || {}) : {};
+        const data = {
+          rows: Array.isArray(saved.rows) ? saved.rows : [],
+          wd: Array.isArray(saved.wd) ? saved.wd : [],
+          fx: Number.isFinite(Number(saved.fx)) ? Number(saved.fx) : 16500,
+          rev: Math.max(0, Math.floor(num(saved.rev))),
+        };
+        res.setHeader('Cache-Control', 'no-store');
+        return res.status(200).json({ ok: true, data });
+      }
+
+      // Revision check mencegah satu browser menimpa perubahan terbaru dari browser lain.
+      const snap = await trackerRef.get();
+      const saved = snap.exists ? (snap.data() || {}) : {};
+      const currentRev = Math.max(0, Math.floor(num(saved.rev)));
+      const baseRev = Math.max(0, Math.floor(num(body.baseRev)));
+      if (baseRev !== currentRev) {
+        return res.status(409).json({
+          ok: false,
+          error: 'revision conflict',
+          data: {
+            rows: Array.isArray(saved.rows) ? saved.rows : [],
+            wd: Array.isArray(saved.wd) ? saved.wd : [],
+            fx: Number.isFinite(Number(saved.fx)) ? Number(saved.fx) : 16500,
+            rev: currentRev,
+          },
+        });
+      }
+
+      const safeRecord = (item) => {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
+        const out = {};
+        for (const [k, v] of Object.entries(item)) {
+          if (!/^[a-zA-Z][a-zA-Z0-9_]{0,39}$/.test(k)) continue;
+          if (typeof v === 'string') out[k] = v.slice(0, 1000);
+          else if (typeof v === 'number' && Number.isFinite(v)) out[k] = v;
+          else if (typeof v === 'boolean' || v === null) out[k] = v;
+        }
+        return out;
+      };
+      const rows = Array.isArray(body.rows)
+        ? body.rows.slice(0, 2000).map(safeRecord).filter(Boolean)
+        : [];
+      const wd = Array.isArray(body.wd)
+        ? body.wd.slice(0, 5000).map(safeRecord).filter(Boolean)
+        : [];
+      const fx = Number(body.fx);
+      if (!Number.isFinite(fx) || fx < 0 || fx > 1000000000) {
+        return res.status(400).json({ ok: false, error: 'nilai kurs fx tidak valid' });
+      }
+
+      const rev = currentRev + 1;
+      await trackerRef.set({
+        rows,
+        wd,
+        fx,
+        rev,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      res.setHeader('Cache-Control', 'no-store');
+      return res.status(200).json({ ok: true, rev });
     }
 
-    // ============ POST (b): dashboard / admin ============
-    const tokenOk = TOKEN && safeEq(body.token, TOKEN);
-    const pinOk = PIN && safeEq(body.pin, PIN);
-    if (!tokenOk && !pinOk) {
-      return PIN
-        ? res.status(401).json({ ok: false, error: 'PIN salah' })
-        : res.status(500).json({ ok: false, error: 'DASHBOARD_PIN belum diset di Environment Variables Vercel' });
+    if (!SHARED_TOKEN || body.token !== SHARED_TOKEN) {
+      return res.status(401).json({
+        ok: false,
+        error: 'invalid token',
+      });
     }
 
-    if (body.action === 'save_wallets') {
-      const wallets = cleanWallets(body.wallets);
-      await db.collection('payoutWallets').doc('config').set({ wallets, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
-      return res.status(200).json({ ok: true });
+    const account = body.account || {};
+    const accountId = String(account.login || '').trim();
+
+    if (!accountId) {
+      return res.status(400).json({
+        ok: false,
+        error: 'missing account.login',
+      });
     }
 
-    const { accountId, action } = body;
-    if (!accountId || !action) return res.status(400).json({ ok: false, error: 'accountId dan action wajib diisi' });
-    if (!ALLOWED_ACTIONS.includes(action)) return res.status(400).json({ ok: false, error: `action tidak dikenal: ${action}` });
+    // Kalender ekonomi MT5 (dikirim EA berkala) -> accounts/{id}/meta/calendar
+    if (Array.isArray(body.calendar) && body.calendar.length) {
+      try {
+        const num = (v) => (Number.isFinite(Number(v)) && v !== null && v !== '' ? Number(v) : null);
+        const events = body.calendar.slice(0, 200).map((x) => {
+          const o = {
+            id: String((x && x.id) || '').slice(0, 60),
+            t: Math.floor(Number(x && x.t) || 0),
+            ccy: String((x && x.ccy) || '').slice(0, 6).toUpperCase(),
+            title: String((x && x.title) || '').slice(0, 120),
+            imp: Math.max(0, Math.min(3, Math.floor(Number(x && x.imp) || 0))),
+            u: String((x && x.u) || '').slice(0, 6),
+          };
+          ['a', 'f', 'p'].forEach((k) => { const v = x && x[k] !== undefined ? num(x[k]) : null; if (v !== null) o[k] = v; });
+          return o;
+        }).filter((o) => o.id && o.t > 0 && o.title);
+        if (events.length) {
+          await db.collection('accounts').doc(accountId).collection('meta').doc('calendar').set({
+            events,
+            count: events.length,
+            source: 'mt5',
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        }
+      } catch (calErr) {
+        console.warn('calendar write failed', calErr && calErr.message);
+      }
+    }
 
-    let params;
-    try { params = buildParams(action, body.params); }
-    catch (e) { return res.status(400).json({ ok: false, error: e.message }); }
+    const positions = Array.isArray(body.positions)
+      ? body.positions
+      : [];
 
-    const accRef = db.collection('accounts').doc(String(accountId));
-    if (!(await accRef.get()).exists) return res.status(404).json({ ok: false, error: 'akun tidak ditemukan' });
+    const pendingOrders = Array.isArray(body.pendingOrders)
+      ? body.pendingOrders
+      : [];
 
-    const ref = await accRef.collection('commands').add({
-      action, params, status: 'pending', source: pinOk ? 'dashboard' : 'api', createdAt: FieldValue.serverTimestamp(),
+    const exposure = Array.isArray(body.exposure)
+      ? body.exposure
+      : [];
+
+    const sig = Array.isArray(body.sig)
+      ? body.sig.slice(0, 8)
+      : [];
+
+    const lv = Array.isArray(body.lv)
+      ? body.lv.slice(0, 40)
+      : [];
+
+    const mtf = Array.isArray(body.mtf)
+      ? body.mtf.slice(0, 8)
+      : [];
+
+    const fibo = Array.isArray(body.fibo)
+      ? body.fibo.slice(0, 12)
+      : [];
+
+    const stats = cleanObj(body.stats || {});
+
+    const history = Array.isArray(body.history)
+      ? body.history
+      : [];
+
+    // OHLC opsional dari EA.
+    // Format bar: {symbol,timeframe,time,open,high,low,close,volume?}
+    const marketBarsRaw = Array.isArray(body.chartBars)
+      ? body.chartBars
+      : Array.isArray(body.marketBars)
+        ? body.marketBars
+        : [];
+
+    const reason = body.reason || 'unknown';
+    const now = Date.now();
+
+    const serverDay =
+      typeof account.serverDay === 'string' &&
+      /^\d{4}-\d{2}-\d{2}$/.test(account.serverDay)
+        ? account.serverDay
+        : utcDateStr(Math.floor(now / 1000));
+
+    const accountRef = db.collection('accounts').doc(accountId);
+
+    const existingSnap = await accountRef.get();
+    const existing = existingSnap.exists
+      ? existingSnap.data()
+      : null;
+
+    // --- baseline: percayai EA ------------------------------------
+
+    const eaStart = num(account.startingBalance);
+
+    const startingBalance =
+      eaStart > 0
+        ? eaStart
+        : existing?.startingBalance ?? num(account.balance);
+
+    const eaDayStart = num(account.dayStartBalance);
+
+    let dayStartBalance =
+      eaDayStart > 0
+        ? eaDayStart
+        : existing?.dayStartBalance ?? num(account.balance);
+
+    if (!(eaDayStart > 0) && existing?.serverDay !== serverDay) {
+      dayStartBalance = num(account.balance);
+    }
+
+    const accountLabel =
+      account.accountLabel ||
+      existing?.accountLabel ||
+      `MT5 ${accountId}`;
+
+    // --- history idempoten ----------------------------------------
+
+    const migrate = !existing || existing.historyV !== HISTORY_V;
+    const lastSync = migrate
+      ? 0
+      : num(existing.lastHistorySync);
+
+    const candidates = history
+      .filter(
+        (t) =>
+          t &&
+          t.ticket != null &&
+          (migrate || num(t.closeTime) >= lastSync - 600)
+      )
+      .slice(-500)
+      .map(normalizeTrade);
+
+    let maxCloseTime = migrate ? 0 : lastSync;
+
+    const refs = candidates.map((t) =>
+      accountRef.collection('history').doc(t.ticket)
+    );
+
+    const snaps = refs.length
+      ? await db.getAll(...refs)
+      : [];
+
+    const ops = [];
+    const affectedDays = new Set();
+    const newTrades = [];
+
+    candidates.forEach((rec, i) => {
+      if (rec.closeTime > maxCloseTime) {
+        maxCloseTime = rec.closeTime;
+      }
+
+      const snap = snaps[i];
+      const old = snap.exists ? snap.data() : null;
+
+      if (old && sameTrade(old, rec)) return;
+
+      if (!old) {
+        newTrades.push(rec);
+      } else if (old.day) {
+        affectedDays.add(old.day);
+      }
+
+      affectedDays.add(rec.day);
+
+      ops.push((batch) => batch.set(refs[i], rec));
     });
-    return res.status(200).json({ ok: true, commandId: ref.id });
+
+    await commitInChunks(ops);
+
+    // --- market OHLC bars ----------------------------------------
+    // Bar akan diterima jika EA mengirim body.chartBars atau body.marketBars.
+
+    const validBars = marketBarsRaw
+      .slice(-MAX_MARKET_BARS_PER_SYNC)
+      .map((b) => {
+        if (!b || typeof b !== 'object') return null;
+
+        const symbol = String(b.symbol || '')
+          .trim()
+          .slice(0, 32);
+
+        const timeframe = String(b.timeframe || b.tf || '')
+          .trim()
+          .toUpperCase()
+          .slice(0, 12);
+
+        const time = num(b.time, num(b.ts));
+
+        const open = num(b.open, NaN);
+        const high = num(b.high, NaN);
+        const low = num(b.low, NaN);
+        const close = num(b.close, NaN);
+        const volume = num(b.volume, 0);
+
+        if (
+          !symbol ||
+          !timeframe ||
+          !(time > 0) ||
+          ![open, high, low, close].every(Number.isFinite)
+        ) {
+          return null;
+        }
+
+        if (
+          high < Math.max(open, close, low) ||
+          low > Math.min(open, close, high)
+        ) {
+          return null;
+        }
+
+        // Terima epoch detik atau milidetik.
+        const timeMs =
+          time < 1e12
+            ? Math.round(time * 1000)
+            : Math.round(time);
+
+        const timeSec = Math.floor(timeMs / 1000);
+
+        const day =
+          typeof b.day === 'string' &&
+          /^\d{4}-\d{2}-\d{2}$/.test(b.day)
+            ? b.day
+            : utcDateStr(timeSec);
+
+        const safeSymbol = symbol.replace(
+          /[^a-zA-Z0-9._-]/g,
+          '_'
+        );
+
+        const safeTf = timeframe.replace(
+          /[^a-zA-Z0-9_-]/g,
+          '_'
+        );
+
+        return {
+          id: `${safeSymbol}_${safeTf}_${timeSec}`,
+          data: {
+            symbol,
+            timeframe,
+            time: timeSec,
+            timeMs,
+            open,
+            high,
+            low,
+            close,
+            volume,
+            day,
+            updatedAt: FieldValue.serverTimestamp(),
+          },
+        };
+      })
+      .filter(Boolean);
+
+    let marketBarsWritten = 0;
+
+    if (validBars.length) {
+      const barOps = validBars.map((bar) => (batch) => {
+        batch.set(
+          accountRef.collection('marketBars').doc(bar.id),
+          bar.data,
+          { merge: true }
+        );
+      });
+
+      await commitInChunks(barOps);
+      marketBarsWritten = validBars.length;
+    }
+
+    // --- hitung ulang P/L harian ---------------------------------
+
+    for (const d of affectedDays) {
+      const q = await accountRef
+        .collection('history')
+        .where('day', '==', d)
+        .get();
+
+      let pnl = 0;
+      let trades = 0;
+      let wins = 0;
+      let losses = 0;
+      let volume = 0;
+
+      q.forEach((x) => {
+        const t = x.data();
+        const n = num(t.netProfit);
+
+        pnl += n;
+        trades += 1;
+        volume += num(t.volume);
+
+                        if (n > 0) wins += 1;
+        else if (n < 0) losses += 1;
+      });
+
+      await accountRef.collection('dailyPnl').doc(d).set({
+        date: d,
+        pnl,
+        trades,
+        wins,
+        losses,
+        volume,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    }
+
+    // --- Telegram: open / modify / close --------------------------
+
+    if (existing && TG_TOKEN && TG_CHANNEL_ID) {
+      try {
+        const prevPosMap = new Map(
+          (existing.positions || []).map((p) => [
+            String(p.ticket),
+            p,
+          ])
+        );
+
+        const newlyOpened = positions.filter(
+          (p) => !prevPosMap.has(String(p.ticket))
+        );
+
+        const modified = positions.filter((p) => {
+          const prev = prevPosMap.get(String(p.ticket));
+
+          return (
+            prev &&
+            (
+              Number(prev.sl) !== Number(p.sl) ||
+              Number(prev.tp) !== Number(p.tp)
+            )
+          );
+        });
+
+        for (const p of newlyOpened) {
+          const sent = await sendTelegram(
+            TG_CHANNEL_ID,
+            liveCardText(accountLabel, p)
+          );
+
+          if (sent?.result?.message_id) {
+            await accountRef
+              .collection('signalMessages')
+              .doc(String(p.ticket))
+              .set({
+                messageId: sent.result.message_id,
+                chatId: TG_CHANNEL_ID,
+                symbol: p.symbol,
+                openedAt: now,
+              });
+          }
+        }
+
+        for (const p of modified) {
+          const msgDoc = await accountRef
+            .collection('signalMessages')
+            .doc(String(p.ticket))
+            .get();
+
+          let edited = false;
+
+          if (msgDoc.exists) {
+            edited = await editTelegram(
+              msgDoc.data().chatId,
+              msgDoc.data().messageId,
+              liveCardText(accountLabel, p, {
+                statusNote: 'SL/TP diupdate',
+              })
+            );
+          }
+
+          if (!edited) {
+            await sendTelegram(
+              TG_CHANNEL_ID,
+              signalModifyText(
+                accountLabel,
+                p,
+                prevPosMap.get(String(p.ticket))
+              )
+            );
+          }
+        }
+
+        if (!migrate) {
+          for (const t of newTrades) {
+            const msgDoc = await accountRef
+              .collection('signalMessages')
+              .doc(String(t.ticket))
+              .get();
+
+            const lastKnown =
+              prevPosMap.get(String(t.ticket)) || {
+                symbol: t.symbol,
+                type: t.type,
+                volume: t.volume,
+                sl: null,
+                tp: null,
+              };
+
+            const card = liveCardText(
+              accountLabel,
+              {
+                ...lastKnown,
+                priceOpen: t.openPrice,
+                ticket: t.ticket,
+              },
+              {
+                closed: true,
+                netProfit: t.netProfit,
+                closePrice: t.closePrice,
+              }
+            );
+
+            let edited = false;
+
+            if (msgDoc.exists) {
+              edited = await editTelegram(
+                msgDoc.data().chatId,
+                msgDoc.data().messageId,
+                card
+              );
+
+              await msgDoc.ref.delete().catch(() => {});
+            }
+
+            if (!edited) {
+              await sendTelegram(
+                TG_CHANNEL_ID,
+                signalCloseText(accountLabel, t)
+              );
+            }
+          }
+        }
+      } catch (e) {
+        console.error('telegram signals', e);
+      }
+    }
+
+    // --- Telegram: alert loss limit -------------------------------
+
+    const dLimit = num(
+      account.dailyLossLimitPct,
+      existing?.dailyLossLimitPct ?? 5
+    );
+
+    const oLimit = num(
+      account.overallLossLimitPct,
+      existing?.overallLossLimitPct ?? 10
+    );
+
+    const equity = num(account.equity);
+
+    const dailyPct =
+      account.dailyLossPct != null
+        ? num(account.dailyLossPct)
+        : dayStartBalance > 0 && dLimit > 0
+          ? (Math.max(0, dayStartBalance - equity) /
+              dayStartBalance) *
+            100
+          : 0;
+
+    const overallPct =
+      account.overallLossPct != null
+        ? num(account.overallLossPct)
+        : startingBalance > 0
+          ? (Math.max(0, startingBalance - equity) /
+              startingBalance) *
+            100
+          : 0;
+
+    const dailyUsage =
+      dLimit > 0 ? (dailyPct / dLimit) * 100 : 0;
+
+    const overallUsage =
+      oLimit > 0 ? (overallPct / oLimit) * 100 : 0;
+
+    const dailyTier = tierFor(dailyUsage);
+    const overallTier = tierFor(overallUsage);
+
+    const prevDailyTier =
+      existing?.serverDay === serverDay
+        ? existing?.lastDailyAlertTier || 0
+        : 0;
+
+    const prevOverallTier =
+      existing?.lastOverallAlertTier || 0;
+
+    if (existing && TG_ADMIN_CHAT_ID) {
+      try {
+        if (dailyTier > prevDailyTier) {
+          await sendTelegram(
+            TG_ADMIN_CHAT_ID,
+            `⚠️ *Daily Loss Limit ${dailyTier}%* terpakai\n` +
+              `Akun: ${mdEsc(accountLabel)}\n` +
+              `Loss harian: ${fmt(dailyPct)}% dari limit ${fmt(dLimit, 1)}%` +
+              (
+                account.dailyRoomMoney != null
+                  ? `\nSisa ruang: $${fmt(account.dailyRoomMoney)}`
+                  : ''
+              )
+          );
+        }
+
+        if (overallTier > prevOverallTier) {
+          await sendTelegram(
+            TG_ADMIN_CHAT_ID,
+            `🚨 *Overall Loss Limit ${overallTier}%* terpakai\n` +
+              `Akun: ${mdEsc(accountLabel)}\n` +
+              `Loss total: ${fmt(overallPct)}% dari limit ${fmt(oLimit, 1)}%` +
+              (
+                account.overallRoomMoney != null
+                  ? `\nSisa ruang: $${fmt(account.overallRoomMoney)}`
+                  : ''
+              )
+          );
+        }
+
+        // Margin level 0 = tidak ada posisi, bukan kondisi bahaya.
+        const nowLow =
+          num(account.margin) > 0 &&
+          account.marginLevel != null &&
+          num(account.marginLevel) < 120;
+
+        const wasLow =
+          existing?.marginLevel != null &&
+          num(existing.marginLevel) < 120;
+
+        if (nowLow && !wasLow) {
+          await sendTelegram(
+            TG_ADMIN_CHAT_ID,
+            `🚨 *Margin Level rendah*: ${fmt(account.marginLevel, 1)}%\n` +
+              `Akun: ${mdEsc(accountLabel)}`
+          );
+        }
+      } catch (e) {
+        console.error('telegram alerts', e);
+      }
+    }
+
+    // --- event sinyal dan hasil outcome tracker ------------------
+
+    const sigEv = (
+      Array.isArray(body.sigEv) ? body.sigEv : []
+    )
+      .filter((e) => e && e.id)
+      .slice(0, 60);
+
+    const sigOut = (
+      Array.isArray(body.sigOut) ? body.sigOut : []
+    )
+      .filter((o) => o && o.id)
+      .slice(0, 60);
+
+    let sigNew = 0;
+
+    if (sigEv.length || sigOut.length) {
+      try {
+        const evRefs = sigEv.map((e) =>
+          accountRef.collection('signals').doc(String(e.id))
+        );
+
+        const evSnaps = evRefs.length
+          ? await db.getAll(...evRefs)
+          : [];
+
+        const ops = [];
+        const fresh = [];
+
+        sigEv.forEach((e, i) => {
+          if (!evSnaps[i].exists) fresh.push(e);
+
+          ops.push((batch) =>
+            batch.set(
+              evRefs[i],
+              {
+                ...cleanObj(e),
+                id: String(e.id),
+                ts: num(e.ts) * 1000,
+              },
+              { merge: true }
+            )
+          );
+        });
+
+        sigOut.forEach((o) => {
+          const ref = accountRef
+            .collection('signals')
+            .doc(String(o.id));
+
+          ops.push((batch) =>
+            batch.set(
+              ref,
+              {
+                res: String(o.res),
+                r: num(o.r),
+                mfe: num(o.mfe),
+                mae: num(o.mae),
+                dur: num(o.dur),
+                exit: num(o.exit),
+                tEnd: num(o.tEnd) * 1000,
+              },
+              { merge: true }
+            )
+          );
+        });
+
+        await commitInChunks(ops);
+        sigNew = fresh.length;
+
+        if (TG_ADMIN_CHAT_ID && existing) {
+          for (const e of fresh) {
+            if (
+              e.stage !== 'trigger' ||
+              num(e.score) < SIG_MIN_SCORE ||
+              !SIG_TG_TFS.includes(String(e.tf))
+            ) {
+              continue;
+            }
+
+            const reasons = flagList(e.f)
+              .map((x) => `• ${mdEsc(x)}`)
+              .join('\n');
+
+            await sendTelegram(
+              TG_ADMIN_CHAT_ID,
+              `🎯 *SINYAL ${e.dir === 'buy' ? '🟢 BUY' : '🔴 SELL'}* — ${e.tf} (skor ${num(e.score)})\n` +
+                `Akun: ${mdEsc(accountLabel)}\n` +
+                `Entry: \`${e.price}\`  SL: \`${e.sl}\`  TP: \`${e.tp}\` (R:R ${fmt(e.rr, 2)})\n` +
+                `Sesi: ${mdEsc(e.sess || '-')} · Regime: ${mdEsc(e.reg || '-')}\n` +
+                `${reasons}`
+            );
+          }
+        }
+      } catch (e) {
+        console.error('signals', e);
+      }
+    }
+
+    // --- equity curve dengan throttle ----------------------------
+
+    const lastEquityPointAt =
+      existing?.lastEquityPointAt ?? 0;
+
+    let equityPointWritten = false;
+
+    if (
+      now - lastEquityPointAt >= EQUITY_POINT_INTERVAL_MS ||
+      !existing
+    ) {
+      await accountRef.collection('equityCurve').add({
+        ts: now,
+        balance: num(account.balance),
+        equity,
+        date: serverDay,
+      });
+
+      equityPointWritten = true;
+    }
+
+    // --- dokumen akun utama --------------------------------------
+
+    const base = cleanObj(account);
+    delete base.startingBalanceOverride;
+
+    await accountRef.set(
+      {
+        ...base,
+        login: accountId,
+        accountLabel,
+        marginLevel:
+          num(account.margin) > 0 && account.marginLevel != null
+            ? num(account.marginLevel)
+            : null,
+        dailyLossLimitPct: dLimit,
+        overallLossLimitPct: oLimit,
+        riskPerPositionPct: num(
+          account.riskPerPositionPct,
+          existing?.riskPerPositionPct ?? 1
+        ),
+        startingBalance,
+        dayStartBalance,
+        dayStartDate: serverDay,
+        serverDay,
+        historyV: HISTORY_V,
+        lastHistorySync: maxCloseTime,
+        lastEquityPointAt: equityPointWritten
+          ? now
+          : lastEquityPointAt,
+        lastDailyAlertTier: dailyTier,
+        lastOverallAlertTier: overallTier,
+        positions,
+        pendingOrders,
+        exposure,
+        mtf,
+        fibo,
+        sig,
+        lv,
+        stats,
+        lastReason: reason,
+        dataSource: 'mt5_ea',
+        webhookReceivedAt: new Date().toISOString(),
+        receivedAt: new Date().toISOString(),
+        updatedAt: FieldValue.serverTimestamp(),
+        createdAt:
+          existing?.createdAt ?? FieldValue.serverTimestamp(),
+      },
+      { merge: false }
+    );
+
+    return res.status(200).json({
+      ok: true,
+      newTrades: newTrades.length,
+      newSignals: sigNew,
+      changedDays: affectedDays.size,
+      equityPointWritten,
+      marketBarsWritten,
+    });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ ok: false, error: String(e) });
+
+    return res.status(500).json({
+      ok: false,
+      error: String(e),
+    });
   }
 };
