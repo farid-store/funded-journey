@@ -2540,6 +2540,19 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
         <div class="arena-tip" id="arenaTip"></div>
       </div>
       <div id="integrityCard"></div>
+      <div class="section-head" style="margin-top:12px"><div><h2>Risk &amp; Sync Status</h2><p>Konfigurasi LIVE dari snapshot EA; pengaturan Backtest tetap simulasi lokal.</p></div></div>
+      <div class="grid2" style="margin-bottom:14px">
+        <div class="card panel">
+          <div class="panel-title"><h3>Max Floating Loss · LIVE</h3><span id="liveMaxFLState" class="tag neutral">Menunggu EA</span></div>
+          <div class="metrics" id="liveMaxFLMetrics"><div class="info"><small>Konfigurasi</small><b>Belum ada snapshot</b></div></div>
+          <div class="note" id="liveMaxFLNote">Nilai live harus berasal dari input EA MT5, bukan dari pengaturan Backtest.</div>
+        </div>
+        <div class="card panel">
+          <div class="panel-title"><h3>Sinkronisasi</h3><span id="liveSyncState" class="tag neutral">Menunggu snapshot</span></div>
+          <div class="metrics" id="liveSyncMetrics"><div class="info"><small>Sumber</small><b>EA → Webhook → Firestore</b></div></div>
+          <div class="note" id="liveCommandState">Status perintah remote akan tampil setelah EA mengirim acknowledgement.</div>
+        </div>
+      </div>
       <div class="section-head" style="margin-top:6px"><div><h2>Quest Board</h2><p>Target permainan berdasarkan data akun (ambang acuan, bukan aturan firm).</p></div></div>
       <div class="quests" id="questBoard"></div>
       <div class="section-head"><div><h2>Account Overview</h2><p>Snapshot kondisi akun saat ini</p></div></div>
@@ -2608,7 +2621,9 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
       <div class="card panel" style="margin-top:14px">
         <div class="panel-title"><h3>Order Manual</h3><span>Masuk lewat sistem manajemen yang sama (SL/TP fibo, BE, reentry). Diblokir otomatis saat EA off / lockout / news blackout.</span></div>
         <div class="toolbar">
-          <input id="ctlLot" class="search" style="max-width:110px;min-width:0;flex:none" type="number" step="0.01" min="0.01" value="0.01" placeholder="Lot">
+          <input id="ctlLot" class="search" style="max-width:90px;min-width:0;flex:none" type="number" step="0.01" min="0.01" value="0.01" placeholder="Lot">
+          <input id="ctlSL" class="search" style="max-width:125px;min-width:0;flex:none" type="number" step="any" placeholder="Stop Loss (wajib Max FL)">
+          <input id="ctlTP" class="search" style="max-width:125px;min-width:0;flex:none" type="number" step="any" placeholder="Take Profit (opsional)">
           <button class="btn primary" id="ctlBuy" style="border-color:rgba(52,224,161,.45);background:var(--green-soft);color:#7fe8c1">▲ BUY Market</button>
           <button class="btn danger" id="ctlSell">▼ SELL Market</button>
         </div>
@@ -4263,12 +4278,59 @@ window.__THEME = { apply, get };
     return `<span class="pill2 ${cls}"><span class="dotmini"></span><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></span>`;
   }
 
+  let webhookHealth = {ok:null, at:0, service:''};
+  async function probeWebhookHealth(){
+    try {
+      const r = await fetch(EP, { method:'GET', cache:'no-store' });
+      const j = await r.json();
+      webhookHealth = { ok: !!(r.ok && j && j.ok === true), at: Date.now(), service: j?.service || '' };
+    } catch (e) {
+      webhookHealth = { ok:false, at:Date.now(), service:'' };
+    }
+    if (currentAccount) renderOverview();
+  }
+  probeWebhookHealth();
+  setInterval(probeWebhookHealth, 15000);
+
   function renderOverview(){
     const a=currentAccount, p=a.positions||[], o=a.pendingOrders||[], s=calcStats();
     $('accLogin').textContent=a.login??'—'; $('accServer').textContent=a.server??'—';
     $('accCompany').textContent=a.company??'—'; $('accCurrency').textContent=a.currency??'—';
     $('accLev').textContent=a.leverage?'1:'+a.leverage:'—';
     $('lastSnapshot').textContent = receivedAt ? new Date(receivedAt).toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
+
+    const snapAgeSec = receivedAt ? Math.max(0, (Date.now() - Number(receivedAt))/1000) : Infinity;
+    const syncState = snapAgeSec <= 20 ? ['LIVE','buy'] : snapAgeSec <= 60 ? ['STALE','medium'] : ['OFFLINE','sell'];
+    const syncEl = $('liveSyncState');
+    if (syncEl) { syncEl.textContent = syncState[0]; syncEl.className = 'tag ' + (syncState[1] === 'buy' ? 'buy' : syncState[1] === 'sell' ? 'sell' : 'medium'); }
+    const snapText = receivedAt ? new Date(receivedAt).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'medium'}) : 'Belum ada snapshot';
+    const lastCmd = (commandsCache || []).slice().sort((x,y) => {
+      const tx=x.createdAt?.toMillis ? x.createdAt.toMillis() : Number(x.createdAt||0);
+      const ty=y.createdAt?.toMillis ? y.createdAt.toMillis() : Number(y.createdAt||0); return ty-tx;
+    })[0];
+    if ($('liveSyncMetrics')) $('liveSyncMetrics').innerHTML = [
+      ['Sumber data',a.dataSource === 'mt5_ea' ? 'MT5 EA' : 'EA → Webhook → Firestore'],
+      ['Snapshot terakhir',snapText],
+      ['Umur snapshot',Number.isFinite(snapAgeSec) ? Math.round(snapAgeSec)+' detik' : '—'],
+      ['Webhook',webhookHealth.ok === true ? 'HTTP OK · ' + (webhookHealth.service || 'endpoint aktif') : webhookHealth.ok === false ? 'Tidak terjangkau' : 'Memeriksa endpoint…'],
+      ['Versi EA',a.eaVersion ? 'v' + a.eaVersion : 'Belum dikirim']
+    ].map(x=>`<div class="info"><small>${x[0]}</small><b>${esc(x[1])}</b></div>`).join('');
+    if ($('liveCommandState')) $('liveCommandState').textContent = lastCmd
+      ? `Perintah terakhir: ${lastCmd.action || '—'} · ${lastCmd.status || 'pending'} · ${lastCmd.message || 'menunggu acknowledgement EA'}`
+      : 'Belum ada perintah remote yang tercatat.';
+    const maxFlOn = a.maxFloatingLossEnabled === true && Number(a.maxFloatingLossPct||0)>0;
+    if ($('liveMaxFLState')) { $('liveMaxFLState').textContent = maxFlOn ? 'AKTIF DI EA' : (a.maxFloatingLossEnabled === false ? 'NONAKTIF DI EA' : 'BELUM DIKIRIM EA'); $('liveMaxFLState').className = 'tag ' + (maxFlOn ? 'buy' : 'neutral'); }
+    if ($('liveMaxFLMetrics')) $('liveMaxFLMetrics').innerHTML = [
+      ['Max FL',a.maxFloatingLossPct!=null ? pct(a.maxFloatingLossPct) : 'Belum dikirim'],
+      ['Buffer slippage',a.floatingLossSlippageBufferPct!=null ? pct(a.floatingLossSlippageBufferPct) : 'Belum dikirim'],
+      ['Batas efektif',a.maxFloatingLossEffectivePct!=null ? pct(a.maxFloatingLossEffectivePct) : 'Belum dikirim'],
+      ['Baseline',a.maxFloatingLossBaseline!=null ? money(a.maxFloatingLossBaseline) : 'Belum dikirim'],
+      ['Auto-close',a.maxFloatingLossAutoClose===true ? 'Aktif' : (a.maxFloatingLossAutoClose===false ? 'Nonaktif' : 'Belum dikirim')],
+      ['Cek posisi',a.maxFloatingLossCheckAgeSec!=null ? (Number(a.maxFloatingLossCheckAgeSec)>0 ? '≤ '+a.maxFloatingLossCheckAgeSec+' detik' : 'Semua umur') : 'Belum dikirim']
+    ].map(x=>`<div class="info"><small>${x[0]}</small><b>${esc(x[1])}</b></div>`).join('');
+    if ($('liveMaxFLNote')) $('liveMaxFLNote').textContent = maxFlOn
+      ? `Baseline: ${a.maxFloatingLossBaselineSource || 'sesuai EA'}. Buffer adalah percentage points. Nilai ini read-only dari snapshot live.`
+      : 'Belum dapat dipastikan aktif: kompilasi dan pasang EA versi Max FL, lalu tunggu snapshot baru. Pengaturan Backtest tidak mengubah input EA.';
 
     $('accountKpis').innerHTML=[
       ['Balance',money(a.balance),'','Account balance'],
@@ -4411,7 +4473,29 @@ window.__THEME = { apply, get };
   // ================= CONTROL TAB =================
   function sendCommand(action, params){
     if (!currentAccountId) { toast('Pilih akun dulu'); return; }
-    callApi({ accountId: currentAccountId, action, params: params || [] })
+    params = params || [];
+    if (action === 'open_order' && currentAccount &&
+        currentAccount.maxFloatingLossEnabled === true &&
+        Number(currentAccount.maxFloatingLossPct || 0) > 0) {
+      const dir = String(params[0] || '');
+      const lot = Number(params[1] || 0);
+      const sl = Number(params[2] || 0);
+      const entry = dir === 'buy' ? Number(currentAccount.ask || 0) : Number(currentAccount.bid || 0);
+      const baseline = Number(currentAccount.maxFloatingLossBaseline || 0);
+      const effectivePct = Number(currentAccount.maxFloatingLossEffectivePct ??
+        Math.max(0, Number(currentAccount.maxFloatingLossPct || 0) - Number(currentAccount.floatingLossSlippageBufferPct || 0)));
+      if (!(sl > 0)) { toast('Order ditolak di web: Max FL aktif, Stop Loss wajib diisi.'); return; }
+      if (!(entry > 0) || !(lot > 0) || !(baseline > 0)) { toast('Order ditolak di web: snapshot harga/baseline EA belum lengkap. Tunggu sinkronisasi EA.'); return; }
+      if ((dir === 'buy' && sl >= entry) || (dir === 'sell' && sl <= entry)) { toast('Order ditolak di web: posisi SL tidak valid terhadap entry.'); return; }
+      const tickSize = Number(currentAccount.tickSize || 0), tickValueLoss = Number(currentAccount.tickValueLoss || 0);
+      let riskMoney = -1;
+      if (tickSize > 0 && tickValueLoss > 0) riskMoney = Math.abs(entry - sl) / tickSize * tickValueLoss * lot;
+      else if (Number(currentAccount.contractSize || 0) > 0 && String(currentAccount.currency || '').toUpperCase() === 'USD') riskMoney = Math.abs(entry - sl) * Number(currentAccount.contractSize) * lot;
+      if (!(riskMoney >= 0)) { toast('Order ditahan di web: spesifikasi tick/contract belum tersedia untuk estimasi risiko. EA tetap menjadi validator final.'); return; }
+      const allowed = baseline * effectivePct / 100;
+      if (riskMoney > allowed + 1e-8) { toast(`Order ditolak di web: estimasi risiko ${money(riskMoney)} > batas Max FL efektif ${money(allowed)} (${pct(effectivePct)}).`); return; }
+    }
+    callApi({ accountId: currentAccountId, action, params })
       .then(() => toast(`Perintah "${action}" terkirim — EA mengambilnya dlm ±5 detik.`))
       .catch(e => toast('Gagal kirim perintah: ' + e.message));
   }
@@ -4443,8 +4527,8 @@ window.__THEME = { apply, get };
   $('ctlEaOn').addEventListener('click', () => armOrFire($('ctlEaOn'), () => sendCommand('ea_on')));
   $('ctlSyncOn').addEventListener('click', () => sendCommand('sync_on'));
   $('ctlSyncOff').addEventListener('click', () => sendCommand('sync_off'));
-  $('ctlBuy').addEventListener('click', () => sendCommand('open_order', ['buy', $('ctlLot').value || '0.01']));
-  $('ctlSell').addEventListener('click', () => sendCommand('open_order', ['sell', $('ctlLot').value || '0.01']));
+  $('ctlBuy').addEventListener('click', () => sendCommand('open_order', ['buy', $('ctlLot').value || '0.01', $('ctlSL').value || '0', $('ctlTP').value || '0']));
+  $('ctlSell').addEventListener('click', () => sendCommand('open_order', ['sell', $('ctlLot').value || '0.01', $('ctlSL').value || '0', $('ctlTP').value || '0']));
 
   $('positionsTable').addEventListener('click', e => {
     const btn = e.target.closest('[data-close-ticket]');
@@ -7654,13 +7738,20 @@ function model(t){
   if(!Number.isFinite(openS) && has(t.durationSec) && Number.isFinite(closeS)) openS = closeS - n(t.durationSec);
   const net = n(t.netProfit ?? t.profit), start = n(a.startingBalance ?? a.initialBalance);
   const dir = side === 'SELL' ? -1 : 1;
-  const risk = sl && entry ? Math.abs(entry - sl) : 0;
-  const rMult = risk && exit && entry ? (exit - entry) * dir / risk : null;
-  const planRR = risk && tp && entry ? Math.abs(tp - entry) / risk : null;
+  // R dihitung dari SL AWAL (initialSl) dan harga exit rata-rata (partial close). EA lama (tanpa initialSlSrc)
+  // tidak mengirim SL awal -> fallback ke SL terakhir (bisa menyesatkan bila SL sudah digeser ke BE).
+  const isl = posNum(t.initialSl), itp = posNum(t.initialTp), exitAvg = posNum(t.avgClosePrice) || exit;
+  const newEA = t.initialSlSrc !== undefined;
+  const riskSl = isl > 0 ? isl : (newEA ? 0 : sl);
+  const planTp = itp > 0 ? itp : tp;
+  const rSrc = isl > 0 ? 'initial' : (newEA ? 'unknown' : 'final');
+  const risk = riskSl && entry ? Math.abs(entry - riskSl) : 0;
+  const rMult = risk && exitAvg && entry ? (exitAvg - entry) * dir / risk : null;
+  const planRR = risk && planTp && entry ? Math.abs(planTp - entry) / risk : null;
   return { t, a, side, entry, exit, sl, tp, openS, closeS, net, dir, cur:a.currency || 'USD',
     sym:String(t.symbol || '').trim() || 'SYMBOL', vol:has(t.volume) ? t.volume : t.lots, ticket:t.ticket ?? t.positionId ?? t.id,
     gross:t.profit, comm:t.commission, swap:t.swap, dur:has(t.durationSec) ? n(t.durationSec) : (Number.isFinite(openS) && Number.isFinite(closeS) ? closeS - openS : NaN),
-    retPct:start ? net/start*100 : null, rMult, planRR, reason:exitReasonOf(t, entry, exit, sl, tp, risk), comment:String(t.comment || t.reason || '').trim() };
+    retPct:start ? net/start*100 : null, rMult, rSrc, planRR, reason:exitReasonOf(t, entry, exit, sl, tp, risk), comment:String(t.comment || t.reason || '').trim() };
 }
 
 function exitReasonOf(t, entry, exit, sl, tp, risk){
@@ -8574,7 +8665,8 @@ function openMarket(side,lots,sl,tp){
   if(!(lots>=0.01))return fail('Lot minimal 0.01. Atur Lot di Order Ticket.');
   const bid=px(),ask=bid+sp(),entry=side==='buy'?ask:bid;
   if(sl>0){if(side==='buy'&&!(sl<entry))return fail('Stop Loss BUY harus di bawah harga entry.');if(side==='sell'&&!(sl>entry))return fail('Stop Loss SELL harus di atas harga entry.');}
-  if(tp>0){if(side==='buy'&&!(tp>entry))return fail('Take Profit BUY harus di atas harga entry.');if(side==='sell'&&!(tp<entry))return fail('Take Profit SELL harus di bawah harga entry.');}
+  if(tp>0){if(side==='buy'&&!(tp>entry))return fail('Take Profit BUY harus di atas harga entry.');if(side==='sell'&&!(tp<entry))return fail('Take Profit SELL harus di bawah harga entry.')}
+  if(!validateFloatingLossOrder(side,lots,entry,sl))return null;
   const er=marginCheck(entry,lots);if(er)return fail(er);
   const p=openPos(side,lots,entry,sl,tp,S.i);
   recordEq(S.i);dirty();persist();
@@ -8591,6 +8683,7 @@ function createPending(side,type,price,lots,sl,tp){
   }
   if(sl>0&&(side==='buy'?sl>=price:sl<=price))return fail(`SL ${side.toUpperCase()} harus di ${side==='buy'?'bawah':'atas'} harga entry.`);
   if(tp>0&&(side==='buy'?tp<=price:tp>=price))return fail(`TP ${side.toUpperCase()} harus di ${side==='buy'?'atas':'bawah'} harga entry.`);
+  if(!validateFloatingLossOrder(side,lots,price,sl))return null;
   const er=marginCheck(price,lots);if(er)return fail(er);
   const q={id:S.nextId++,side,lots,type,price,sl:sl||0,tp:tp||0,openI:S.i};S.pend.push(q);
   S.sig.pos='';dirty();persist();
@@ -8617,6 +8710,27 @@ function floatingLossRisk(side,lots,entry,sl){
   const distance = Math.abs(entry-sl);
   return distance * lots * nz(cfg.contract);
 }
+/* Max FL saat SL DIUBAH (drag / ticket / tombol): SL tidak boleh dilonggarkan melewati batas efektif.
+   SL di sisi profit (BE / trailing) tidak punya risiko rugi -> selalu boleh. */
+function slWithinMaxFL(kind,o,price,quiet){
+  if(!cfg.prop || !(nz(cfg.maxFL)>0) || !(price>0)) return true;
+  const entry=kind==='pos'?o.entry:o.price;
+  if(o.side==='buy'?price>=entry:price<=entry) return true;
+  const risk=floatingLossRisk(o.side,o.lots,entry,price);
+  const base=Math.max(0,nz(S.initial)||nz(cfg.balance));
+  const maxPct=Math.max(0,nz(cfg.maxFL));
+  const bufferPct=cl(nz(cfg.flBuffer),0,Math.max(0,maxPct));
+  const allowedPct=Math.max(0,maxPct-bufferPct);
+  const allowedMoney=base*allowedPct/100;
+  if(risk!=null && risk<=allowedMoney+1e-8) return true;
+  const now=Date.now();
+  if(!quiet || now-(slWithinMaxFL._t||0)>1500){
+    slWithinMaxFL._t=now;
+    msg(`SL ditolak: risiko ${fm(risk||0)} melebihi Max FL efektif ${f2(allowedPct)}% (${fm(allowedMoney)}).`,'err');
+  }
+  return false;
+}
+function slRequiredByMaxFL(){return !!(cfg.prop && nz(cfg.maxFL)>0);}
 function validateFloatingLossOrder(side,lots,entry,sl){
   if(!cfg.prop || !(nz(cfg.maxFL)>0)) return true;
   if(!(sl>0)) { msg('Order ditolak: Stop Loss wajib diisi saat aturan Max Floating Loss aktif.','err'); return false; }
@@ -8728,6 +8842,7 @@ function validLevel(kind,o,field,price){
 function setLevel(kind,o,field,price,quiet){
   price=rp(price);
   if(!validLevel(kind,o,field,price)){if(!quiet)msg(`${field.toUpperCase()} tidak valid di ${fp(price)} untuk ${o.side.toUpperCase()}${kind==='pos'?' (terhadap harga berjalan)':' (terhadap harga entry)'}.`,'err');return false;}
+  if(field==='sl'&&!slWithinMaxFL(kind,o,price,quiet))return false;
   const entry=kind==='pos'?o.entry:o.price;
   o[field]=price;
   if(field==='sl'&&rrValue()!=null&&(o.side==='buy'?price<entry:price>entry)){const tp=autoTpFromSL(entry,price,o.side);if(tp!=null)o.tp=rp(tp);}
@@ -8741,7 +8856,7 @@ function addLevel(kind,id,field){
   else{const base=o.sl>0?Math.abs(entry-o.sl):dist,rr=rrValue()??(o.sl>0?1:1.5);setLevel(kind,o,'tp',entry+dir*base*rr);}
   setSel(kind,id);S.sig.pos='';syncTicketFromSel();persist();dirty();
 }
-function removeLevel(kind,id,field){const o=getObj(kind,id);if(!o)return;o[field]=0;S.sig.pos='';syncTicketFromSel();persist();dirty();}
+function removeLevel(kind,id,field){const o=getObj(kind,id);if(!o)return;if(field==='sl'&&slRequiredByMaxFL()){msg('Stop Loss tidak boleh dihapus saat Max Floating Loss aktif.','err');return;}o[field]=0;S.sig.pos='';syncTicketFromSel();persist();dirty();}
 /* geser level lewat drag di chart */
 function applyDrag(L,price){
   const o=getObj(L.kind,L.id);if(!o)return;price=rp(price);
@@ -8772,7 +8887,7 @@ function ticketEdit(field){
     const type=pendTypeFor(o.side,v);if(!(v>0)||!type){msg('Harga entry pending tidak valid / terlalu dekat market.','err');syncTicketFromSel();return;}
     const d=v-o.price;o.price=rp(v);o.type=type;if(o.sl>0)o.sl=rp(o.sl+d);if(o.tp>0)o.tp=rp(o.tp+d);
   }else if(v>0){if(!setLevel(kind,o,field,v)){syncTicketFromSel();return;}}
-  else o[field]=0;
+  else{if(field==='sl'&&slRequiredByMaxFL()){msg('Stop Loss tidak boleh dikosongkan saat Max Floating Loss aktif.','err');syncTicketFromSel();return;}o[field]=0;}
   syncTicketFromSel();S.sig.pos='';persist();dirty();
 }
 /* ---------- reset / load ---------- */
