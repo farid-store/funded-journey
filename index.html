@@ -2430,7 +2430,176 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
 }
 @media(max-height:520px) and (orientation:landscape){.btx-plot{height:max(220px,70dvh)}}
 </style>
-<style id="bt-cloud-sync-style">#btCloudStatus{font-size:11px;color:var(--muted);max-width:100%;overflow-wrap:anywhere}#btCloudStatus[data-kind="ok"]{color:var(--green)}#btCloudStatus[data-kind="warn"]{color:var(--amber)}#btCloudStatus[data-kind="err"]{color:var(--red)}#btCloudAuthBox{display:flex;flex:1 1 100%;align-items:center;gap:7px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface2,rgba(255,255,255,.025))}#btCloudAuthBox .bt-auth-note{flex:1 1 100%;font-size:11px;color:var(--muted);line-height:1.5}#btCloudAuthBox input{min-width:150px;max-width:230px;flex:1 1 150px}#btCloudAuthBox .btn{white-space:nowrap}#btCloudEmail,#btCloudPassword{height:34px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:12px}#btCloudPassword{max-width:170px}@media(max-width:700px){#btCloudAuthBox input{max-width:none;flex:1 1 100%}#btCloudAuthBox .btn{flex:1 1 auto}}</style></head>
+<style id="bt-cloud-sync-style">#btCloudStatus{font-size:11px;color:var(--muted);max-width:100%;overflow-wrap:anywhere}#btCloudStatus[data-kind="ok"]{color:var(--green)}#btCloudStatus[data-kind="warn"]{color:var(--amber)}#btCloudStatus[data-kind="err"]{color:var(--red)}#btCloudAuthBox{display:flex;flex:1 1 100%;align-items:center;gap:7px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface2,rgba(255,255,255,.025))}#btCloudAuthBox .bt-auth-note{flex:1 1 100%;font-size:11px;color:var(--muted);line-height:1.5}#btCloudAuthBox input{min-width:150px;max-width:230px;flex:1 1 150px}#btCloudAuthBox .btn{white-space:nowrap}#btCloudEmail,#btCloudPassword{height:34px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:12px}#btCloudPassword{max-width:170px}@media(max-width:700px){#btCloudAuthBox input{max-width:none;flex:1 1 100%}#btCloudAuthBox .btn{flex:1 1 auto}}
+/* ===== Quantum DOM Liquidity Matrix v5 ===== */
+.qd-wrap{display:flex;flex-direction:column;gap:12px;margin-top:6px;min-width:0}
+.qd-wrap *{box-sizing:border-box}
+.qd-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:12px 14px}
+.qd-title{font:700 15px var(--fh);letter-spacing:.14em;text-transform:uppercase;color:#fff;white-space:nowrap}
+.qd-title small{display:block;font:600 9.5px var(--fh);letter-spacing:.22em;color:var(--faint);margin-top:2px}
+.qd-pricebox{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qd-sel{background:var(--surface2);color:var(--text);border:1px solid var(--brd);border-radius:8px;padding:5px 6px;font:700 11px var(--fm)}
+.qd-px{font:700 28px/1 var(--fm);letter-spacing:.01em;color:var(--gold);transition:color .25s}
+.qd-px.up{color:var(--green)}.qd-px.down{color:var(--red)}
+.qd-live{font:700 10px var(--fm);padding:3px 9px;border-radius:99px;border:1px solid var(--line2);white-space:nowrap}
+.qd-live.on{color:var(--green);border-color:rgba(45,245,163,.5);background:var(--green-soft)}
+.qd-live.wait{color:var(--amber);border-color:rgba(255,176,46,.5);background:var(--amber-soft)}
+.qd-live.err{color:var(--red);border-color:rgba(255,75,110,.55);background:var(--red-soft)}
+.qd-chips{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.qd-chip{font:600 10.5px var(--fm);color:var(--muted);background:var(--surface2);border:1px solid var(--brd);border-radius:99px;padding:3px 10px;white-space:nowrap}
+.qd-chip b{color:var(--text)}
+.qd-ctrls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-left:auto}
+.qd-seg{display:inline-flex;background:var(--surface2);border:1px solid var(--brd);border-radius:9px;padding:2px;gap:2px}
+.qd-seg button{background:none;border:0;color:var(--muted);font:700 11px var(--fm);padding:6px 11px;border-radius:7px;cursor:pointer;min-height:30px}
+.qd-seg button:hover{color:#fff}
+.qd-seg button.on{background:linear-gradient(180deg,#ffd75e,#e69a1c);color:#2d1c00}
+.qd-seg.sm button{padding:3px 9px;min-height:24px;font-size:10px}
+.qd-ib{padding:6px 11px!important;min-height:34px}
+.qd-ib.on{border-color:var(--cyan)!important;color:var(--cyan)!important}
+
+.qd-drawer{padding:14px 16px}
+.qd-dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.qd-dh{font:700 11px var(--fh);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);padding-bottom:6px;border-bottom:1px solid var(--line)}
+.qd-dr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;font-size:12px;color:var(--muted)}
+.qd-dr .xin{width:96px;padding:5px 7px;font:600 12px var(--fm)}
+.qd-dr select.xin{width:auto;max-width:150px}
+.qd-dr input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold)}
+.qd-small{font-size:11px!important;margin-top:8px!important;color:var(--faint)!important}
+.qd-dfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+
+.qd-insight{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:12px;min-width:0}
+.qd-ncard{position:relative;border:1px solid var(--brd);border-left:4px solid var(--faint);border-radius:var(--radius);padding:12px 14px;background:var(--surface);cursor:pointer;min-width:0;transition:border-color .2s,background .2s,transform .15s}
+.qd-ncard:hover{background:var(--surface2)}
+.qd-ncard.S{border-left-color:var(--red)}.qd-ncard.D{border-left-color:var(--green)}.qd-ncard.M{border-left-color:var(--gold)}
+.qd-ncard.sel{border-color:var(--cyan);box-shadow:0 0 0 1px rgba(53,224,255,.35),0 0 18px rgba(53,224,255,.12)}
+.qd-ncard.off{cursor:default;opacity:.55;border-style:dashed}
+.qd-ncard.off:hover{background:var(--surface)}
+.qd-nh{display:flex;align-items:center;justify-content:space-between;gap:8px;font:700 10px var(--fh);letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.qd-nr{font:700 19px var(--fm);margin:6px 0 2px;color:#fff;overflow-wrap:anywhere}
+.qd-nm{display:flex;justify-content:space-between;gap:8px;font:600 11px var(--fm);color:var(--muted)}
+.qd-near{color:var(--gold);font-weight:700}
+.qd-nbar{height:6px;border-radius:4px;background:var(--surface3);margin:9px 0 8px;overflow:hidden}
+.qd-nbar i{display:block;height:100%;border-radius:4px}
+.qd-nstat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.qd-nstat div{font:600 9.5px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.qd-nstat b{display:block;font:700 13px var(--fm);color:var(--text);letter-spacing:0;margin-top:2px}
+.qd-nempty{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+
+.qd-bias{padding:12px 14px;min-width:0}
+.qd-bh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.qd-bh b{font:700 10px var(--fh);letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.qd-bh span{font:700 12px var(--fm)}
+.qd-split{display:flex;height:34px;border-radius:9px;overflow:hidden;border:1px solid var(--brd);font:700 12px var(--fm)}
+.qd-split>div{display:flex;align-items:center;padding:0 10px;min-width:0;white-space:nowrap;overflow:hidden;transition:width .5s}
+.qd-split .b{background:linear-gradient(90deg,#0f8f62,#2df5a3);color:#032a1b}
+.qd-split .s{background:linear-gradient(270deg,#b32a47,#ff4b6e);color:#2c0610;justify-content:flex-end}
+.qd-spark{display:block;width:100%;height:30px;margin-top:8px}
+.qd-meters{display:grid;gap:5px;margin-top:6px}
+.qd-mt{display:grid;grid-template-columns:62px 1fr 38px;gap:8px;align-items:center;font:600 10px var(--fm);color:var(--faint)}
+.qd-mt b{text-align:right;color:var(--text)}
+.qd-bar2{height:6px;background:var(--surface3);border-radius:4px;overflow:hidden}
+.qd-bar2 i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .5s}
+.qd-fol{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}
+.qd-fol:empty{display:none}
+
+.qd-main{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(340px,1fr);gap:12px;align-items:start;min-width:0}
+.qd-chartcard{padding:10px;min-width:0}
+.qd-chartbox{position:relative;height:clamp(400px,66vh,680px);border-radius:10px;overflow:hidden;background:#050a18;border:1px solid var(--brd);user-select:none;-webkit-user-select:none}
+.qd-chartbox canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;cursor:crosshair}
+.qd-layers{position:absolute;left:8px;top:6px;display:flex;gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;z-index:2;max-width:calc(100% - 96px)}
+.qd-layers::-webkit-scrollbar{display:none}
+.qd-lay{flex:none}
+.qd-lay{font:700 9.5px var(--fm);padding:3px 9px;border-radius:99px;border:1px solid var(--brd);background:rgba(5,10,24,.82);color:var(--faint);cursor:pointer;min-height:22px}
+.qd-lay.on{color:var(--cyan);border-color:rgba(53,224,255,.55);background:rgba(53,224,255,.1)}
+.qd-livebtn{position:absolute;right:8px;top:6px;z-index:2;font:700 10px var(--fm);padding:4px 10px;border-radius:99px;border:1px solid var(--gold);background:rgba(255,201,74,.16);color:var(--gold);cursor:pointer}
+.qd-ov{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(5,10,24,.88);padding:20px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.55}
+.qd-ov[hidden]{display:none}
+.qd-spin{width:28px;height:28px;border:3px solid var(--line2);border-top-color:var(--gold);border-radius:50%;animation:qdspin .8s linear infinite}
+@keyframes qdspin{to{transform:rotate(360deg)}}
+.qd-legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font:600 10.5px var(--fm);color:var(--muted)}
+.qd-hint{margin-left:auto;color:var(--faint);font-weight:500}
+
+.qd-side{padding:0;display:flex;flex-direction:column;max-height:clamp(520px,76vh,780px);min-width:0;overflow:hidden}
+.qd-tabs{display:flex;border-bottom:1px solid var(--brd);flex:none}
+.qd-tabs button{flex:1;background:none;border:0;border-bottom:2px solid transparent;color:var(--faint);font:700 11px var(--fh);letter-spacing:.14em;text-transform:uppercase;padding:12px 6px;cursor:pointer}
+.qd-tabs button:hover{color:#fff}
+.qd-tabs button.on{color:var(--gold);border-bottom-color:var(--gold);background:rgba(255,201,74,.05)}
+.qd-pane{overflow:auto;padding:10px 12px 14px;flex:1;min-height:0;-webkit-overflow-scrolling:touch}
+.qd-pm{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.qd-sub{color:var(--faint);font-size:10.5px}
+.qd-empty{font-size:12px;color:var(--muted);line-height:1.6;padding:6px 2px}
+.qd-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.qd-pane .xt{width:100%}
+.qd-pane .xt th,.qd-pane .xt td{padding:6px 7px!important;font-size:11px;vertical-align:middle}
+.qd-pane .xt th{font-size:9.5px;letter-spacing:.06em}
+.qd-pxrow2{margin:4px 0 10px;padding:6px 8px;text-align:center;font:700 12px var(--fm);letter-spacing:.08em;color:var(--gold);background:rgba(255,201,74,.09);border:1px dashed rgba(255,201,74,.4);border-radius:8px}
+
+.qd-zc{border:1px solid var(--brd);border-left:4px solid var(--faint);border-radius:10px;padding:9px 11px;margin-bottom:8px;background:var(--surface2);cursor:pointer;transition:border-color .2s,background .2s}
+.qd-zc:hover{background:var(--surface3)}
+.qd-zc.S{border-left-color:var(--red)}.qd-zc.D{border-left-color:var(--green)}.qd-zc.M{border-left-color:var(--gold)}
+.qd-zc.sel{border-color:var(--cyan);background:rgba(53,224,255,.07)}
+.qd-zt{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.qd-zr{margin-left:auto;font:700 12.5px var(--fm);color:#fff}
+.qd-zm{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:5px;font:600 10.5px var(--fm);color:var(--muted);flex-wrap:wrap}
+.qd-zs{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center;margin-top:7px;font:600 10.5px var(--fm);color:var(--muted)}
+.qd-zs b{color:var(--text)}
+.qd-sbar{display:flex;align-items:center;gap:7px}
+.qd-sbar .qd-bar2{flex:1;height:7px}
+.qd-sbar b{font:700 13px var(--fm);min-width:24px}
+.qd-zd{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line2)}
+.qd-bk{display:grid;gap:5px}
+.qd-bki{display:grid;grid-template-columns:62px 1fr 40px;gap:8px;align-items:center;font:600 10px var(--fm);color:var(--faint)}
+.qd-bki b{text-align:right;color:var(--text)}
+.qd-kv{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:10px;font-size:11px}
+.qd-kv span{color:var(--faint);display:block;font:600 9.5px var(--fh);letter-spacing:.1em;text-transform:uppercase}
+.qd-kv b{font:700 11.5px var(--fm);color:var(--text);overflow-wrap:anywhere}
+.qd-acts{display:flex;gap:8px;margin-top:10px}
+.qd-acts .btn{padding:5px 12px;font-size:11px}
+.qd-diag{margin-top:6px}
+.qd-diag summary{cursor:pointer;font:700 10.5px var(--fh);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.qd-sess{display:inline-block;margin-right:8px}
+.qd-badge{display:inline-block;padding:1px 7px;border-radius:6px;font:700 9.5px var(--fm);letter-spacing:.06em;white-space:nowrap}
+.qd-badge.S{background:var(--red-soft);color:var(--red);border:1px solid rgba(255,75,110,.4)}
+.qd-badge.D{background:var(--green-soft);color:var(--green);border:1px solid rgba(45,245,163,.4)}
+.qd-badge.M{background:var(--amber-soft);color:var(--gold);border:1px solid rgba(255,201,74,.55)}
+.qd-badge.ST{background:var(--purple-soft);color:var(--purple);border:1px solid rgba(169,139,255,.4)}
+.qd-pxrow td{background:rgba(255,201,74,.1);color:var(--gold);text-align:center;font:700 12px var(--fm);letter-spacing:.08em}
+.qd-bar{display:inline-block;vertical-align:middle;width:56px;height:7px;border-radius:5px;background:var(--surface3);overflow:hidden;margin-right:6px}
+.qd-bar>i{display:block;height:100%;border-radius:5px}
+.qd-dom .qd-bar{width:44px}
+.qd-tsplit{display:flex;height:10px;border-radius:6px;overflow:hidden;margin:6px 0 10px}
+.qd-tsplit i{display:block;height:100%}
+
+.qd-foot{font-size:11px!important;color:var(--faint)!important;line-height:1.6}
+.qd-toasts{position:fixed;right:16px;top:16px;z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:min(380px,calc(100vw - 32px))}
+.qd-toast{background:rgba(13,20,40,.97);border:1px solid var(--gold);border-left-width:4px;border-radius:10px;padding:10px 14px;font:600 12px/1.45 var(--fb);color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;transform:translateX(24px);transition:opacity .3s,transform .3s}
+.qd-toast.show{opacity:1;transform:none}
+.qd-toast.D{border-color:var(--green)}.qd-toast.S{border-color:var(--red)}.qd-toast.info{border-color:var(--cyan)}
+
+@media(max-width:1100px){
+  .qd-main{grid-template-columns:minmax(0,1fr)}
+  .qd-side{max-height:none}
+  .qd-pane{max-height:640px}
+}
+@media(max-width:900px){
+  .qd-insight{grid-template-columns:1fr 1fr}
+  .qd-bias{grid-column:1 / -1;order:-1}
+}
+@media(max-width:640px){
+  .qd-head{padding:10px 12px;gap:8px 12px}
+  .qd-px{font-size:24px}
+  .qd-ctrls{margin-left:0;width:100%}
+  .qd-seg button{padding:7px 12px}
+  .qd-ib span{display:none}
+  .qd-chartbox{height:clamp(400px,62vh,540px)}
+  .qd-nr{font-size:15px}
+  .qd-nstat{grid-template-columns:repeat(2,1fr)}
+  .qd-hint{display:none}
+  .qd-zs{grid-template-columns:1fr 1fr}
+  .qd-dr .xin{width:88px}
+}
+@media(prefers-reduced-motion:reduce){.qd-spin{animation:none}.qd-split>div,.qd-bar2 i{transition:none}}
+</style></head>
 <body>
 <div class="world" aria-hidden="true">
   <div class="stars"></div><div class="horizon"></div><div class="floor"></div><div class="sparks"></div>
@@ -2502,6 +2671,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
       <button class="tab" data-view="mtf"><span class="tico" style="--c1:#9ef0ff;--c2:#2b8fd6"><span>🧭</span></span><span>Trend</span></button>
       <button class="tab" data-view="liq"><span class="tico" style="--c1:#9ef0ff;--c2:#6a4fd1"><span>🌊</span></span><span>Liquidity</span></button>
       <button class="tab" data-view="kl"><span class="tico" style="--c1:#ffd25e;--c2:#a87b10"><span>🏛️</span></span><span>Key Levels</span></button>
+      <button class="tab" data-view="qdom"><span class="tico" style="--c1:#7ce8ff;--c2:#7b4fd1"><span>⚛️</span></span><span>Quantum DOM</span></button>
       <button class="tab" data-view="share"><span class="tico" style="--c1:#7dffb3;--c2:#1f9c6c"><span>📤</span></span><span>Share</span></button>
       <button class="tab" data-view="compliance"><span class="tico" style="--c1:#9ec5ff;--c2:#3a63d8"><span>🛡️</span></span><span>Compliance</span></button>
       <button class="tab" data-view="sig"><span class="tico" style="--c1:#ff9ad5;--c2:#c43a8c"><span>🎯</span></span><span>Sinyal</span></button>
@@ -3042,6 +3212,97 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
   </div>
 </section>
 
+<section id="view-qdom" class="view">
+<div class="qd-wrap">
+
+  <header class="qd-head card">
+    <div class="qd-id">
+      <div class="qd-title">⚛ Quantum DOM<small>Liquidity Matrix</small></div>
+    </div>
+    <div class="qd-pricebox">
+      <select id="qdSym" class="qd-sel" aria-label="Simbol"><option>XAUUSDT</option><option>XAUTUSDT</option><option>PAXGUSDT</option></select>
+      <b id="qdPx" class="qd-px">—</b>
+      <span id="qdLive" class="qd-live wait">◌ Memuat…</span>
+    </div>
+    <div class="qd-chips" id="qdChips"></div>
+    <div class="qd-ctrls">
+      <div class="qd-seg" id="qdTfSeg" role="group" aria-label="Timeframe"><button data-v="5m">5m</button><button data-v="15m">15m</button><button data-v="1h">1h</button><button data-v="4h">4h</button></div>
+      <div class="qd-seg" id="qdModeSeg" role="group" aria-label="Mode"><button data-v="hybrid" title="Gambar Supply dan Demand">Hybrid</button><button data-v="follow" title="Hanya satu sisi, mengikuti tekanan / struktur">Follow</button></div>
+      <button class="btn ghost qd-ib" id="qdAlertBtn" title="Alert zona (suara + notifikasi)">🔔</button>
+      <button class="btn ghost qd-ib" id="qdSetBtn" title="Pengaturan">⚙ <span>Pengaturan</span></button>
+    </div>
+  </header>
+
+  <section class="qd-drawer card" id="qdSet" hidden>
+    <div class="qd-dg">
+      <div><div class="qd-dh">Data &amp; harga</div>
+        <div class="qd-dr"><span>Candle tampil</span><input id="qdN" class="xin" type="number" min="30" max="400" step="10"></div>
+        <div class="qd-dr"><span>1 lot =</span><span><input id="qdLot" class="xin" type="number" min="0.001" step="any"> oz</span></div>
+        <div class="qd-dr"><span>Offset ke broker</span><select id="qdOfs" class="xin"><option value="off">Off (harga Binance)</option><option value="auto">Auto (EA)</option><option value="man">Manual</option></select></div>
+        <div class="qd-dr"><span>Nilai manual</span><span><input id="qdOfsV" class="xin" type="number" step="0.01"> <select id="qdOfsU" class="xin"><option value="pt">poin</option><option value="usd">USD</option></select></span></div>
+        <div class="note qd-small" id="qdOfsInfo"></div>
+      </div>
+      <div><div class="qd-dh">Zona Supply / Demand</div>
+        <div class="qd-dr"><span>Strong ≥ (ATR)</span><input id="qdThS" class="xin" type="number" step="0.1"></div>
+        <div class="qd-dr"><span>Medium ≥ (ATR)</span><input id="qdThM" class="xin" type="number" step="0.1"></div>
+        <div class="qd-dr"><span>Candle uji (hold)</span><input id="qdHold" class="xin" type="number" step="1"></div>
+        <div class="qd-dr"><span>Maks zona / sisi</span><input id="qdMaxZ" class="xin" type="number" step="1"></div>
+        <div class="note qd-small">Candle uji = berapa candle harga boleh bertahan di dalam zona sebelum dihitung “ditahan”. Close menembus sisi jauh = tembus.</div>
+      </div>
+      <div><div class="qd-dh">Follow Trend</div>
+        <div class="qd-dr"><span>Sumber arah</span><select id="qdSrc" class="xin"><option value="press">Tekanan buyer/seller</option><option value="ema">Struktur: EMA</option><option value="hhll">Struktur: HH/LL</option></select></div>
+        <div class="qd-dr"><span>Periode EMA</span><input id="qdEmaN" class="xin" type="number" step="1"></div>
+        <div class="qd-dr"><span>Swing ± candle</span><input id="qdSwL" class="xin" type="number" step="1"></div>
+        <div class="note qd-small">Dipakai saat mode Follow. BOS = harga menembus swing terakhir.</div>
+      </div>
+      <div><div class="qd-dh">Alert</div>
+        <div class="qd-dr"><span>Alert zona aktif</span><input id="qdAlOn" type="checkbox"></div>
+        <div class="qd-dr"><span>Suara</span><input id="qdAlSnd" type="checkbox"></div>
+        <div class="qd-dr"><span>Notifikasi browser</span><input id="qdAlNtf" type="checkbox"></div>
+        <div class="qd-dr"><span>Jarak alert (ATR)</span><input id="qdAlDist" class="xin" type="number" step="0.1"></div>
+        <div class="note qd-small">Alert: harga mendekati / masuk zona Strong (atau skor ≥ 70), zona tembus / ditahan, dan Follow berbalik arah.</div>
+      </div>
+    </div>
+    <div class="qd-dfoot"><button class="btn ghost" id="qdSetReset">Reset default</button><button class="btn ghost" id="qdReload">⟳ Muat ulang data</button></div>
+  </section>
+
+  <div class="qd-insight">
+    <div class="qd-ncard S" id="qdNS"></div>
+    <div class="card qd-bias" id="qdBias">
+      <div class="qd-bh"><b>Tekanan pasar</b><span id="qdBiasTxt">—</span></div>
+      <div class="qd-split"><div class="b" id="qdSplB">BUYER —</div><div class="s" id="qdSplS">— SELLER</div></div>
+      <canvas id="qdSpark" class="qd-spark" height="30" aria-label="Riwayat buyer % 5 menit"></canvas>
+      <div class="qd-meters">
+        <div class="qd-mt"><span>DOM</span><div class="qd-bar2"><i id="qdM1"></i></div><b id="qdM1v">—</b></div>
+        <div class="qd-mt"><span>Taker 20c</span><div class="qd-bar2"><i id="qdM2"></i></div><b id="qdM2v">—</b></div>
+        <div class="qd-mt"><span>Taker 5m</span><div class="qd-bar2"><i id="qdM3"></i></div><b id="qdM3v">—</b></div>
+      </div>
+      <div class="qd-fol" id="qdFol"></div>
+    </div>
+    <div class="qd-ncard D" id="qdND"></div>
+  </div>
+
+  <div class="qd-main">
+    <div class="card qd-chartcard">
+      <div class="qd-chartbox" id="qdBox">
+        <canvas id="qdCv" aria-label="Chart candlestick dengan zona Supply dan Demand"></canvas>
+        <div class="qd-layers" id="qdLayers"></div>
+        <button class="qd-livebtn" id="qdLiveBtn" hidden>⟳ ke live</button>
+        <div class="qd-ov" id="qdOv" hidden></div>
+      </div>
+      <div class="qd-legend"><span style="color:#ff4b6e">■ Strong Supply</span><span style="color:#2df5a3">■ Strong Demand</span><span style="color:#ffd25e">■ Medium</span><span style="color:#c9b8ff">┅ HTF</span><span style="color:#ffd25e">┄ 50% zona</span><span style="color:#35e0ff">┄ EQ</span><span style="color:#ffc94a">┄ harga live</span><span class="qd-hint">Geser = pan · roda mouse = zoom · klik zona = detail · klik dua kali = reset</span></div>
+    </div>
+
+    <aside class="card qd-side">
+      <div class="qd-tabs" id="qdTabs" role="tablist"><button data-t="zona" class="on">Zona</button><button data-t="dom">DOM</button><button data-t="sesi">Sesi</button><button data-t="log">Log</button></div>
+      <div class="qd-pane" id="qdPane"></div>
+    </aside>
+  </div>
+
+  <div class="note qd-foot">Sumber: Binance Futures publik (kline, aggTrade, depth 1000 level). Harga bisa berbeda tipis dari XAUUSD broker — gunakan Offset. Lot memakai asumsi 1 lot = 100 oz. DOM hanya mencakup ±1000 level order book (zona di luar jangkauan ditandai “di luar DOM”). Zona dideteksi dari candle yang sudah tertutup. Sesi (UTC / WIB): Asia 00–08 / 07–15 · London 08–13 / 15–20 · New York 13–24 / 20–07. Skor &amp; peluang tahan adalah estimasi, bukan jaminan.</div>
+</div>
+</section>
+
     <section id="view-intel" class="view">
       <div class="hero" data-scene="intel"><div class="hero-info"><b>COMMAND INTELLIGENCE</b><span>Integritas data → survival akun → konfluensi setup → performa → replay trade. Semua berbasis data yang tersedia di dashboard; tidak membuat sinyal atau harga fiktif.</span><em id="intelStamp">Menunggu snapshot…</em></div><div class="hero-scene"></div></div>
       <div class="cro-jump"><button class="btn ghost" data-cro="jump" type="button">💼 Trading Cost &amp; ROI Tracker ↓</button></div>
@@ -3111,7 +3372,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
           <div class="card panel cro-panel"><div class="cro-ph"><h3>Insight Otomatis</h3><span>Dihitung dari data di tabel</span></div><div id="croInsights" class="cro-ins"></div></div>
         </div>
         <div class="cro-grid">
-          <div class="card panel cro-panel"><div class="cro-ph"><h3>Alokasi Modal Trading</h3><span>Total biaya challenge</span></div><div id="croDonut"></div></div>
+          <div class="card panel cro-panel"><div class="cro-ph"><h3>Alokasi Modal per Prop Firm</h3><span>Total biaya challenge</span></div><div id="croDonut"></div></div>
           <div class="card panel cro-panel"><div class="cro-ph"><h3>Efisiensi Biaya</h3><span>Biaya per $1.000 funding · garis putih = rata-rata</span></div><div id="croPerK"></div></div>
         </div>
         <div class="cro-grid">
@@ -6790,7 +7051,7 @@ let was = false; setInterval(() => { const on = act('liq'); if (on && !was) { st
 
 /* ---------- Menu: urutan & pemisah (tanpa label teks) ---------- */
 (() => { const nav = document.querySelector('.nav'); if (!nav) return; const T = v => nav.querySelector(`.tab[data-view="${v}"]`);
-  [['terminal', 'overview', 'control', 'positions', 'orders'], ['mtf', 'sig', 'liq', 'kl', 'share', 'news'], ['history', 'analytics', 'edge', 'journal', 'calendar', 'portfolio', 'challenge'], ['risk', 'compliance', 'wallet', 'accounts']]
+  [['terminal', 'overview', 'control', 'positions', 'orders'], ['mtf', 'sig', 'liq', 'kl', 'qdom', 'share', 'news'], ['history', 'analytics', 'edge', 'journal', 'calendar', 'portfolio', 'challenge'], ['risk', 'compliance', 'wallet', 'accounts']]
     .forEach((g, i) => { if (i) nav.insertAdjacentHTML('beforeend', '<i class="navsep"></i>'); g.forEach(v => { const t = T(v); t && nav.appendChild(t); }); }); })();
 
 /* ---------- Equity vs Balance: kurva dari history trade + equity live ---------- */
@@ -10098,6 +10359,604 @@ window.__BT.geo=()=>geo;window.__BT.api={openMenu,placeFromMenu,reverseById,flip
 bind();offerResume();dirty();
 })();
 
+</script>
+
+
+<script>
+/* ===== Quantum DOM Liquidity Matrix (Binance Futures publik, realtime) ===== */
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+if (!$('view-qdom') || !$('qdCv')) return;
+const LSG = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+const LSS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
+const act = () => $('view-qdom').classList.contains('active');
+const f2 = (v, d = 2) => Number.isFinite(v) ? v.toFixed(d) : '—';
+const lotF = v => !Number.isFinite(v) ? '—' : v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const HOSTS = {
+  fut: { rest: 'https://fapi.binance.com/fapi/v1/', ws: 'wss://fstream.binance.com/stream?streams=' },
+  spot: { rest: 'https://api.binance.com/api/v3/', ws: 'wss://stream.binance.com:9443/stream?streams=' }
+};
+const SESS = {
+  asia: { n: 'Asia', r: '00–08 UTC · 07–15 WIB', c: '#ffc94a' },
+  london: { n: 'London', r: '08–13 UTC · 15–20 WIB', c: '#5aa8ff' },
+  ny: { n: 'New York', r: '13–24 UTC · 20–07 WIB', c: '#a98bff' }
+};
+const sessOf = t => { const h = new Date(t).getUTCHours(); return h < 8 ? 'asia' : h < 13 ? 'london' : 'ny'; };
+const sessStart = t => { const d = new Date(t), h = d.getUTCHours(); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), h < 8 ? 0 : h < 13 ? 8 : 13); };
+const wib = (t, o) => new Date(t).toLocaleString('id-ID', Object.assign({ timeZone: 'Asia/Jakarta' }, o));
+
+const Q = {
+  sym: LSG('qd_sym', 'XAUUSDT'), tf: LSG('qd_tf', '15m'), n: +LSG('qd_n', 150) || 150, lot: +LSG('qd_lot', 100) || 100,
+  optDom: LSG('qd_dom', true), optMid: LSG('qd_mid', true), optSess: LSG('qd_sess', true),
+  host: 'fut', sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
+  log: LSG('qd_log', []), zs: {}, ws: null, wsOk: false, wsTry: 0, lastMsg: 0, lastDepth: 0, depthBusy: false, depthErr: '',
+  mouse: null, dirty: true, tok: 0, started: false, needAn: false, err: '', tick: 0, lastDraw: 0
+};
+if (!Array.isArray(Q.log)) Q.log = [];
+const DEF = { thS: 1.8, thM: 1.0, hold: 6, maxZ: 4, emaN: 50, swL: 5 };
+const HTFS = { '5m': ['1h', '4h'], '15m': ['1h', '4h'], '1h': ['4h', '1d'], '4h': ['1d'] }, TFL = { '1h': 'H1', '4h': 'H4', '1d': 'D1' };
+function fixTh() { if (Q.thM > Q.thS - 0.1) Q.thM = Math.max(0.4, Math.round((Q.thS - 0.1) * 10) / 10); }
+fixTh();
+
+/* ---------- Jaringan ---------- */
+async function fj(url) {
+  const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 9000);
+  try { const r = await fetch(url, { signal: ac.signal }); return await r.json(); } finally { clearTimeout(tm); }
+}
+async function load() {
+  const tok = ++Q.tok, sym = Q.sym, tf = Q.tf; Q.err = ''; paintSt();
+  try {
+    let host = Q.host, d;
+    const get = h => fj(`${HOSTS[h].rest}klines?symbol=${sym}&interval=${tf}&limit=${h === 'fut' ? 1500 : 1000}`);
+    try { d = await get(host); if (!Array.isArray(d)) throw new Error((d && d.msg) || 'respon tidak valid'); }
+    catch (e) { const alt = host === 'fut' ? 'spot' : 'fut'; let d2; try { d2 = await get(alt); } catch (e2) { d2 = null; } if (!Array.isArray(d2)) throw e; d = d2; host = alt; }
+    if (tok !== Q.tok) return;
+    Q.host = host;
+    Q.c = d.map(k => ({ t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5], tb: +k[9] }));
+    Q.px = Q.c[Q.c.length - 1].c; Q.flow = []; Q.zs = {}; Q.bids = []; Q.asks = [];
+    analyze(); openWs(); pollDepth(); loadHtf(); Q.dirty = true; render();
+  } catch (e) { if (tok === Q.tok) { Q.err = 'Gagal memuat: ' + (e.message || e) + ' (cek koneksi / blokir Binance, atau simbol tidak tersedia)'; paintSt(); } }
+}
+async function pollDepth() {
+  if (Q.depthBusy) return; Q.depthBusy = true; const tok = Q.tok;
+  try {
+    const d = await fj(`${HOSTS[Q.host].rest}depth?symbol=${Q.sym}&limit=1000`);
+    if (tok !== Q.tok) return; if (!d || !d.bids) throw new Error((d && d.msg) || 'depth tidak valid');
+    Q.bids = d.bids.map(a => [+a[0] + Q.ofs, +a[1]]); Q.asks = d.asks.map(a => [+a[0] + Q.ofs, +a[1]]); Q.lastDepth = Date.now(); Q.depthErr = ''; Q.dirty = true;
+  } catch (e) { Q.depthErr = e.message || String(e); } finally { Q.depthBusy = false; }
+}
+function closeWs() { const w = Q.ws; Q.ws = null; Q.wsOk = false; if (w) { try { w.onclose = w.onmessage = w.onerror = null; w.close(); } catch (e) { } } }
+function openWs() {
+  closeWs(); Q.wsTry = Date.now(); const s = Q.sym.toLowerCase(); let w;
+  try { w = new WebSocket(`${HOSTS[Q.host].ws}${s}@kline_${Q.tf}/${s}@aggTrade`); } catch (e) { return; }
+  Q.ws = w;
+  w.onopen = () => { if (Q.ws === w) { Q.wsOk = true; Q.lastMsg = Date.now(); } };
+  w.onclose = () => { if (Q.ws === w) { Q.ws = null; Q.wsOk = false; } };
+  w.onerror = () => { };
+  w.onmessage = m => {
+    let d; try { d = JSON.parse(m.data); } catch (e) { return; } const p = d && d.data; if (!p || !Q.c.length) return;
+    Q.lastMsg = Date.now(); const last = Q.c[Q.c.length - 1];
+    if (p.e === 'kline') {
+      const k = p.k, row = { t: +k.t, o: +k.o + Q.ofs, h: +k.h + Q.ofs, l: +k.l + Q.ofs, c: +k.c + Q.ofs, v: +k.v, tb: +k.V };
+      if (row.t === last.t) Q.c[Q.c.length - 1] = row;
+      else if (row.t > last.t) { Q.c.push(row); if (Q.c.length > 1600) Q.c.shift(); Q.needAn = true; }
+      if (k.x) Q.needAn = true; Q.px = row.c;
+    } else if (p.e === 'aggTrade') {
+      const pr = +p.p + Q.ofs, q = +p.q; Q.px = pr; last.c = pr; if (pr > last.h) last.h = pr; if (pr < last.l) last.l = pr;
+      Q.flow.push({ t: +p.T, q, buy: !p.m }); const lim = Date.now() - 300000; while (Q.flow.length && Q.flow[0].t < lim) Q.flow.shift();
+    }
+    Q.dirty = true;
+  };
+}
+
+/* ---------- Deteksi zona Supply / Demand ---------- */
+function atrArr(c, n = 14) {
+  const a = new Array(c.length).fill(0); let s = 0;
+  for (let i = 0; i < c.length; i++) {
+    const tr = i ? Math.max(c[i].h - c[i].l, Math.abs(c[i].h - c[i - 1].c), Math.abs(c[i].l - c[i - 1].c)) : c[i].h - c[i].l;
+    if (i < n) { s += tr; a[i] = s / (i + 1); } else a[i] = (a[i - 1] * (n - 1) + tr) / n;
+  }
+  return a;
+}
+function detect(c, at) {
+  const out = [], n = c.length;
+  for (let i = 15; i < n - 3; i++) {
+    const b = c[i], A = at[i]; if (!A || b.h - b.l > 1.5 * A) continue;
+    const k1 = c[i + 1], hi = Math.max(b.o, b.c), lo = Math.min(b.o, b.c);
+    const up = Math.max(c[i + 1].c, c[i + 2].c, c[i + 3].c) - hi, dn = lo - Math.min(c[i + 1].c, c[i + 2].c, c[i + 3].c);
+    let type = null, imp = 0, tier = 'S'; const kb = k1.c - k1.o;
+    if (up >= Q.thS * A && kb >= 0.7 * A) { type = 'D'; imp = up / A; }
+    else if (dn >= Q.thS * A && -kb >= 0.7 * A) { type = 'S'; imp = dn / A; }
+    else if (Q.optMed) {
+      if (up >= Q.thM * A && kb >= 0.4 * A) { type = 'D'; imp = up / A; tier = 'M'; }
+      else if (dn >= Q.thM * A && -kb >= 0.4 * A) { type = 'S'; imp = dn / A; tier = 'M'; }
+    }
+    if (!type) continue;
+    let bot, top;
+    if (type === 'D') { top = hi; bot = b.l; if (top - bot > 1.3 * A) bot = top - 1.3 * A; if (top - bot < 0.2 * A) bot = top - 0.2 * A; }
+    else { bot = lo; top = b.h; if (top - bot > 1.3 * A) top = bot + 1.3 * A; if (top - bot < 0.2 * A) top = bot + 0.2 * A; }
+    out.push({ type, tier, key: type + b.t, i, t: b.t, bot, top, mid: (bot + top) / 2, atr: A, imp, vol: c[i].v + c[i + 1].v + c[i + 2].v + c[i + 3].v, tests: [], broken: false });
+  }
+  return out;
+}
+function life(z, c) {
+  const D = z.type === 'D'; let prev = false, cur = null; z.tests = []; z.broken = false;
+  for (let j = z.i + 4; j < c.length; j++) {
+    const k = c[j], ov = k.l <= z.top && k.h >= z.bot, brk = D ? k.c < z.bot : k.c > z.top, away = D ? k.c > z.top : k.c < z.bot;
+    if (brk) { if (!cur) cur = { j, t: k.t, sess: sessOf(k.t) }; cur.res = 'tembus'; z.tests.push(cur); cur = null; z.broken = true; z.brokenAt = k.t; z.brokenJ = j; break; }
+    if (!cur && ov && !prev) cur = { j, t: k.t, sess: sessOf(k.t) };
+    if (cur) { if (away) { cur.res = 'ditahan'; z.tests.push(cur); cur = null; } else if (j - cur.j >= Q.hold) { cur.res = 'ditahan'; z.tests.push(cur); cur = null; } }
+    prev = ov;
+  }
+  if (cur) { cur.res = 'berjalan'; z.tests.push(cur); }
+}
+function buildZones(c) {
+  const at = atrArr(c), zs = detect(c, at), keep = []; zs.sort((a, b) => (a.tier === 'S' ? 0 : 1) - (b.tier === 'S' ? 0 : 1) || b.t - a.t);
+  zs.forEach(z => { const w = z.top - z.bot; if (!keep.some(k => k.type === z.type && Math.min(k.top, z.top) - Math.max(k.bot, z.bot) > 0.5 * w)) keep.push(z); });
+  keep.forEach(z => life(z, c)); return { keep, atr: at[at.length - 1] };
+}
+function emaOf(c, n) { const k = 2 / (n + 1); let e = c[0].c; for (let i = 1; i < c.length; i++) e = c[i].c * k + e * (1 - k); return e; }
+function swings(c, L) {
+  const H = [], Lw = [];
+  for (let i = L; i < c.length - L; i++) { let ph = true, pl = true; for (let j = i - L; j <= i + L; j++) { if (j === i) continue; if (c[j].h >= c[i].h) ph = false; if (c[j].l <= c[i].l) pl = false; } if (ph) H.push({ i, p: c[i].h }); if (pl) Lw.push({ i, p: c[i].l }); }
+  return { H, L: Lw };
+}
+function analyze() {
+  Q.needAn = false; const c = Q.c.slice(0, -1); if (c.length < 30) return; /* candle terakhir masih berjalan: tidak dipakai agar zona tidak berkedip */
+  const r = buildZones(c); Q.atr = r.atr; Q.all = r.keep; Q.emaV = emaOf(c, Q.emaN); Q.sw = swings(c, Q.swL);
+}
+function htfBuild() {
+  const out = []; (HTFS[Q.tf] || []).forEach(h => { const raw = Q.htfC[h]; if (!raw) return; const c = raw.slice(0, -1); if (c.length < 30) return; buildZones(c).keep.forEach(z => { if (!z.broken) { z.tf = h; out.push(z); } }); });
+  Q.htfZ = out;
+}
+async function loadHtf() {
+  if (Q.htfBusy) return; Q.htfBusy = true; const tok = Q.tok, sym = Q.sym; Q.htfT = Date.now();
+  try {
+    for (const h of (HTFS[Q.tf] || [])) {
+      try { const d = await fj(`${HOSTS[Q.host].rest}klines?symbol=${sym}&interval=${h}&limit=500`); if (tok !== Q.tok || !Array.isArray(d)) continue; Q.htfC[h] = d.map(k => ({ t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5], tb: +k[9] })); } catch (e) { }
+    }
+    if (tok === Q.tok) { htfBuild(); Q.dirty = true; }
+  } finally { Q.htfBusy = false; }
+}
+function emp() {
+  const o = { S: [0, 0], M: [0, 0] };
+  Q.all.forEach(z => z.tests.forEach(t => { if (t.res === 'berjalan') return; const a = o[z.tier]; a[0]++; if (t.res === 'ditahan') a[1]++; })); return o;
+}
+
+/* ---------- Kekuatan buyer / seller ---------- */
+function calcStrength() {
+  const px = Q.px; if (!px) return null; const A = Q.atr || px * 0.001, r = Math.max(A * 1.5, px * 0.0005);
+  let b = 0, a = 0; for (const [p, q] of Q.bids) if (p >= px - r) b += q; for (const [p, q] of Q.asks) if (p <= px + r) a += q;
+  const dom = b + a > 0 ? b / (b + a) * 100 : null;
+  const cs = Q.c.slice(-20); let tv = 0, tb = 0; cs.forEach(k => { tv += k.v; tb += k.tb; }); const fc = tv > 0 ? tb / tv * 100 : null;
+  let lb = 0, ls = 0; Q.flow.forEach(f => f.buy ? lb += f.q : ls += f.q); const fl = Q.flow.length >= 5 && lb + ls > 0 ? lb / (lb + ls) * 100 : null;
+  const parts = [[dom, .4], [fc, .3], [fl, .3]].filter(x => x[0] != null); let w = 0, s = 0; parts.forEach(x => { s += x[0] * x[1]; w += x[1]; });
+  const buyer = w ? s / w : 50;
+  return { buyer, seller: 100 - buyer, dom, fc, fl, delta: (lb - ls) / Q.lot, lb: lb / Q.lot, ls: ls / Q.lot, r, bias: buyer >= 55 ? 'Buyer dominan' : buyer <= 45 ? 'Seller dominan' : 'Seimbang' };
+}
+function trendDir() {
+  const S = Q.str; if (!S) return; const now = Date.now();
+  if (!Q.dir) { Q.dir = S.buyer >= 50 ? 'buy' : 'sell'; Q.dirT = now; return; }
+  if (now - Q.dirT < 20000) return;
+  if (Q.dir === 'sell' && S.buyer >= 55) { Q.dir = 'buy'; Q.dirT = now; }
+  else if (Q.dir === 'buy' && S.buyer <= 45) { Q.dir = 'sell'; Q.dirT = now; }
+}
+function followDir() {
+  const px = Q.px, A = Q.atr || 1, m = .1 * A;
+  if (Q.src === 'ema' && Q.emaV != null) {
+    const e = Q.emaV; if (px > e + m) Q.dir = 'buy'; else if (px < e - m) Q.dir = 'sell'; else if (!Q.dir) Q.dir = px >= e ? 'buy' : 'sell';
+    Q.dirWhy = `EMA${Q.emaN} = ${f2(e)}: harga ${f2(Math.abs(px - e))} $ di ${px >= e ? 'atas' : 'bawah'} EMA`; return;
+  }
+  if (Q.src === 'hhll' && Q.sw && Q.sw.H.length >= 2 && Q.sw.L.length >= 2) {
+    const H = Q.sw.H.slice(-2), L = Q.sw.L.slice(-2); let d = null, why = '';
+    if (H[1].p > H[0].p && L[1].p > L[0].p) { d = 'buy'; why = 'HH + HL (struktur naik)'; } else if (H[1].p < H[0].p && L[1].p < L[0].p) { d = 'sell'; why = 'LH + LL (struktur turun)'; }
+    if (px > H[1].p + m) { d = 'buy'; why = `BOS naik: harga tembus swing high ${f2(H[1].p)}`; } else if (px < L[1].p - m) { d = 'sell'; why = `BOS turun: harga tembus swing low ${f2(L[1].p)}`; }
+    if (!d) { d = Q.dir || (Q.str && Q.str.buyer >= 50 ? 'buy' : 'sell'); why = 'struktur campuran, mengikuti arah sebelumnya'; }
+    Q.dir = d; Q.dirWhy = `HH/LL (swing ±${Q.swL}): ${why}`; return;
+  }
+  trendDir(); const S = Q.str;
+  Q.dirWhy = S ? `tekanan buyer ${S.buyer.toFixed(0)}% vs seller ${S.seller.toFixed(0)}% (DOM + arus taker)` + (Q.src !== 'press' ? ' — data struktur belum cukup, memakai tekanan' : '') : 'menunggu data';
+}
+function applyOfs(v) {
+  const d = v - Q.ofs; if (Math.abs(d) < 1e-9) return;
+  Q.c.forEach(k => { k.o += d; k.h += d; k.l += d; k.c += d; }); Q.bids.forEach(x => { x[0] += d; }); Q.asks.forEach(x => { x[0] += d; });
+  Object.values(Q.htfC).forEach(a => a.forEach(k => { k.o += d; k.h += d; k.l += d; k.c += d; }));
+  Q.px += d; Q.ofs = v; Q.dirty = true; analyze(); htfBuild();
+}
+function calib() {
+  if (!Q.c.length) return;
+  if (Q.ofsMode === 'off') { applyOfs(0); Q.ofsInfo = 'Offset off: harga murni Binance.'; return; }
+  if (Q.ofsMode === 'man') {
+    const usd = Q.ofsU === 'pt' ? Q.ofsMan * 0.01 : Q.ofsMan;
+    if (Math.abs(usd) > 150) { applyOfs(0); Q.ofsInfo = `Offset manual ditolak: ${Q.ofsMan} ${Q.ofsU === 'pt' ? 'poin' : 'USD'} = ${f2(usd)} USD, terlalu besar. Catatan: 800 poin = 8,00 USD (1 poin = 0,01). Pakai satuan "poin" atau isi dalam USD.`; return; }
+    applyOfs(usd); Q.ofsInfo = `Offset manual ${Q.ofsMan} ${Q.ofsU === 'pt' ? 'poin' : 'USD'} = ${usd >= 0 ? '+' : ''}${f2(usd)} USD dari harga Binance.`; return;
+  }
+  const fx = window.__FX, a = fx && fx.account;
+  if (!a || !(+a.bid > 0)) { Q.ofsInfo = 'Offset auto: menunggu harga broker dari EA (belum ada snapshot bid/ask).'; return; }
+  const age = a.priceTime ? Date.now() / 1000 - a.priceTime : 0;
+  if (age > 120) { Q.ofsInfo = `Offset auto: harga broker sudah ${Math.round(age)} dtk tidak update, memakai offset terakhir (${f2(Q.ofs)}).`; return; }
+  const mid = +a.ask > 0 ? (+a.bid + +a.ask) / 2 : +a.bid, tg = mid - (Q.px - Q.ofs);
+  if (Math.abs(tg) > 150) { Q.ofsInfo = `Offset auto ditolak: selisih ${f2(tg)} terlalu besar (simbol broker ${a.priceSymbol || '?'} bukan emas?).`; return; }
+  if (a.priceTime !== Q.ofsStamp) { Q.ofsStamp = a.priceTime; Q.ofsS.push(tg); if (Q.ofsS.length > 40) Q.ofsS.shift(); }
+  if (Q.ofsS.length >= 3) { const s = [...Q.ofsS].sort((x, y) => x - y), med = s[s.length >> 1]; if (Math.abs(med - Q.ofs) >= .2) applyOfs(med); }
+  Q.ofsInfo = `Broker ${a.priceSymbol || ''} ${f2(mid)} · offset ${Q.ofs >= 0 ? '+' : ''}${f2(Q.ofs)} dari Binance (median ${Q.ofsS.length} sampel)`;
+}
+function rescore() {
+  const px = Q.px, c = Q.c; if (!px || !c.length) return;
+  Q.str = calcStrength(); const S = Q.str || { buyer: 50, seller: 50 };
+  const last = c.slice(-100), meanV = last.reduce((s, k) => s + k.v, 0) / (last.length || 1) || 1;
+  const bidsOk = Q.bids.length && Q.asks.length, domLo = bidsOk ? Q.bids[Q.bids.length - 1][0] : null, domHi = bidsOk ? Q.asks[Q.asks.length - 1][0] : null;
+  let bd = 0, ad = 0;
+  if (bidsOk) { const bq = Q.bids.reduce((s, x) => s + x[1], 0), aq = Q.asks.reduce((s, x) => s + x[1], 0); bd = bq / Math.max(1e-9, Q.bids[0][0] - domLo); ad = aq / Math.max(1e-9, domHi - Q.asks[0][0]); }
+  const sumIn = (arr, lo, hi) => { let s = 0; for (const x of arr) if (x[0] >= lo && x[0] <= hi) s += x[1]; return s; };
+  const act0 = Q.all.filter(z => !z.broken);
+  const fol = Q.mode === 'follow'; if (fol) followDir(); const wantS = !fol || Q.dir === 'sell', wantD = !fol || Q.dir === 'buy', lim = Q.maxZ + (fol ? 2 : 0);
+  const pick = arr => { const r = arr.slice(0, lim); if (r.length && !r.some(z => z.tier === 'S')) { const s = arr.slice(lim).find(z => z.tier === 'S'); if (s) r[r.length - 1] = s; } return r; };
+  const sup = wantS ? pick(act0.filter(z => z.type === 'S' && z.top > px).sort((a, b) => a.bot - b.bot)) : [];
+  const dem = wantD ? pick(act0.filter(z => z.type === 'D' && z.bot < px).sort((a, b) => b.top - a.top)) : [];
+  Q.zones = [...sup, ...dem];
+  const E = emp();
+  Q.zones.forEach(z => {
+    const D = z.type === 'D', w = z.top - z.bot;
+    z.inside = px <= z.top && px >= z.bot; z.dist = z.inside ? 0 : D ? px - z.top : z.bot - px;
+    z.bidL = sumIn(Q.bids, z.bot, z.top) / Q.lot; z.askL = sumIn(Q.asks, z.bot, z.top) / Q.lot; z.volL = z.vol / Q.lot;
+    z.cov = !bidsOk ? 0 : D ? (z.bot >= domLo ? 2 : z.top >= domLo ? 1 : 0) : (z.top <= domHi ? 2 : z.bot <= domHi ? 1 : 0);
+    const prim = (D ? z.bidL : z.askL) * Q.lot, dens = D ? bd : ad, exp = dens * w, ratio = exp > 0 ? prim / exp : 0;
+    z.nT = z.tests.length; z.held = z.tests.filter(t => t.res === 'ditahan').length; z.pend = z.tests.filter(t => t.res === 'berjalan').length;
+    const sImp = Math.min(30, z.imp / 3 * 30), sFresh = [25, 17, 10, 4][Math.min(3, z.nT)], sVol = Math.min(20, (z.vol / 4) / meanV / 2 * 20), sDom = z.cov === 0 ? 7 : Math.min(15, ratio / 3 * 15), sFlow = (D ? S.buyer : S.seller) / 100 * 10;
+    let bonus = 0; z.conf = [];
+    Q.htfZ.forEach(hz => {
+      const ov = Math.min(z.top, hz.top) - Math.max(z.bot, hz.bot);
+      if (hz.type === z.type) { if (ov > -0.2 * (Q.atr || 1)) { bonus += (hz.tier === 'S' ? 10 : 6) * (hz.tf === 'h1' || hz.tf === '1h' ? 1 : 1.3); z.conf.push({ tf: hz.tf, tier: hz.tier, ok: true }); } }
+      else if (ov > 0) { bonus -= 6; z.conf.push({ tf: hz.tf, tier: hz.tier, ok: false }); }
+    });
+    z.bonus = Math.round(clamp(bonus, -12, 20));
+    z.score = Math.round(clamp(sImp + sFresh + sVol + sDom + sFlow + z.bonus, 0, 100));
+    z.pv = { imp: sImp, fresh: sFresh, vol: sVol, dom: sDom, flow: sFlow, htf: z.bonus };
+    z.parts = `impuls ${sImp.toFixed(0)}/30 · kesegaran ${sFresh}/25 · volume ${sVol.toFixed(0)}/20 · DOM ${sDom.toFixed(0)}/15 · arus ${sFlow.toFixed(0)}/10 · HTF ${z.bonus >= 0 ? '+' : ''}${z.bonus}`;
+    const ea = E[z.tier] || [0, 0], cal = ea[0] >= 15;
+    z.hold = Math.round((cal ? clamp((ea[1] + 1) / (ea[0] + 2) + (z.score - 50) * .004 + Math.min(.06, .02 * z.held), .05, .95) : clamp(.30 + .60 * z.score / 100 + Math.min(.09, .03 * z.held), .08, .92)) * 100); z.holdSrc = cal ? `kalibrasi historis (${ea[0]} uji)` : 'heuristik (data uji sedikit)';
+    z.ratio = ratio;
+  });
+  const ns = sup[0], nd = dem[0]; Q.eq = ns && nd && ns.bot > nd.top ? { lo: nd.top, hi: ns.bot, mid: (nd.top + ns.bot) / 2 } : null;
+}
+
+/* ---------- Pelacakan live ---------- */
+function addLog(z, res) {
+  Q.log.unshift({ ts: Date.now(), sess: sessOf(Date.now()), type: z.type, bot: z.bot, top: z.top, res, sym: Q.sym, tf: Q.tf });
+  if (Q.log.length > 150) Q.log.length = 150; LSS('qd_log', Q.log);
+  if (res === 'ditahan' || res === 'tembus') notify(`${res === 'ditahan' ? '✓ Zona ditahan' : '✗ Zona tembus'} · ${z.type === 'D' ? 'DEMAND' : 'SUPPLY'} ${f2(z.bot)}–${f2(z.top)}`, z.type);
+}
+function track() {
+  const px = Q.px; if (!px) return;
+  Q.zones.forEach(z => {
+    const key = z.type + z.t, m = .1 * z.atr, inn = px <= z.top && px >= z.bot; let s = Q.zs[key];
+    if (!s) { Q.zs[key] = { inn }; return; }
+    if (!s.inn && inn) { s.inn = true; addLog(z, 'menyentuh'); }
+    else if (s.inn && (px > z.top + m || px < z.bot - m)) { s.inn = false; addLog(z, (z.type === 'D' ? px > z.top : px < z.bot) ? 'ditahan' : 'tembus'); }
+  });
+}
+
+/* ---------- Pembantu tampilan ---------- */
+const COL = { S: '255,75,110', D: '45,245,163', M: '255,201,74' };
+const fAge = ms => { const m = Math.max(0, Math.floor(ms / 60000)); if (m < 60) return m + ' mnt'; const h = Math.floor(m / 60); return h < 48 ? `${h} jam ${m % 60} mnt` : `${Math.floor(h / 24)} hari ${h % 24} jam`; };
+const sessLeft = () => { const n = new Date(), h = n.getUTCHours() + n.getUTCMinutes() / 60, end = h < 8 ? 8 : h < 13 ? 13 : 24, m = Math.max(0, Math.round((end - h) * 60)); return `${Math.floor(m / 60)}j ${m % 60}m`; };
+const setT = (id, t) => { const e = $(id); if (e && e.textContent !== t) e.textContent = t; };
+const setH = (id, h) => { const e = $(id); if (e && e.dataset.h !== h) { e.dataset.h = h; e.innerHTML = h; } };
+const bar = (v, col) => `<span class="qd-bar"><i style="width:${clamp(v, 0, 100)}%;background:${col}"></i></span>`;
+const scCol = s => s >= 70 ? 'var(--green)' : s >= 45 ? 'var(--amber)' : 'var(--red)';
+const sideName = z => z.type === 'D' ? 'DEMAND' : 'SUPPLY', tierName = z => z.tier === 'M' ? 'MEDIUM' : 'STRONG';
+const fDist = z => z.inside ? 'di dalam zona' : `${f2(z.dist)} $ · ${Math.round(z.dist * 100)} poin`;
+const byKey = k => Q.zones.find(z => z.key === k) || null;
+function domBins() {
+  const stp = [.1, .2, .5, 1, 2, 5, 10, 20].find(v => v >= (Q.atr || 1) * .25) || 20;
+  const agg = arr => { const m = new Map(); arr.forEach(([p, q]) => { const k = Math.floor(p / stp + 1e-9); m.set(k, (m.get(k) || 0) + q); }); return [...m].map(([k, q]) => ({ p: k * stp, l: q / Q.lot })); };
+  return { stp, A: agg(Q.asks), B: agg(Q.bids) };
+}
+function updWalls() {
+  Q.bins = Q.bids.length ? domBins() : null; Q.walls = [];
+  if (Q.bins) { const top = (a, s) => [...a].sort((x, y) => y.l - x.l).slice(0, 2).map(x => ({ p: x.p + Q.bins.stp / 2, l: x.l, side: s })); Q.walls = [...top(Q.bins.A, 'A'), ...top(Q.bins.B, 'B')]; }
+}
+
+/* ---------- Gambar chart ---------- */
+function draw() {
+  const el = $('qdCv'), box = $('qdBox'), W = box.clientWidth || 600, H = box.clientHeight || 420, d = Math.min(2, devicePixelRatio || 1);
+  if (el.width !== Math.round(W * d) || el.height !== Math.round(H * d)) { el.width = Math.round(W * d); el.height = Math.round(H * d); }
+  const c = el.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H); c.textAlign = 'left'; c.textBaseline = 'alphabetic'; Q.hit = [];
+  const all = Q.c; if (all.length < 5) return;
+  const small = W < 520, AX = 60, DP = Q.optDom ? (W < 700 ? 52 : 104) : 0, aw = W - AX - DP, pt = 34, pb = 22, ph = H - pt - pb;
+  const N = all.length, n = Math.min(Q.n, N); Q.pan = clamp(Q.pan, 0, Math.max(0, N - n)); $('qdLiveBtn').hidden = Q.pan === 0;
+  const end = N - Q.pan, start = Math.max(0, end - n), vis = all.slice(start, end), cw = aw / (Math.max(n, vis.length) + (Q.pan === 0 ? 4 : 1)); Q.cw = cw;
+  const px = Q.px || all[N - 1].c; let lo = Infinity, hi = -Infinity; vis.forEach(k => { if (k.l < lo) lo = k.l; if (k.h > hi) hi = k.h; });
+  const A = Q.atr || (hi - lo) / 30;
+  if (Q.optZ) Q.zones.forEach(z => { if (z.top > hi && z.bot < hi + 5 * A) hi = z.top; if (z.bot < lo && z.top > lo - 5 * A) lo = z.bot; });
+  if (Q.pan === 0) { if (px > hi) hi = px; if (px < lo) lo = px; }
+  const pad = (hi - lo) * .06 || 1; lo -= pad; hi += pad; const Y = p => pt + (hi - p) / (hi - lo) * ph, X = i => (i - start) * cw;
+  // grid
+  c.strokeStyle = 'rgba(130,165,255,.07)'; c.lineWidth = 1; for (let i = 0; i <= 6; i++) { const y = Math.round(pt + ph * i / 6) + .5; c.beginPath(); c.moveTo(0, y); c.lineTo(aw + DP, y); c.stroke(); }
+  // garis sesi
+  c.font = '9px sans-serif';
+  if (Q.optSess) for (let i = 1; i < vis.length; i++) { const a = sessOf(vis[i - 1].t), b = sessOf(vis[i].t); if (a !== b) { const x = Math.round(i * cw) + .5; c.strokeStyle = 'rgba(167,182,220,.2)'; c.setLineDash([2, 4]); c.beginPath(); c.moveTo(x, pt); c.lineTo(x, pt + ph); c.stroke(); c.setLineDash([]); c.fillStyle = SESS[b].c; c.fillText(SESS[b].n.toUpperCase(), x + 3, pt + 9); } }
+  // label tanpa tabrakan
+  const occ = [], place = y => { for (const dy of [0, 12, -12, 24, -24]) { const yy = y + dy; if (yy < pt + 9 || yy > pt + ph - 3) continue; if (!occ.some(o => Math.abs(o - yy) < 11)) { occ.push(yy); return yy; } } return null; };
+  const tag = (txt, y, col, force, right) => { const yy = place(y); if (yy == null && !force) return; const y0 = yy == null ? y : yy; c.font = '700 9.5px sans-serif'; const w = c.measureText(txt).width + 8; c.fillStyle = 'rgba(5,10,24,.8)'; if (right) { c.fillRect(aw - w - 2, y0 - 9, w, 12); c.fillStyle = col; c.textAlign = 'right'; c.fillText(txt, aw - 6, y0); } else { c.fillRect(2, y0 - 9, w, 12); c.fillStyle = col; c.fillText(txt, 6, y0); } c.textAlign = 'left'; };
+  // EQ band
+  if (Q.optZ && Q.eq) { c.fillStyle = 'rgba(53,224,255,.06)'; c.fillRect(0, Y(Q.eq.hi), aw, Y(Q.eq.lo) - Y(Q.eq.hi)); }
+  // zona HTF
+  const htfs = Q.optHtf ? Q.htfZ.filter(z => z.top >= lo && z.bot <= hi).sort((a, b) => Math.abs(a.mid - px) - Math.abs(b.mid - px)).slice(0, small ? 3 : 5) : [];
+  htfs.forEach(z => { const y1 = Y(z.top), y2 = Y(z.bot), h = Math.max(2, y2 - y1); c.fillStyle = 'rgba(169,139,255,.07)'; c.fillRect(0, y1, aw, h); c.strokeStyle = 'rgba(169,139,255,.85)'; c.lineWidth = 1; c.setLineDash([4, 3]); c.strokeRect(.5, y1 + .5, aw - 1, h - 1); c.setLineDash([]); });
+  // zona tembus
+  if (Q.optBrk) Q.all.forEach(z => { if (!z.broken || z.brokenJ == null || z.top < lo || z.bot > hi) return; const xb = X(z.brokenJ) + cw; if (xb < 0) return; const x0 = Math.max(0, X(z.i)), y1 = Y(z.top), y2 = Y(z.bot); c.strokeStyle = z.type === 'D' ? 'rgba(45,245,163,.4)' : 'rgba(255,75,110,.4)'; c.lineWidth = 1; c.setLineDash([2, 3]); c.strokeRect(x0 + .5, y1 + .5, Math.max(2, xb - x0), Math.max(2, y2 - y1)); c.setLineDash([]); c.fillStyle = 'rgba(167,182,220,.65)'; c.font = '9px sans-serif'; c.fillText(`${z.tier === 'M' ? 'M ' : ''}${z.type} tembus`, x0 + 3, y1 - 2); });
+  // zona SnD aktif
+  const zs = Q.optZ ? Q.zones.filter(z => X(z.i) < aw && Y(z.bot) > pt && Y(z.top) < pt + ph) : [];
+  zs.forEach(z => {
+    const D = z.type === 'D', M = z.tier === 'M', sel = Q.sel === z.key, x0 = Math.max(0, X(z.i)), y1 = Y(z.top), y2 = Y(z.bot), h = Math.max(2, y2 - y1), col = M ? COL.M : D ? COL.D : COL.S;
+    c.fillStyle = `rgba(${col},${sel ? .27 : M ? .13 : .15})`; c.fillRect(x0, y1, aw - x0, h);
+    c.strokeStyle = `rgba(${col},${sel ? 1 : M ? .75 : .6})`; c.lineWidth = sel ? 2 : 1; c.strokeRect(x0 + .5, y1 + .5, aw - x0 - 1, h - 1);
+    if (Q.optMid) { const ym = Y(z.mid); c.strokeStyle = M ? 'rgba(255,255,255,.85)' : '#ffd25e'; c.lineWidth = 1.2; c.setLineDash([6, 4]); c.beginPath(); c.moveTo(x0, ym); c.lineTo(aw, ym); c.stroke(); c.setLineDash([]); }
+    Q.hit.push({ z, x0, y1, y2: y1 + h });
+  });
+  // candle
+  vis.forEach((k, i) => { const x = i * cw + cw / 2, up = k.c >= k.o, col = up ? '#2df5a3' : '#ff4b6e', bw = Math.max(1, cw * .68); c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 1; c.beginPath(); c.moveTo(x, Y(k.h)); c.lineTo(x, Y(k.l)); c.stroke(); const y1 = Y(Math.max(k.o, k.c)), y2 = Y(Math.min(k.o, k.c)); c.fillRect(x - bw / 2, y1, bw, Math.max(1, y2 - y1)); });
+  // EQ line
+  if (Q.optZ && Q.eq) { const ye = Y(Q.eq.mid); c.strokeStyle = '#35e0ff'; c.lineWidth = 1.1; c.setLineDash([8, 5]); c.beginPath(); c.moveTo(0, ye); c.lineTo(aw, ye); c.stroke(); c.setLineDash([]); tag(`EQ ${f2(Q.eq.mid)}`, ye - 3, '#35e0ff', true, false); }
+  // dinding DOM
+  if (Q.optWall) Q.walls.forEach(w => { if (w.p < lo || w.p > hi) return; const y = Y(w.p), col = w.side === 'A' ? '255,75,110' : '45,245,163'; c.strokeStyle = `rgba(${col},.7)`; c.lineWidth = 1.2; c.beginPath(); c.moveTo(0, y); c.lineTo(aw, y); c.stroke(); tag(small ? `W ${lotF(w.l)}` : `WALL ${w.side === 'A' ? 'ASK' : 'BID'} ${lotF(w.l)} lot`, y - 3, w.side === 'A' ? '#ff8aa0' : '#6dffc0', false, false); });
+  // label zona (dipasang terakhir; terpilih & skor tertinggi diprioritaskan)
+  [...zs].sort((a, b) => (Q.sel === b.key) - (Q.sel === a.key) || b.score - a.score).forEach(z => {
+    const D = z.type === 'D', M = z.tier === 'M', y1 = Y(z.top), h = Math.max(2, Y(z.bot) - y1), hh = z.conf && z.conf.some(x => x.ok) ? ' ' + z.conf.filter(x => x.ok).map(x => TFL[x.tf] + '✓').join('') : '';
+    tag(small ? `${D ? 'D' : 'S'}${M ? '·M' : ''} ${z.score}·${z.hold}%` : `${sideName(z)} ${tierName(z)} ${z.score} · ${z.hold}%${hh}`, h >= 15 ? y1 + 11 : y1 - 3, M ? '#ffd25e' : D ? '#2df5a3' : '#ff6b87', Q.sel === z.key, true);
+  });
+  if (!small) htfs.forEach(z => { const y1 = Y(z.top), h = Math.max(2, Y(z.bot) - y1); tag(`${TFL[z.tf]} ${z.tier === 'S' ? 'STRONG' : 'MEDIUM'} ${sideName(z)}`, h >= 13 ? y1 + 10 : y1 - 2, '#c9b8ff', false, true); });
+  // profil DOM
+  if (Q.optDom && DP > 0) {
+    const x0 = aw + 6, wmax = DP - 10, NB = 90, step = (hi - lo) / NB, bk = new Array(NB).fill(0).map(() => [0, 0]);
+    Q.bids.forEach(([p, q]) => { if (p >= lo && p <= hi) bk[clamp(Math.floor((hi - p) / step), 0, NB - 1)][0] += q; });
+    Q.asks.forEach(([p, q]) => { if (p >= lo && p <= hi) bk[clamp(Math.floor((hi - p) / step), 0, NB - 1)][1] += q; });
+    let mx = 0; bk.forEach(b => { mx = Math.max(mx, b[0], b[1]); }); c.fillStyle = 'rgba(255,255,255,.03)'; c.fillRect(x0 - 2, pt, DP - 4, ph);
+    if (mx > 0) bk.forEach((b, i) => { const y = pt + i * step / (hi - lo) * ph, hh = Math.max(1, step / (hi - lo) * ph - .5); if (b[0] > 0) { c.fillStyle = 'rgba(45,245,163,.7)'; const l = Math.sqrt(b[0] / mx) * wmax; c.fillRect(x0 + wmax - l, y, l, hh); } if (b[1] > 0) { c.fillStyle = 'rgba(255,75,110,.7)'; const l = Math.sqrt(b[1] / mx) * wmax; c.fillRect(x0 + wmax - l, y, l, hh); } });
+    c.fillStyle = '#7384b4'; c.font = '9px sans-serif'; c.fillText('DOM', x0, pt - 5);
+  }
+  // sumbu harga + tag zona terpilih
+  c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; for (let i = 0; i <= 6; i++) { const p = hi - (hi - lo) * i / 6; c.fillText(p.toFixed(2), W - AX + 6, clamp(pt + ph * i / 6 + 3, 12, pt + ph)); }
+  const sz = zs.find(z => z.key === Q.sel); if (sz) { const col = sz.tier === 'M' ? '#ffc94a' : sz.type === 'D' ? '#2df5a3' : '#ff4b6e'; [[sz.top, Y(sz.top) + 1], [sz.bot, Y(sz.bot) - 1]].forEach(([p, y]) => { y = clamp(y, pt + 8, pt + ph - 8); c.fillStyle = col; c.fillRect(W - AX + 1, y - 8, AX - 2, 16); c.fillStyle = '#04110c'; c.font = '700 10px sans-serif'; c.fillText(p.toFixed(2), W - AX + 5, y + 3.5); }); }
+  // sumbu waktu
+  const per = Math.max(1, Math.round(vis.length / (W < 700 ? 4 : 7))); c.fillStyle = '#7384b4'; c.font = '9px sans-serif';
+  for (let i = 0; i < vis.length; i += per) { const t = vis[i].t, lab = Q.tf === '1h' || Q.tf === '4h' ? wib(t, { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }) : wib(t, { hour: '2-digit', minute: '2-digit', hour12: false }); c.fillText(lab, i * cw, H - 7); }
+  // harga live
+  const yp = clamp(Y(px), pt, pt + ph); c.strokeStyle = '#ffc94a'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(0, yp); c.lineTo(W - AX, yp); c.stroke(); c.setLineDash([]);
+  c.fillStyle = '#ffc94a'; c.fillRect(W - AX + 1, yp - 8, AX - 2, 16); c.fillStyle = '#1c1300'; c.font = '700 10px sans-serif'; c.fillText(px.toFixed(2), W - AX + 5, yp + 3.5);
+  // crosshair
+  const m = Q.mouse; if (m && !(Q.drag && Q.drag.moved) && m.x >= 0 && m.x <= aw && m.y >= pt && m.y <= pt + ph) {
+    c.strokeStyle = 'rgba(238,243,255,.35)'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(m.x, pt); c.lineTo(m.x, pt + ph); c.moveTo(0, m.y); c.lineTo(W - AX, m.y); c.stroke(); c.setLineDash([]);
+    const p = hi - (m.y - pt) / ph * (hi - lo); c.fillStyle = '#2a3a6e'; c.fillRect(W - AX + 1, m.y - 8, AX - 2, 16); c.fillStyle = '#fff'; c.font = '10px sans-serif'; c.fillText(p.toFixed(2), W - AX + 5, m.y + 3.5);
+    const k = vis[clamp(Math.floor(m.x / cw), 0, vis.length - 1)], dl = p - px;
+    if (k) { c.fillStyle = 'rgba(5,10,24,.8)'; c.fillRect(2, H - 34, Math.min(aw, 470), 14); c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; c.fillText(`${wib(k.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })}  O ${f2(k.o)}  H ${f2(k.h)}  L ${f2(k.l)}  C ${f2(k.c)}  Vol ${lotF(k.v / Q.lot)} lot  ·  Δ harga ${dl >= 0 ? '+' : ''}${f2(dl)} $ (${Math.round(Math.abs(dl) * 100)}p)`, 6, H - 24); }
+  }
+}
+
+/* ---------- Kartu zona & panel ---------- */
+const htfCell = z => z.conf && z.conf.length ? z.conf.map(x => `<span class="qd-badge ${x.ok ? 'ST' : 'M'}" title="${x.ok ? 'bertumpuk dengan zona ' + TFL[x.tf] + (x.tier === 'S' ? ' Strong' : ' Medium') + ' sejenis' : 'berada di dalam zona ' + TFL[x.tf] + ' berlawanan'}">${TFL[x.tf]}${x.tier === 'S' ? '' : '·M'} ${x.ok ? '✓' : '⚠'}</span>`).join(' ') : '';
+const sessTally = z => { const o = { asia: [0, 0, 0], london: [0, 0, 0], ny: [0, 0, 0] }; z.tests.forEach(t => { const a = o[t.sess]; a[0]++; if (t.res === 'ditahan') a[1]++; else if (t.res === 'tembus') a[2]++; }); return o; };
+const domTxt = z => z.cov === 0 ? 'di luar DOM' : (z.cov === 1 ? '~' : '') + lotF(z.type === 'D' ? z.bidL : z.askL) + ' lot';
+function zoneDetail(z) {
+  const pv = z.pv || {}, bars = [['Impuls', pv.imp, 30], ['Kesegaran', pv.fresh, 25], ['Volume', pv.vol, 20], ['DOM', pv.dom, 15], ['Arus', pv.flow, 10], ['HTF', pv.htf, 20]], w = z.top - z.bot, tl = sessTally(z);
+  return `<div class="qd-zd"><div class="qd-bk">${bars.map(([l, v, m]) => `<div class="qd-bki"><span>${l}</span><div class="qd-bar2"><i style="width:${clamp(Math.abs(v || 0) / m * 100, 0, 100)}%;background:${(v || 0) < 0 ? 'var(--red)' : 'linear-gradient(90deg,var(--green),var(--cyan))'}"></i></div><b>${Math.round(v || 0)}/${m}</b></div>`).join('')}</div>
+  <div class="qd-kv"><div><span>Lebar zona</span><b>${f2(w)} $ · ${Math.round(w * 100)} poin</b></div><div><span>Titik 50%</span><b>${f2(z.mid)}</b></div><div><span>Umur zona</span><b>${fAge(Date.now() - z.t)}</b></div><div><span>Impuls</span><b>${f2(z.imp)}× ATR</b></div>
+  <div><span>Vol formasi</span><b>${lotF(z.volL)} lot</b></div><div><span>DOM di zona (bid / ask)</span><b>${z.cov === 0 ? 'di luar DOM' : lotF(z.bidL) + ' / ' + lotF(z.askL) + ' lot'}</b></div>
+  <div style="grid-column:1/-1"><span>Diuji per sesi (✓ ditahan · ✗ tembus)</span><b>${Object.keys(SESS).map(k => `<span class="qd-sess" style="color:${SESS[k].c};font:700 11px var(--fm);text-transform:none;letter-spacing:0">${SESS[k].n} ${tl[k][0]}× <small>${tl[k][1]}✓ ${tl[k][2]}✗</small></span>`).join('')}</b></div>
+  <div style="grid-column:1/-1"><span>Sumber peluang tahan</span><b>${z.holdSrc}</b></div></div>
+  <div class="qd-acts"><button class="btn ghost" data-act="copy" data-key="${z.key}">Salin level</button><button class="btn ghost" data-act="focus" data-key="${z.key}">Fokus di chart</button></div></div>`;
+}
+function zoneCard(z) {
+  const M = z.tier === 'M', sel = Q.sel === z.key, near = !z.inside && z.dist <= .5 * (Q.atr || 1), st = z.inside ? '<b class="warn">● sedang diuji</b>' : near ? '<span class="qd-near">⚡ mendekati</span>' : z.nT === 0 ? 'fresh' : '';
+  return `<div class="qd-zc ${z.type} ${M ? 'M' : ''} ${sel ? 'sel' : ''}" data-key="${z.key}">
+    <div class="qd-zt"><span class="qd-badge ${z.type}">${sideName(z)}</span><span class="qd-badge ${M ? 'M' : 'ST'}">${tierName(z)}</span><span class="qd-zr">${f2(z.bot)} – ${f2(z.top)}</span></div>
+    <div class="qd-zm"><span>${fDist(z)}</span><span>${st}</span><span>${htfCell(z)}</span></div>
+    <div class="qd-zs"><div class="qd-sbar"><b style="color:${scCol(z.score)}">${z.score}</b><div class="qd-bar2"><i style="width:${z.score}%;background:${scCol(z.score)}"></i></div></div><span>tahan <b>${z.hold}%</b></span><span>uji <b>${z.nT}×</b> <small>${z.held}✓</small></span><span>DOM <b>${domTxt(z)}</b></span></div>
+    ${sel ? zoneDetail(z) : ''}</div>`;
+}
+function matrixTable() {
+  const px = Q.px, sup = Q.zones.filter(z => z.type === 'S').sort((a, b) => b.bot - a.bot), dem = Q.zones.filter(z => z.type === 'D').sort((a, b) => b.top - a.top);
+  const row = z => `<tr><td><span class="qd-badge ${z.type}">${sideName(z)}</span></td><td><span class="qd-badge ${z.tier === 'M' ? 'M' : 'ST'}">${tierName(z)}</span></td><td>${htfCell(z) || '<span class="qd-sub">—</span>'}</td><td class="mono">${f2(z.bot)} – ${f2(z.top)}<div class="qd-sub">50%: ${f2(z.mid)}</div></td><td class="mono">${fDist(z)}</td><td class="mono ${z.type === 'D' ? 'pos' : 'neg'}">${domTxt(z)}</td><td class="mono">${lotF(z.volL)} lot</td><td class="mono">${z.nT}×<div class="qd-sub">${z.held} ditahan</div></td><td class="mono"><b>${z.hold}%</b><div class="qd-sub">${z.holdSrc}</div></td><td title="${z.parts}">${bar(z.score, scCol(z.score))}<b>${z.score}</b></td></tr>`;
+  return `<table class="xt" style="min-width:790px"><tr><th>Tipe</th><th>Kelas</th><th>HTF</th><th>Zona</th><th>Jarak</th><th>Lot DOM</th><th>Vol formasi</th><th>Diuji</th><th>Peluang tahan</th><th>Skor</th></tr>${sup.map(row).join('')}<tr class="qd-pxrow"><td colspan="10">▶ HARGA ${f2(px)}${Q.eq ? ` · EQ ${f2(Q.eq.mid)}` : ''} ◀</td></tr>${dem.map(row).join('')}</table>`;
+}
+function diag() {
+  const A = Q.all, cnt = (t, b) => A.filter(z => z.type === t && !!z.broken === b).length, sup = Q.zones.filter(z => z.type === 'S').length, dem = Q.zones.filter(z => z.type === 'D').length;
+  const sA = cnt('S', false), sB = cnt('S', true), dA = cnt('D', false), dB = cnt('D', true), fol = Q.mode === 'follow';
+  let h = `Terdeteksi dari ${Q.c.length} candle ${Q.tf}: Supply ${sA} aktif / ${sB} sudah tembus · Demand ${dA} aktif / ${dB} sudah tembus.`;
+  if (fol) h += ` Mode Follow Trend: hanya sisi ${Q.dir === 'buy' ? 'Demand' : 'Supply'} yang digambar — ${Q.dirWhy}.`;
+  else {
+    if (!dem && dB) h += ' Tidak ada Demand aktif di bawah harga: semua Demand yang pernah terbentuk sudah ditembus (close di bawah zona) — wajar saat downtrend kuat.';
+    if (!sup && sB) h += ' Tidak ada Supply aktif di atas harga: semua Supply yang pernah terbentuk sudah ditembus (close di atas zona) — wajar saat uptrend kuat.';
+    if (!dem && !dB && !sup && !sB) h += ' Belum ada yang terbentuk di data ini; coba TF lain atau aktifkan Medium.';
+  }
+  const hc = (HTFS[Q.tf] || []).map(t => `${TFL[t]} ${Q.htfZ.filter(z => z.tf === t).length}`).join(' · '); h += ` Zona HTF aktif: ${hc || '—'}.`;
+  const e = emp(), tx = (n, a) => a[0] >= 5 ? `${n} ${Math.round(a[1] / a[0] * 100)}% dari ${a[0]} uji` : `${n} data uji kurang (${a[0]})`;
+  return h + ` Hold historis pada data dimuat: ${tx('Strong', e.S)} · ${tx('Medium', e.M)}.`;
+}
+function paneZona() {
+  const zs = Q.zones, S = zs.filter(z => z.type === 'S').sort((a, b) => b.bot - a.bot), D = zs.filter(z => z.type === 'D').sort((a, b) => b.top - a.top);
+  let h = `<div class="qd-pm"><div class="qd-seg sm" id="qdVSeg"><button data-v="card" class="${Q.view === 'card' ? 'on' : ''}">Kartu</button><button data-v="table" class="${Q.view === 'table' ? 'on' : ''}">Tabel</button></div><span class="qd-sub">${zs.length} zona · ${Q.mode === 'follow' ? 'Follow ' + (Q.dir === 'buy' ? '▲ BUY' : '▼ SELL') : 'Hybrid'}</span></div>`;
+  if (!zs.length) return h + `<div class="qd-empty">Belum ada zona yang ditampilkan. ${diag()}</div>`;
+  h += Q.view === 'table' ? `<div class="qd-scroll">${matrixTable()}</div>` : S.map(zoneCard).join('') + `<div class="qd-pxrow2">▶ ${f2(Q.px)}${Q.eq ? ' · EQ ' + f2(Q.eq.mid) : ''} ◀</div>` + D.map(zoneCard).join('');
+  return h + `<details class="qd-diag"><summary>Catatan deteksi</summary><div class="note">${diag()}</div></details>`;
+}
+function paneDom() {
+  const B = Q.bins, px = Q.px; if (!B) return `<div class="qd-empty">${Q.depthErr ? 'DOM gagal dimuat: ' + Q.depthErr : 'Menunggu order book…'}</div>`;
+  const top = (a, n) => [...a].sort((x, y) => y.l - x.l).slice(0, n).sort((x, y) => y.p - x.p), A = top(B.A, 6), Bd = top(B.B, 6), mx = Math.max(...A.map(x => x.l), ...Bd.map(x => x.l), 1e-9);
+  const tb = Q.bids.reduce((s, x) => s + x[1], 0) / Q.lot, ta = Q.asks.reduce((s, x) => s + x[1], 0) / Q.lot, pb = tb / (tb + ta || 1) * 100, wallP = new Set(Q.walls.map(w => w.p));
+  const tr = (x, ask) => { const mid = x.p + B.stp / 2, dd = Math.abs(mid - px); return `<tr><td class="${ask ? 'neg' : 'pos'}">${ask ? 'ASK' : 'BID'}</td><td class="mono">${f2(x.p)}–${f2(x.p + B.stp)}${wallP.has(mid) ? ' <span class="qd-badge M">WALL</span>' : ''}</td><td>${bar(x.l / mx * 100, ask ? 'var(--red)' : 'var(--green)')}<b>${lotF(x.l)}</b> lot</td><td class="qd-sub">${dd.toFixed(1)} $ · ${Math.round(dd * 100)}p</td></tr>`; };
+  return `<div class="qd-pm"><span class="qd-sub">bin ${B.stp} $ · 1 lot = ${Q.lot} oz</span></div><div class="qd-sub">Total book (±1000 level): bid <b class="pos">${lotF(tb)}</b> · ask <b class="neg">${lotF(ta)}</b> lot</div><div class="qd-tsplit"><i style="width:${pb}%;background:var(--green)"></i><i style="width:${100 - pb}%;background:var(--red)"></i></div>
+  <div class="qd-scroll"><table class="xt qd-dom" style="min-width:330px"><tr><th>Sisi</th><th>Level</th><th>Volume</th><th>Jarak</th></tr>${A.map(x => tr(x, 1)).join('')}<tr class="qd-pxrow"><td colspan="4">▶ ${f2(px)} ◀</td></tr>${Bd.map(x => tr(x, 0)).join('')}</table></div>`;
+}
+function paneSesi() {
+  const zs = [...Q.zones].sort((a, b) => b.mid - a.mid);
+  const cell = a => a[0] ? `<b>${a[0]}×</b> <span class="qd-sub">${a[1]}✓ ${a[2]}✗</span>` : '<span class="qd-sub">—</span>';
+  let h = '<div class="qd-pm"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Diuji per sesi</b><span class="qd-sub" id="qdSsSt"></span></div>';
+  if (!zs.length) h += '<div class="qd-empty">Belum ada zona.</div>';
+  else {
+    const tot = { asia: [0, 0, 0], london: [0, 0, 0], ny: [0, 0, 0] };
+    const rows = zs.map(z => { const t = sessTally(z); Object.keys(t).forEach(k => t[k].forEach((v, i) => { tot[k][i] += v; })); return `<tr><td><span class="qd-badge ${z.type}">${z.type === 'D' ? 'D' : 'S'}</span> <span class="qd-badge ${z.tier === 'M' ? 'M' : 'ST'}">${z.tier === 'M' ? 'M' : 'S'}</span></td><td class="mono">${f2(z.bot)}–${f2(z.top)}</td><td>${cell(t.asia)}</td><td>${cell(t.london)}</td><td>${cell(t.ny)}</td><td class="mono"><b>${z.nT}×</b></td></tr>`; }).join('');
+    const sum = Object.values(tot).reduce((s, a) => s + a[0], 0);
+    h += `<div class="qd-scroll"><table class="xt" style="min-width:440px"><tr><th>Tipe</th><th>Zona</th>${Object.keys(SESS).map(k => `<th style="color:${SESS[k].c}" title="${SESS[k].r}">${SESS[k].n}</th>`).join('')}<th>Total</th></tr>${rows}<tr><td colspan="2"><b>Semua</b></td><td>${cell(tot.asia)}</td><td>${cell(tot.london)}</td><td>${cell(tot.ny)}</td><td class="mono"><b>${sum}×</b></td></tr></table></div><div class="note qd-small">✓ ditahan · ✗ tembus. Dari ${Q.c.length} candle ${Q.tf} (±${Math.max(1, Math.round((Q.c[Q.c.length - 1].t - Q.c[0].t) / 864e5))} hari).</div>`;
+  }
+  const g = new Map(); Q.c.forEach(k => { const s = sessStart(k.t); if (!g.has(s)) g.set(s, { s, sess: sessOf(k.t), n: 0, h: 0, b: 0, lv: new Set() }); });
+  Q.all.forEach(z => z.tests.forEach(t => { const o = g.get(sessStart(t.t)); if (!o) return; o.n++; if (t.res === 'ditahan') o.h++; else if (t.res === 'tembus') o.b++; o.lv.add(z.key); }));
+  const hist = [...g.values()].sort((a, b) => b.s - a.s).slice(0, 9);
+  h += `<div class="qd-pm" style="margin-top:14px"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Riwayat tiap sesi</b></div><div class="qd-scroll"><table class="xt" style="min-width:330px"><tr><th>Sesi</th><th>Level</th><th>Uji</th><th>✓</th><th>✗</th><th>Hold</th></tr>${hist.map(o => { const dn = o.h + o.b; return `<tr><td><b style="color:${SESS[o.sess].c}">${SESS[o.sess].n}</b><div class="qd-sub">${wib(o.s, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })} WIB</div></td><td class="mono">${o.lv.size}</td><td class="mono"><b>${o.n}×</b></td><td class="mono pos">${o.h}</td><td class="mono neg">${o.b}</td><td class="mono">${dn ? Math.round(o.h / dn * 100) + '%' : '—'}</td></tr>`; }).join('')}</table></div>`;
+  return h;
+}
+function paneLog() {
+  const L = Q.log.filter(x => x.sym === Q.sym).slice(0, 40);
+  return `<div class="qd-pm"><span class="qd-sub">Kejadian live saat halaman terbuka (tersimpan di browser)</span><button class="btn ghost" data-act="clrlog" style="padding:4px 10px">Hapus log</button></div>` + (L.length ? `<div class="qd-scroll"><table class="xt" style="min-width:340px"><tr><th>Waktu (WIB)</th><th>Sesi</th><th>Level</th><th>Hasil</th></tr>${L.map(x => `<tr><td class="mono">${wib(x.ts, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</td><td style="color:${SESS[x.sess].c}">${SESS[x.sess].n}</td><td class="mono"><span class="qd-badge ${x.type}">${x.type}</span> ${f2(x.bot)}–${f2(x.top)}<div class="qd-sub">${x.tf}</div></td><td class="${x.res === 'ditahan' ? 'pos' : x.res === 'tembus' ? 'neg' : 'warn'}"><b>${x.res}</b></td></tr>`).join('')}</table></div>` : '<div class="qd-empty">Belum ada kejadian. Log terisi otomatis saat harga live menyentuh / keluar dari zona.</div>');
+}
+
+/* ---------- Kartu terdekat, tekanan, header ---------- */
+function ncard(id, type, z, hidden) {
+  const el = $(id), A = Q.atr || 1;
+  if (hidden) { el.className = 'qd-ncard off ' + type; el.dataset.key = ''; setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span></div><div class="qd-nempty">Sisi ini disembunyikan oleh mode Follow (${Q.dir === 'buy' ? '▲ BUY' : '▼ SELL'}). Ganti ke Hybrid untuk menampilkan keduanya.</div>`); return; }
+  if (!z) { el.className = 'qd-ncard off ' + type; el.dataset.key = ''; setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span></div><div class="qd-nempty">${Q.c.length ? 'Tidak ada zona aktif di sisi ini (lihat “Catatan deteksi” di tab Zona).' : 'Menunggu data…'}</div>`); return; }
+  const M = z.tier === 'M', near = !z.inside && z.dist <= .5 * A; el.className = `qd-ncard ${M ? 'M' : type} ${Q.sel === z.key ? 'sel' : ''}`; el.dataset.key = z.key;
+  setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span><span class="qd-badge ${M ? 'M' : 'ST'}">${tierName(z)}</span></div><div class="qd-nr">${f2(z.bot)} – ${f2(z.top)}</div><div class="qd-nm"><span>${fDist(z)}</span><span>${z.inside ? '<b class="warn">● sedang diuji</b>' : near ? '<span class="qd-near">⚡ mendekati</span>' : ''}</span></div><div class="qd-nbar"><i style="width:${z.score}%;background:${scCol(z.score)}"></i></div><div class="qd-nstat"><div>Skor<b>${z.score}</b></div><div>Tahan<b>${z.hold}%</b></div><div>Uji<b>${z.nT}×</b></div><div>DOM<b>${domTxt(z)}</b></div></div>`);
+}
+function spark() {
+  const cv = $('qdSpark'), W = cv.clientWidth || 200, H = 30, d = Math.min(2, devicePixelRatio || 1); if (cv.width !== Math.round(W * d)) { cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
+  const c = cv.getContext('2d'); c.setTransform(d, 0, 0, H / 30 * d, 0, 0); c.clearRect(0, 0, W, H); const h = Q.hist; if (h.length < 3) return;
+  const y = v => H - 3 - v / 100 * (H - 6), x = i => i / Math.max(1, h.length - 1) * (W - 2) + 1; c.strokeStyle = 'rgba(130,165,255,.25)'; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(0, y(50)); c.lineTo(W, y(50)); c.stroke(); c.setLineDash([]);
+  c.beginPath(); h.forEach((v, i) => { i ? c.lineTo(x(i), y(v)) : c.moveTo(x(i), y(v)); }); const last = h[h.length - 1]; c.strokeStyle = last >= 50 ? '#2df5a3' : '#ff4b6e'; c.lineWidth = 1.5; c.stroke();
+}
+function paintInsight() {
+  const fol = Q.mode === 'follow', near = t => Q.zones.filter(z => z.type === t).sort((a, b) => a.dist - b.dist)[0] || null;
+  ncard('qdNS', 'S', near('S'), fol && Q.dir === 'buy'); ncard('qdND', 'D', near('D'), fol && Q.dir === 'sell');
+  const S = Q.str; if (!S) return;
+  $('qdSplB').style.width = S.buyer + '%'; $('qdSplS').style.width = S.seller + '%'; setT('qdSplB', `BUYER ${S.buyer.toFixed(1)}%`); setT('qdSplS', `${S.seller.toFixed(1)}% SELLER`);
+  setT('qdBiasTxt', S.bias); $('qdBiasTxt').style.color = S.buyer >= 55 ? 'var(--green)' : S.buyer <= 45 ? 'var(--red)' : 'var(--amber)';
+  [['qdM1', S.dom], ['qdM2', S.fc], ['qdM3', S.fl]].forEach(([id, v]) => { $(id).style.width = (v == null ? 0 : v) + '%'; setT(id + 'v', v == null ? '—' : v.toFixed(0) + '%'); });
+  setT('qdFol', fol ? `Follow ${Q.dir === 'buy' ? '▲ BUY' : '▼ SELL'} — ${Q.dirWhy}` : `Delta live 5 mnt: ${S.delta >= 0 ? '+' : ''}${lotF(S.delta)} lot (beli ${lotF(S.lb)} · jual ${lotF(S.ls)})`); spark();
+}
+function paintHead() {
+  const live = Q.wsOk && Date.now() - Q.lastMsg < 15000, cls = Q.err && !Q.c.length ? 'err' : live ? 'on' : 'wait';
+  const lv = $('qdLive'); lv.className = 'qd-live ' + cls; setT('qdLive', Q.err && !Q.c.length ? '✕ Gagal' : live ? '● LIVE' : Q.c.length ? '○ Menyambung…' : '◌ Memuat…');
+  lv.title = `${Q.host === 'fut' ? 'Binance Futures' : 'Binance Spot'} · DOM ${Q.lastDepth ? ((Date.now() - Q.lastDepth) / 1000).toFixed(1) + ' dtk lalu' : '—'}${Q.depthErr ? ' (error: ' + Q.depthErr + ')' : ''} · ${Q.c.length} candle`;
+  const px = $('qdPx'); if (Q.px) { const t = f2(Q.px); if (px.textContent !== t) { px.className = 'qd-px ' + (Q.pxPrev && Q.px > Q.pxPrev ? 'up' : Q.pxPrev && Q.px < Q.pxPrev ? 'down' : ''); px.textContent = t; Q.pxPrev = Q.px; } }
+  const ofsT = Q.ofsMode === 'off' ? 'off' : (Q.ofs >= 0 ? '+' : '') + f2(Q.ofs) + (Q.ofsMode === 'auto' ? ' auto' : '');
+  setH('qdChips', `<span class="qd-chip">Sesi <b style="color:${SESS[sessOf(Date.now())].c}">${SESS[sessOf(Date.now())].n}</b> · sisa ${sessLeft()}</span><span class="qd-chip">ATR <b>${f2(Q.atr)} $</b> · ${Math.round(Q.atr * 100)}p</span><span class="qd-chip" title="Selisih harga Binance ke broker">Offset <b>${ofsT}</b></span>`);
+  $('qdTfSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.tf)); $('qdModeSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.mode));
+  $('qdAlertBtn').classList.toggle('on', !!Q.alOn); $('qdLiveBtn').hidden = Q.pan === 0; setT('qdOfsInfo', Q.ofsInfo);
+  const ov = $('qdOv'); let h = '';
+  if (Q.err && !Q.c.length) h = `<b style="color:var(--red)">Data tidak bisa dimuat</b><div>${Q.err}</div><button class="btn primary" data-act="retry">Coba lagi</button>`;
+  else if (!Q.c.length && Q.started) h = '<div class="qd-spin"></div><div>Memuat chart & order book Binance…</div>';
+  if (ov.dataset.h !== h) { ov.dataset.h = h; ov.innerHTML = h; ov.hidden = !h; }
+}
+function paintPane() {
+  if (Q.ptrDown) return; const html = Q.tab === 'zona' ? paneZona() : Q.tab === 'dom' ? paneDom() : Q.tab === 'sesi' ? paneSesi() : paneLog(), p = $('qdPane');
+  if (p.dataset.h !== html) { const st = p.scrollTop; p.dataset.h = html; p.innerHTML = html; p.scrollTop = st; }
+}
+function paintSt() { paintHead(); }
+function render() { rescore(); updWalls(); paintHead(); paintInsight(); paintPane(); Q.dirty = true; }
+
+/* ---------- Alert ---------- */
+function toast(msg, kind) {
+  let box = $('qdToasts'); if (!box) { box = document.createElement('div'); box.id = 'qdToasts'; box.className = 'qd-toasts'; document.body.appendChild(box); }
+  const d = document.createElement('div'); d.className = 'qd-toast ' + (kind || ''); d.textContent = msg; box.appendChild(d); setTimeout(() => d.classList.add('show'), 20);
+  setTimeout(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 400); }, 7000); while (box.children.length > 4) box.firstChild.remove();
+}
+function beep() { try { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return; Q.ac = Q.ac || new AC(); const o = Q.ac.createOscillator(), g = Q.ac.createGain(); o.frequency.value = 880; g.gain.value = .06; o.connect(g); g.connect(Q.ac.destination); o.start(); o.stop(Q.ac.currentTime + .18); } catch (e) { } }
+function notify(msg, kind) {
+  if (!Q.alOn) return; toast(msg, kind); if (Q.alSnd) beep();
+  if (Q.alNtf && window.Notification && Notification.permission === 'granted') { try { new Notification('Quantum DOM', { body: msg }); } catch (e) { } }
+}
+function alertCheck() {
+  if (!Q.alOn || !Q.px) return; const now = Date.now(), A = Q.atr || 1;
+  Q.zones.forEach(z => {
+    if (z.tier !== 'S' && z.score < 70) return; const near = z.inside || z.dist <= Q.alDist * A, st = Q.alS[z.key] || (Q.alS[z.key] = { t: 0, was: false });
+    if (near && !st.was && now - st.t > 600000) { st.t = now; notify(`⚡ Harga ${z.inside ? 'masuk' : 'mendekati'} ${sideName(z)} ${tierName(z)} ${f2(z.bot)}–${f2(z.top)} · skor ${z.score} · tahan ${z.hold}%`, z.type); }
+    st.was = near;
+  });
+  if (Q.mode === 'follow' && Q.dir && Q.lastDirA && Q.lastDirA !== Q.dir) notify(`🔄 Follow Trend berbalik ke ${Q.dir === 'buy' ? 'BUY (Demand)' : 'SELL (Supply)'} — ${Q.dirWhy}`, 'info');
+  Q.lastDirA = Q.dir;
+}
+
+/* ---------- Kontrol & loop ---------- */
+function reload() { closeWs(); Q.dir = null; Q.lastDirA = null; Q.pan = 0; Q.sel = null; Q.hist = []; Q.htfC = {}; Q.htfZ = []; Q.htfT = 0; Q.c = []; Q.all = []; Q.zones = []; Q.zs = {}; Q.bids = []; Q.asks = []; Q.flow = []; Q.str = null; Q.eq = null; Q.lastDepth = 0; Q.walls = []; Q.bins = null; Q.started = true; load(); render(); }
+function select(key, scroll) {
+  Q.sel = Q.sel === key ? null : key; Q.dirty = true; if (Q.sel) Q.tab = 'zona'; syncTabs(); paintPane(); paintInsight();
+  if (Q.sel && scroll) { const e = $('qdPane').querySelector(`.qd-zc[data-key="${CSS.escape(key)}"]`); if (e) e.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+}
+function syncTabs() { $('qdTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === Q.tab)); }
+const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk']];
+$('qdLayers').innerHTML = LAYERS.map(([k, l]) => `<button class="qd-lay ${Q[k] ? 'on' : ''}" data-k="${k}">${l}</button>`).join('');
+$('qdLayers').onclick = e => { const b = e.target.closest('button'); if (!b) return; const L = LAYERS.find(x => x[0] === b.dataset.k); Q[L[0]] = !Q[L[0]]; LSS(L[2], Q[L[0]]); b.classList.toggle('on', Q[L[0]]); Q.dirty = true; if (L[0] === 'optMed') { analyze(); render(); } };
+$('qdSym').value = Q.sym; $('qdSym').onchange = e => { Q.sym = e.target.value; LSS('qd_sym', Q.sym); reload(); };
+$('qdTfSeg').onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.v === Q.tf) return; Q.tf = b.dataset.v; LSS('qd_tf', Q.tf); reload(); };
+$('qdModeSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; Q.mode = b.dataset.v; LSS('qd_mode', Q.mode); Q.dir = null; Q.lastDirA = null; render(); };
+$('qdSetBtn').onclick = () => { const d = $('qdSet'); d.hidden = !d.hidden; $('qdSetBtn').classList.toggle('on', !d.hidden); };
+$('qdAlertBtn').onclick = () => { Q.alOn = !Q.alOn; LSS('qd_alon', Q.alOn); $('qdAlOn').checked = Q.alOn; paintHead(); toast(Q.alOn ? '🔔 Alert zona aktif' : '🔕 Alert zona mati', 'info'); };
+$('qdAlOn').checked = Q.alOn; $('qdAlOn').onchange = e => { Q.alOn = e.target.checked; LSS('qd_alon', Q.alOn); paintHead(); };
+$('qdAlSnd').checked = Q.alSnd; $('qdAlSnd').onchange = e => { Q.alSnd = e.target.checked; LSS('qd_alsnd', Q.alSnd); if (Q.alSnd) beep(); };
+$('qdAlNtf').checked = Q.alNtf; $('qdAlNtf').onchange = e => { Q.alNtf = e.target.checked; LSS('qd_alntf', Q.alNtf); if (Q.alNtf && window.Notification && Notification.permission === 'default') Notification.requestPermission(); };
+$('qdAlDist').value = Q.alDist; $('qdAlDist').onchange = e => { Q.alDist = clamp(+e.target.value || .3, .05, 5); e.target.value = Q.alDist; LSS('qd_aldist', Q.alDist); };
+$('qdN').value = Q.n; $('qdN').onchange = e => { Q.n = clamp(Math.round(+e.target.value || 150), 30, 400); e.target.value = Q.n; LSS('qd_n', Q.n); Q.dirty = true; };
+$('qdLot').value = Q.lot; $('qdLot').onchange = e => { Q.lot = Math.max(.001, +e.target.value || 100); e.target.value = Q.lot; LSS('qd_lot', Q.lot); render(); };
+const PARAMS = [['qdThS', 'thS', 'qd_ths', .6, 6], ['qdThM', 'thM', 'qd_thm', .4, 5], ['qdHold', 'hold', 'qd_hold', 2, 20], ['qdMaxZ', 'maxZ', 'qd_maxz', 1, 10], ['qdEmaN', 'emaN', 'qd_ema', 5, 300], ['qdSwL', 'swL', 'qd_swl', 2, 15]];
+const paintParams = () => PARAMS.forEach(([id, k]) => { $(id).value = Q[k]; });
+const applyParams = () => { PARAMS.forEach(([, k, ls]) => LSS(ls, Q[k])); paintParams(); analyze(); htfBuild(); Q.dirty = true; render(); };
+PARAMS.forEach(([id, k, , mn, mx]) => { $(id).onchange = e => { let v = +e.target.value; if (!Number.isFinite(v) || e.target.value === '') v = DEF[k]; v = clamp(v, mn, mx); if (k !== 'thS' && k !== 'thM') v = Math.round(v); Q[k] = v; fixTh(); applyParams(); }; });
+paintParams();
+$('qdSetReset').onclick = () => { Object.assign(Q, DEF); fixTh(); applyParams(); };
+$('qdReload').onclick = reload;
+$('qdSrc').value = Q.src; $('qdSrc').onchange = e => { Q.src = e.target.value; LSS('qd_src', Q.src); Q.dir = null; render(); };
+$('qdOfs').value = Q.ofsMode; $('qdOfsV').value = Q.ofsMan; $('qdOfsU').value = Q.ofsU;
+$('qdOfs').onchange = e => { Q.ofsMode = e.target.value; LSS('qd_om', Q.ofsMode); Q.ofsS = []; Q.ofsStamp = null; calib(); render(); };
+$('qdOfsV').onchange = e => { Q.ofsMan = +e.target.value || 0; LSS('qd_ov', Q.ofsMan); if (Q.ofsMode === 'man') { calib(); render(); } };
+$('qdOfsU').onchange = e => { Q.ofsU = e.target.value; LSS('qd_ou', Q.ofsU); if (Q.ofsMode === 'man') { calib(); render(); } };
+$('qdTabs').onclick = e => { const b = e.target.closest('button'); if (!b) return; Q.tab = b.dataset.t; syncTabs(); $('qdPane').dataset.h = ''; paintPane(); $('qdPane').scrollTop = 0; };
+const pane = $('qdPane');
+pane.addEventListener('pointerdown', () => { Q.ptrDown = true; }); addEventListener('pointerup', () => { Q.ptrDown = false; }); addEventListener('pointercancel', () => { Q.ptrDown = false; });
+pane.addEventListener('click', e => {
+  Q.ptrDown = false; const a = e.target.closest('[data-act]'), v = e.target.closest('#qdVSeg button');
+  if (v) { Q.view = v.dataset.v; LSS('qd_view', Q.view); $('qdPane').dataset.h = ''; paintPane(); return; }
+  if (a) {
+    const z = byKey(a.dataset.key);
+    if (a.dataset.act === 'clrlog') { Q.log = []; LSS('qd_log', Q.log); paintPane(); }
+    if (a.dataset.act === 'copy' && z) { const t = `${sideName(z)} ${tierName(z)} ${Q.sym} ${Q.tf}: ${f2(z.bot)}–${f2(z.top)} (50% ${f2(z.mid)}) · skor ${z.score} · tahan ${z.hold}% · diuji ${z.nT}×`; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Level disalin: ' + t, 'info'), () => toast(t, 'info')); }
+    if (a.dataset.act === 'focus' && z) { Q.pan = clamp(Q.c.length - z.i - Math.floor(Math.min(Q.n, Q.c.length) / 2), 0, Math.max(0, Q.c.length - Math.min(Q.n, Q.c.length))); Q.dirty = true; $('qdBox').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+    return;
+  }
+  const card = e.target.closest('.qd-zc'); if (card) select(card.dataset.key, false);
+});
+document.querySelector('.qd-insight').addEventListener('click', e => { const c = e.target.closest('.qd-ncard'); if (c && c.dataset.key) select(c.dataset.key, true); });
+$('qdOv').addEventListener('click', e => { if (e.target.closest('[data-act="retry"]')) reload(); });
+$('qdLiveBtn').onclick = () => { Q.pan = 0; Q.dirty = true; };
+/* interaksi chart: geser, zoom, klik zona */
+const cvEl = $('qdCv'), pos = e => { const r = cvEl.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+cvEl.addEventListener('pointerdown', e => { try { cvEl.setPointerCapture(e.pointerId); } catch (x) { } Q.drag = { x: e.clientX, pan: Q.pan, moved: false }; Q.mouse = pos(e); Q.dirty = true; });
+cvEl.addEventListener('pointermove', e => { Q.mouse = pos(e); if (Q.drag) { const dx = e.clientX - Q.drag.x; if (Math.abs(dx) > 5) Q.drag.moved = true; if (Q.drag.moved) Q.pan = Math.max(0, Math.round(Q.drag.pan + dx / (Q.cw || 6))); } Q.dirty = true; });
+cvEl.addEventListener('pointerup', e => { const dr = Q.drag; Q.drag = null; if (dr && !dr.moved) { const p = pos(e), hits = (Q.hit || []).filter(h => p.x >= h.x0 && p.y >= h.y1 && p.y <= h.y2).sort((a, b) => (a.y2 - a.y1) - (b.y2 - b.y1)); if (hits.length) select(hits[0].z.key, true); else if (Q.sel) select(Q.sel, false); } Q.dirty = true; });
+cvEl.addEventListener('pointercancel', () => { Q.drag = null; });
+cvEl.addEventListener('pointerleave', () => { if (!Q.drag) { Q.mouse = null; Q.dirty = true; } });
+cvEl.addEventListener('wheel', e => { e.preventDefault(); Q.n = clamp(Math.round(Q.n * (e.deltaY > 0 ? 1.12 : .89)), 30, 400); $('qdN').value = Q.n; LSS('qd_n', Q.n); Q.dirty = true; }, { passive: false });
+cvEl.addEventListener('dblclick', () => { Q.pan = 0; Q.sel = null; Q.dirty = true; paintPane(); paintInsight(); });
+setInterval(() => {
+  const on = act(); if (on && !Q.started) { Q.started = true; load(); }
+  if (!Q.started || !Q.c.length) { if (on) paintHead(); return; }
+  Q.tick++; const now = Date.now();
+  if ((!Q.ws || now - Q.lastMsg > 20000) && now - Q.wsTry > 6000) openWs();
+  if (on && now - Q.lastDepth > 2000) pollDepth();
+  if (now - Q.htfT > 120000) loadHtf();
+  calib(); if (Q.needAn || Q.tick % 3 === 0) analyze();
+  rescore(); track(); if (Q.str) { Q.hist.push(Q.str.buyer); if (Q.hist.length > 300) Q.hist.shift(); } alertCheck();
+  if (on) render();
+}, 1000);
+(function loop(ts) { if (act() && Q.dirty && ts - Q.lastDraw > 80) { Q.dirty = false; Q.lastDraw = ts; try { draw(); } catch (e) { console.error('qdom draw', e); } } requestAnimationFrame(loop); })(0);
+if (window.ResizeObserver) new ResizeObserver(() => { Q.dirty = true; }).observe($('qdBox'));
+addEventListener('resize', () => { Q.dirty = true; });
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { if (b.dataset.view === 'qdom') setTimeout(() => { if (!Q.started) { Q.started = true; load(); } Q.dirty = true; if (Q.c.length) render(); else paintHead(); }, 40); }));
+paintHead();
+})();
 </script>
 
 </body>
