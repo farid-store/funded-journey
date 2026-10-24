@@ -2599,6 +2599,55 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
   .qd-dr .xin{width:88px}
 }
 @media(prefers-reduced-motion:reduce){.qd-spin{animation:none}.qd-split>div,.qd-bar2 i{transition:none}}
+
+/* ===== v7: bantuan, simbol, arus, senyap ===== */
+.qd-help{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:rgba(53,224,255,.14);border:1px solid rgba(53,224,255,.45);color:var(--cyan);font:900 10px var(--fm);cursor:pointer;padding:0;margin-left:5px;vertical-align:middle;flex:none;transition:.15s}
+.qd-help:hover{background:var(--cyan);color:#03121a;transform:scale(1.12)}
+.qd-modal{position:fixed;inset:0;z-index:100000;background:rgba(2,4,10,.82);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:18px}
+.qd-modal[hidden]{display:none}
+.qd-mw{width:100%;max-width:470px;background:#0b1120;border:1px solid rgba(53,224,255,.45);border-radius:16px;box-shadow:0 25px 70px rgba(0,0,0,.8);overflow:hidden}
+.qd-mt2{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--brd);background:rgba(255,255,255,.02)}
+.qd-mt2 b{font:800 13.5px var(--fh);color:var(--cyan)}
+.qd-mt2 button{background:var(--surface2);border:1px solid var(--brd);color:var(--text);border-radius:8px;padding:5px 12px;font:700 11px var(--fm);cursor:pointer}
+.qd-mb2{padding:16px 18px 18px;font-size:13px;line-height:1.65;color:var(--text)}
+.qd-symbtn{cursor:pointer;min-width:132px;text-align:left}
+.qd-symmenu{position:fixed;z-index:99990;min-width:240px;background:rgba(10,15,28,.98);backdrop-filter:blur(20px);border:1px solid rgba(53,224,255,.45);border-radius:12px;box-shadow:0 18px 48px rgba(0,0,0,.8);padding:6px;display:flex;flex-direction:column;gap:2px;max-height:60vh;overflow:auto}
+.qd-symmenu[hidden]{display:none}
+.qd-symhead{font:700 9.5px var(--fh);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding:6px 9px 7px;border-bottom:1px solid var(--line)}
+.qd-symrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font:700 12px var(--fm);color:var(--text);border:1px solid transparent}
+.qd-symrow:hover{background:rgba(53,224,255,.09);border-color:rgba(53,224,255,.25)}
+.qd-symrow.on{background:rgba(53,224,255,.15);color:var(--cyan);border-color:rgba(53,224,255,.45)}
+.qd-symrow.add{color:var(--gold);justify-content:flex-start}
+.qd-star,.qd-del{background:none;border:0;color:var(--faint);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:5px}
+.qd-star:hover{color:var(--gold);background:rgba(255,201,74,.12)}.qd-star.on{color:var(--gold);text-shadow:0 0 8px rgba(255,201,74,.5)}
+.qd-del:hover{color:var(--red);background:var(--red-soft)}
+.qd-stale{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;border:1px solid rgba(255,75,110,.55);background:linear-gradient(90deg,rgba(255,75,110,.2),rgba(15,23,42,.9),rgba(255,75,110,.12));border-radius:var(--radius);color:#fecdd3;font:600 12px/1.5 var(--fb)}
+.qd-stale[hidden]{display:none}
+.qd-nav{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.qd-nav button{background:var(--surface2);border:1px solid var(--brd);color:var(--muted);border-radius:8px;padding:5px 11px;font:700 11px var(--fm);cursor:pointer;min-height:30px}
+.qd-nav button:hover{color:#fff;border-color:var(--cyan)}
+.qd-fseg{margin:0 0 10px;display:flex}.qd-fseg button{flex:1}
+.qd-badge.gW{background:rgba(53,224,255,.14);color:var(--cyan);border:1px solid rgba(53,224,255,.45)}
+.qd-badge.gF{background:var(--purple-soft);color:var(--purple);border:1px solid rgba(169,139,255,.4)}
+.qd-badge.gT{background:var(--green-soft);color:var(--green);border:1px solid rgba(45,245,163,.4)}
+.qd-badge.gR{background:var(--amber-soft);color:var(--amber);border:1px solid rgba(255,176,46,.5)}
+.qd-cnt{display:flex;justify-content:space-between;gap:8px;font:800 11.5px var(--fm);margin-bottom:8px}
+.qd-wavebox{position:relative;height:150px;border:1px solid var(--brd);border-radius:10px;overflow:hidden;background:#04070e}
+.qd-wavebox canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.qd-wl{position:absolute;left:8px;font:800 9.5px var(--fm);pointer-events:none;padding:2px 7px;border-radius:5px;background:rgba(3,5,9,.78)}
+.qd-wl.t{top:6px;color:#34d399}.qd-wl.b{bottom:6px;color:#fb7185}.qd-wl.r{top:6px;left:auto;right:8px;color:var(--cyan)}
+.qd-k4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.qd-k4 div{background:var(--surface2);border:1px solid var(--brd);border-radius:8px;padding:6px 8px;min-width:0}
+.qd-k4 span{display:block;font:700 8.5px var(--fh);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.qd-k4 b{display:block;font:700 12px var(--fm);margin-top:2px;overflow-wrap:anywhere}
+.qd-tape{display:flex;flex-direction:column;gap:3px;max-height:260px;overflow:auto}
+.qd-tp{display:grid;grid-template-columns:62px 1fr auto;gap:8px;padding:5px 9px;border-radius:6px;font:700 10.5px var(--fm);border-left:3px solid}
+.qd-tp.b{background:rgba(45,245,163,.10);color:#6ee7b7;border-color:var(--green)}.qd-tp.s{background:rgba(255,75,110,.10);color:#fda4af;border-color:var(--red)}
+.qd-tp.big{box-shadow:inset 0 0 0 1px rgba(255,201,74,.55);background-image:linear-gradient(90deg,rgba(255,201,74,.12),transparent)}
+.qd-tp small{opacity:.7;font-weight:600}
+.qd-rg{display:flex;align-items:center;gap:8px}.qd-rg input{width:96px;accent-color:var(--gold)}.qd-rg b{min-width:20px;text-align:right;font:700 11px var(--fm);color:var(--text)}
+.qd-tabs button{letter-spacing:.08em!important;padding:12px 4px!important}
+@media(max-width:640px){.qd-k4{grid-template-columns:repeat(2,1fr)}}
 </style></head>
 <body>
 <div class="world" aria-hidden="true">
@@ -3220,7 +3269,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
       <div class="qd-title">⚛ Quantum DOM<small>Liquidity Matrix</small></div>
     </div>
     <div class="qd-pricebox">
-      <select id="qdSym" class="qd-sel" aria-label="Simbol"><option>XAUUSDT</option><option>XAUTUSDT</option><option>PAXGUSDT</option></select>
+      <button type="button" id="qdSymBtn" class="qd-sel qd-symbtn" aria-haspopup="listbox" title="Pilih instrumen · ★ untuk favorit">XAUUSDT ▾</button>
       <b id="qdPx" class="qd-px">—</b>
       <span id="qdLive" class="qd-live wait">◌ Memuat…</span>
     </div>
@@ -3233,14 +3282,16 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
       <button class="btn ghost qd-ib" id="qdSetBtn" title="Pengaturan">⚙ <span>Pengaturan</span></button>
     </div>
   </header>
+  <div class="qd-stale" id="qdStale" hidden></div>
 
   <section class="qd-drawer card" id="qdSet" hidden>
     <div class="qd-dg">
       <div><div class="qd-dh">Data &amp; harga</div>
         <div class="qd-dr"><span>Candle tampil</span><input id="qdN" class="xin" type="number" min="30" max="400" step="10"></div>
-        <div class="qd-dr"><span>1 lot =</span><span><input id="qdLot" class="xin" type="number" min="0.001" step="any"> oz</span></div>
+        <div class="qd-dr"><span>1 lot =</span><span><input id="qdLot" class="xin" type="number" min="0.001" step="any"> unit</span></div>
         <div class="qd-dr"><span>Offset ke broker</span><select id="qdOfs" class="xin"><option value="off">Off (harga Binance)</option><option value="auto">Auto (EA)</option><option value="man">Manual</option></select></div>
         <div class="qd-dr"><span>Nilai manual</span><span><input id="qdOfsV" class="xin" type="number" step="0.01"> <select id="qdOfsU" class="xin"><option value="pt">poin</option><option value="usd">USD</option></select></span></div>
+        <div class="qd-dr"><span>Deteksi senyap (dtk) <button type="button" class="qd-help" data-h="stale">?</button></span><input id="qdStaleSec" class="xin" type="number" step="1"></div>
         <div class="note qd-small" id="qdOfsInfo"></div>
       </div>
       <div><div class="qd-dh">Zona Supply / Demand</div>
@@ -3251,23 +3302,32 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
         <div class="qd-dr"><span>Zona dalam jarak ≤ (ATR)</span><input id="qdNear" class="xin" type="number" step="0.5"></div>
         <div class="note qd-small">0 = tampilkan semua jarak. Candle uji = berapa candle harga boleh bertahan di dalam zona sebelum dihitung “ditahan”. Close menembus sisi jauh = tembus.</div>
       </div>
-      <div><div class="qd-dh">Volume &amp; preset</div>
+      <div><div class="qd-dh">Volume &amp; preset <button type="button" class="qd-help" data-h="volume">?</button></div>
         <div class="qd-dr"><span>Volume tak biasa ≥ (×)</span><input id="qdVolTh" class="xin" type="number" step="0.1"></div>
         <div class="note qd-small">Candle ditandai ◆ bila volumenya ≥ N× rata-rata 20 candle sebelumnya (≥ 1,5× ambang = ekstrem, bar kuning).</div>
         <div class="note qd-small"><b>Preset</b> (tombol di header) mengganti sekaligus: TF, jumlah candle, ambang Strong/Medium, hold, maks zona, filter jarak, layer chart, ambang volume, sumber Follow, dan jarak alert. Ubah satu pengaturan manual → preset otomatis tidak lagi menyala.<br>⚡ Scalp: 5m · 100c · 3 zona · ≤6 ATR · hold 4<br>◐ Intraday: 15m · 150c · 4 zona · ≤12 ATR · hold 6<br>◎ Swing: 1h · 200c · 5 zona · semua jarak · hold 8</div>
       </div>
-      <div><div class="qd-dh">Follow Trend</div>
+      <div><div class="qd-dh">Follow Trend <button type="button" class="qd-help" data-h="follow">?</button></div>
         <div class="qd-dr"><span>Sumber arah</span><select id="qdSrc" class="xin"><option value="press">Tekanan buyer/seller</option><option value="ema">Struktur: EMA</option><option value="hhll">Struktur: HH/LL</option></select></div>
         <div class="qd-dr"><span>Periode EMA</span><input id="qdEmaN" class="xin" type="number" step="1"></div>
         <div class="qd-dr"><span>Swing ± candle</span><input id="qdSwL" class="xin" type="number" step="1"></div>
         <div class="note qd-small">Dipakai saat mode Follow. BOS = harga menembus swing terakhir.</div>
       </div>
-      <div><div class="qd-dh">Alert</div>
+      <div><div class="qd-dh">Alert <button type="button" class="qd-help" data-h="alert">?</button></div>
         <div class="qd-dr"><span>Alert zona aktif</span><input id="qdAlOn" type="checkbox"></div>
         <div class="qd-dr"><span>Suara</span><input id="qdAlSnd" type="checkbox"></div>
         <div class="qd-dr"><span>Notifikasi browser</span><input id="qdAlNtf" type="checkbox"></div>
         <div class="qd-dr"><span>Jarak alert (ATR)</span><input id="qdAlDist" class="xin" type="number" step="0.1"></div>
         <div class="note qd-small">Alert: harga mendekati / masuk zona Strong (atau skor ≥ 70), zona tembus / ditahan, dan Follow berbalik arah.</div>
+      </div>
+      <div><div class="qd-dh">Rumus kekuatan <button type="button" class="qd-help" data-h="formula">?</button></div>
+        <div class="qd-dr"><span>Bobot impuls</span><span class="qd-rg"><input id="qdWImp" type="range" min="0" max="60" step="1"><b id="qdWImpL"></b></span></div>
+        <div class="qd-dr"><span>Bobot kesegaran</span><span class="qd-rg"><input id="qdWFr" type="range" min="0" max="60" step="1"><b id="qdWFrL"></b></span></div>
+        <div class="qd-dr"><span>Bobot volume</span><span class="qd-rg"><input id="qdWVol" type="range" min="0" max="60" step="1"><b id="qdWVolL"></b></span></div>
+        <div class="qd-dr"><span>Bobot DOM</span><span class="qd-rg"><input id="qdWDom" type="range" min="0" max="60" step="1"><b id="qdWDomL"></b></span></div>
+        <div class="qd-dr"><span>Bobot arus buyer/seller</span><span class="qd-rg"><input id="qdWFlow" type="range" min="0" max="60" step="1"><b id="qdWFlowL"></b></span></div>
+        <div class="qd-dr"><span>Perilaku kesegaran</span><select id="qdFrMode" class="xin"><option value="absorb">Absorpsi (makin diuji makin lemah)</option><option value="accum">Akumulasi (makin ditahan makin kuat)</option></select></div>
+        <div class="qd-dr"><span>Jarak min antar zona (ATR)</span><input id="qdGap" class="xin" type="number" step="0.1"></div>
       </div>
     </div>
     <div class="qd-dfoot"><button class="btn ghost" id="qdSetReset">Reset default</button><button class="btn ghost" id="qdReload">⟳ Muat ulang data</button></div>
@@ -3276,7 +3336,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
   <div class="qd-insight">
     <div class="qd-ncard S" id="qdNS"></div>
     <div class="card qd-bias" id="qdBias">
-      <div class="qd-bh"><b>Tekanan pasar</b><span id="qdBiasTxt">—</span></div>
+      <div class="qd-bh"><b>Tekanan pasar <button type="button" class="qd-help" data-h="pressure" aria-label="Bantuan">?</button></b><span id="qdBiasTxt">—</span></div>
       <div class="qd-split"><div class="b" id="qdSplB">BUYER —</div><div class="s" id="qdSplS">— SELLER</div></div>
       <canvas id="qdSpark" class="qd-spark" height="30" aria-label="Riwayat buyer % 5 menit"></canvas>
       <div class="qd-meters">
@@ -3297,16 +3357,26 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
         <button class="qd-livebtn" id="qdLiveBtn" hidden>⟳ ke live</button>
         <div class="qd-ov" id="qdOv" hidden></div>
       </div>
-      <div class="qd-legend"><span style="color:#ff4b6e">■ Strong Supply</span><span style="color:#2df5a3">■ Strong Demand</span><span style="color:#ffd25e">■ Medium</span><span style="color:#c9b8ff">┅ HTF</span><span style="color:#ffd25e">┄ 50% zona</span><span style="color:#35e0ff">┄ EQ</span><span style="color:#ffc94a">┄ harga live</span><span style="color:#ffc94a">◆ volume tak biasa</span><span class="qd-hint">Geser = pan · roda mouse = zoom · klik zona = detail · klik dua kali = reset</span></div>
+      <div class="qd-nav" id="qdNav"><button type="button" data-n="left" title="Lihat candle lebih lama">◀ Geser</button><button type="button" data-n="live" title="Kembali ke candle terbaru">⌖ Live</button><button type="button" data-n="right">Geser ▶</button><button type="button" data-n="zin" title="Perbesar">＋</button><button type="button" data-n="zout" title="Perkecil">－</button></div>
+      <div class="qd-legend"><button type="button" class="qd-help" data-h="chart" aria-label="Cara membaca chart">?</button><span style="color:#ff4b6e">■ Strong Supply</span><span style="color:#2df5a3">■ Strong Demand</span><span style="color:#ffd25e">■ Medium</span><span style="color:#c9b8ff">┅ HTF</span><span style="color:#ffd25e">┄ 50% zona</span><span style="color:#35e0ff">┄ EQ</span><span style="color:#ffc94a">┄ harga live</span><span style="color:#ffc94a">◆ volume tak biasa</span><span class="qd-hint">Geser = pan · roda mouse = zoom · klik zona = detail · klik dua kali = reset</span></div>
     </div>
 
     <aside class="card qd-side">
-      <div class="qd-tabs" id="qdTabs" role="tablist"><button data-t="zona" class="on">Zona</button><button data-t="dom">DOM</button><button data-t="sesi">Sesi</button><button data-t="log">Log</button></div>
+      <div class="qd-tabs" id="qdTabs" role="tablist"><button data-t="zona" class="on">Zona</button><button data-t="dom">DOM</button><button data-t="arus">Arus</button><button data-t="sesi">Sesi</button><button data-t="log">Log</button></div>
       <div class="qd-pane" id="qdPane"></div>
+      <div class="qd-pane" id="qdArus" hidden>
+        <div class="qd-pm"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Arus transaksi live <button type="button" class="qd-help" data-h="arus" aria-label="Bantuan">?</button></b><span class="qd-sub" id="qaRate">—</span></div>
+        <div class="qd-cnt"><span style="color:var(--green)" id="qaB">BUYER 0×</span><span style="color:var(--red)" id="qaS">SELLER 0×</span></div>
+        <div class="qd-wavebox"><canvas id="qdWave"></canvas><div class="qd-wl t" id="qaWT">▲ BUYER 50%</div><div class="qd-wl b" id="qaWB">▼ SELLER 50%</div><div class="qd-wl r" id="qaWN">menunggu tick</div></div>
+        <div class="qd-k4"><div><span>Beli 60 dtk</span><b id="qaK1" style="color:var(--green)">—</b></div><div><span>Jual 60 dtk</span><b id="qaK2" style="color:var(--red)">—</b></div><div><span>Delta candle</span><b id="qaK3">—</b></div><div><span>Tick terakhir</span><b id="qaK4">—</b></div></div>
+        <div class="qd-pm" style="margin-top:12px"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Tape transaksi nyata</b><select id="qdTapeMin" class="qd-sel" title="Tampilkan hanya transaksi ≥ ukuran ini"><option value="0">Semua ukuran</option><option value="0.01">≥ 0,01 lot</option><option value="0.05">≥ 0,05 lot</option><option value="0.1">≥ 0,1 lot</option><option value="0.5">≥ 0,5 lot</option></select></div>
+        <div id="qaTape" class="qd-tape"></div>
+        <div class="note qd-small">Data nyata dari transaksi Binance (bukan simulasi). Baris searah dalam 0,6 dtk digabung. Ukuran = jumlah ÷ “1 lot = … unit”.</div>
+      </div>
     </aside>
   </div>
 
-  <div class="note qd-foot">Sumber: Binance Futures publik (kline, aggTrade, depth 1000 level). Harga bisa berbeda tipis dari XAUUSD broker — gunakan Offset. Lot memakai asumsi 1 lot = 100 oz. DOM hanya mencakup ±1000 level order book (zona di luar jangkauan ditandai “di luar DOM”). Zona dideteksi dari candle yang sudah tertutup. Sesi (UTC / WIB): Asia 00–08 / 07–15 · London 08–13 / 15–20 · New York 13–24 / 20–07. Skor &amp; peluang tahan adalah estimasi, bukan jaminan.</div>
+  <div class="note qd-foot">Sumber: Binance Futures publik (kline, aggTrade, depth 1000 level). Harga bisa berbeda tipis dari XAUUSD broker — gunakan Offset. Lot memakai asumsi 1 lot = 100 unit (oz untuk emas); ubah di Pengaturan untuk simbol lain. DOM hanya mencakup ±1000 level order book (zona di luar jangkauan ditandai “di luar DOM”). Zona dideteksi dari candle yang sudah tertutup. Sesi (UTC / WIB): Asia 00–08 / 07–15 · London 08–13 / 15–20 · New York 13–24 / 20–07. Skor &amp; peluang tahan adalah estimasi, bukan jaminan.</div>
 </div>
 </section>
 
@@ -10378,7 +10448,7 @@ if (!$('view-qdom') || !$('qdCv')) return;
 const LSG = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
 const LSS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
 const act = () => $('view-qdom').classList.contains('active');
-const f2 = (v, d = 2) => Number.isFinite(v) ? v.toFixed(d) : '—';
+const f2 = (v, d) => Number.isFinite(v) ? v.toFixed(d == null ? (Q.dec || 2) : d) : '—';
 const lotF = v => !Number.isFinite(v) ? '—' : v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const HOSTS = {
@@ -10397,12 +10467,15 @@ const wib = (t, o) => new Date(t).toLocaleString('id-ID', Object.assign({ timeZo
 const Q = {
   sym: LSG('qd_sym', 'XAUUSDT'), tf: LSG('qd_tf', '15m'), n: +LSG('qd_n', 150) || 150, lot: +LSG('qd_lot', 100) || 100,
   optDom: LSG('qd_dom', true), optMid: LSG('qd_mid', true), optSess: LSG('qd_sess', true),
-  host: 'fut', near: +LSG('qd_near', 0) || 0, optVol: LSG('qd_vol', true), volTh: +LSG('qd_volth', 2) || 2, sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
+  host: 'fut', wImp: +LSG('qd_wimp', 30), wFr: +LSG('qd_wfr', 25), wVol: +LSG('qd_wvol', 20), wDom: +LSG('qd_wdom', 15), wFlow: +LSG('qd_wflow', 10), frMode: LSG('qd_frmode', 'absorb'), gap: +LSG('qd_gap', .5), staleSec: +LSG('qd_stale', 15), fav: LSG('qd_fav', []), syms: LSG('qd_syms', []), lots: LSG('qd_lots', {}), optVp: LSG('qd_vp', true), optEma: LSG('qd_emal', true), optPin: LSG('qd_pin', true), zf: 'all', tapeMin: 0, tape: [], cnt: { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }, wave: [], waveAcc: { b: 0, s: 0 }, tickTs: [], lastTick: 0, stale: false, dec: 2, near: +LSG('qd_near', 0) || 0, optVol: LSG('qd_vol', true), volTh: +LSG('qd_volth', 2) || 2, sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
   log: LSG('qd_log', []), zs: {}, ws: null, wsOk: false, wsTry: 0, lastMsg: 0, lastDepth: 0, depthBusy: false, depthErr: '',
   mouse: null, dirty: true, tok: 0, started: false, needAn: false, err: '', tick: 0, lastDraw: 0
 };
-if (!Array.isArray(Q.log)) Q.log = [];
-const DEF = { thS: 1.8, thM: 1.0, hold: 6, maxZ: 4, emaN: 50, swL: 5, near: 0, volTh: 2 };
+if (!Array.isArray(Q.log)) Q.log = []; if (!Array.isArray(Q.fav)) Q.fav = []; if (!Array.isArray(Q.syms)) Q.syms = []; if (!Q.lots || typeof Q.lots !== 'object') Q.lots = {};
+if (!Object.keys(Q.lots).length) { const ol = +LSG('qd_lot', 0); if (ol) Q.lots[Q.sym] = ol; }
+function lotFor(sym) { return +Q.lots[sym] || (/^(XAU|PAXG)/.test(sym) ? 100 : 1); }
+Q.lot = lotFor(Q.sym);
+const DEF = { thS: 1.8, thM: 1.0, hold: 6, maxZ: 4, emaN: 50, swL: 5, near: 0, volTh: 2, wImp: 30, wFr: 25, wVol: 20, wDom: 15, wFlow: 10, gap: .5, staleSec: 15 };
 const HTFS = { '5m': ['1h', '4h'], '15m': ['1h', '4h'], '1h': ['4h', '1d'], '4h': ['1d'] }, TFL = { '1h': 'H1', '4h': 'H4', '1d': 'D1' };
 function fixTh() { if (Q.thM > Q.thS - 0.1) Q.thM = Math.max(0.4, Math.round((Q.thS - 0.1) * 10) / 10); }
 fixTh();
@@ -10422,7 +10495,7 @@ async function load() {
     if (tok !== Q.tok) return;
     Q.host = host;
     Q.c = d.map(k => ({ t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5], tb: +k[9] }));
-    Q.px = Q.c[Q.c.length - 1].c; Q.flow = []; Q.zs = {}; Q.bids = []; Q.asks = [];
+    Q.px = Q.c[Q.c.length - 1].c; Q.dec = Q.px >= 100 ? 2 : Q.px >= 1 ? 4 : 6; Q.flow = []; Q.tape = []; Q.wave = []; Q.cnt = { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }; Q.lastTick = Date.now(); Q.zs = {}; Q.bids = []; Q.asks = [];
     analyze(); openWs(); pollDepth(); loadHtf(); Q.dirty = true; render();
   } catch (e) { if (tok === Q.tok) { Q.err = 'Gagal memuat: ' + (e.message || e) + ' (cek koneksi / blokir Binance, atau simbol tidak tersedia)'; paintSt(); } }
 }
@@ -10439,7 +10512,7 @@ function openWs() {
   closeWs(); Q.wsTry = Date.now(); const s = Q.sym.toLowerCase(); let w;
   try { w = new WebSocket(`${HOSTS[Q.host].ws}${s}@kline_${Q.tf}/${s}@aggTrade`); } catch (e) { return; }
   Q.ws = w;
-  w.onopen = () => { if (Q.ws === w) { Q.wsOk = true; Q.lastMsg = Date.now(); } };
+  w.onopen = () => { if (Q.ws === w) { Q.wsOk = true; Q.lastMsg = Date.now(); Q.lastTick = Date.now(); } };
   w.onclose = () => { if (Q.ws === w) { Q.ws = null; Q.wsOk = false; } };
   w.onerror = () => { };
   w.onmessage = m => {
@@ -10452,7 +10525,7 @@ function openWs() {
       if (k.x) Q.needAn = true; Q.px = row.c;
     } else if (p.e === 'aggTrade') {
       const pr = +p.p + Q.ofs, q = +p.q; Q.px = pr; last.c = pr; if (pr > last.h) last.h = pr; if (pr < last.l) last.l = pr;
-      Q.flow.push({ t: +p.T, q, buy: !p.m }); const lim = Date.now() - 300000; while (Q.flow.length && Q.flow[0].t < lim) Q.flow.shift();
+      Q.flow.push({ t: +p.T, q, buy: !p.m }); const lim = Date.now() - 300000; while (Q.flow.length && Q.flow[0].t < lim) Q.flow.shift(); tapeAdd(+p.T, !p.m, q, pr, last.t);
     }
     Q.dirty = true;
   };
@@ -10574,6 +10647,7 @@ function applyOfs(v) {
 }
 function calib() {
   if (!Q.c.length) return;
+  if (!/^(XAU|PAXG)/.test(Q.sym)) { applyOfs(0); Q.ofsInfo = 'Offset broker hanya berlaku untuk simbol emas.'; return; }
   if (Q.ofsMode === 'off') { applyOfs(0); Q.ofsInfo = 'Offset off: harga murni Binance.'; return; }
   if (Q.ofsMode === 'man') {
     const usd = Q.ofsU === 'pt' ? Q.ofsMan * 0.01 : Q.ofsMan;
@@ -10602,8 +10676,9 @@ function rescore() {
   const fol = Q.mode === 'follow'; if (fol) followDir(); const wantS = !fol || Q.dir === 'sell', wantD = !fol || Q.dir === 'buy', lim = Q.maxZ + (fol ? 2 : 0);
   const pick = arr => { const r = arr.slice(0, lim); if (r.length && !r.some(z => z.tier === 'S')) { const s = arr.slice(lim).find(z => z.tier === 'S'); if (s) r[r.length - 1] = s; } return r; };
   const nl = Q.near > 0 ? Q.near * (Q.atr || 1) : Infinity;
-  const sup = wantS ? pick(act0.filter(z => z.type === 'S' && z.top > px && z.bot - px <= nl).sort((a, b) => a.bot - b.bot)) : [];
-  const dem = wantD ? pick(act0.filter(z => z.type === 'D' && z.bot < px && px - z.top <= nl).sort((a, b) => b.top - a.top)) : [];
+  const dc = arr => { if (!(Q.gap > 0)) return arr; const g = Q.gap * (Q.atr || 1), out = []; for (const z of arr) { const i = out.findIndex(k => Math.abs(k.mid - z.mid) < g); if (i < 0) out.push(z); else if (z.tier === 'S' && out[i].tier === 'M') out[i] = z; } return out; };
+  const sup = wantS ? pick(dc(act0.filter(z => z.type === 'S' && z.top > px && z.bot - px <= nl).sort((a, b) => a.bot - b.bot))) : [];
+  const dem = wantD ? pick(dc(act0.filter(z => z.type === 'D' && z.bot < px && px - z.top <= nl).sort((a, b) => b.top - a.top))) : [];
   Q.zones = [...sup, ...dem];
   const E = emp();
   Q.zones.forEach(z => {
@@ -10613,7 +10688,8 @@ function rescore() {
     z.cov = !bidsOk ? 0 : D ? (z.bot >= domLo ? 2 : z.top >= domLo ? 1 : 0) : (z.top <= domHi ? 2 : z.bot <= domHi ? 1 : 0);
     const prim = (D ? z.bidL : z.askL) * Q.lot, dens = D ? bd : ad, exp = dens * w, ratio = exp > 0 ? prim / exp : 0;
     z.nT = z.tests.length; z.held = z.tests.filter(t => t.res === 'ditahan').length; z.pend = z.tests.filter(t => t.res === 'berjalan').length;
-    const sImp = Math.min(30, z.imp / 3 * 30), sFresh = [25, 17, 10, 4][Math.min(3, z.nT)], sVol = Math.min(20, (z.vol / 4) / meanV / 2 * 20), sDom = z.cov === 0 ? 7 : Math.min(15, ratio / 3 * 15), sFlow = (D ? S.buyer : S.seller) / 100 * 10;
+    const WS_ = Q.wImp + Q.wFr + Q.wVol + Q.wDom + Q.wFlow || 1, nImp = Math.min(1, z.imp / 3), nFr = Q.frMode === 'accum' ? [.35, .6, .8, 1][Math.min(3, z.held)] : [1, .68, .4, .16][Math.min(3, z.nT)], nVol = Math.min(1, (z.vol / 4) / meanV / 2), nDom = z.cov === 0 ? 7 / 15 : Math.min(1, ratio / 3), nFlow = (D ? S.buyer : S.seller) / 100;
+    const mImp = Q.wImp / WS_ * 100, mFr = Q.wFr / WS_ * 100, mVol = Q.wVol / WS_ * 100, mDom = Q.wDom / WS_ * 100, mFlow = Q.wFlow / WS_ * 100, sImp = nImp * mImp, sFresh = nFr * mFr, sVol = nVol * mVol, sDom = nDom * mDom, sFlow = nFlow * mFlow;
     let bonus = 0; z.conf = [];
     Q.htfZ.forEach(hz => {
       const ov = Math.min(z.top, hz.top) - Math.max(z.bot, hz.bot);
@@ -10622,8 +10698,8 @@ function rescore() {
     });
     z.bonus = Math.round(clamp(bonus, -12, 20));
     z.score = Math.round(clamp(sImp + sFresh + sVol + sDom + sFlow + z.bonus, 0, 100));
-    z.pv = { imp: sImp, fresh: sFresh, vol: sVol, dom: sDom, flow: sFlow, htf: z.bonus };
-    z.parts = `impuls ${sImp.toFixed(0)}/30 · kesegaran ${sFresh}/25 · volume ${sVol.toFixed(0)}/20 · DOM ${sDom.toFixed(0)}/15 · arus ${sFlow.toFixed(0)}/10 · HTF ${z.bonus >= 0 ? '+' : ''}${z.bonus}`;
+    z.pv = { imp: sImp, fresh: sFresh, vol: sVol, dom: sDom, flow: sFlow, htf: z.bonus }; z.pm = { imp: mImp, fresh: mFr, vol: mVol, dom: mDom, flow: mFlow };
+    z.parts = `impuls ${sImp.toFixed(0)}/${mImp.toFixed(0)} · kesegaran ${sFresh.toFixed(0)}/${mFr.toFixed(0)} · volume ${sVol.toFixed(0)}/${mVol.toFixed(0)} · DOM ${sDom.toFixed(0)}/${mDom.toFixed(0)} · arus ${sFlow.toFixed(0)}/${mFlow.toFixed(0)} · HTF ${z.bonus >= 0 ? '+' : ''}${z.bonus}`;
     const ea = E[z.tier] || [0, 0], cal = ea[0] >= 15;
     z.hold = Math.round((cal ? clamp((ea[1] + 1) / (ea[0] + 2) + (z.score - 50) * .004 + Math.min(.06, .02 * z.held), .05, .95) : clamp(.30 + .60 * z.score / 100 + Math.min(.09, .03 * z.held), .08, .92)) * 100); z.holdSrc = cal ? `kalibrasi historis (${ea[0]} uji)` : 'heuristik (data uji sedikit)';
     z.ratio = ratio;
@@ -10656,10 +10732,10 @@ const setH = (id, h) => { const e = $(id); if (e && e.dataset.h !== h) { e.datas
 const bar = (v, col) => `<span class="qd-bar"><i style="width:${clamp(v, 0, 100)}%;background:${col}"></i></span>`;
 const scCol = s => s >= 70 ? 'var(--green)' : s >= 45 ? 'var(--amber)' : 'var(--red)';
 const sideName = z => z.type === 'D' ? 'DEMAND' : 'SUPPLY', tierName = z => z.tier === 'M' ? 'MEDIUM' : 'STRONG';
-const fDist = z => z.inside ? 'di dalam zona' : `${f2(z.dist)} $ · ${Math.round(z.dist * 100)} poin`;
+const fDist = z => z.inside ? 'di dalam zona' : `${f2(z.dist)} $${pts(z.dist)}`;
 const byKey = k => Q.zones.find(z => z.key === k) || null;
 function domBins() {
-  const stp = [.1, .2, .5, 1, 2, 5, 10, 20].find(v => v >= (Q.atr || 1) * .25) || 20;
+  const x0 = Math.max((Q.atr || 1) * .25, 1e-8), e10 = Math.pow(10, Math.floor(Math.log10(x0))), stp = [1, 2, 5, 10].map(m => m * e10).find(v => v >= x0);
   const agg = arr => { const m = new Map(); arr.forEach(([p, q]) => { const k = Math.floor(p / stp + 1e-9); m.set(k, (m.get(k) || 0) + q); }); return [...m].map(([k, q]) => ({ p: k * stp, l: q / Q.lot })); };
   return { stp, A: agg(Q.asks), B: agg(Q.bids) };
 }
@@ -10693,6 +10769,17 @@ function draw() {
   // label tanpa tabrakan
   const occ = [], place = y => { for (const dy of [0, 12, -12, 24, -24]) { const yy = y + dy; if (yy < pt + 9 || yy > pt + ph - 3) continue; if (!occ.some(o => Math.abs(o - yy) < 11)) { occ.push(yy); return yy; } } return null; };
   const tag = (txt, y, col, force, right) => { const yy = place(y); if (yy == null && !force) return; const y0 = yy == null ? y : yy; c.font = '700 9.5px sans-serif'; const w = c.measureText(txt).width + 8; c.fillStyle = 'rgba(5,10,24,.8)'; if (right) { c.fillRect(aw - w - 2, y0 - 9, w, 12); c.fillStyle = col; c.textAlign = 'right'; c.fillText(txt, aw - 6, y0); } else { c.fillRect(2, y0 - 9, w, 12); c.fillStyle = col; c.fillText(txt, 6, y0); } c.textAlign = 'left'; };
+  // volume profile (VP) + POC / value area
+  if (Q.optVp && vis.length > 4) {
+    const NB = 48, stp = (hi - lo) / NB, vp = new Array(NB).fill(0);
+    vis.forEach(k => { const a = clamp(Math.floor((k.l - lo) / stp), 0, NB - 1), b = clamp(Math.floor((k.h - lo) / stp), 0, NB - 1), sh = k.v / (b - a + 1); for (let j = a; j <= b; j++) vp[j] += sh; });
+    let poc = 0, tot = 0; vp.forEach((v, j) => { tot += v; if (v > vp[poc]) poc = j; });
+    let l2 = poc, h2 = poc, acc = vp[poc]; while (acc < tot * .7 && (l2 > 0 || h2 < NB - 1)) { const dn = l2 > 0 ? vp[l2 - 1] : -1, up = h2 < NB - 1 ? vp[h2 + 1] : -1; if (dn >= up) { l2--; acc += vp[l2]; } else { h2++; acc += vp[h2]; } }
+    const wmax = aw * .2; vp.forEach((v, j) => { const y1 = Y(lo + (j + 1) * stp), y2 = Y(lo + j * stp), w = v / (vp[poc] || 1) * wmax; c.fillStyle = j === poc ? 'rgba(168,85,247,.40)' : (j >= l2 && j <= h2 ? 'rgba(168,85,247,.20)' : 'rgba(168,85,247,.09)'); c.fillRect(aw - w, y1, w, Math.max(1, y2 - y1 - 1)); });
+    const yp = Y(lo + (poc + .5) * stp); c.strokeStyle = 'rgba(192,132,252,.85)'; c.lineWidth = 1; c.setLineDash([2, 3]); c.beginPath(); c.moveTo(0, yp); c.lineTo(aw, yp); c.stroke(); c.setLineDash([]);
+    [lo + (h2 + 1) * stp, lo + l2 * stp].forEach(p => { const y = Y(p); c.strokeStyle = 'rgba(192,132,252,.35)'; c.setLineDash([1, 4]); c.beginPath(); c.moveTo(aw - wmax, y); c.lineTo(aw, y); c.stroke(); c.setLineDash([]); });
+    tag(`POC ${f2(lo + (poc + .5) * stp)}`, yp - 3, '#c084fc', false, false);
+  }
   // EQ band
   if (Q.optZ && Q.eq) { c.fillStyle = 'rgba(53,224,255,.06)'; c.fillRect(0, Y(Q.eq.hi), aw, Y(Q.eq.lo) - Y(Q.eq.hi)); }
   // zona HTF
@@ -10711,6 +10798,16 @@ function draw() {
   });
   // candle
   vis.forEach((k, i) => { const x = i * cw + cw / 2, up = k.c >= k.o, col = up ? '#2df5a3' : '#ff4b6e', bw = Math.max(1, cw * .68); c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 1; c.beginPath(); c.moveTo(x, Y(k.h)); c.lineTo(x, Y(k.l)); c.stroke(); const y1 = Y(Math.max(k.o, k.c)), y2 = Y(Math.min(k.o, k.c)); c.fillRect(x - bw / 2, y1, bw, Math.max(1, y2 - y1)); });
+  // garis EMA
+  if (Q.optEma && N > 3) { const kk = 2 / (Q.emaN + 1); let e = all[0].c, st = false; c.beginPath(); for (let g = 0; g < N; g++) { e = all[g].c * kk + e * (1 - kk); const sl = g - start; if (sl >= 0 && sl < vis.length) { const x = sl * cw + cw / 2, y = Y(e); if (st) c.lineTo(x, y); else c.moveTo(x, y); st = true; } } c.strokeStyle = 'rgba(56,189,248,.85)'; c.lineWidth = 1.4; c.stroke(); }
+  // pin titik uji zona (#1, #2 ...)
+  if (Q.optPin && Q.optZ) zs.forEach(z => {
+    const sel = Q.sel === z.key, sup = z.type === 'S'; let pv = null;
+    z.tests.forEach((t, ti) => { const sl = t.j - start; if (sl < 0 || sl >= vis.length) return; const k = all[t.j]; if (!k) return; const x = sl * cw + cw / 2, y = Y(sup ? k.h : k.l);
+      if (pv) { c.strokeStyle = 'rgba(245,158,11,.5)'; c.lineWidth = 1; c.setLineDash([2, 2]); c.beginPath(); c.moveTo(pv.x, pv.y); c.lineTo(x, y); c.stroke(); c.setLineDash([]); } pv = { x, y };
+      c.fillStyle = t.res === 'tembus' ? '#ff4b6e' : t.res === 'berjalan' ? '#a7b6dc' : '#f59e0b'; c.beginPath(); c.arc(x, y, sel ? 4.2 : 3, 0, 6.2832); c.fill();
+      if (sel || zs.length <= 3) { const txt = `#${ti + 1}${t.res === 'ditahan' ? '✓' : t.res === 'tembus' ? '✗' : '…'}`; c.font = '700 9px sans-serif'; const w = c.measureText(txt).width + 6, yy = sup ? y - 12 : y + 14; c.fillStyle = 'rgba(11,16,28,.92)'; c.fillRect(x - w / 2, yy - 9, w, 12); c.strokeStyle = '#f59e0b'; c.lineWidth = 1; c.strokeRect(x - w / 2, yy - 9, w, 12); c.fillStyle = '#fbbf24'; c.textAlign = 'center'; c.fillText(txt, x, yy); c.textAlign = 'left'; } });
+  });
   // volume + penanda volume tak biasa
   const volInfo = vis.map((k, i) => volRatio(start + i));
   if (vh) {
@@ -10743,20 +10840,20 @@ function draw() {
     c.fillStyle = '#7384b4'; c.font = '9px sans-serif'; c.fillText('DOM', x0, pt - 5);
   }
   // sumbu harga + tag zona terpilih
-  c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; for (let i = 0; i <= 6; i++) { const p = hi - (hi - lo) * i / 6; c.fillText(p.toFixed(2), W - AX + 6, clamp(pt + ph * i / 6 + 3, 12, pt + ph)); }
-  const sz = zs.find(z => z.key === Q.sel); if (sz) { const col = sz.tier === 'M' ? '#ffc94a' : sz.type === 'D' ? '#2df5a3' : '#ff4b6e'; [[sz.top, Y(sz.top) + 1], [sz.bot, Y(sz.bot) - 1]].forEach(([p, y]) => { y = clamp(y, pt + 8, pt + ph - 8); c.fillStyle = col; c.fillRect(W - AX + 1, y - 8, AX - 2, 16); c.fillStyle = '#04110c'; c.font = '700 10px sans-serif'; c.fillText(p.toFixed(2), W - AX + 5, y + 3.5); }); }
+  c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; for (let i = 0; i <= 6; i++) { const p = hi - (hi - lo) * i / 6; c.fillText(f2(p), W - AX + 6, clamp(pt + ph * i / 6 + 3, 12, pt + ph)); }
+  const sz = zs.find(z => z.key === Q.sel); if (sz) { const col = sz.tier === 'M' ? '#ffc94a' : sz.type === 'D' ? '#2df5a3' : '#ff4b6e'; [[sz.top, Y(sz.top) + 1], [sz.bot, Y(sz.bot) - 1]].forEach(([p, y]) => { y = clamp(y, pt + 8, pt + ph - 8); c.fillStyle = col; c.fillRect(W - AX + 1, y - 8, AX - 2, 16); c.fillStyle = '#04110c'; c.font = '700 10px sans-serif'; c.fillText(f2(p), W - AX + 5, y + 3.5); }); }
   // sumbu waktu
   const per = Math.max(1, Math.round(vis.length / (W < 700 ? 4 : 7))); c.fillStyle = '#7384b4'; c.font = '9px sans-serif';
   for (let i = 0; i < vis.length; i += per) { const t = vis[i].t, lab = Q.tf === '1h' || Q.tf === '4h' ? wib(t, { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }) : wib(t, { hour: '2-digit', minute: '2-digit', hour12: false }); c.fillText(lab, i * cw, H - 7); }
   // harga live
   const yp = clamp(Y(px), pt, pt + ph); c.strokeStyle = '#ffc94a'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(0, yp); c.lineTo(W - AX, yp); c.stroke(); c.setLineDash([]);
-  c.fillStyle = '#ffc94a'; c.fillRect(W - AX + 1, yp - 8, AX - 2, 16); c.fillStyle = '#1c1300'; c.font = '700 10px sans-serif'; c.fillText(px.toFixed(2), W - AX + 5, yp + 3.5);
+  c.fillStyle = '#ffc94a'; c.fillRect(W - AX + 1, yp - 8, AX - 2, 16); c.fillStyle = '#1c1300'; c.font = '700 10px sans-serif'; c.fillText(f2(px), W - AX + 5, yp + 3.5);
   // crosshair
   const m = Q.mouse; if (m && !(Q.drag && Q.drag.moved) && m.x >= 0 && m.x <= aw && m.y >= pt && m.y <= pt + ph + vh) {
     const inP = m.y <= pt + ph; c.strokeStyle = 'rgba(238,243,255,.35)'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(m.x, pt); c.lineTo(m.x, pt + ph + vh); if (inP) { c.moveTo(0, m.y); c.lineTo(W - AX, m.y); } c.stroke(); c.setLineDash([]);
-    const p = inP ? hi - (m.y - pt) / ph * (hi - lo) : px; if (inP) { c.fillStyle = '#2a3a6e'; c.fillRect(W - AX + 1, m.y - 8, AX - 2, 16); c.fillStyle = '#fff'; c.font = '10px sans-serif'; c.fillText(p.toFixed(2), W - AX + 5, m.y + 3.5); }
+    const p = inP ? hi - (m.y - pt) / ph * (hi - lo) : px; if (inP) { c.fillStyle = '#2a3a6e'; c.fillRect(W - AX + 1, m.y - 8, AX - 2, 16); c.fillStyle = '#fff'; c.font = '10px sans-serif'; c.fillText(f2(p), W - AX + 5, m.y + 3.5); }
     const ki = clamp(Math.floor(m.x / cw), 0, vis.length - 1), k = vis[ki], dl = p - px, vi = volInfo[ki];
-    if (k) { c.fillStyle = 'rgba(5,10,24,.8)'; c.fillRect(2, H - 34, Math.min(aw, 620), 14); c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; c.fillText(`${wib(k.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })}  O ${f2(k.o)}  H ${f2(k.h)}  L ${f2(k.l)}  C ${f2(k.c)}  Vol ${lotF(k.v / Q.lot)} lot (${vi.r.toFixed(1)}×)  ·  Δ harga ${dl >= 0 ? '+' : ''}${f2(dl)} $ (${Math.round(Math.abs(dl) * 100)}p)`, 6, H - 24); }
+    if (k) { c.fillStyle = 'rgba(5,10,24,.8)'; c.fillRect(2, H - 34, Math.min(aw, 620), 14); c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; c.fillText(`${wib(k.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })}  O ${f2(k.o)}  H ${f2(k.h)}  L ${f2(k.l)}  C ${f2(k.c)}  Vol ${lotF(k.v / Q.lot)} lot (${vi.r.toFixed(1)}×)  ·  Δ harga ${dl >= 0 ? '+' : ''}${f2(dl)} $ ${isGold() ? '(' + Math.round(Math.abs(dl) * 100) + 'p)' : ''}`, 6, H - 24); }
   }
 }
 
@@ -10765,9 +10862,9 @@ const htfCell = z => z.conf && z.conf.length ? z.conf.map(x => `<span class="qd-
 const sessTally = z => { const o = { asia: [0, 0, 0], london: [0, 0, 0], ny: [0, 0, 0] }; z.tests.forEach(t => { const a = o[t.sess]; a[0]++; if (t.res === 'ditahan') a[1]++; else if (t.res === 'tembus') a[2]++; }); return o; };
 const domTxt = z => z.cov === 0 ? 'di luar DOM' : (z.cov === 1 ? '~' : '') + lotF(z.type === 'D' ? z.bidL : z.askL) + ' lot';
 function zoneDetail(z) {
-  const pv = z.pv || {}, bars = [['Impuls', pv.imp, 30], ['Kesegaran', pv.fresh, 25], ['Volume', pv.vol, 20], ['DOM', pv.dom, 15], ['Arus', pv.flow, 10], ['HTF', pv.htf, 20]], w = z.top - z.bot, tl = sessTally(z);
-  return `<div class="qd-zd"><div class="qd-bk">${bars.map(([l, v, m]) => `<div class="qd-bki"><span>${l}</span><div class="qd-bar2"><i style="width:${clamp(Math.abs(v || 0) / m * 100, 0, 100)}%;background:${(v || 0) < 0 ? 'var(--red)' : 'linear-gradient(90deg,var(--green),var(--cyan))'}"></i></div><b>${Math.round(v || 0)}/${m}</b></div>`).join('')}</div>
-  <div class="qd-kv"><div><span>Lebar zona</span><b>${f2(w)} $ · ${Math.round(w * 100)} poin</b></div><div><span>Titik 50%</span><b>${f2(z.mid)}</b></div><div><span>Umur zona</span><b>${fAge(Date.now() - z.t)}</b></div><div><span>Impuls</span><b>${f2(z.imp)}× ATR</b></div>
+  const pv = z.pv || {}, pm = z.pm || {}, mx = (v, d) => v == null ? d : Math.round(v), bars = [['Impuls', pv.imp, mx(pm.imp, 30)], ['Kesegaran', pv.fresh, mx(pm.fresh, 25)], ['Volume', pv.vol, mx(pm.vol, 20)], ['DOM', pv.dom, mx(pm.dom, 15)], ['Arus', pv.flow, mx(pm.flow, 10)], ['HTF', pv.htf, 20]], w = z.top - z.bot, tl = sessTally(z);
+  return `<div class="qd-zd"><div class="qd-bk">${bars.map(([l, v, m]) => `<div class="qd-bki"><span>${l}</span><div class="qd-bar2"><i style="width:${m ? clamp(Math.abs(v || 0) / m * 100, 0, 100) : 0}%;background:${(v || 0) < 0 ? 'var(--red)' : 'linear-gradient(90deg,var(--green),var(--cyan))'}"></i></div><b>${Math.round(v || 0)}/${m}</b></div>`).join('')}</div>
+  <div class="qd-kv"><div><span>Lebar zona</span><b>${f2(w)} $${pts(w)}</b></div><div><span>Titik 50%</span><b>${f2(z.mid)}</b></div><div><span>Umur zona</span><b>${fAge(Date.now() - z.t)}</b></div><div><span>Impuls</span><b>${f2(z.imp)}× ATR</b></div>
   <div><span>Vol formasi</span><b>${lotF(z.volL)} lot</b></div><div><span>DOM di zona (bid / ask)</span><b>${z.cov === 0 ? 'di luar DOM' : lotF(z.bidL) + ' / ' + lotF(z.askL) + ' lot'}</b></div>
   <div style="grid-column:1/-1"><span>Diuji per sesi (✓ ditahan · ✗ tembus)</span><b>${Object.keys(SESS).map(k => `<span class="qd-sess" style="color:${SESS[k].c};font:700 11px var(--fm);text-transform:none;letter-spacing:0">${SESS[k].n} ${tl[k][0]}× <small>${tl[k][1]}✓ ${tl[k][2]}✗</small></span>`).join('')}</b></div>
   <div style="grid-column:1/-1"><span>Sumber peluang tahan</span><b>${z.holdSrc}</b></div></div>
@@ -10776,14 +10873,14 @@ function zoneDetail(z) {
 function zoneCard(z) {
   const M = z.tier === 'M', sel = Q.sel === z.key, near = !z.inside && z.dist <= .5 * (Q.atr || 1), st = z.inside ? '<b class="warn">● sedang diuji</b>' : near ? '<span class="qd-near">⚡ mendekati</span>' : z.nT === 0 ? 'fresh' : '';
   return `<div class="qd-zc ${z.type} ${M ? 'M' : ''} ${sel ? 'sel' : ''}" data-key="${z.key}">
-    <div class="qd-zt"><span class="qd-badge ${z.type}">${sideName(z)}</span><span class="qd-badge ${M ? 'M' : 'ST'}">${tierName(z)}</span><span class="qd-zr">${f2(z.bot)} – ${f2(z.top)}</span></div>
+    <div class="qd-zt"><span class="qd-badge ${z.type}">${sideName(z)}</span><span class="qd-badge ${M ? 'M' : 'ST'}">${tierName(z)}</span>${gradeBadge(z)}<span class="qd-zr">${f2(z.bot)} – ${f2(z.top)}</span></div>
     <div class="qd-zm"><span>${fDist(z)}</span><span>${st}</span><span>${htfCell(z)}</span></div>
     <div class="qd-zs"><div class="qd-sbar"><b style="color:${scCol(z.score)}">${z.score}</b><div class="qd-bar2"><i style="width:${z.score}%;background:${scCol(z.score)}"></i></div></div><span>tahan <b>${z.hold}%</b></span><span>uji <b>${z.nT}×</b> <small>${z.held}✓</small></span><span>DOM <b>${domTxt(z)}</b></span></div>
     ${sel ? zoneDetail(z) : ''}</div>`;
 }
 function matrixTable() {
-  const px = Q.px, sup = Q.zones.filter(z => z.type === 'S').sort((a, b) => b.bot - a.bot), dem = Q.zones.filter(z => z.type === 'D').sort((a, b) => b.top - a.top);
-  const row = z => `<tr><td><span class="qd-badge ${z.type}">${sideName(z)}</span></td><td><span class="qd-badge ${z.tier === 'M' ? 'M' : 'ST'}">${tierName(z)}</span></td><td>${htfCell(z) || '<span class="qd-sub">—</span>'}</td><td class="mono">${f2(z.bot)} – ${f2(z.top)}<div class="qd-sub">50%: ${f2(z.mid)}</div></td><td class="mono">${fDist(z)}</td><td class="mono ${z.type === 'D' ? 'pos' : 'neg'}">${domTxt(z)}</td><td class="mono">${lotF(z.volL)} lot</td><td class="mono">${z.nT}×<div class="qd-sub">${z.held} ditahan</div></td><td class="mono"><b>${z.hold}%</b><div class="qd-sub">${z.holdSrc}</div></td><td title="${z.parts}">${bar(z.score, scCol(z.score))}<b>${z.score}</b></td></tr>`;
+  const px = Q.px, sup = Q.zones.filter(zflt).filter(z => z.type === 'S').sort((a, b) => b.bot - a.bot), dem = Q.zones.filter(zflt).filter(z => z.type === 'D').sort((a, b) => b.top - a.top);
+  const row = z => `<tr><td><span class="qd-badge ${z.type}">${sideName(z)}</span></td><td><span class="qd-badge ${z.tier === 'M' ? 'M' : 'ST'}">${tierName(z)}</span> ${gradeBadge(z)}</td><td>${htfCell(z) || '<span class="qd-sub">—</span>'}</td><td class="mono">${f2(z.bot)} – ${f2(z.top)}<div class="qd-sub">50%: ${f2(z.mid)}</div></td><td class="mono">${fDist(z)}</td><td class="mono ${z.type === 'D' ? 'pos' : 'neg'}">${domTxt(z)}</td><td class="mono">${lotF(z.volL)} lot</td><td class="mono">${z.nT}×<div class="qd-sub">${z.held} ditahan</div></td><td class="mono"><b>${z.hold}%</b><div class="qd-sub">${z.holdSrc}</div></td><td title="${z.parts}">${bar(z.score, scCol(z.score))}<b>${z.score}</b></td></tr>`;
   return `<table class="xt" style="min-width:790px"><tr><th>Tipe</th><th>Kelas</th><th>HTF</th><th>Zona</th><th>Jarak</th><th>Lot DOM</th><th>Vol formasi</th><th>Diuji</th><th>Peluang tahan</th><th>Skor</th></tr>${sup.map(row).join('')}<tr class="qd-pxrow"><td colspan="10">▶ HARGA ${f2(px)}${Q.eq ? ` · EQ ${f2(Q.eq.mid)}` : ''} ◀</td></tr>${dem.map(row).join('')}</table>`;
 }
 function diag() {
@@ -10802,9 +10899,9 @@ function diag() {
   return h + ` Hold historis pada data dimuat: ${tx('Strong', e.S)} · ${tx('Medium', e.M)}.`;
 }
 function paneZona() {
-  const zs = Q.zones, S = zs.filter(z => z.type === 'S').sort((a, b) => b.bot - a.bot), D = zs.filter(z => z.type === 'D').sort((a, b) => b.top - a.top);
-  let h = `<div class="qd-pm"><div class="qd-seg sm" id="qdVSeg"><button data-v="card" class="${Q.view === 'card' ? 'on' : ''}">Kartu</button><button data-v="table" class="${Q.view === 'table' ? 'on' : ''}">Tabel</button></div><span class="qd-sub">${zs.length} zona · ${Q.mode === 'follow' ? 'Follow ' + (Q.dir === 'buy' ? '▲ BUY' : '▼ SELL') : 'Hybrid'}</span></div>`;
-  if (!zs.length) return h + `<div class="qd-empty">Belum ada zona yang ditampilkan. ${diag()}</div>`;
+  const zs = Q.zones.filter(zflt), S = zs.filter(z => z.type === 'S').sort((a, b) => b.bot - a.bot), D = zs.filter(z => z.type === 'D').sort((a, b) => b.top - a.top);
+  let h = `<div class="qd-pm"><div class="qd-seg sm" id="qdVSeg"><button data-v="card" class="${Q.view === 'card' ? 'on' : ''}">Kartu</button><button data-v="table" class="${Q.view === 'table' ? 'on' : ''}">Tabel</button></div><span class="qd-sub">${zs.length} zona · ${Q.mode === 'follow' ? 'Follow ' + (Q.dir === 'buy' ? '▲ BUY' : '▼ SELL') : 'Hybrid'} ${hq('zones')}</span></div>` + fseg();
+  if (!zs.length) return h + (Q.zones.length ? '<div class="qd-empty">Tidak ada zona untuk filter ini.</div>' : `<div class="qd-empty">Belum ada zona yang ditampilkan. ${diag()}</div>`);
   h += Q.view === 'table' ? `<div class="qd-scroll">${matrixTable()}</div>` : S.map(zoneCard).join('') + `<div class="qd-pxrow2">▶ ${f2(Q.px)}${Q.eq ? ' · EQ ' + f2(Q.eq.mid) : ''} ◀</div>` + D.map(zoneCard).join('');
   return h + `<details class="qd-diag"><summary>Catatan deteksi</summary><div class="note">${diag()}</div></details>`;
 }
@@ -10812,14 +10909,14 @@ function paneDom() {
   const B = Q.bins, px = Q.px; if (!B) return `<div class="qd-empty">${Q.depthErr ? 'DOM gagal dimuat: ' + Q.depthErr : 'Menunggu order book…'}</div>`;
   const top = (a, n) => [...a].sort((x, y) => y.l - x.l).slice(0, n).sort((x, y) => y.p - x.p), A = top(B.A, 6), Bd = top(B.B, 6), mx = Math.max(...A.map(x => x.l), ...Bd.map(x => x.l), 1e-9);
   const tb = Q.bids.reduce((s, x) => s + x[1], 0) / Q.lot, ta = Q.asks.reduce((s, x) => s + x[1], 0) / Q.lot, pb = tb / (tb + ta || 1) * 100, wallP = new Set(Q.walls.map(w => w.p));
-  const tr = (x, ask) => { const mid = x.p + B.stp / 2, dd = Math.abs(mid - px); return `<tr><td class="${ask ? 'neg' : 'pos'}">${ask ? 'ASK' : 'BID'}</td><td class="mono">${f2(x.p)}–${f2(x.p + B.stp)}${wallP.has(mid) ? ' <span class="qd-badge M">WALL</span>' : ''}</td><td>${bar(x.l / mx * 100, ask ? 'var(--red)' : 'var(--green)')}<b>${lotF(x.l)}</b> lot</td><td class="qd-sub">${dd.toFixed(1)} $ · ${Math.round(dd * 100)}p</td></tr>`; };
-  return `<div class="qd-pm"><span class="qd-sub">bin ${B.stp} $ · 1 lot = ${Q.lot} oz</span></div><div class="qd-sub">Total book (±1000 level): bid <b class="pos">${lotF(tb)}</b> · ask <b class="neg">${lotF(ta)}</b> lot</div><div class="qd-tsplit"><i style="width:${pb}%;background:var(--green)"></i><i style="width:${100 - pb}%;background:var(--red)"></i></div>
+  const tr = (x, ask) => { const mid = x.p + B.stp / 2, dd = Math.abs(mid - px); return `<tr><td class="${ask ? 'neg' : 'pos'}">${ask ? 'ASK' : 'BID'}</td><td class="mono">${f2(x.p)}–${f2(x.p + B.stp)}${wallP.has(mid) ? ' <span class="qd-badge M">WALL</span>' : ''}</td><td>${bar(x.l / mx * 100, ask ? 'var(--red)' : 'var(--green)')}<b>${lotF(x.l)}</b> lot</td><td class="qd-sub">${f2(dd)} $${isGold() ? ' · ' + Math.round(dd * 100) + 'p' : ''}</td></tr>`; };
+  return `<div class="qd-pm"><span class="qd-sub">${hq('dom')} bin ${B.stp} · 1 lot = ${Q.lot} unit</span></div><div class="qd-sub">Total book (±1000 level): bid <b class="pos">${lotF(tb)}</b> · ask <b class="neg">${lotF(ta)}</b> lot</div><div class="qd-tsplit"><i style="width:${pb}%;background:var(--green)"></i><i style="width:${100 - pb}%;background:var(--red)"></i></div>
   <div class="qd-scroll"><table class="xt qd-dom" style="min-width:330px"><tr><th>Sisi</th><th>Level</th><th>Volume</th><th>Jarak</th></tr>${A.map(x => tr(x, 1)).join('')}<tr class="qd-pxrow"><td colspan="4">▶ ${f2(px)} ◀</td></tr>${Bd.map(x => tr(x, 0)).join('')}</table></div>`;
 }
 function paneSesi() {
   const zs = [...Q.zones].sort((a, b) => b.mid - a.mid);
   const cell = a => a[0] ? `<b>${a[0]}×</b> <span class="qd-sub">${a[1]}✓ ${a[2]}✗</span>` : '<span class="qd-sub">—</span>';
-  let h = '<div class="qd-pm"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Diuji per sesi</b><span class="qd-sub" id="qdSsSt"></span></div>';
+  let h = '<div class="qd-pm"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Diuji per sesi ' + hq('sesi') + '</b><span class="qd-sub" id="qdSsSt"></span></div>';
   if (!zs.length) h += '<div class="qd-empty">Belum ada zona.</div>';
   else {
     const tot = { asia: [0, 0, 0], london: [0, 0, 0], ny: [0, 0, 0] };
@@ -10835,16 +10932,16 @@ function paneSesi() {
 }
 function paneLog() {
   const L = Q.log.filter(x => x.sym === Q.sym).slice(0, 40);
-  return `<div class="qd-pm"><span class="qd-sub">Kejadian live saat halaman terbuka (tersimpan di browser)</span><button class="btn ghost" data-act="clrlog" style="padding:4px 10px">Hapus log</button></div>` + (L.length ? `<div class="qd-scroll"><table class="xt" style="min-width:340px"><tr><th>Waktu (WIB)</th><th>Sesi</th><th>Level</th><th>Hasil</th></tr>${L.map(x => `<tr><td class="mono">${wib(x.ts, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</td><td style="color:${SESS[x.sess].c}">${SESS[x.sess].n}</td><td class="mono"><span class="qd-badge ${x.type}">${x.type}</span> ${f2(x.bot)}–${f2(x.top)}<div class="qd-sub">${x.tf}</div></td><td class="${x.res === 'ditahan' ? 'pos' : x.res === 'tembus' ? 'neg' : 'warn'}"><b>${x.res}</b></td></tr>`).join('')}</table></div>` : '<div class="qd-empty">Belum ada kejadian. Log terisi otomatis saat harga live menyentuh / keluar dari zona.</div>');
+  return `<div class="qd-pm"><span class="qd-sub">Kejadian live saat halaman terbuka ${hq('log')}</span><button class="btn ghost" data-act="clrlog" style="padding:4px 10px">Hapus log</button></div>` + (L.length ? `<div class="qd-scroll"><table class="xt" style="min-width:340px"><tr><th>Waktu (WIB)</th><th>Sesi</th><th>Level</th><th>Hasil</th></tr>${L.map(x => `<tr><td class="mono">${wib(x.ts, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</td><td style="color:${SESS[x.sess].c}">${SESS[x.sess].n}</td><td class="mono"><span class="qd-badge ${x.type}">${x.type}</span> ${f2(x.bot)}–${f2(x.top)}<div class="qd-sub">${x.tf}</div></td><td class="${x.res === 'ditahan' ? 'pos' : x.res === 'tembus' ? 'neg' : 'warn'}"><b>${x.res}</b></td></tr>`).join('')}</table></div>` : '<div class="qd-empty">Belum ada kejadian. Log terisi otomatis saat harga live menyentuh / keluar dari zona.</div>');
 }
 
 /* ---------- Kartu terdekat, tekanan, header ---------- */
 function ncard(id, type, z, hidden) {
   const el = $(id), A = Q.atr || 1;
-  if (hidden) { el.className = 'qd-ncard off ' + type; el.dataset.key = ''; setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span></div><div class="qd-nempty">Sisi ini disembunyikan oleh mode Follow (${Q.dir === 'buy' ? '▲ BUY' : '▼ SELL'}). Ganti ke Hybrid untuk menampilkan keduanya.</div>`); return; }
-  if (!z) { el.className = 'qd-ncard off ' + type; el.dataset.key = ''; setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span></div><div class="qd-nempty">${Q.c.length ? 'Tidak ada zona aktif di sisi ini (lihat “Catatan deteksi” di tab Zona).' + (Q.near > 0 ? ` Filter jarak ≤ ${Q.near} ATR aktif.` : '') : 'Menunggu data…'}</div>`); return; }
+  if (hidden) { el.className = 'qd-ncard off ' + type; el.dataset.key = ''; setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat ${hq('nearest')}</span></div><div class="qd-nempty">Sisi ini disembunyikan oleh mode Follow (${Q.dir === 'buy' ? '▲ BUY' : '▼ SELL'}). Ganti ke Hybrid untuk menampilkan keduanya.</div>`); return; }
+  if (!z) { el.className = 'qd-ncard off ' + type; el.dataset.key = ''; setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat ${hq('nearest')}</span></div><div class="qd-nempty">${Q.c.length ? 'Tidak ada zona aktif di sisi ini (lihat “Catatan deteksi” di tab Zona).' + (Q.near > 0 ? ` Filter jarak ≤ ${Q.near} ATR aktif.` : '') : 'Menunggu data…'}</div>`); return; }
   const M = z.tier === 'M', near = !z.inside && z.dist <= .5 * A; el.className = `qd-ncard ${M ? 'M' : type} ${Q.sel === z.key ? 'sel' : ''}`; el.dataset.key = z.key;
-  setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span><span class="qd-badge ${M ? 'M' : 'ST'}">${tierName(z)}</span></div><div class="qd-nr">${f2(z.bot)} – ${f2(z.top)}</div><div class="qd-nm"><span>${fDist(z)}</span><span>${z.inside ? '<b class="warn">● sedang diuji</b>' : near ? '<span class="qd-near">⚡ mendekati</span>' : ''}</span></div><div class="qd-nbar"><i style="width:${z.score}%;background:${scCol(z.score)}"></i></div><div class="qd-nstat"><div>Skor<b>${z.score}</b></div><div>Tahan<b>${z.hold}%</b></div><div>Uji<b>${z.nT}×</b></div><div>DOM<b>${domTxt(z)}</b></div></div>`);
+  setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat ${hq('nearest')}</span><span class="qd-badge ${M ? 'M' : 'ST'}">${tierName(z)}</span></div><div class="qd-nr">${f2(z.bot)} – ${f2(z.top)}</div><div class="qd-nm"><span>${fDist(z)}</span><span>${z.inside ? '<b class="warn">● sedang diuji</b>' : near ? '<span class="qd-near">⚡ mendekati</span>' : ''}</span></div><div class="qd-nbar"><i style="width:${z.score}%;background:${scCol(z.score)}"></i></div><div class="qd-nstat"><div>Skor<b>${z.score}</b></div><div>Tahan<b>${z.hold}%</b></div><div>Uji<b>${z.nT}×</b></div><div>DOM<b>${domTxt(z)}</b></div></div>`);
 }
 function spark() {
   const cv = $('qdSpark'), W = cv.clientWidth || 200, H = 30, d = Math.min(2, devicePixelRatio || 1); if (cv.width !== Math.round(W * d)) { cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
@@ -10871,16 +10968,17 @@ function paintHead() {
   lv.title = `${Q.host === 'fut' ? 'Binance Futures' : 'Binance Spot'} · DOM ${Q.lastDepth ? ((Date.now() - Q.lastDepth) / 1000).toFixed(1) + ' dtk lalu' : '—'}${Q.depthErr ? ' (error: ' + Q.depthErr + ')' : ''} · ${Q.c.length} candle`;
   const px = $('qdPx'); if (Q.px) { const t = f2(Q.px); if (px.textContent !== t) { px.className = 'qd-px ' + (Q.pxPrev && Q.px > Q.pxPrev ? 'up' : Q.pxPrev && Q.px < Q.pxPrev ? 'down' : ''); px.textContent = t; Q.pxPrev = Q.px; } }
   const ofsT = Q.ofsMode === 'off' ? 'off' : (Q.ofs >= 0 ? '+' : '') + f2(Q.ofs) + (Q.ofsMode === 'auto' ? ' auto' : '');
-  setH('qdChips', `<span class="qd-chip">Sesi <b style="color:${SESS[sessOf(Date.now())].c}">${SESS[sessOf(Date.now())].n}</b> · sisa ${sessLeft()}</span><span class="qd-chip">ATR <b>${f2(Q.atr)} $</b> · ${Math.round(Q.atr * 100)}p</span><span class="qd-chip" title="Selisih harga Binance ke broker">Offset <b>${ofsT}</b></span>${volChip()}`);
+  setH('qdChips', `<span class="qd-chip">Sesi <b style="color:${SESS[sessOf(Date.now())].c}">${SESS[sessOf(Date.now())].n}</b> · sisa ${sessLeft()}</span><span class="qd-chip">ATR <b>${f2(Q.atr)} $</b>${isGold() ? ' · ' + Math.round(Q.atr * 100) + 'p' : ''}</span><span class="qd-chip" title="Selisih harga Binance ke broker">Offset <b>${ofsT}</b></span>${volChip()}`);
   const cp = curPreset(); $('qdPreSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === cp));
   $('qdTfSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.tf)); $('qdModeSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.mode));
-  $('qdAlertBtn').classList.toggle('on', !!Q.alOn); $('qdLiveBtn').hidden = Q.pan === 0; setT('qdOfsInfo', Q.ofsInfo);
+  $('qdAlertBtn').classList.toggle('on', !!Q.alOn); $('qdLiveBtn').hidden = Q.pan === 0; setT('qdOfsInfo', Q.ofsInfo); paintStale();
   const ov = $('qdOv'); let h = '';
   if (Q.err && !Q.c.length) h = `<b style="color:var(--red)">Data tidak bisa dimuat</b><div>${Q.err}</div><button class="btn primary" data-act="retry">Coba lagi</button>`;
   else if (!Q.c.length && Q.started) h = '<div class="qd-spin"></div><div>Memuat chart & order book Binance…</div>';
   if (ov.dataset.h !== h) { ov.dataset.h = h; ov.innerHTML = h; ov.hidden = !h; }
 }
 function paintPane() {
+  if (Q.tab === 'arus') { paintArus(); return; }
   if (Q.ptrDown) return; const html = Q.tab === 'zona' ? paneZona() : Q.tab === 'dom' ? paneDom() : Q.tab === 'sesi' ? paneSesi() : paneLog(), p = $('qdPane');
   if (p.dataset.h !== html) { const st = p.scrollTop; p.dataset.h = html; p.innerHTML = html; p.scrollTop = st; }
 }
@@ -10910,16 +11008,15 @@ function alertCheck() {
 }
 
 /* ---------- Kontrol & loop ---------- */
-function reload() { closeWs(); Q.dir = null; Q.lastDirA = null; Q.pan = 0; Q.sel = null; Q.hist = []; Q.htfC = {}; Q.htfZ = []; Q.htfT = 0; Q.c = []; Q.all = []; Q.zones = []; Q.zs = {}; Q.bids = []; Q.asks = []; Q.flow = []; Q.str = null; Q.eq = null; Q.lastDepth = 0; Q.walls = []; Q.bins = null; Q.started = true; load(); render(); }
+function reload() { closeWs(); Q.tape = []; Q.wave = []; Q.cnt = { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }; Q.waveAcc = { b: 0, s: 0 }; Q.tickTs = []; Q.stale = false; Q.lastTick = Date.now(); Q.dir = null; Q.lastDirA = null; Q.pan = 0; Q.sel = null; Q.hist = []; Q.htfC = {}; Q.htfZ = []; Q.htfT = 0; Q.c = []; Q.all = []; Q.zones = []; Q.zs = {}; Q.bids = []; Q.asks = []; Q.flow = []; Q.str = null; Q.eq = null; Q.lastDepth = 0; Q.walls = []; Q.bins = null; Q.started = true; load(); render(); }
 function select(key, scroll) {
   Q.sel = Q.sel === key ? null : key; Q.dirty = true; if (Q.sel) Q.tab = 'zona'; syncTabs(); paintPane(); paintInsight();
   if (Q.sel && scroll) { const e = $('qdPane').querySelector(`.qd-zc[data-key="${CSS.escape(key)}"]`); if (e) e.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 }
-function syncTabs() { $('qdTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === Q.tab)); }
-const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optVol', 'Vol', 'qd_vol'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk']];
+function syncTabs() { $('qdTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === Q.tab)); $('qdPane').hidden = Q.tab === 'arus'; $('qdArus').hidden = Q.tab !== 'arus'; }
+const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optVol', 'Vol', 'qd_vol'], ['optVp', 'VP', 'qd_vp'], ['optEma', 'EMA', 'qd_emal'], ['optPin', 'Pin', 'qd_pin'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk']];
 $('qdLayers').innerHTML = LAYERS.map(([k, l]) => `<button class="qd-lay ${Q[k] ? 'on' : ''}" data-k="${k}">${l}</button>`).join('');
 $('qdLayers').onclick = e => { const b = e.target.closest('button'); if (!b) return; const L = LAYERS.find(x => x[0] === b.dataset.k); Q[L[0]] = !Q[L[0]]; LSS(L[2], Q[L[0]]); b.classList.toggle('on', Q[L[0]]); Q.dirty = true; if (L[0] === 'optMed') { analyze(); render(); } };
-$('qdSym').value = Q.sym; $('qdSym').onchange = e => { Q.sym = e.target.value; LSS('qd_sym', Q.sym); reload(); };
 $('qdTfSeg').onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.v === Q.tf) return; Q.tf = b.dataset.v; LSS('qd_tf', Q.tf); reload(); };
 $('qdModeSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; Q.mode = b.dataset.v; LSS('qd_mode', Q.mode); Q.dir = null; Q.lastDirA = null; render(); };
 $('qdSetBtn').onclick = () => { const d = $('qdSet'); d.hidden = !d.hidden; $('qdSetBtn').classList.toggle('on', !d.hidden); };
@@ -10929,11 +11026,11 @@ $('qdAlSnd').checked = Q.alSnd; $('qdAlSnd').onchange = e => { Q.alSnd = e.targe
 $('qdAlNtf').checked = Q.alNtf; $('qdAlNtf').onchange = e => { Q.alNtf = e.target.checked; LSS('qd_alntf', Q.alNtf); if (Q.alNtf && window.Notification && Notification.permission === 'default') Notification.requestPermission(); };
 $('qdAlDist').value = Q.alDist; $('qdAlDist').onchange = e => { Q.alDist = clamp(+e.target.value || .3, .05, 5); e.target.value = Q.alDist; LSS('qd_aldist', Q.alDist); };
 $('qdN').value = Q.n; $('qdN').onchange = e => { Q.n = clamp(Math.round(+e.target.value || 150), 30, 400); e.target.value = Q.n; LSS('qd_n', Q.n); Q.dirty = true; };
-$('qdLot').value = Q.lot; $('qdLot').onchange = e => { Q.lot = Math.max(.001, +e.target.value || 100); e.target.value = Q.lot; LSS('qd_lot', Q.lot); render(); };
-const PARAMS = [['qdThS', 'thS', 'qd_ths', .6, 6], ['qdThM', 'thM', 'qd_thm', .4, 5], ['qdHold', 'hold', 'qd_hold', 2, 20], ['qdMaxZ', 'maxZ', 'qd_maxz', 1, 10], ['qdEmaN', 'emaN', 'qd_ema', 5, 300], ['qdSwL', 'swL', 'qd_swl', 2, 15], ['qdNear', 'near', 'qd_near', 0, 50], ['qdVolTh', 'volTh', 'qd_volth', 1.2, 10]];
-const paintParams = () => PARAMS.forEach(([id, k]) => { $(id).value = Q[k]; });
+$('qdLot').value = Q.lot; $('qdLot').onchange = e => { Q.lot = Math.max(.001, +e.target.value || 100); e.target.value = Q.lot; LSS('qd_lot', Q.lot); Q.lots[Q.sym] = Q.lot; LSS('qd_lots', Q.lots); render(); };
+const PARAMS = [['qdThS', 'thS', 'qd_ths', .6, 6], ['qdThM', 'thM', 'qd_thm', .4, 5], ['qdHold', 'hold', 'qd_hold', 2, 20], ['qdMaxZ', 'maxZ', 'qd_maxz', 1, 10], ['qdEmaN', 'emaN', 'qd_ema', 5, 300], ['qdSwL', 'swL', 'qd_swl', 2, 15], ['qdNear', 'near', 'qd_near', 0, 50], ['qdVolTh', 'volTh', 'qd_volth', 1.2, 10], ['qdWImp', 'wImp', 'qd_wimp', 0, 60], ['qdWFr', 'wFr', 'qd_wfr', 0, 60], ['qdWVol', 'wVol', 'qd_wvol', 0, 60], ['qdWDom', 'wDom', 'qd_wdom', 0, 60], ['qdWFlow', 'wFlow', 'qd_wflow', 0, 60], ['qdGap', 'gap', 'qd_gap', 0, 5], ['qdStaleSec', 'staleSec', 'qd_stale', 0, 600]];
+const paintParams = () => PARAMS.forEach(([id, k]) => { $(id).value = Q[k]; const l = $(id + 'L'); if (l) l.textContent = Q[k]; });
 const applyParams = () => { PARAMS.forEach(([, k, ls]) => LSS(ls, Q[k])); paintParams(); analyze(); htfBuild(); Q.dirty = true; render(); };
-PARAMS.forEach(([id, k, , mn, mx]) => { $(id).onchange = e => { let v = +e.target.value; if (!Number.isFinite(v) || e.target.value === '') v = DEF[k]; v = clamp(v, mn, mx); if (!['thS', 'thM', 'near', 'volTh'].includes(k)) v = Math.round(v); Q[k] = v; fixTh(); applyParams(); }; });
+PARAMS.forEach(([id, k, , mn, mx]) => { $(id).onchange = e => { let v = +e.target.value; if (!Number.isFinite(v) || e.target.value === '') v = DEF[k]; v = clamp(v, mn, mx); if (!['thS', 'thM', 'near', 'volTh', 'gap'].includes(k)) v = Math.round(v); Q[k] = v; fixTh(); applyParams(); }; });
 paintParams();
 const PK = { tf: 'qd_tf', n: 'qd_n', maxZ: 'qd_maxz', thS: 'qd_ths', thM: 'qd_thm', hold: 'qd_hold', near: 'qd_near', optMed: 'qd_med', optMid: 'qd_mid', optDom: 'qd_dom', optWall: 'qd_wall', optHtf: 'qd_htf', optSess: 'qd_sess', optBrk: 'qd_brk', optVol: 'qd_vol', volTh: 'qd_volth', src: 'qd_src', emaN: 'qd_ema', swL: 'qd_swl', alDist: 'qd_aldist' };
 const PRESETS = {
@@ -10951,7 +11048,7 @@ function applyPreset(name) {
   if (tfChg) reload(); else { analyze(); htfBuild(); render(); }
 }
 $('qdPreSeg').onclick = e => { const b = e.target.closest('button'); if (b) applyPreset(b.dataset.v); };
-$('qdSetReset').onclick = () => { Object.assign(Q, DEF); fixTh(); applyParams(); };
+$('qdSetReset').onclick = () => { Object.assign(Q, DEF); Q.frMode = 'absorb'; LSS('qd_frmode', 'absorb'); $('qdFrMode').value = 'absorb'; fixTh(); applyParams(); };
 $('qdReload').onclick = reload;
 $('qdSrc').value = Q.src; $('qdSrc').onchange = e => { Q.src = e.target.value; LSS('qd_src', Q.src); Q.dir = null; render(); };
 $('qdOfs').value = Q.ofsMode; $('qdOfsV').value = Q.ofsMan; $('qdOfsU').value = Q.ofsU;
@@ -10962,7 +11059,8 @@ $('qdTabs').onclick = e => { const b = e.target.closest('button'); if (!b) retur
 const pane = $('qdPane');
 pane.addEventListener('pointerdown', () => { Q.ptrDown = true; }); addEventListener('pointerup', () => { Q.ptrDown = false; }); addEventListener('pointercancel', () => { Q.ptrDown = false; });
 pane.addEventListener('click', e => {
-  Q.ptrDown = false; const a = e.target.closest('[data-act]'), v = e.target.closest('#qdVSeg button');
+  Q.ptrDown = false; const a = e.target.closest('[data-act]'), v = e.target.closest('#qdVSeg button'), fz = e.target.closest('#qdFSeg button');
+  if (fz) { Q.zf = fz.dataset.f; $('qdPane').dataset.h = ''; paintPane(); return; }
   if (v) { Q.view = v.dataset.v; LSS('qd_view', Q.view); $('qdPane').dataset.h = ''; paintPane(); return; }
   if (a) {
     const z = byKey(a.dataset.key);
@@ -10985,6 +11083,112 @@ cvEl.addEventListener('pointercancel', () => { Q.drag = null; });
 cvEl.addEventListener('pointerleave', () => { if (!Q.drag) { Q.mouse = null; Q.dirty = true; } });
 cvEl.addEventListener('wheel', e => { e.preventDefault(); Q.n = clamp(Math.round(Q.n * (e.deltaY > 0 ? 1.12 : .89)), 30, 400); $('qdN').value = Q.n; LSS('qd_n', Q.n); Q.dirty = true; }, { passive: false });
 cvEl.addEventListener('dblclick', () => { Q.pan = 0; Q.sel = null; Q.dirty = true; paintPane(); paintInsight(); });
+/* ---------- Tambahan v7: simbol & favorit, bantuan, arus transaksi, senyap ---------- */
+const DEFSYMS = ['XAUUSDT', 'XAUTUSDT', 'PAXGUSDT'];
+const isGold = () => /^(XAU|PAXG)/.test(Q.sym), pts = v => isGold() ? ` · ${Math.round(v * 100)} poin` : '';
+const lot3 = v => !Number.isFinite(v) ? '—' : Math.abs(v) >= 10 ? v.toFixed(1) : Math.abs(v) >= 1 ? v.toFixed(2) : v.toFixed(3);
+const hq = k => `<button type="button" class="qd-help" data-h="${k}" aria-label="Bantuan">?</button>`;
+function gradeOf(z) { if (z.score >= 76 && z.nT >= 2 && z.held >= 1) return ['TEMBOK', 'W']; if (z.nT === 0) return ['FRESH', 'F']; if (z.hold < 50) return ['RAWAN', 'R']; return ['TERUJI', 'T']; }
+const gradeBadge = z => { const g = gradeOf(z); return `<span class="qd-badge g${g[1]}" title="Tembok = skor ≥ 76 & sudah diuji ≥ 2× dan pernah ditahan · Fresh = belum pernah diuji · Rawan = peluang tahan < 50% · Teruji = sisanya">${g[0]}</span>`; };
+const zflt = z => Q.zf === 'S' ? z.type === 'S' : Q.zf === 'D' ? z.type === 'D' : Q.zf === 'W' ? gradeOf(z)[1] === 'W' : true;
+const fseg = () => `<div class="qd-seg sm qd-fseg" id="qdFSeg">${[['all', 'Semua'], ['S', 'Supply'], ['D', 'Demand'], ['W', 'Tembok']].map(([k, l]) => `<button data-f="${k}" class="${Q.zf === k ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+
+/* --- bantuan "?" --- */
+const HELP = {
+  pressure: ['Tekanan pasar', 'Perbandingan kekuatan <b style="color:var(--green)">pembeli</b> melawan <b style="color:var(--red)">penjual</b>. Gabungan tiga hal: antrean order di order book (DOM), arus transaksi agresif 20 candle terakhir, dan arus 5 menit terakhir.<br><br>Di atas 55% = buyer dominan, di bawah 45% = seller dominan. Datanya dari bursa Binance, bukan seluruh pasar emas.'],
+  nearest: ['Zona terdekat', '<b>Supply</b> = area jual terdekat di atas harga. <b>Demand</b> = area beli terdekat di bawah harga.<br><br>• <b>Skor</b> 0–100 = kekuatan zona.<br>• <b>Tahan</b> = estimasi peluang harga bertahan di zona (bukan jaminan).<br>• <b>Uji</b> = berapa kali harga sudah menyentuh zona.<br>• <b>DOM</b> = jumlah order yang antre di dalam zona.<br><br>Klik kartu untuk menyorot zonanya di chart.'],
+  zones: ['Daftar zona & label status', '<b>Kelas</b>: Strong (impuls besar) atau Medium (impuls sedang).<br><b>Status</b>:<br>• <b>TEMBOK</b> — skor ≥ 76, sudah diuji ≥ 2× dan pernah ditahan.<br>• <b>FRESH</b> — belum pernah diuji.<br>• <b>TERUJI</b> — sudah diuji dan masih layak.<br>• <b>RAWAN</b> — peluang tahan di bawah 50%.<br><br>Pakai filter Supply / Demand / Tembok untuk menyaring daftar.'],
+  dom: ['DOM (order book)', 'Ringkasan antrean order <b>beli (BID)</b> dan <b>jual (ASK)</b> dari order book Binance sedalam 1000 level. <b>WALL</b> = antrean terbesar. Garis wall juga tampil di chart. Order di DOM bisa ditarik kapan saja, jadi gunakan sebagai konfirmasi, bukan sinyal tunggal.'],
+  arus: ['Arus transaksi (tape nyata)', 'Daftar transaksi nyata dari Binance. <b style="color:var(--green)">BUYER</b> = pembeli agresif (membeli di harga ask), <b style="color:var(--red)">SELLER</b> = penjual agresif.<br><br><b>Gelombang</b> menampilkan selisih beli−jual per detik selama 2 menit: di atas garis tengah (hijau) = buyer dominan, di bawah (merah) = seller dominan. Transaksi beruntun searah dalam 0,6 detik digabung jadi satu baris. Ukuran dalam lot sesuai pengaturan “1 lot = … unit”.'],
+  sesi: ['Riwayat uji per sesi', 'Menghitung berapa kali tiap zona diuji harga dalam sesi Asia, London, dan New York, beserta hasilnya (✓ ditahan, ✗ tembus). Jam sesi: Asia 07–15, London 15–20, New York 20–07 WIB.'],
+  log: ['Log pelacakan live', 'Kejadian yang terekam saat halaman terbuka: harga menyentuh, menahan, atau menembus zona. Tersimpan di browser Anda.'],
+  chart: ['Cara membaca chart', '• <b>Kotak merah/hijau</b> = zona Supply/Demand Strong, <b>kotak kuning</b> = Medium.<br>• <b>Garis putus-putus di tengah zona</b> = titik 50%.<br>• <b>Kotak ungu putus-putus</b> = zona dari timeframe lebih tinggi (HTF).<br>• <b>Titik kuning “#1, #2…”</b> = titik harga menguji zona (✓ ditahan, ✗ tembus).<br>• <b>◆ kuning</b> = candle dengan volume tak biasa.<br>• <b>VP</b> = profil volume (POC = harga paling ramai).<br>• <b>EMA</b> = garis tren sesuai periode di pengaturan.<br>• <b>WALL</b> = antrean order terbesar di order book.<br><br>Geser untuk pan, roda mouse untuk zoom, klik zona untuk detail, klik dua kali untuk reset.'],
+  formula: ['Rumus kekuatan zona', 'Skor 0–100 dihitung dari lima komponen. Atur <b>bobot</b> masing-masing (impuls, kesegaran, volume, DOM, arus). Konfluensi HTF menambah/mengurangi skor di luar bobot ini.<br><br><b>Perilaku kesegaran</b>:<br>• <i>Absorpsi</i> — makin sering diuji makin lemah (zona “terkuras”).<br>• <i>Akumulasi</i> — makin sering diuji dan ditahan makin kuat.<br><br><b>Jarak minimal antar zona</b> menyaring zona yang berhimpitan (dalam kelipatan ATR); zona Strong didahulukan atas Medium.'],
+  volume: ['Volume tak biasa', 'Candle ditandai ◆ bila volumenya ≥ N× rata-rata 20 candle sebelumnya. Di atas 1,5× ambang dianggap ekstrem (bar kuning). Lonjakan volume di zona sering menandakan pertarungan besar di area itu.'],
+  follow: ['Mode Follow & sumber arah', 'Mode <b>Follow</b> hanya menggambar satu sisi zona mengikuti arah pasar. Sumber arah: tekanan buyer/seller, harga vs EMA, atau struktur swing (HH/HL vs LH/LL; BOS = harga menembus swing terakhir).'],
+  alert: ['Alert zona', 'Memberi tahu (notifikasi dalam dashboard, suara, dan opsional notifikasi browser) saat harga mendekati/masuk zona Strong, saat zona ditahan atau tembus, dan saat Follow berbalik arah.'],
+  stale: ['Deteksi senyap', 'Jika tidak ada transaksi baru selama beberapa detik (default 15), tab menampilkan peringatan “senyap”: pasar kemungkinan tutup/jeda, likuiditas sangat tipis, atau koneksi terputus. Otomatis kembali normal begitu transaksi masuk. Isi 0 untuk mematikan.']
+};
+const helpEl = document.createElement('div'); helpEl.id = 'qdHelp'; helpEl.className = 'qd-modal'; helpEl.hidden = true;
+helpEl.innerHTML = '<div class="qd-mw" role="dialog" aria-modal="true"><div class="qd-mt2"><b id="qdHelpT"></b><button type="button" id="qdHelpX">Paham ✕</button></div><div id="qdHelpB" class="qd-mb2"></div></div>'; document.body.appendChild(helpEl);
+function openHelp(k) { const h = HELP[k]; if (!h) return; $('qdHelpT').textContent = h[0]; $('qdHelpB').innerHTML = h[1]; helpEl.hidden = false; }
+helpEl.addEventListener('click', e => { if (e.target === helpEl || e.target.id === 'qdHelpX') helpEl.hidden = true; });
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('.qd-help'); if (b) { e.stopPropagation(); e.preventDefault(); openHelp(b.dataset.h); } }, true);
+
+/* --- simbol, favorit, tambah simbol --- */
+const symMenu = document.createElement('div'); symMenu.id = 'qdSymMenu'; symMenu.className = 'qd-symmenu'; symMenu.hidden = true; document.body.appendChild(symMenu);
+function symList() { const all = Array.from(new Set([...DEFSYMS, ...Q.syms])); return all.map((s, i) => [s, i]).sort((a, b) => (Q.fav.includes(b[0]) - Q.fav.includes(a[0])) || (Q.fav.indexOf(a[0]) - Q.fav.indexOf(b[0])) || (a[1] - b[1])).map(x => x[0]); }
+function renderSymMenu() {
+  symMenu.innerHTML = '<div class="qd-symhead">Pilih instrumen · ★ favorit naik ke atas</div>' + symList().map(s => `<div class="qd-symrow ${s === Q.sym ? 'on' : ''}" data-sym="${s}"><span>${s}</span><span><button type="button" class="qd-star ${Q.fav.includes(s) ? 'on' : ''}" data-star="${s}" title="Jadikan favorit">${Q.fav.includes(s) ? '★' : '☆'}</button>${DEFSYMS.includes(s) ? '' : `<button type="button" class="qd-del" data-del="${s}" title="Hapus simbol">×</button>`}</span></div>`).join('') + '<div class="qd-symrow add" data-add="1">＋ Tambah simbol Binance…</div>';
+}
+function posSymMenu() { const r = $('qdSymBtn').getBoundingClientRect(); symMenu.style.left = Math.max(8, Math.min(innerWidth - 260, r.left)) + 'px'; symMenu.style.top = (r.bottom + 6) + 'px'; }
+function setSymbol(s) { Q.sym = s; LSS('qd_sym', s); Q.lot = lotFor(s); $('qdLot').value = Q.lot; reload(); }
+async function addSymbol() {
+  const raw = prompt('Masukkan simbol Binance, mis. BTCUSDT, ETHUSDT, XAUUSDT:'); if (!raw) return; const s = raw.trim().toUpperCase();
+  if (!/^[A-Z0-9]{4,20}$/.test(s)) { toast('Format simbol tidak valid', 'S'); return; }
+  try { let d = await fj(`${HOSTS.fut.rest}klines?symbol=${s}&interval=1m&limit=2`); if (!Array.isArray(d)) d = await fj(`${HOSTS.spot.rest}klines?symbol=${s}&interval=1m&limit=2`); if (!Array.isArray(d) || !d.length) throw new Error('x'); if (!Q.syms.includes(s) && !DEFSYMS.includes(s)) { Q.syms.push(s); LSS('qd_syms', Q.syms); } setSymbol(s); toast(`Simbol ${s} ditambahkan. Atur “1 lot = … unit” di Pengaturan bila perlu.`, 'info'); }
+  catch (e) { toast(`Simbol ${s} tidak ditemukan di Binance`, 'S'); }
+}
+$('qdSymBtn').onclick = e => { e.stopPropagation(); symMenu.hidden = !symMenu.hidden; if (!symMenu.hidden) { renderSymMenu(); posSymMenu(); } };
+symMenu.addEventListener('click', e => {
+  e.stopPropagation(); const st = e.target.closest('[data-star]'), dl = e.target.closest('[data-del]'), ad = e.target.closest('[data-add]'), r = e.target.closest('[data-sym]');
+  if (st) { const s = st.dataset.star, i = Q.fav.indexOf(s); if (i >= 0) Q.fav.splice(i, 1); else Q.fav.push(s); LSS('qd_fav', Q.fav); renderSymMenu(); paintHead(); return; }
+  if (dl) { const s = dl.dataset.del; Q.syms = Q.syms.filter(x => x !== s); Q.fav = Q.fav.filter(x => x !== s); LSS('qd_syms', Q.syms); LSS('qd_fav', Q.fav); renderSymMenu(); if (Q.sym === s) setSymbol('XAUUSDT'); return; }
+  if (ad) { symMenu.hidden = true; addSymbol(); return; }
+  if (r) { symMenu.hidden = true; if (r.dataset.sym !== Q.sym) setSymbol(r.dataset.sym); }
+});
+document.addEventListener('click', e => { if (!symMenu.hidden && !symMenu.contains(e.target)) symMenu.hidden = true; });
+addEventListener('scroll', () => { if (!symMenu.hidden) posSymMenu(); }, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { helpEl.hidden = true; symMenu.hidden = true; } });
+
+/* --- tape transaksi, gelombang, senyap --- */
+function tapeAdd(t, buy, q, px, ct) {
+  const L = Q.tape, f = L[0], now = Date.now();
+  if (f && f.buy === buy && t - f.t < 600) { f.q += q; f.px = px; f.n++; f.t = t; } else { L.unshift({ t, buy, q, px, n: 1 }); if (L.length > 150) L.pop(); }
+  if (Q.cnt.t !== ct) Q.cnt = { t: ct, bq: 0, sq: 0, bn: 0, sn: 0 };
+  if (buy) { Q.cnt.bq += q; Q.cnt.bn++; Q.waveAcc.b += q; } else { Q.cnt.sq += q; Q.cnt.sn++; Q.waveAcc.s += q; }
+  Q.lastTick = now; Q.tickTs.push(now);
+}
+function waveTick() { Q.wave.push({ b: Q.waveAcc.b / Q.lot, s: Q.waveAcc.s / Q.lot }); Q.waveAcc = { b: 0, s: 0 }; if (Q.wave.length > 120) Q.wave.shift(); const lim = Date.now() - 5000; while (Q.tickTs.length && Q.tickTs[0] < lim) Q.tickTs.shift(); }
+function staleCheck() {
+  if (!Q.started || !Q.c.length) return; const age = (Date.now() - Q.lastTick) / 1000, was = Q.stale; Q.stale = Q.staleSec > 0 && age >= Q.staleSec;
+  if (Q.stale && !was) notify(`⏸ Tidak ada tick baru ${Q.sym} selama ${Q.staleSec}+ dtk — pasar mungkin tutup/jeda`, 'info');
+  if (!Q.stale && was) notify(`▶ Tick ${Q.sym} masuk lagi — aliran data pulih`, 'info');
+}
+function paintStale() {
+  const el = $('qdStale'); $('qdSymBtn').textContent = `${Q.fav.includes(Q.sym) ? '★ ' : ''}${Q.sym} ▾`; if (!el) return;
+  if (Q.stale) { $('qdLive').className = 'qd-live err'; setT('qdLive', '⏸ Senyap'); el.innerHTML = `⏸ Tidak ada tick baru untuk <b>${Q.sym}</b> selama <b>${Math.floor((Date.now() - Q.lastTick) / 1000)} dtk</b> — pasar kemungkinan sedang tutup/jeda, likuiditas sangat tipis, atau koneksi terputus. Chart menampilkan data terakhir dan lanjut otomatis begitu tick masuk. ${hq('stale')}`; el.hidden = false; } else if (!el.hidden) el.hidden = true;
+}
+function paintArus() {
+  const c = Q.cnt, w = Q.wave.slice(-60), b = w.reduce((s, x) => s + x.b, 0), s = w.reduce((q, x) => q + x.s, 0), tot = b + s, bp = tot > 0 ? b / tot * 100 : 50, rate = Q.tickTs.length / 5, net = b - s;
+  setT('qaB', `BUYER ${c.bn}× · ${lot3(c.bq / Q.lot)} lot`); setT('qaS', `SELLER ${c.sn}× · ${lot3(c.sq / Q.lot)} lot`); setT('qaRate', `${rate.toFixed(1)} tick/dtk`);
+  setT('qaWT', `▲ BUYER ${bp.toFixed(0)}%`); setT('qaWB', `▼ SELLER ${(100 - bp).toFixed(0)}%`); setT('qaWN', tot === 0 ? 'menunggu tick' : net >= 0 ? `▲ NAIK +${lot3(net)} lot/60s` : `▼ TURUN ${lot3(net)} lot/60s`);
+  const dl = (c.bq - c.sq) / Q.lot; setT('qaK1', lot3(b)); setT('qaK2', lot3(s)); setT('qaK3', (dl >= 0 ? '+' : '') + lot3(dl)); $('qaK3').style.color = dl >= 0 ? 'var(--green)' : 'var(--red)'; setT('qaK4', Q.lastTick ? `${Math.max(0, Math.floor((Date.now() - Q.lastTick) / 1000))} dtk lalu` : '—');
+  const L = Q.tape.filter(x => x.q / Q.lot >= Q.tapeMin).slice(0, 30), sz = L.map(x => x.q).sort((x, y) => x - y), p80 = sz.length ? sz[Math.floor(sz.length * .8)] : 0;
+  setH('qaTape', L.map(x => `<div class="qd-tp ${x.buy ? 'b' : 's'} ${sz.length > 4 && x.q >= p80 ? 'big' : ''}"><span>${wib(x.t, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span><span>${x.buy ? 'BUYER' : 'SELLER'} @ ${f2(x.px)}</span><span>${x.buy ? '▲' : '▼'} ${lot3(x.q / Q.lot)} lot${x.n > 1 ? ` <small>(${x.n}×)</small>` : ''}</span></div>`).join('') || '<div class="qd-empty">Menunggu transaksi live…</div>');
+}
+function drawWave() {
+  const cv = $('qdWave'); if (!cv || $('qdArus').hidden) return; const W = cv.clientWidth, H = cv.clientHeight; if (!W || !H) return; const d = Math.min(2, devicePixelRatio || 1);
+  if (cv.width !== Math.round(W * d) || cv.height !== Math.round(H * d)) { cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
+  const c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H);
+  const mid = H / 2, amp = H / 2 - 20, NW = 120, sm = []; Q.wave.forEach((x, i) => { const v = x.b - x.s; sm.push(i ? sm[i - 1] * .6 + v * .4 : v); });
+  const mx = Math.max(1e-9, ...sm.map(Math.abs)), sx = (W - 12) / (NW - 1), X = i => W - 8 - (sm.length - 1 - i) * sx, Yv = v => mid - v / mx * amp;
+  let g = c.createLinearGradient(0, 0, 0, mid); g.addColorStop(0, 'rgba(45,245,163,.10)'); g.addColorStop(1, 'rgba(45,245,163,0)'); c.fillStyle = g; c.fillRect(0, 0, W, mid);
+  g = c.createLinearGradient(0, mid, 0, H); g.addColorStop(0, 'rgba(255,75,110,0)'); g.addColorStop(1, 'rgba(255,75,110,.10)'); c.fillStyle = g; c.fillRect(0, mid, W, mid);
+  c.strokeStyle = 'rgba(53,224,255,.45)'; c.lineWidth = 1; c.setLineDash([5, 4]); c.beginPath(); c.moveTo(0, mid); c.lineTo(W, mid); c.stroke(); c.setLineDash([]);
+  if (sm.length > 1) {
+    const path = () => { c.beginPath(); c.moveTo(X(0), mid); sm.forEach((v, i) => { if (!i) c.lineTo(X(0), Yv(v)); else { const px = X(i - 1), py = Yv(sm[i - 1]), cx = (px + X(i)) / 2; c.quadraticCurveTo(px, py, cx, (py + Yv(v)) / 2); } }); c.lineTo(X(sm.length - 1), Yv(sm[sm.length - 1])); };
+    [[0, mid, 'rgba(45,245,163,.5)', '#2df5a3'], [mid, H, 'rgba(255,75,110,.5)', '#ff4b6e']].forEach(([y0, y1, fill, line]) => { c.save(); c.beginPath(); c.rect(0, y0, W, y1 - y0); c.clip(); path(); c.lineTo(X(sm.length - 1), mid); c.closePath(); c.fillStyle = fill; c.fill(); path(); c.strokeStyle = line; c.lineWidth = 2; c.stroke(); c.restore(); });
+    const lv = sm[sm.length - 1], hx = X(sm.length - 1), hy = Yv(lv); c.fillStyle = lv >= 0 ? '#2df5a3' : '#ff4b6e'; c.beginPath(); c.arc(hx, hy, 4, 0, 6.2832); c.fill(); c.strokeStyle = lv >= 0 ? 'rgba(45,245,163,.35)' : 'rgba(255,75,110,.35)'; c.lineWidth = 5; c.beginPath(); c.arc(hx, hy, 8, 0, 6.2832); c.stroke();
+  }
+  c.fillStyle = 'rgba(167,182,220,.7)'; c.font = '9px sans-serif'; c.fillText(`skala ±${lot3(mx)} lot/dtk`, 6, H - 6);
+}
+$('qdTapeMin').value = String(Q.tapeMin); $('qdTapeMin').onchange = e => { Q.tapeMin = +e.target.value || 0; paintArus(); };
+$('qdFrMode').value = Q.frMode; $('qdFrMode').onchange = e => { Q.frMode = e.target.value; LSS('qd_frmode', Q.frMode); render(); };
+['qdWImp', 'qdWFr', 'qdWVol', 'qdWDom', 'qdWFlow'].forEach(id => { $(id).oninput = e => { $(id + 'L').textContent = e.target.value; }; });
+$('qdNav').onclick = e => { const b = e.target.closest('button'); if (!b) return; const a = b.dataset.n, mp = Math.max(0, Q.c.length - Math.min(Q.n, Q.c.length)); if (a === 'left') Q.pan = clamp(Q.pan + 8, 0, mp); else if (a === 'right') Q.pan = clamp(Q.pan - 8, 0, mp); else if (a === 'live') Q.pan = 0; else if (a === 'zin') { Q.n = clamp(Math.round(Q.n * .85), 30, 400); $('qdN').value = Q.n; LSS('qd_n', Q.n); } else if (a === 'zout') { Q.n = clamp(Math.round(Q.n * 1.18), 30, 400); $('qdN').value = Q.n; LSS('qd_n', Q.n); } Q.dirty = true; };
+syncTabs();
+
 setInterval(() => {
   const on = act(); if (on && !Q.started) { Q.started = true; load(); }
   if (!Q.started || !Q.c.length) { if (on) paintHead(); return; }
@@ -10993,10 +11197,10 @@ setInterval(() => {
   if (on && now - Q.lastDepth > 2000) pollDepth();
   if (now - Q.htfT > 120000) loadHtf();
   calib(); if (Q.needAn || Q.tick % 3 === 0) analyze();
-  rescore(); track(); if (Q.str) { Q.hist.push(Q.str.buyer); if (Q.hist.length > 300) Q.hist.shift(); } alertCheck();
+  staleCheck(); waveTick(); rescore(); track(); if (Q.str) { Q.hist.push(Q.str.buyer); if (Q.hist.length > 300) Q.hist.shift(); } alertCheck();
   if (on) render();
 }, 1000);
-(function loop(ts) { if (act() && Q.dirty && ts - Q.lastDraw > 80) { Q.dirty = false; Q.lastDraw = ts; try { draw(); } catch (e) { console.error('qdom draw', e); } } requestAnimationFrame(loop); })(0);
+(function loop(ts) { if (act() && Q.dirty && ts - Q.lastDraw > 80) { Q.dirty = false; Q.lastDraw = ts; try { draw(); } catch (e) { console.error('qdom draw', e); } } if (act() && Q.tab === 'arus' && ts - (Q.lastWave || 0) > 60) { Q.lastWave = ts; try { drawWave(); } catch (e) { } } requestAnimationFrame(loop); })(0);
 if (window.ResizeObserver) new ResizeObserver(() => { Q.dirty = true; }).observe($('qdBox'));
 addEventListener('resize', () => { Q.dirty = true; });
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { if (b.dataset.view === 'qdom') setTimeout(() => { if (!Q.started) { Q.started = true; load(); } Q.dirty = true; if (Q.c.length) render(); else paintHead(); }, 40); }));
