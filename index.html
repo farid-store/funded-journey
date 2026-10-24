@@ -3226,6 +3226,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
     </div>
     <div class="qd-chips" id="qdChips"></div>
     <div class="qd-ctrls">
+      <div class="qd-seg" id="qdPreSeg" role="group" aria-label="Preset layout"><button data-v="scalp" title="Scalp: 5m · 100 candle · maks 3 zona · hanya zona ≤ 6 ATR · hold 4 · DOM + Wall aktif">⚡ Scalp</button><button data-v="intra" title="Intraday: 15m · 150 candle · maks 4 zona · zona ≤ 12 ATR · hold 6 · garis sesi aktif">◐ Intraday</button><button data-v="swing" title="Swing: 1h · 200 candle · maks 5 zona · semua jarak · hold 8 · DOM/Wall mati, zona tembus tampil">◎ Swing</button></div>
       <div class="qd-seg" id="qdTfSeg" role="group" aria-label="Timeframe"><button data-v="5m">5m</button><button data-v="15m">15m</button><button data-v="1h">1h</button><button data-v="4h">4h</button></div>
       <div class="qd-seg" id="qdModeSeg" role="group" aria-label="Mode"><button data-v="hybrid" title="Gambar Supply dan Demand">Hybrid</button><button data-v="follow" title="Hanya satu sisi, mengikuti tekanan / struktur">Follow</button></div>
       <button class="btn ghost qd-ib" id="qdAlertBtn" title="Alert zona (suara + notifikasi)">🔔</button>
@@ -3247,7 +3248,13 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
         <div class="qd-dr"><span>Medium ≥ (ATR)</span><input id="qdThM" class="xin" type="number" step="0.1"></div>
         <div class="qd-dr"><span>Candle uji (hold)</span><input id="qdHold" class="xin" type="number" step="1"></div>
         <div class="qd-dr"><span>Maks zona / sisi</span><input id="qdMaxZ" class="xin" type="number" step="1"></div>
-        <div class="note qd-small">Candle uji = berapa candle harga boleh bertahan di dalam zona sebelum dihitung “ditahan”. Close menembus sisi jauh = tembus.</div>
+        <div class="qd-dr"><span>Zona dalam jarak ≤ (ATR)</span><input id="qdNear" class="xin" type="number" step="0.5"></div>
+        <div class="note qd-small">0 = tampilkan semua jarak. Candle uji = berapa candle harga boleh bertahan di dalam zona sebelum dihitung “ditahan”. Close menembus sisi jauh = tembus.</div>
+      </div>
+      <div><div class="qd-dh">Volume &amp; preset</div>
+        <div class="qd-dr"><span>Volume tak biasa ≥ (×)</span><input id="qdVolTh" class="xin" type="number" step="0.1"></div>
+        <div class="note qd-small">Candle ditandai ◆ bila volumenya ≥ N× rata-rata 20 candle sebelumnya (≥ 1,5× ambang = ekstrem, bar kuning).</div>
+        <div class="note qd-small"><b>Preset</b> (tombol di header) mengganti sekaligus: TF, jumlah candle, ambang Strong/Medium, hold, maks zona, filter jarak, layer chart, ambang volume, sumber Follow, dan jarak alert. Ubah satu pengaturan manual → preset otomatis tidak lagi menyala.<br>⚡ Scalp: 5m · 100c · 3 zona · ≤6 ATR · hold 4<br>◐ Intraday: 15m · 150c · 4 zona · ≤12 ATR · hold 6<br>◎ Swing: 1h · 200c · 5 zona · semua jarak · hold 8</div>
       </div>
       <div><div class="qd-dh">Follow Trend</div>
         <div class="qd-dr"><span>Sumber arah</span><select id="qdSrc" class="xin"><option value="press">Tekanan buyer/seller</option><option value="ema">Struktur: EMA</option><option value="hhll">Struktur: HH/LL</option></select></div>
@@ -3290,7 +3297,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
         <button class="qd-livebtn" id="qdLiveBtn" hidden>⟳ ke live</button>
         <div class="qd-ov" id="qdOv" hidden></div>
       </div>
-      <div class="qd-legend"><span style="color:#ff4b6e">■ Strong Supply</span><span style="color:#2df5a3">■ Strong Demand</span><span style="color:#ffd25e">■ Medium</span><span style="color:#c9b8ff">┅ HTF</span><span style="color:#ffd25e">┄ 50% zona</span><span style="color:#35e0ff">┄ EQ</span><span style="color:#ffc94a">┄ harga live</span><span class="qd-hint">Geser = pan · roda mouse = zoom · klik zona = detail · klik dua kali = reset</span></div>
+      <div class="qd-legend"><span style="color:#ff4b6e">■ Strong Supply</span><span style="color:#2df5a3">■ Strong Demand</span><span style="color:#ffd25e">■ Medium</span><span style="color:#c9b8ff">┅ HTF</span><span style="color:#ffd25e">┄ 50% zona</span><span style="color:#35e0ff">┄ EQ</span><span style="color:#ffc94a">┄ harga live</span><span style="color:#ffc94a">◆ volume tak biasa</span><span class="qd-hint">Geser = pan · roda mouse = zoom · klik zona = detail · klik dua kali = reset</span></div>
     </div>
 
     <aside class="card qd-side">
@@ -10390,12 +10397,12 @@ const wib = (t, o) => new Date(t).toLocaleString('id-ID', Object.assign({ timeZo
 const Q = {
   sym: LSG('qd_sym', 'XAUUSDT'), tf: LSG('qd_tf', '15m'), n: +LSG('qd_n', 150) || 150, lot: +LSG('qd_lot', 100) || 100,
   optDom: LSG('qd_dom', true), optMid: LSG('qd_mid', true), optSess: LSG('qd_sess', true),
-  host: 'fut', sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
+  host: 'fut', near: +LSG('qd_near', 0) || 0, optVol: LSG('qd_vol', true), volTh: +LSG('qd_volth', 2) || 2, sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
   log: LSG('qd_log', []), zs: {}, ws: null, wsOk: false, wsTry: 0, lastMsg: 0, lastDepth: 0, depthBusy: false, depthErr: '',
   mouse: null, dirty: true, tok: 0, started: false, needAn: false, err: '', tick: 0, lastDraw: 0
 };
 if (!Array.isArray(Q.log)) Q.log = [];
-const DEF = { thS: 1.8, thM: 1.0, hold: 6, maxZ: 4, emaN: 50, swL: 5 };
+const DEF = { thS: 1.8, thM: 1.0, hold: 6, maxZ: 4, emaN: 50, swL: 5, near: 0, volTh: 2 };
 const HTFS = { '5m': ['1h', '4h'], '15m': ['1h', '4h'], '1h': ['4h', '1d'], '4h': ['1d'] }, TFL = { '1h': 'H1', '4h': 'H4', '1d': 'D1' };
 function fixTh() { if (Q.thM > Q.thS - 0.1) Q.thM = Math.max(0.4, Math.round((Q.thS - 0.1) * 10) / 10); }
 fixTh();
@@ -10594,8 +10601,9 @@ function rescore() {
   const act0 = Q.all.filter(z => !z.broken);
   const fol = Q.mode === 'follow'; if (fol) followDir(); const wantS = !fol || Q.dir === 'sell', wantD = !fol || Q.dir === 'buy', lim = Q.maxZ + (fol ? 2 : 0);
   const pick = arr => { const r = arr.slice(0, lim); if (r.length && !r.some(z => z.tier === 'S')) { const s = arr.slice(lim).find(z => z.tier === 'S'); if (s) r[r.length - 1] = s; } return r; };
-  const sup = wantS ? pick(act0.filter(z => z.type === 'S' && z.top > px).sort((a, b) => a.bot - b.bot)) : [];
-  const dem = wantD ? pick(act0.filter(z => z.type === 'D' && z.bot < px).sort((a, b) => b.top - a.top)) : [];
+  const nl = Q.near > 0 ? Q.near * (Q.atr || 1) : Infinity;
+  const sup = wantS ? pick(act0.filter(z => z.type === 'S' && z.top > px && z.bot - px <= nl).sort((a, b) => a.bot - b.bot)) : [];
+  const dem = wantD ? pick(act0.filter(z => z.type === 'D' && z.bot < px && px - z.top <= nl).sort((a, b) => b.top - a.top)) : [];
   Q.zones = [...sup, ...dem];
   const E = emp();
   Q.zones.forEach(z => {
@@ -10660,13 +10668,16 @@ function updWalls() {
   if (Q.bins) { const top = (a, s) => [...a].sort((x, y) => y.l - x.l).slice(0, 2).map(x => ({ p: x.p + Q.bins.stp / 2, l: x.l, side: s })); Q.walls = [...top(Q.bins.A, 'A'), ...top(Q.bins.B, 'B')]; }
 }
 
+/* ---------- Volume ---------- */
+function volRatio(gi) { const a = Math.max(0, gi - 20); let s = 0, n = 0; for (let j = a; j < gi; j++) { s += Q.c[j].v; n++; } return n >= 5 ? { m: s / n, r: Q.c[gi].v / (s / n || 1) } : { m: Q.c[gi].v, r: 1 }; }
+
 /* ---------- Gambar chart ---------- */
 function draw() {
   const el = $('qdCv'), box = $('qdBox'), W = box.clientWidth || 600, H = box.clientHeight || 420, d = Math.min(2, devicePixelRatio || 1);
   if (el.width !== Math.round(W * d) || el.height !== Math.round(H * d)) { el.width = Math.round(W * d); el.height = Math.round(H * d); }
   const c = el.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H); c.textAlign = 'left'; c.textBaseline = 'alphabetic'; Q.hit = [];
   const all = Q.c; if (all.length < 5) return;
-  const small = W < 520, AX = 60, DP = Q.optDom ? (W < 700 ? 52 : 104) : 0, aw = W - AX - DP, pt = 34, pb = 22, ph = H - pt - pb;
+  const small = W < 520, AX = 60, DP = Q.optDom ? (W < 700 ? 52 : 104) : 0, aw = W - AX - DP, pt = 34, pb = 22, vh = Q.optVol ? Math.round(clamp((H - pt - pb) * .17, 34, 84)) : 0, ph = H - pt - pb - vh;
   const N = all.length, n = Math.min(Q.n, N); Q.pan = clamp(Q.pan, 0, Math.max(0, N - n)); $('qdLiveBtn').hidden = Q.pan === 0;
   const end = N - Q.pan, start = Math.max(0, end - n), vis = all.slice(start, end), cw = aw / (Math.max(n, vis.length) + (Q.pan === 0 ? 4 : 1)); Q.cw = cw;
   const px = Q.px || all[N - 1].c; let lo = Infinity, hi = -Infinity; vis.forEach(k => { if (k.l < lo) lo = k.l; if (k.h > hi) hi = k.h; });
@@ -10700,6 +10711,18 @@ function draw() {
   });
   // candle
   vis.forEach((k, i) => { const x = i * cw + cw / 2, up = k.c >= k.o, col = up ? '#2df5a3' : '#ff4b6e', bw = Math.max(1, cw * .68); c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 1; c.beginPath(); c.moveTo(x, Y(k.h)); c.lineTo(x, Y(k.l)); c.stroke(); const y1 = Y(Math.max(k.o, k.c)), y2 = Y(Math.min(k.o, k.c)); c.fillRect(x - bw / 2, y1, bw, Math.max(1, y2 - y1)); });
+  // volume + penanda volume tak biasa
+  const volInfo = vis.map((k, i) => volRatio(start + i));
+  if (vh) {
+    const y0 = pt + ph + 8, y1 = pt + ph + vh - 2, hh = Math.max(8, y1 - y0); let sv = 0; vis.forEach(k => { sv += k.v; }); const cap = Math.max(1e-9, Math.min(Math.max(...vis.map(k => k.v)), 5 * sv / vis.length));
+    c.strokeStyle = 'rgba(130,165,255,.18)'; c.lineWidth = 1; c.beginPath(); c.moveTo(0, pt + ph + 3.5); c.lineTo(aw + DP, pt + ph + 3.5); c.stroke();
+    vis.forEach((k, i) => { const x = i * cw + cw / 2, bw = Math.max(1, cw * .68), up = k.c >= k.o, r = volInfo[i].r, hi2 = r >= Q.volTh, ex = r >= Q.volTh * 1.5, hg = Math.max(1, Math.min(1, k.v / cap) * hh); c.fillStyle = ex ? '#ffc94a' : hi2 ? (up ? 'rgba(45,245,163,.95)' : 'rgba(255,75,110,.95)') : (up ? 'rgba(45,245,163,.36)' : 'rgba(255,75,110,.36)'); c.fillRect(x - bw / 2, y1 - hg, bw, hg); });
+    c.beginPath(); volInfo.forEach((v, i) => { const x = i * cw + cw / 2, y = y1 - Math.min(1, v.m / cap) * hh; i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.strokeStyle = 'rgba(53,224,255,.85)'; c.lineWidth = 1; c.stroke();
+    const lm = volInfo[volInfo.length - 1].m, yt = y1 - Math.min(1, lm * Q.volTh / cap) * hh; c.strokeStyle = 'rgba(255,201,74,.7)'; c.lineWidth = 1; c.setLineDash([4, 3]); c.beginPath(); c.moveTo(0, yt); c.lineTo(aw, yt); c.stroke(); c.setLineDash([]);
+    c.font = '9px sans-serif'; c.fillStyle = 'rgba(5,10,24,.8)'; c.fillRect(2, y0 - 6, small ? 52 : 118, 12); c.fillStyle = '#7384b4'; c.fillText(small ? 'VOL' : `VOL (lot) · ◆ ≥ ${Q.volTh}× MA20`, 5, y0 + 3);
+    c.fillStyle = '#a7b6dc'; c.fillText(lotF(cap / Q.lot), W - AX + 6, y0 + 3);
+  }
+  if (Q.optVol) vis.forEach((k, i) => { const r = volInfo[i].r; if (r < Q.volTh) return; const ex = r >= Q.volTh * 1.5, x = i * cw + cw / 2, y = Math.max(pt + 8, Y(k.h) - 8), s = ex ? 5.5 : 3.8; c.fillStyle = '#ffc94a'; c.strokeStyle = '#1c1300'; c.lineWidth = 1; c.beginPath(); c.moveTo(x, y - s); c.lineTo(x + s, y); c.lineTo(x, y + s); c.lineTo(x - s, y); c.closePath(); c.fill(); c.stroke(); if (ex && cw >= 4) { c.font = '700 9px sans-serif'; c.fillStyle = '#ffd25e'; c.textAlign = 'center'; c.fillText(r.toFixed(1) + '×', x, y - s - 3); c.textAlign = 'left'; } });
   // EQ line
   if (Q.optZ && Q.eq) { const ye = Y(Q.eq.mid); c.strokeStyle = '#35e0ff'; c.lineWidth = 1.1; c.setLineDash([8, 5]); c.beginPath(); c.moveTo(0, ye); c.lineTo(aw, ye); c.stroke(); c.setLineDash([]); tag(`EQ ${f2(Q.eq.mid)}`, ye - 3, '#35e0ff', true, false); }
   // dinding DOM
@@ -10729,11 +10752,11 @@ function draw() {
   const yp = clamp(Y(px), pt, pt + ph); c.strokeStyle = '#ffc94a'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(0, yp); c.lineTo(W - AX, yp); c.stroke(); c.setLineDash([]);
   c.fillStyle = '#ffc94a'; c.fillRect(W - AX + 1, yp - 8, AX - 2, 16); c.fillStyle = '#1c1300'; c.font = '700 10px sans-serif'; c.fillText(px.toFixed(2), W - AX + 5, yp + 3.5);
   // crosshair
-  const m = Q.mouse; if (m && !(Q.drag && Q.drag.moved) && m.x >= 0 && m.x <= aw && m.y >= pt && m.y <= pt + ph) {
-    c.strokeStyle = 'rgba(238,243,255,.35)'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(m.x, pt); c.lineTo(m.x, pt + ph); c.moveTo(0, m.y); c.lineTo(W - AX, m.y); c.stroke(); c.setLineDash([]);
-    const p = hi - (m.y - pt) / ph * (hi - lo); c.fillStyle = '#2a3a6e'; c.fillRect(W - AX + 1, m.y - 8, AX - 2, 16); c.fillStyle = '#fff'; c.font = '10px sans-serif'; c.fillText(p.toFixed(2), W - AX + 5, m.y + 3.5);
-    const k = vis[clamp(Math.floor(m.x / cw), 0, vis.length - 1)], dl = p - px;
-    if (k) { c.fillStyle = 'rgba(5,10,24,.8)'; c.fillRect(2, H - 34, Math.min(aw, 470), 14); c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; c.fillText(`${wib(k.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })}  O ${f2(k.o)}  H ${f2(k.h)}  L ${f2(k.l)}  C ${f2(k.c)}  Vol ${lotF(k.v / Q.lot)} lot  ·  Δ harga ${dl >= 0 ? '+' : ''}${f2(dl)} $ (${Math.round(Math.abs(dl) * 100)}p)`, 6, H - 24); }
+  const m = Q.mouse; if (m && !(Q.drag && Q.drag.moved) && m.x >= 0 && m.x <= aw && m.y >= pt && m.y <= pt + ph + vh) {
+    const inP = m.y <= pt + ph; c.strokeStyle = 'rgba(238,243,255,.35)'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(m.x, pt); c.lineTo(m.x, pt + ph + vh); if (inP) { c.moveTo(0, m.y); c.lineTo(W - AX, m.y); } c.stroke(); c.setLineDash([]);
+    const p = inP ? hi - (m.y - pt) / ph * (hi - lo) : px; if (inP) { c.fillStyle = '#2a3a6e'; c.fillRect(W - AX + 1, m.y - 8, AX - 2, 16); c.fillStyle = '#fff'; c.font = '10px sans-serif'; c.fillText(p.toFixed(2), W - AX + 5, m.y + 3.5); }
+    const ki = clamp(Math.floor(m.x / cw), 0, vis.length - 1), k = vis[ki], dl = p - px, vi = volInfo[ki];
+    if (k) { c.fillStyle = 'rgba(5,10,24,.8)'; c.fillRect(2, H - 34, Math.min(aw, 620), 14); c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; c.fillText(`${wib(k.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })}  O ${f2(k.o)}  H ${f2(k.h)}  L ${f2(k.l)}  C ${f2(k.c)}  Vol ${lotF(k.v / Q.lot)} lot (${vi.r.toFixed(1)}×)  ·  Δ harga ${dl >= 0 ? '+' : ''}${f2(dl)} $ (${Math.round(Math.abs(dl) * 100)}p)`, 6, H - 24); }
   }
 }
 
@@ -10773,6 +10796,7 @@ function diag() {
     if (!sup && sB) h += ' Tidak ada Supply aktif di atas harga: semua Supply yang pernah terbentuk sudah ditembus (close di atas zona) — wajar saat uptrend kuat.';
     if (!dem && !dB && !sup && !sB) h += ' Belum ada yang terbentuk di data ini; coba TF lain atau aktifkan Medium.';
   }
+  if (Q.near > 0) h += ` Filter jarak aktif: hanya zona ≤ ${Q.near} ATR (${f2(Q.near * (Q.atr || 0))} $) dari harga.`;
   const hc = (HTFS[Q.tf] || []).map(t => `${TFL[t]} ${Q.htfZ.filter(z => z.tf === t).length}`).join(' · '); h += ` Zona HTF aktif: ${hc || '—'}.`;
   const e = emp(), tx = (n, a) => a[0] >= 5 ? `${n} ${Math.round(a[1] / a[0] * 100)}% dari ${a[0]} uji` : `${n} data uji kurang (${a[0]})`;
   return h + ` Hold historis pada data dimuat: ${tx('Strong', e.S)} · ${tx('Medium', e.M)}.`;
@@ -10818,7 +10842,7 @@ function paneLog() {
 function ncard(id, type, z, hidden) {
   const el = $(id), A = Q.atr || 1;
   if (hidden) { el.className = 'qd-ncard off ' + type; el.dataset.key = ''; setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span></div><div class="qd-nempty">Sisi ini disembunyikan oleh mode Follow (${Q.dir === 'buy' ? '▲ BUY' : '▼ SELL'}). Ganti ke Hybrid untuk menampilkan keduanya.</div>`); return; }
-  if (!z) { el.className = 'qd-ncard off ' + type; el.dataset.key = ''; setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span></div><div class="qd-nempty">${Q.c.length ? 'Tidak ada zona aktif di sisi ini (lihat “Catatan deteksi” di tab Zona).' : 'Menunggu data…'}</div>`); return; }
+  if (!z) { el.className = 'qd-ncard off ' + type; el.dataset.key = ''; setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span></div><div class="qd-nempty">${Q.c.length ? 'Tidak ada zona aktif di sisi ini (lihat “Catatan deteksi” di tab Zona).' + (Q.near > 0 ? ` Filter jarak ≤ ${Q.near} ATR aktif.` : '') : 'Menunggu data…'}</div>`); return; }
   const M = z.tier === 'M', near = !z.inside && z.dist <= .5 * A; el.className = `qd-ncard ${M ? 'M' : type} ${Q.sel === z.key ? 'sel' : ''}`; el.dataset.key = z.key;
   setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat</span><span class="qd-badge ${M ? 'M' : 'ST'}">${tierName(z)}</span></div><div class="qd-nr">${f2(z.bot)} – ${f2(z.top)}</div><div class="qd-nm"><span>${fDist(z)}</span><span>${z.inside ? '<b class="warn">● sedang diuji</b>' : near ? '<span class="qd-near">⚡ mendekati</span>' : ''}</span></div><div class="qd-nbar"><i style="width:${z.score}%;background:${scCol(z.score)}"></i></div><div class="qd-nstat"><div>Skor<b>${z.score}</b></div><div>Tahan<b>${z.hold}%</b></div><div>Uji<b>${z.nT}×</b></div><div>DOM<b>${domTxt(z)}</b></div></div>`);
 }
@@ -10837,13 +10861,18 @@ function paintInsight() {
   [['qdM1', S.dom], ['qdM2', S.fc], ['qdM3', S.fl]].forEach(([id, v]) => { $(id).style.width = (v == null ? 0 : v) + '%'; setT(id + 'v', v == null ? '—' : v.toFixed(0) + '%'); });
   setT('qdFol', fol ? `Follow ${Q.dir === 'buy' ? '▲ BUY' : '▼ SELL'} — ${Q.dirWhy}` : `Delta live 5 mnt: ${S.delta >= 0 ? '+' : ''}${lotF(S.delta)} lot (beli ${lotF(S.lb)} · jual ${lotF(S.ls)})`); spark();
 }
+function volChip() {
+  const N = Q.c.length; if (N < 30) return ''; const v = volRatio(N - 2), hi = v.r >= Q.volTh;
+  return `<span class="qd-chip" title="Volume candle terakhir yang sudah tertutup dibanding rata-rata 20 candle sebelumnya (ambang ${Q.volTh}×)">Vol <b style="color:${hi ? 'var(--gold)' : 'inherit'}">${v.r.toFixed(1)}×</b>${hi ? ' ⚡' : ''}</span>`;
+}
 function paintHead() {
   const live = Q.wsOk && Date.now() - Q.lastMsg < 15000, cls = Q.err && !Q.c.length ? 'err' : live ? 'on' : 'wait';
   const lv = $('qdLive'); lv.className = 'qd-live ' + cls; setT('qdLive', Q.err && !Q.c.length ? '✕ Gagal' : live ? '● LIVE' : Q.c.length ? '○ Menyambung…' : '◌ Memuat…');
   lv.title = `${Q.host === 'fut' ? 'Binance Futures' : 'Binance Spot'} · DOM ${Q.lastDepth ? ((Date.now() - Q.lastDepth) / 1000).toFixed(1) + ' dtk lalu' : '—'}${Q.depthErr ? ' (error: ' + Q.depthErr + ')' : ''} · ${Q.c.length} candle`;
   const px = $('qdPx'); if (Q.px) { const t = f2(Q.px); if (px.textContent !== t) { px.className = 'qd-px ' + (Q.pxPrev && Q.px > Q.pxPrev ? 'up' : Q.pxPrev && Q.px < Q.pxPrev ? 'down' : ''); px.textContent = t; Q.pxPrev = Q.px; } }
   const ofsT = Q.ofsMode === 'off' ? 'off' : (Q.ofs >= 0 ? '+' : '') + f2(Q.ofs) + (Q.ofsMode === 'auto' ? ' auto' : '');
-  setH('qdChips', `<span class="qd-chip">Sesi <b style="color:${SESS[sessOf(Date.now())].c}">${SESS[sessOf(Date.now())].n}</b> · sisa ${sessLeft()}</span><span class="qd-chip">ATR <b>${f2(Q.atr)} $</b> · ${Math.round(Q.atr * 100)}p</span><span class="qd-chip" title="Selisih harga Binance ke broker">Offset <b>${ofsT}</b></span>`);
+  setH('qdChips', `<span class="qd-chip">Sesi <b style="color:${SESS[sessOf(Date.now())].c}">${SESS[sessOf(Date.now())].n}</b> · sisa ${sessLeft()}</span><span class="qd-chip">ATR <b>${f2(Q.atr)} $</b> · ${Math.round(Q.atr * 100)}p</span><span class="qd-chip" title="Selisih harga Binance ke broker">Offset <b>${ofsT}</b></span>${volChip()}`);
+  const cp = curPreset(); $('qdPreSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === cp));
   $('qdTfSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.tf)); $('qdModeSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.mode));
   $('qdAlertBtn').classList.toggle('on', !!Q.alOn); $('qdLiveBtn').hidden = Q.pan === 0; setT('qdOfsInfo', Q.ofsInfo);
   const ov = $('qdOv'); let h = '';
@@ -10887,7 +10916,7 @@ function select(key, scroll) {
   if (Q.sel && scroll) { const e = $('qdPane').querySelector(`.qd-zc[data-key="${CSS.escape(key)}"]`); if (e) e.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 }
 function syncTabs() { $('qdTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === Q.tab)); }
-const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk']];
+const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optVol', 'Vol', 'qd_vol'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk']];
 $('qdLayers').innerHTML = LAYERS.map(([k, l]) => `<button class="qd-lay ${Q[k] ? 'on' : ''}" data-k="${k}">${l}</button>`).join('');
 $('qdLayers').onclick = e => { const b = e.target.closest('button'); if (!b) return; const L = LAYERS.find(x => x[0] === b.dataset.k); Q[L[0]] = !Q[L[0]]; LSS(L[2], Q[L[0]]); b.classList.toggle('on', Q[L[0]]); Q.dirty = true; if (L[0] === 'optMed') { analyze(); render(); } };
 $('qdSym').value = Q.sym; $('qdSym').onchange = e => { Q.sym = e.target.value; LSS('qd_sym', Q.sym); reload(); };
@@ -10901,11 +10930,27 @@ $('qdAlNtf').checked = Q.alNtf; $('qdAlNtf').onchange = e => { Q.alNtf = e.targe
 $('qdAlDist').value = Q.alDist; $('qdAlDist').onchange = e => { Q.alDist = clamp(+e.target.value || .3, .05, 5); e.target.value = Q.alDist; LSS('qd_aldist', Q.alDist); };
 $('qdN').value = Q.n; $('qdN').onchange = e => { Q.n = clamp(Math.round(+e.target.value || 150), 30, 400); e.target.value = Q.n; LSS('qd_n', Q.n); Q.dirty = true; };
 $('qdLot').value = Q.lot; $('qdLot').onchange = e => { Q.lot = Math.max(.001, +e.target.value || 100); e.target.value = Q.lot; LSS('qd_lot', Q.lot); render(); };
-const PARAMS = [['qdThS', 'thS', 'qd_ths', .6, 6], ['qdThM', 'thM', 'qd_thm', .4, 5], ['qdHold', 'hold', 'qd_hold', 2, 20], ['qdMaxZ', 'maxZ', 'qd_maxz', 1, 10], ['qdEmaN', 'emaN', 'qd_ema', 5, 300], ['qdSwL', 'swL', 'qd_swl', 2, 15]];
+const PARAMS = [['qdThS', 'thS', 'qd_ths', .6, 6], ['qdThM', 'thM', 'qd_thm', .4, 5], ['qdHold', 'hold', 'qd_hold', 2, 20], ['qdMaxZ', 'maxZ', 'qd_maxz', 1, 10], ['qdEmaN', 'emaN', 'qd_ema', 5, 300], ['qdSwL', 'swL', 'qd_swl', 2, 15], ['qdNear', 'near', 'qd_near', 0, 50], ['qdVolTh', 'volTh', 'qd_volth', 1.2, 10]];
 const paintParams = () => PARAMS.forEach(([id, k]) => { $(id).value = Q[k]; });
 const applyParams = () => { PARAMS.forEach(([, k, ls]) => LSS(ls, Q[k])); paintParams(); analyze(); htfBuild(); Q.dirty = true; render(); };
-PARAMS.forEach(([id, k, , mn, mx]) => { $(id).onchange = e => { let v = +e.target.value; if (!Number.isFinite(v) || e.target.value === '') v = DEF[k]; v = clamp(v, mn, mx); if (k !== 'thS' && k !== 'thM') v = Math.round(v); Q[k] = v; fixTh(); applyParams(); }; });
+PARAMS.forEach(([id, k, , mn, mx]) => { $(id).onchange = e => { let v = +e.target.value; if (!Number.isFinite(v) || e.target.value === '') v = DEF[k]; v = clamp(v, mn, mx); if (!['thS', 'thM', 'near', 'volTh'].includes(k)) v = Math.round(v); Q[k] = v; fixTh(); applyParams(); }; });
 paintParams();
+const PK = { tf: 'qd_tf', n: 'qd_n', maxZ: 'qd_maxz', thS: 'qd_ths', thM: 'qd_thm', hold: 'qd_hold', near: 'qd_near', optMed: 'qd_med', optMid: 'qd_mid', optDom: 'qd_dom', optWall: 'qd_wall', optHtf: 'qd_htf', optSess: 'qd_sess', optBrk: 'qd_brk', optVol: 'qd_vol', volTh: 'qd_volth', src: 'qd_src', emaN: 'qd_ema', swL: 'qd_swl', alDist: 'qd_aldist' };
+const PRESETS = {
+  scalp: { label: '⚡ Scalp', info: '5m · 100 candle · maks 3 zona · zona ≤ 6 ATR · hold 4 · DOM & Wall aktif', tf: '5m', n: 100, maxZ: 3, thS: 1.6, thM: .9, hold: 4, near: 6, optMed: true, optMid: true, optDom: true, optWall: true, optHtf: true, optSess: false, optBrk: false, optVol: true, volTh: 1.8, src: 'press', alDist: .25 },
+  intra: { label: '◐ Intraday', info: '15m · 150 candle · maks 4 zona · zona ≤ 12 ATR · hold 6 · garis sesi aktif', tf: '15m', n: 150, maxZ: 4, thS: 1.8, thM: 1.0, hold: 6, near: 12, optMed: true, optMid: true, optDom: true, optWall: true, optHtf: true, optSess: true, optBrk: false, optVol: true, volTh: 2.0, src: 'ema', emaN: 50, alDist: .3 },
+  swing: { label: '◎ Swing', info: '1h · 200 candle · maks 5 zona · semua jarak · hold 8 · DOM/Wall mati, zona tembus tampil', tf: '1h', n: 200, maxZ: 5, thS: 2.0, thM: 1.2, hold: 8, near: 0, optMed: true, optMid: true, optDom: false, optWall: false, optHtf: true, optSess: false, optBrk: true, optVol: true, volTh: 2.2, src: 'hhll', swL: 5, alDist: .5 }
+};
+const PMATCH = ['tf', 'maxZ', 'thS', 'thM', 'hold', 'near', 'optMed', 'optMid', 'optDom', 'optWall', 'optHtf', 'optSess', 'optBrk', 'optVol', 'volTh'];
+function curPreset() { return Object.keys(PRESETS).find(k => PMATCH.every(f => PRESETS[k][f] === Q[f])) || ''; }
+function applyPreset(name) {
+  const P = PRESETS[name]; if (!P) return; const tfChg = P.tf !== Q.tf;
+  Object.keys(P).forEach(k => { if (PK[k]) { Q[k] = P[k]; LSS(PK[k], P[k]); } }); fixTh(); LSS('qd_thm', Q.thM); Q.dir = null; Q.lastDirA = null; Q.sel = null; Q.pan = 0;
+  paintParams(); $('qdN').value = Q.n; $('qdSrc').value = Q.src; $('qdAlDist').value = Q.alDist; $('qdLayers').querySelectorAll('button').forEach(b => b.classList.toggle('on', !!Q[b.dataset.k]));
+  toast(`${P.label} diterapkan — ${P.info}`, 'info');
+  if (tfChg) reload(); else { analyze(); htfBuild(); render(); }
+}
+$('qdPreSeg').onclick = e => { const b = e.target.closest('button'); if (b) applyPreset(b.dataset.v); };
 $('qdSetReset').onclick = () => { Object.assign(Q, DEF); fixTh(); applyParams(); };
 $('qdReload').onclick = reload;
 $('qdSrc').value = Q.src; $('qdSrc').onchange = e => { Q.src = e.target.value; LSS('qd_src', Q.src); Q.dir = null; render(); };
