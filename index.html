@@ -2648,6 +2648,42 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
 .qd-rg{display:flex;align-items:center;gap:8px}.qd-rg input{width:96px;accent-color:var(--gold)}.qd-rg b{min-width:20px;text-align:right;font:700 11px var(--fm);color:var(--text)}
 .qd-tabs button{letter-spacing:.08em!important;padding:12px 4px!important}
 @media(max-width:640px){.qd-k4{grid-template-columns:repeat(2,1fr)}}
+
+/* ===== v8: analisis + candle realtime ===== */
+.qd-tabs{overflow-x:auto;scrollbar-width:none}.qd-tabs::-webkit-scrollbar{display:none}
+.qd-tabs button{flex:1 0 auto!important;padding:12px 11px!important;font-size:10.5px!important}
+.qd-newsb{border-color:rgba(255,176,46,.6)!important;background:linear-gradient(90deg,rgba(255,176,46,.2),rgba(15,23,42,.9),rgba(255,176,46,.1))!important;color:#fde7b8!important}
+.qd-as{border:1px solid var(--brd);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:var(--surface2)}
+.qd-ash{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qd-ash b{font:800 11px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.qd-asc{display:flex;flex-wrap:wrap;gap:8px 12px;margin:8px 0;font:600 10.5px var(--fm);color:var(--muted)}
+.qd-asc label{display:flex;align-items:center;gap:6px}.qd-asc .xin{width:70px;padding:3px 6px;font:600 11px var(--fm)}.qd-asc select.xin{width:auto}.qd-ck input{accent-color:var(--gold)}
+.qd-asb{font-size:11.5px;color:var(--text);min-height:20px}
+.qd-swt{position:relative;display:inline-block;width:38px;height:20px;flex:none}
+.qd-swt input{opacity:0;width:0;height:0;position:absolute}
+.qd-swt i{position:absolute;inset:0;background:var(--surface3);border:1px solid var(--line2);border-radius:20px;transition:.2s;cursor:pointer}
+.qd-swt i::before{content:"";position:absolute;width:14px;height:14px;left:2px;top:2px;border-radius:50%;background:#8a97b8;transition:.2s}
+.qd-swt input:checked+i{background:rgba(255,201,74,.25);border-color:var(--gold)}.qd-swt input:checked+i::before{transform:translateX(18px);background:var(--gold)}
+.qd-lr{display:grid;grid-template-columns:52px 1fr auto auto;gap:8px;align-items:center;padding:5px 8px;border-radius:7px;background:rgba(255,255,255,.03);margin-top:4px;font:700 11px var(--fm)}
+.qd-lr.neg{border-left:3px solid var(--red)}.qd-lr.pos{border-left:3px solid var(--green)}
+.qd-plh{margin-bottom:8px}
+.qd-mgb{margin-top:8px;padding:8px 10px;border:1px dashed var(--line2);border-radius:8px;font:700 11px var(--fm)}
+.qd-note2{margin-top:6px;font-size:11px;color:var(--muted);line-height:1.5}.qd-note2.w{color:#ffd9a0}
+.qd-crh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.qd-crh b{font:800 11px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.qd-crg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qd-crc{border:1px solid var(--brd);border-radius:12px;padding:8px;background:var(--surface2);min-width:0}
+.qd-crt{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px}.qd-crt b{font:800 13px var(--fh);letter-spacing:.06em}
+.qd-crt .qd-chip{padding:1px 7px;font-size:9px}
+.qd-crc canvas{display:block;width:100%;height:104px;background:#050a18;border-radius:8px}
+.qd-crd{margin-top:6px;font-size:10.5px;line-height:1.45;color:var(--muted)}
+.qd-crs{display:flex;align-items:center;gap:6px;font:800 11px var(--fm);padding:4px 7px;border-radius:6px;margin-bottom:4px}
+.qd-crs.u{background:rgba(45,245,163,.14);color:var(--green)}.qd-crs.d{background:rgba(255,75,110,.14);color:var(--red)}.qd-crs.f{background:rgba(255,176,46,.14);color:var(--amber)}.qd-crs.n{background:rgba(167,182,220,.1);color:var(--muted)}
+.qd-crx{color:var(--text);font-size:10.5px;margin:3px 0 5px}
+.qd-kv3{display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;font:600 10px var(--fm)}.qd-kv3 span{color:var(--faint)}.qd-kv3 b{color:var(--text);text-align:right}
+.qd-crguide{background:rgba(255,255,255,.02)}
+.qd-gl{display:grid;grid-template-columns:20px 1fr;gap:6px;font-size:10.5px;line-height:1.4;margin-top:5px;color:var(--muted)}.qd-gl b{color:var(--text)}
+.qd-gl i{font-style:normal;font:800 12px var(--fm);text-align:center}.qd-gl i.u{color:var(--green)}.qd-gl i.d{color:var(--red)}.qd-gl i.f{color:var(--amber)}.qd-gl i.n{color:var(--muted)}
+@media(max-width:640px){.qd-crg{grid-template-columns:1fr 1fr}}
 </style></head>
 <body>
 <div class="world" aria-hidden="true">
@@ -3283,6 +3319,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
     </div>
   </header>
   <div class="qd-stale" id="qdStale" hidden></div>
+  <div class="qd-stale qd-newsb" id="qdNews" hidden></div>
 
   <section class="qd-drawer card" id="qdSet" hidden>
     <div class="qd-dg">
@@ -3362,8 +3399,35 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
     </div>
 
     <aside class="card qd-side">
-      <div class="qd-tabs" id="qdTabs" role="tablist"><button data-t="zona" class="on">Zona</button><button data-t="dom">DOM</button><button data-t="arus">Arus</button><button data-t="sesi">Sesi</button><button data-t="log">Log</button></div>
+      <div class="qd-tabs" id="qdTabs" role="tablist"><button data-t="zona" class="on">Zona</button><button data-t="dom">DOM</button><button data-t="arus">Arus</button><button data-t="ana">Analisis</button><button data-t="sesi">Sesi</button><button data-t="log">Log</button></div>
       <div class="qd-pane" id="qdPane"></div>
+
+      <div class="qd-pane" id="qdDomx" hidden>
+        <div class="qd-crh"><b>Candle realtime · 3 candle terakhir <button type="button" class="qd-help" data-h="candle">?</button></b><select id="qdCrSrc" class="qd-sel" title="Sumber data candle"><option value="auto">Otomatis: EA → Binance</option><option value="ea">Hanya EA</option><option value="bn">Hanya Binance</option></select></div>
+        <div class="qd-crg">
+          <div class="qd-crc" id="qdCrC15"><div class="qd-crt"><b>M15</b><span class="qd-chip" id="qdCr15s">—</span></div><canvas id="qdCr15"></canvas><div id="qdCr15d" class="qd-crd"></div></div>
+          <div class="qd-crc" id="qdCrC30"><div class="qd-crt"><b>M30</b><span class="qd-chip" id="qdCr30s">—</span></div><canvas id="qdCr30"></canvas><div id="qdCr30d" class="qd-crd"></div></div>
+          <div class="qd-crc" id="qdCrC60"><div class="qd-crt"><b>H1</b><span class="qd-chip" id="qdCr60s">—</span></div><canvas id="qdCr60"></canvas><div id="qdCr60d" class="qd-crd"></div></div>
+          <div class="qd-crc qd-crguide"><div class="qd-crt"><b>Cara membaca</b></div>
+            <div class="qd-gl"><i class="u">▲</i><span><b>BREAKOUT naik</b> — harga live menutup di <u>atas</u> high 2 candle sebelumnya.</span></div>
+            <div class="qd-gl"><i class="d">▼</i><span><b>BREAKOUT turun</b> — di <u>bawah</u> low 2 candle sebelumnya.</span></div>
+            <div class="qd-gl"><i class="f">✕</i><span><b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range (sapuan likuiditas).</span></div>
+            <div class="qd-gl"><i class="n">▭</i><span><b>DI DALAM RANGE</b> — belum ada breakout.</span></div>
+            <div class="qd-sub" style="margin-top:6px">Garis oranye = <b>H</b> (high acuan), biru = <b>L</b> (low acuan). Candle terakhir berdenyut = candle berjalan. Breakout baru <u>valid</u> bila candle <b>ditutup</b> di luar range.</div>
+          </div>
+        </div>
+        <div class="note qd-small" id="qdCrNote"></div>
+        <div id="qdDomList"></div>
+      </div>
+      <div class="qd-pane" id="qdAna" hidden>
+        <div class="qd-as"><div class="qd-ash"><b>1 · Liquidity sweep &amp; EQH/EQL <button type="button" class="qd-help" data-h="fxliq">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxLiq"><i></i></label></div><div class="qd-asc"><label>Toleransi EQ (× ATR) <input id="qdEqTol" class="xin" type="number" step="0.05"></label></div><div class="qd-asb" id="qaLiq"></div></div>
+        <div class="qd-as"><div class="qd-ash"><b>2 · Rencana trade dari zona <button type="button" class="qd-help" data-h="fxplan">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxPlan"><i></i></label></div><div class="qd-asc"><label>Risiko % <input id="qdPlRisk" class="xin" type="number" step="0.1"></label><label>Entry <select id="qdPlEntry" class="xin"><option value="mid">Tengah 50%</option><option value="prox">Tepi dekat</option></select></label><label>Buffer SL (ATR) <input id="qdPlBuf" class="xin" type="number" step="0.05"></label><label>Min RR <input id="qdPlRR" class="xin" type="number" step="0.1"></label><label>Balance manual <input id="qdPlBal" class="xin" type="text" placeholder="auto (EA)"></label></div><div class="qd-asb" id="qaPlan"></div></div>
+        <div class="qd-as"><div class="qd-ash"><b>3 · CVD &amp; absorpsi <button type="button" class="qd-help" data-h="fxcvd">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxCvd"><i></i></label></div><div class="qd-asc"><label>ABS bila volume ≥ (×) <input id="qdAbsVol" class="xin" type="number" step="0.1"></label></div><div class="qd-asb" id="qaCvd"></div></div>
+        <div class="qd-as"><div class="qd-ash"><b>4 · Premium/Discount &amp; OTE <button type="button" class="qd-help" data-h="fxpd">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxPd"><i></i></label></div><div class="qd-asc"><label>Range (candle) <input id="qdPdN" class="xin" type="number" step="10"></label><label class="qd-ck"><input type="checkbox" id="qdPdF"> Saring zona kontra PD</label></div><div class="qd-asb" id="qaPd"></div></div>
+        <div class="qd-as"><div class="qd-ash"><b>5 · Heatmap DOM historis <button type="button" class="qd-help" data-h="fxheat">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxHeat"><i></i></label></div><div class="qd-asc"><button type="button" class="btn ghost" id="qdHeatClr" style="padding:4px 10px">Hapus rekaman</button></div><div class="qd-asb" id="qaHeat"></div></div>
+        <div class="qd-as"><div class="qd-ash"><b>6 · Peredam berita <button type="button" class="qd-help" data-h="fxnews">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxNews"><i></i></label></div><div class="qd-asc"><label>Sebelum (mnt) <input id="qdNwPre" class="xin" type="number" step="5"></label><label>Sesudah (mnt) <input id="qdNwPost" class="xin" type="number" step="5"></label><label>Impact <select id="qdNwImp" class="xin"><option value="3">High</option><option value="2">Medium+</option></select></label><label>Mata uang <input id="qdNwCcy" class="xin" type="text" style="width:84px"></label><label class="qd-ck"><input type="checkbox" id="qdNwDamp"> Redam peluang tahan ×0,8</label></div><div class="qd-asb" id="qaNews"></div></div>
+        <div class="note qd-small">Saklar juga ada sebagai chip di atas chart (Liq, Plan, CVD, PD, Heat, News). Semua analisis adalah alat bantu, bukan sinyal.</div>
+      </div>
       <div class="qd-pane" id="qdArus" hidden>
         <div class="qd-pm"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Arus transaksi live <button type="button" class="qd-help" data-h="arus" aria-label="Bantuan">?</button></b><span class="qd-sub" id="qaRate">—</span></div>
         <div class="qd-cnt"><span style="color:var(--green)" id="qaB">BUYER 0×</span><span style="color:var(--red)" id="qaS">SELLER 0×</span></div>
@@ -3940,7 +4004,7 @@ function val(v, u){
 function manual(){
   try { return (window.__NEWS ? window.__NEWS() : []).map(n => { const t = n.time && n.time.toMillis ? n.time.toMillis() : Number(n.time); return { id:'m_' + n.id, t:Math.floor(t/1000), ccy:String(n.currency || '').toUpperCase(), title:n.title, imp:n.impact === 'high' ? 3 : (n.impact === 'medium' ? 2 : 1), u:'', manual:true }; }).filter(e => e.t > 0); } catch(e){ return []; }
 }
-const allEvents = () => [...remote, ...manual()].sort((a, b) => a.t - b.t);
+const allEvents = () => [...remote, ...manual()].sort((a, b) => a.t - b.t); window.__CAL = () => allEvents();
 function filtered(list){
   const now = Math.floor(Date.now()/1000), today = wib(now).key;
   return list.filter(e => {
@@ -6726,7 +6790,7 @@ window.__THEME = { apply, get };
   const MAX_CHARS = 36000;
   const EPOCH_KEYS = new Set(['priceTime','barTime','c1Time','c2Time','openTime','closeTime','nextNewsTime','timeSetup','timeExpiration','created','anchorTime','ts','tEnd','time','tA','tB']);
   const DROP_KEYS = new Set(['bars','kBars','dBars']);
-  const ACC_SKIP = new Set(['mtf','sig','lv','fibo','positions','pendingOrders','exposure','history','stats','account','sigEv','sigOut','updatedAt','_balanceSrc']);
+  const ACC_SKIP = new Set(['bars','mtf','sig','lv','fibo','positions','pendingOrders','exposure','history','stats','account','sigEv','sigOut','updatedAt','_balanceSrc']);
   const FX = () => window.__FX;
   const safe = (fn, fb) => { try { const r = fn(); return r === undefined ? fb : r; } catch (e) { return fb; } };
   const dirTxt = d => Number(d) > 0 ? 'UP' : Number(d) < 0 ? 'DOWN' : 'NETRAL';
@@ -10452,7 +10516,7 @@ const f2 = (v, d) => Number.isFinite(v) ? v.toFixed(d == null ? (Q.dec || 2) : d
 const lotF = v => !Number.isFinite(v) ? '—' : v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const HOSTS = {
-  fut: { rest: 'https://fapi.binance.com/fapi/v1/', ws: 'wss://fstream.binance.com/stream?streams=' },
+  fut: { rest: 'https://fapi.binance.com/fapi/v1/', ws: 'wss://fstream.binance.com/market/stream?streams=' },
   spot: { rest: 'https://api.binance.com/api/v3/', ws: 'wss://stream.binance.com:9443/stream?streams=' }
 };
 const SESS = {
@@ -10467,7 +10531,7 @@ const wib = (t, o) => new Date(t).toLocaleString('id-ID', Object.assign({ timeZo
 const Q = {
   sym: LSG('qd_sym', 'XAUUSDT'), tf: LSG('qd_tf', '15m'), n: +LSG('qd_n', 150) || 150, lot: +LSG('qd_lot', 100) || 100,
   optDom: LSG('qd_dom', true), optMid: LSG('qd_mid', true), optSess: LSG('qd_sess', true),
-  host: 'fut', wImp: +LSG('qd_wimp', 30), wFr: +LSG('qd_wfr', 25), wVol: +LSG('qd_wvol', 20), wDom: +LSG('qd_wdom', 15), wFlow: +LSG('qd_wflow', 10), frMode: LSG('qd_frmode', 'absorb'), gap: +LSG('qd_gap', .5), staleSec: +LSG('qd_stale', 15), fav: LSG('qd_fav', []), syms: LSG('qd_syms', []), lots: LSG('qd_lots', {}), optVp: LSG('qd_vp', true), optEma: LSG('qd_emal', true), optPin: LSG('qd_pin', true), zf: 'all', tapeMin: 0, tape: [], cnt: { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }, wave: [], waveAcc: { b: 0, s: 0 }, tickTs: [], lastTick: 0, stale: false, dec: 2, near: +LSG('qd_near', 0) || 0, optVol: LSG('qd_vol', true), volTh: +LSG('qd_volth', 2) || 2, sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
+  host: 'fut', fxLiq: LSG('qd_fxliq', true), fxCvd: LSG('qd_fxcvd', true), fxPd: LSG('qd_fxpd', false), fxHeat: LSG('qd_fxheat', false), fxPlan: LSG('qd_fxplan', true), fxNews: LSG('qd_fxnews', true), eqTol: +LSG('qd_eqtol', .15), pdN: +LSG('qd_pdn', 100), pdF: LSG('qd_pdf', false), absVol: +LSG('qd_absvol', 1.5), plRisk: +LSG('qd_plrisk', 1), plBuf: +LSG('qd_plbuf', .15), plEntry: LSG('qd_plentry', 'mid'), plRR: +LSG('qd_plrr', 1.5), plBal: LSG('qd_plbal', ''), nwPre: +LSG('qd_nwpre', 30), nwPost: +LSG('qd_nwpost', 30), nwImp: +LSG('qd_nwimp', 3), nwCcy: LSG('qd_nwccy', 'USD'), nwDamp: LSG('qd_nwdamp', true), ana: null, plan: null, heat: [], heatEv: [], hstp: 0, hHi: 0, hLo: 1e18, hWalls: null, lastAid: 0, wsTick: 0, wsKl: 0, lastPoll: 0, lastKl: 0, trBusy: false, klBusy: false, lastSweepT: 0, newsSeen: {}, nws: { ev: [], active: false, act: [], next: null, recent: [] }, wImp: +LSG('qd_wimp', 30), wFr: +LSG('qd_wfr', 25), wVol: +LSG('qd_wvol', 20), wDom: +LSG('qd_wdom', 15), wFlow: +LSG('qd_wflow', 10), frMode: LSG('qd_frmode', 'absorb'), gap: +LSG('qd_gap', .5), staleSec: +LSG('qd_stale', 15), fav: LSG('qd_fav', []), syms: LSG('qd_syms', []), lots: LSG('qd_lots', {}), optVp: LSG('qd_vp', true), optEma: LSG('qd_emal', true), optPin: LSG('qd_pin', true), zf: 'all', tapeMin: 0, tape: [], cnt: { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }, wave: [], waveAcc: { b: 0, s: 0 }, tickTs: [], lastTick: 0, stale: false, dec: 2, near: +LSG('qd_near', 0) || 0, optVol: LSG('qd_vol', true), volTh: +LSG('qd_volth', 2) || 2, sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
   log: LSG('qd_log', []), zs: {}, ws: null, wsOk: false, wsTry: 0, lastMsg: 0, lastDepth: 0, depthBusy: false, depthErr: '',
   mouse: null, dirty: true, tok: 0, started: false, needAn: false, err: '', tick: 0, lastDraw: 0
 };
@@ -10496,7 +10560,7 @@ async function load() {
     Q.host = host;
     Q.c = d.map(k => ({ t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5], tb: +k[9] }));
     Q.px = Q.c[Q.c.length - 1].c; Q.dec = Q.px >= 100 ? 2 : Q.px >= 1 ? 4 : 6; Q.flow = []; Q.tape = []; Q.wave = []; Q.cnt = { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }; Q.lastTick = Date.now(); Q.zs = {}; Q.bids = []; Q.asks = [];
-    analyze(); openWs(); pollDepth(); loadHtf(); Q.dirty = true; render();
+    analyze(); openWs(); pollDepth(); loadHtf(); loadTrades(true); Q.dirty = true; render();
   } catch (e) { if (tok === Q.tok) { Q.err = 'Gagal memuat: ' + (e.message || e) + ' (cek koneksi / blokir Binance, atau simbol tidak tersedia)'; paintSt(); } }
 }
 async function pollDepth() {
@@ -10504,7 +10568,7 @@ async function pollDepth() {
   try {
     const d = await fj(`${HOSTS[Q.host].rest}depth?symbol=${Q.sym}&limit=1000`);
     if (tok !== Q.tok) return; if (!d || !d.bids) throw new Error((d && d.msg) || 'depth tidak valid');
-    Q.bids = d.bids.map(a => [+a[0] + Q.ofs, +a[1]]); Q.asks = d.asks.map(a => [+a[0] + Q.ofs, +a[1]]); Q.lastDepth = Date.now(); Q.depthErr = ''; Q.dirty = true;
+    Q.bids = d.bids.map(a => [+a[0] + Q.ofs, +a[1]]); Q.asks = d.asks.map(a => [+a[0] + Q.ofs, +a[1]]); Q.lastDepth = Date.now(); Q.depthErr = ''; Q.dirty = true; heatAdd();
   } catch (e) { Q.depthErr = e.message || String(e); } finally { Q.depthBusy = false; }
 }
 function closeWs() { const w = Q.ws; Q.ws = null; Q.wsOk = false; if (w) { try { w.onclose = w.onmessage = w.onerror = null; w.close(); } catch (e) { } } }
@@ -10519,12 +10583,12 @@ function openWs() {
     let d; try { d = JSON.parse(m.data); } catch (e) { return; } const p = d && d.data; if (!p || !Q.c.length) return;
     Q.lastMsg = Date.now(); const last = Q.c[Q.c.length - 1];
     if (p.e === 'kline') {
-      const k = p.k, row = { t: +k.t, o: +k.o + Q.ofs, h: +k.h + Q.ofs, l: +k.l + Q.ofs, c: +k.c + Q.ofs, v: +k.v, tb: +k.V };
+      Q.wsKl = Date.now(); const k = p.k, row = { t: +k.t, o: +k.o + Q.ofs, h: +k.h + Q.ofs, l: +k.l + Q.ofs, c: +k.c + Q.ofs, v: +k.v, tb: +k.V };
       if (row.t === last.t) Q.c[Q.c.length - 1] = row;
       else if (row.t > last.t) { Q.c.push(row); if (Q.c.length > 1600) Q.c.shift(); Q.needAn = true; }
       if (k.x) Q.needAn = true; Q.px = row.c;
     } else if (p.e === 'aggTrade') {
-      const pr = +p.p + Q.ofs, q = +p.q; Q.px = pr; last.c = pr; if (pr > last.h) last.h = pr; if (pr < last.l) last.l = pr;
+      if (Q.lastAid && +p.a <= Q.lastAid) return; Q.lastAid = +p.a; Q.wsTick = Date.now(); const pr = +p.p + Q.ofs, q = +p.q; Q.px = pr; last.c = pr; if (pr > last.h) last.h = pr; if (pr < last.l) last.l = pr;
       Q.flow.push({ t: +p.T, q, buy: !p.m }); const lim = Date.now() - 300000; while (Q.flow.length && Q.flow[0].t < lim) Q.flow.shift(); tapeAdd(+p.T, !p.m, q, pr, last.t);
     }
     Q.dirty = true;
@@ -10567,6 +10631,7 @@ function life(z, c) {
     const k = c[j], ov = k.l <= z.top && k.h >= z.bot, brk = D ? k.c < z.bot : k.c > z.top, away = D ? k.c > z.top : k.c < z.bot;
     if (brk) { if (!cur) cur = { j, t: k.t, sess: sessOf(k.t) }; cur.res = 'tembus'; z.tests.push(cur); cur = null; z.broken = true; z.brokenAt = k.t; z.brokenJ = j; break; }
     if (!cur && ov && !prev) cur = { j, t: k.t, sess: sessOf(k.t) };
+    if (cur && (D ? k.l < z.bot : k.h > z.top)) cur.sw = true;
     if (cur) { if (away) { cur.res = 'ditahan'; z.tests.push(cur); cur = null; } else if (j - cur.j >= Q.hold) { cur.res = 'ditahan'; z.tests.push(cur); cur = null; } }
     prev = ov;
   }
@@ -10586,6 +10651,7 @@ function swings(c, L) {
 function analyze() {
   Q.needAn = false; const c = Q.c.slice(0, -1); if (c.length < 30) return; /* candle terakhir masih berjalan: tidak dipakai agar zona tidak berkedip */
   const r = buildZones(c); Q.atr = r.atr; Q.all = r.keep; Q.emaV = emaOf(c, Q.emaN); Q.sw = swings(c, Q.swL);
+  try { Q.ana = anaCalc(c, r.atr); } catch (e) { console.error('qdom ana', e); }
 }
 function htfBuild() {
   const out = []; (HTFS[Q.tf] || []).forEach(h => { const raw = Q.htfC[h]; if (!raw) return; const c = raw.slice(0, -1); if (c.length < 30) return; buildZones(c).keep.forEach(z => { if (!z.broken) { z.tf = h; out.push(z); } }); });
@@ -10677,8 +10743,8 @@ function rescore() {
   const pick = arr => { const r = arr.slice(0, lim); if (r.length && !r.some(z => z.tier === 'S')) { const s = arr.slice(lim).find(z => z.tier === 'S'); if (s) r[r.length - 1] = s; } return r; };
   const nl = Q.near > 0 ? Q.near * (Q.atr || 1) : Infinity;
   const dc = arr => { if (!(Q.gap > 0)) return arr; const g = Q.gap * (Q.atr || 1), out = []; for (const z of arr) { const i = out.findIndex(k => Math.abs(k.mid - z.mid) < g); if (i < 0) out.push(z); else if (z.tier === 'S' && out[i].tier === 'M') out[i] = z; } return out; };
-  const sup = wantS ? pick(dc(act0.filter(z => z.type === 'S' && z.top > px && z.bot - px <= nl).sort((a, b) => a.bot - b.bot))) : [];
-  const dem = wantD ? pick(dc(act0.filter(z => z.type === 'D' && z.bot < px && px - z.top <= nl).sort((a, b) => b.top - a.top))) : [];
+  const sup = wantS ? pick(dc(act0.filter(z => z.type === 'S' && z.top > px && z.bot - px <= nl && pdOk(z)).sort((a, b) => a.bot - b.bot))) : [];
+  const dem = wantD ? pick(dc(act0.filter(z => z.type === 'D' && z.bot < px && px - z.top <= nl && pdOk(z)).sort((a, b) => b.top - a.top))) : [];
   Q.zones = [...sup, ...dem];
   const E = emp();
   Q.zones.forEach(z => {
@@ -10701,7 +10767,7 @@ function rescore() {
     z.pv = { imp: sImp, fresh: sFresh, vol: sVol, dom: sDom, flow: sFlow, htf: z.bonus }; z.pm = { imp: mImp, fresh: mFr, vol: mVol, dom: mDom, flow: mFlow };
     z.parts = `impuls ${sImp.toFixed(0)}/${mImp.toFixed(0)} · kesegaran ${sFresh.toFixed(0)}/${mFr.toFixed(0)} · volume ${sVol.toFixed(0)}/${mVol.toFixed(0)} · DOM ${sDom.toFixed(0)}/${mDom.toFixed(0)} · arus ${sFlow.toFixed(0)}/${mFlow.toFixed(0)} · HTF ${z.bonus >= 0 ? '+' : ''}${z.bonus}`;
     const ea = E[z.tier] || [0, 0], cal = ea[0] >= 15;
-    z.hold = Math.round((cal ? clamp((ea[1] + 1) / (ea[0] + 2) + (z.score - 50) * .004 + Math.min(.06, .02 * z.held), .05, .95) : clamp(.30 + .60 * z.score / 100 + Math.min(.09, .03 * z.held), .08, .92)) * 100); z.holdSrc = cal ? `kalibrasi historis (${ea[0]} uji)` : 'heuristik (data uji sedikit)';
+    z.hold = Math.round((cal ? clamp((ea[1] + 1) / (ea[0] + 2) + (z.score - 50) * .004 + Math.min(.06, .02 * z.held), .05, .95) : clamp(.30 + .60 * z.score / 100 + Math.min(.09, .03 * z.held), .08, .92)) * 100); z.holdSrc = cal ? `kalibrasi historis (${ea[0]} uji)` : 'heuristik (data uji sedikit)'; zoneExtras(z);
     z.ratio = ratio;
   });
   const ns = sup[0], nd = dem[0]; Q.eq = ns && nd && ns.bot > nd.top ? { lo: nd.top, hi: ns.bot, mid: (nd.top + ns.bot) / 2 } : null;
@@ -10753,7 +10819,7 @@ function draw() {
   if (el.width !== Math.round(W * d) || el.height !== Math.round(H * d)) { el.width = Math.round(W * d); el.height = Math.round(H * d); }
   const c = el.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H); c.textAlign = 'left'; c.textBaseline = 'alphabetic'; Q.hit = [];
   const all = Q.c; if (all.length < 5) return;
-  const small = W < 520, AX = 60, DP = Q.optDom ? (W < 700 ? 52 : 104) : 0, aw = W - AX - DP, pt = 34, pb = 22, vh = Q.optVol ? Math.round(clamp((H - pt - pb) * .17, 34, 84)) : 0, ph = H - pt - pb - vh;
+  const small = W < 520, AX = 60, DP = Q.optDom ? (W < 700 ? 52 : 104) : 0, aw = W - AX - DP, pt = 34, pb = 22, vh = Q.optVol ? Math.round(clamp((H - pt - pb) * .17, 34, 84)) : 0, ch = Q.fxCvd ? Math.round(clamp((H - pt - pb) * .13, 30, 64)) : 0, ph = H - pt - pb - vh - ch;
   const N = all.length, n = Math.min(Q.n, N); Q.pan = clamp(Q.pan, 0, Math.max(0, N - n)); $('qdLiveBtn').hidden = Q.pan === 0;
   const end = N - Q.pan, start = Math.max(0, end - n), vis = all.slice(start, end), cw = aw / (Math.max(n, vis.length) + (Q.pan === 0 ? 4 : 1)); Q.cw = cw;
   const px = Q.px || all[N - 1].c; let lo = Infinity, hi = -Infinity; vis.forEach(k => { if (k.l < lo) lo = k.l; if (k.h > hi) hi = k.h; });
@@ -10769,6 +10835,15 @@ function draw() {
   // label tanpa tabrakan
   const occ = [], place = y => { for (const dy of [0, 12, -12, 24, -24]) { const yy = y + dy; if (yy < pt + 9 || yy > pt + ph - 3) continue; if (!occ.some(o => Math.abs(o - yy) < 11)) { occ.push(yy); return yy; } } return null; };
   const tag = (txt, y, col, force, right) => { const yy = place(y); if (yy == null && !force) return; const y0 = yy == null ? y : yy; c.font = '700 9.5px sans-serif'; const w = c.measureText(txt).width + 8; c.fillStyle = 'rgba(5,10,24,.8)'; if (right) { c.fillRect(aw - w - 2, y0 - 9, w, 12); c.fillStyle = col; c.textAlign = 'right'; c.fillText(txt, aw - 6, y0); } else { c.fillRect(2, y0 - 9, w, 12); c.fillStyle = col; c.fillText(txt, 6, y0); } c.textAlign = 'left'; };
+  // heatmap DOM historis
+  if (Q.fxHeat && Q.heat.length > 1) drawHeat(c, { all, vis, start, cw, aw, lo, hi, Y });
+  // premium / discount + OTE
+  if (Q.fxPd && Q.ana && Q.ana.pd) { const pd = Q.ana.pd, x0 = Math.max(0, (Math.min(pd.ih, pd.il) - start) * cw), yH = Y(pd.H), yL = Y(pd.L), yE = Y(pd.EQ);
+    c.fillStyle = 'rgba(255,75,110,.05)'; c.fillRect(x0, yH, aw - x0, yE - yH); c.fillStyle = 'rgba(45,245,163,.05)'; c.fillRect(x0, yE, aw - x0, yL - yE);
+    c.fillStyle = 'rgba(53,224,255,.10)'; c.fillRect(x0, Y(pd.ote[1]), aw - x0, Y(pd.ote[0]) - Y(pd.ote[1])); c.strokeStyle = 'rgba(53,224,255,.5)'; c.lineWidth = 1; c.setLineDash([2, 3]); c.strokeRect(x0 + .5, Y(pd.ote[1]) + .5, aw - x0 - 1, Math.max(1, Y(pd.ote[0]) - Y(pd.ote[1]) - 1)); c.setLineDash([]);
+    c.strokeStyle = 'rgba(255,201,74,.6)'; c.lineWidth = 1; c.setLineDash([4, 4]); c.beginPath(); c.moveTo(x0, yE); c.lineTo(aw, yE); c.stroke(); c.setLineDash([]);
+    c.strokeStyle = 'rgba(167,182,220,.35)'; c.setLineDash([1, 4]); c.beginPath(); c.moveTo(x0, yH); c.lineTo(aw, yH); c.moveTo(x0, yL); c.lineTo(aw, yL); c.stroke(); c.setLineDash([]);
+    tag(`PD EQ ${f2(pd.EQ)}`, yE - 3, '#ffd25e', false, true); tag(`OTE ${pd.oteSide} ${f2(pd.ote[0])}–${f2(pd.ote[1])}`, Y(pd.ote[1]) + 10, '#7ce8ff', false, true); }
   // volume profile (VP) + POC / value area
   if (Q.optVp && vis.length > 4) {
     const NB = 48, stp = (hi - lo) / NB, vp = new Array(NB).fill(0);
@@ -10808,6 +10883,23 @@ function draw() {
       c.fillStyle = t.res === 'tembus' ? '#ff4b6e' : t.res === 'berjalan' ? '#a7b6dc' : '#f59e0b'; c.beginPath(); c.arc(x, y, sel ? 4.2 : 3, 0, 6.2832); c.fill();
       if (sel || zs.length <= 3) { const txt = `#${ti + 1}${t.res === 'ditahan' ? '✓' : t.res === 'tembus' ? '✗' : '…'}`; c.font = '700 9px sans-serif'; const w = c.measureText(txt).width + 6, yy = sup ? y - 12 : y + 14; c.fillStyle = 'rgba(11,16,28,.92)'; c.fillRect(x - w / 2, yy - 9, w, 12); c.strokeStyle = '#f59e0b'; c.lineWidth = 1; c.strokeRect(x - w / 2, yy - 9, w, 12); c.fillStyle = '#fbbf24'; c.textAlign = 'center'; c.fillText(txt, x, yy); c.textAlign = 'left'; } });
   });
+  // likuiditas: EQH/EQL + sweep
+  if (Q.fxLiq && Q.ana) {
+    Q.ana.liq.pools.forEach(p => { const act = p.state === 'aktif', xs = Math.max(0, (p.i - start) * cw), xe = act ? aw : Math.min(aw, (p.k - start) * cw + cw / 2), y = Y(p.price); if (p.price < lo || p.price > hi || xe <= 0 || xs > aw) return;
+      c.strokeStyle = act ? (p.type === 'EQH' ? 'rgba(255,176,46,.9)' : 'rgba(53,224,255,.9)') : 'rgba(167,182,220,.4)'; c.lineWidth = 1.2; c.setLineDash(act ? [6, 3] : [2, 3]); c.beginPath(); c.moveTo(xs, y); c.lineTo(xe, y); c.stroke(); c.setLineDash([]);
+      if (act) tag(`${p.type} ×${p.n} ${f2(p.price)}`, y - 3, p.type === 'EQH' ? '#ffb02e' : '#7ce8ff', false, false); });
+    Q.ana.liq.sweeps.forEach(s => { const sl = s.idx - start; if (sl < 0 || sl >= vis.length) return; const k = all[s.idx], x = sl * cw + cw / 2, bear = s.dir === 'bear', y = bear ? Math.max(pt + 12, Y(k.h) - 10) : Math.min(pt + ph - 8, Y(k.l) + 10), sz = 5; c.fillStyle = bear ? '#ff4b6e' : '#2df5a3'; c.strokeStyle = '#05070f'; c.lineWidth = 1; c.beginPath(); if (bear) { c.moveTo(x - sz, y - sz); c.lineTo(x + sz, y - sz); c.lineTo(x, y + sz); } else { c.moveTo(x - sz, y + sz); c.lineTo(x + sz, y + sz); c.lineTo(x, y - sz); } c.closePath(); c.fill(); c.stroke(); c.font = '700 8.5px sans-serif'; c.textAlign = 'center'; c.fillStyle = bear ? '#ff8aa0' : '#6dffc0'; c.fillText(bear ? 'BSL✕' : 'SSL✕', x, bear ? y - sz - 3 : y + sz + 10); c.textAlign = 'left'; });
+  }
+  // absorpsi (ABS)
+  if (Q.fxCvd && Q.ana) Q.ana.abs.forEach(a => { if (!a.ctx) return; const sl = a.idx - start; if (sl < 0 || sl >= vis.length) return; const k = all[a.idx], x = sl * cw + cw / 2, bull = a.dir === 'bull', y = bull ? Math.min(pt + ph - 8, Y(k.l) + 12) : Math.max(pt + 10, Y(k.h) - 12); c.fillStyle = bull ? 'rgba(45,245,163,.85)' : 'rgba(255,75,110,.85)'; c.beginPath(); c.arc(x, y, 6, 0, 6.2832); c.fill(); c.fillStyle = '#05070f'; c.font = '800 8px sans-serif'; c.textAlign = 'center'; c.fillText('A', x, y + 3); c.textAlign = 'left'; });
+  // berita (garis rilis + jendela)
+  if (Q.fxNews && Q.nws.ev.length) { const tf = TFMS[Q.tf] || 9e5; Q.nws.ev.forEach(e => { const x = ((e.t - all[0].t) / tf - start) * cw + cw / 2; if (x < -5 || x > aw + 5) return; const w0 = Q.nwPre * 6e4 / tf * cw, w1 = Q.nwPost * 6e4 / tf * cw; c.fillStyle = 'rgba(255,176,46,.07)'; c.fillRect(Math.max(0, x - w0), pt, Math.min(aw, x + w1) - Math.max(0, x - w0), ph); c.strokeStyle = 'rgba(255,176,46,.8)'; c.lineWidth = 1; c.setLineDash([5, 3]); c.beginPath(); c.moveTo(x, pt); c.lineTo(x, pt + ph); c.stroke(); c.setLineDash([]); c.font = '700 9px sans-serif'; const lb = `📰 ${e.ccy} ${e.title.slice(0, 18)}`, w = c.measureText(lb).width + 6; c.fillStyle = 'rgba(5,10,24,.85)'; c.fillRect(Math.min(aw - w, x + 2), pt + 14, w, 12); c.fillStyle = '#ffd25e'; c.fillText(lb, Math.min(aw - w, x + 2) + 3, pt + 23); }); }
+  // rencana trade (zona terpilih)
+  if (Q.fxPlan && Q.plan && Q.plan.zkey === Q.sel) { const p = Q.plan, xr = aw * .72;
+    c.fillStyle = 'rgba(255,75,110,.09)'; c.fillRect(xr, Math.min(Y(p.entry), Y(p.sl)), aw - xr, Math.abs(Y(p.sl) - Y(p.entry))); if (p.tps[0]) { c.fillStyle = 'rgba(45,245,163,.08)'; c.fillRect(xr, Math.min(Y(p.entry), Y(p.tps[0].p)), aw - xr, Math.abs(Y(p.tps[0].p) - Y(p.entry))); }
+    const ln = (pr, col, dash) => { if (pr < lo || pr > hi) return; c.strokeStyle = col; c.lineWidth = 1.4; c.setLineDash(dash); c.beginPath(); c.moveTo(xr, Y(pr)); c.lineTo(aw, Y(pr)); c.stroke(); c.setLineDash([]); };
+    ln(p.entry, '#ffffff', [5, 3]); ln(p.sl, '#ff4b6e', []); p.tps.forEach(t => ln(t.p, '#2df5a3', [5, 3]));
+    tag(`${p.side} ENTRY ${f2(p.entry)}`, Y(p.entry) - 3, '#ffffff', true, true); tag(`SL ${f2(p.sl)} · ${f2(p.risk)}$`, Y(p.sl) - 3, '#ff8aa0', true, true); p.tps.forEach((t, i) => tag(`TP${i + 1} ${f2(t.p)} · ${t.r.toFixed(1)}R`, Y(t.p) - 3, '#6dffc0', true, true)); }
   // volume + penanda volume tak biasa
   const volInfo = vis.map((k, i) => volRatio(start + i));
   if (vh) {
@@ -10820,6 +10912,17 @@ function draw() {
     c.fillStyle = '#a7b6dc'; c.fillText(lotF(cap / Q.lot), W - AX + 6, y0 + 3);
   }
   if (Q.optVol) vis.forEach((k, i) => { const r = volInfo[i].r; if (r < Q.volTh) return; const ex = r >= Q.volTh * 1.5, x = i * cw + cw / 2, y = Math.max(pt + 8, Y(k.h) - 8), s = ex ? 5.5 : 3.8; c.fillStyle = '#ffc94a'; c.strokeStyle = '#1c1300'; c.lineWidth = 1; c.beginPath(); c.moveTo(x, y - s); c.lineTo(x + s, y); c.lineTo(x, y + s); c.lineTo(x - s, y); c.closePath(); c.fill(); c.stroke(); if (ex && cw >= 4) { c.font = '700 9px sans-serif'; c.fillStyle = '#ffd25e'; c.textAlign = 'center'; c.fillText(r.toFixed(1) + '×', x, y - s - 3); c.textAlign = 'left'; } });
+  // panel CVD
+  if (ch) {
+    const y0 = pt + ph + vh + 8, y1 = pt + ph + vh + ch - 2, hh = Math.max(8, y1 - y0); c.strokeStyle = 'rgba(130,165,255,.18)'; c.lineWidth = 1; c.beginPath(); c.moveTo(0, pt + ph + vh + 3.5); c.lineTo(aw + DP, pt + ph + vh + 3.5); c.stroke();
+    let cum = 0; const cv = new Array(N), dl = new Array(N); for (let g = 0; g < N; g++) { dl[g] = 2 * all[g].tb - all[g].v; cum += dl[g]; cv[g] = cum; }
+    const base = start > 0 ? cv[start - 1] : 0; let mn = 0, mx = 0, dm = 1e-9; for (let j = 0; j < vis.length; j++) { const r = cv[start + j] - base; if (r < mn) mn = r; if (r > mx) mx = r; dm = Math.max(dm, Math.abs(dl[start + j])); }
+    const rg = (mx - mn) || 1, Yc = v => y1 - (v - mn) / rg * hh, zy = Yc(0);
+    c.strokeStyle = 'rgba(167,182,220,.3)'; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(0, zy); c.lineTo(aw, zy); c.stroke(); c.setLineDash([]);
+    for (let j = 0; j < vis.length; j++) { const d = dl[start + j], hgt = Math.abs(d) / dm * hh * .35, x = j * cw + cw / 2, bw = Math.max(1, cw * .6); c.fillStyle = d >= 0 ? 'rgba(45,245,163,.32)' : 'rgba(255,75,110,.32)'; c.fillRect(x - bw / 2, d >= 0 ? zy - hgt : zy, bw, hgt); }
+    c.beginPath(); for (let j = 0; j < vis.length; j++) { const x = j * cw + cw / 2, y = Yc(cv[start + j] - base); if (j) c.lineTo(x, y); else c.moveTo(x, y); } c.strokeStyle = '#ffb02e'; c.lineWidth = 1.5; c.stroke();
+    const dv = Q.ana && Q.ana.cvDiv; c.font = '9px sans-serif'; c.fillStyle = 'rgba(5,10,24,.8)'; c.fillRect(2, y0 - 6, small ? 52 : 150, 12); c.fillStyle = '#ffb02e'; c.fillText(small ? 'CVD' : `CVD (lot)${dv ? (dv.dir === 'bear' ? ' · DIV ▼' : ' · DIV ▲') : ''}`, 5, y0 + 3); c.fillStyle = '#a7b6dc'; c.fillText(lot3((cv[end - 1] - base) / Q.lot), W - AX + 6, y0 + 3);
+  }
   // EQ line
   if (Q.optZ && Q.eq) { const ye = Y(Q.eq.mid); c.strokeStyle = '#35e0ff'; c.lineWidth = 1.1; c.setLineDash([8, 5]); c.beginPath(); c.moveTo(0, ye); c.lineTo(aw, ye); c.stroke(); c.setLineDash([]); tag(`EQ ${f2(Q.eq.mid)}`, ye - 3, '#35e0ff', true, false); }
   // dinding DOM
@@ -10849,8 +10952,8 @@ function draw() {
   const yp = clamp(Y(px), pt, pt + ph); c.strokeStyle = '#ffc94a'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(0, yp); c.lineTo(W - AX, yp); c.stroke(); c.setLineDash([]);
   c.fillStyle = '#ffc94a'; c.fillRect(W - AX + 1, yp - 8, AX - 2, 16); c.fillStyle = '#1c1300'; c.font = '700 10px sans-serif'; c.fillText(f2(px), W - AX + 5, yp + 3.5);
   // crosshair
-  const m = Q.mouse; if (m && !(Q.drag && Q.drag.moved) && m.x >= 0 && m.x <= aw && m.y >= pt && m.y <= pt + ph + vh) {
-    const inP = m.y <= pt + ph; c.strokeStyle = 'rgba(238,243,255,.35)'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(m.x, pt); c.lineTo(m.x, pt + ph + vh); if (inP) { c.moveTo(0, m.y); c.lineTo(W - AX, m.y); } c.stroke(); c.setLineDash([]);
+  const m = Q.mouse; if (m && !(Q.drag && Q.drag.moved) && m.x >= 0 && m.x <= aw && m.y >= pt && m.y <= pt + ph + vh + ch) {
+    const inP = m.y <= pt + ph; c.strokeStyle = 'rgba(238,243,255,.35)'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(m.x, pt); c.lineTo(m.x, pt + ph + vh + ch); if (inP) { c.moveTo(0, m.y); c.lineTo(W - AX, m.y); } c.stroke(); c.setLineDash([]);
     const p = inP ? hi - (m.y - pt) / ph * (hi - lo) : px; if (inP) { c.fillStyle = '#2a3a6e'; c.fillRect(W - AX + 1, m.y - 8, AX - 2, 16); c.fillStyle = '#fff'; c.font = '10px sans-serif'; c.fillText(f2(p), W - AX + 5, m.y + 3.5); }
     const ki = clamp(Math.floor(m.x / cw), 0, vis.length - 1), k = vis[ki], dl = p - px, vi = volInfo[ki];
     if (k) { c.fillStyle = 'rgba(5,10,24,.8)'; c.fillRect(2, H - 34, Math.min(aw, 620), 14); c.fillStyle = '#a7b6dc'; c.font = '10px sans-serif'; c.fillText(`${wib(k.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })}  O ${f2(k.o)}  H ${f2(k.h)}  L ${f2(k.l)}  C ${f2(k.c)}  Vol ${lotF(k.v / Q.lot)} lot (${vi.r.toFixed(1)}×)  ·  Δ harga ${dl >= 0 ? '+' : ''}${f2(dl)} $ ${isGold() ? '(' + Math.round(Math.abs(dl) * 100) + 'p)' : ''}`, 6, H - 24); }
@@ -10868,13 +10971,13 @@ function zoneDetail(z) {
   <div><span>Vol formasi</span><b>${lotF(z.volL)} lot</b></div><div><span>DOM di zona (bid / ask)</span><b>${z.cov === 0 ? 'di luar DOM' : lotF(z.bidL) + ' / ' + lotF(z.askL) + ' lot'}</b></div>
   <div style="grid-column:1/-1"><span>Diuji per sesi (✓ ditahan · ✗ tembus)</span><b>${Object.keys(SESS).map(k => `<span class="qd-sess" style="color:${SESS[k].c};font:700 11px var(--fm);text-transform:none;letter-spacing:0">${SESS[k].n} ${tl[k][0]}× <small>${tl[k][1]}✓ ${tl[k][2]}✗</small></span>`).join('')}</b></div>
   <div style="grid-column:1/-1"><span>Sumber peluang tahan</span><b>${z.holdSrc}</b></div></div>
-  <div class="qd-acts"><button class="btn ghost" data-act="copy" data-key="${z.key}">Salin level</button><button class="btn ghost" data-act="focus" data-key="${z.key}">Fokus di chart</button></div></div>`;
+  <div class="qd-acts"><button class="btn ghost" data-act="copy" data-key="${z.key}">Salin level</button><button class="btn ghost" data-act="focus" data-key="${z.key}">Fokus di chart</button><button class="btn ghost" data-act="plan" data-key="${z.key}">Rencana trade ▸</button></div></div>`;
 }
 function zoneCard(z) {
   const M = z.tier === 'M', sel = Q.sel === z.key, near = !z.inside && z.dist <= .5 * (Q.atr || 1), st = z.inside ? '<b class="warn">● sedang diuji</b>' : near ? '<span class="qd-near">⚡ mendekati</span>' : z.nT === 0 ? 'fresh' : '';
   return `<div class="qd-zc ${z.type} ${M ? 'M' : ''} ${sel ? 'sel' : ''}" data-key="${z.key}">
     <div class="qd-zt"><span class="qd-badge ${z.type}">${sideName(z)}</span><span class="qd-badge ${M ? 'M' : 'ST'}">${tierName(z)}</span>${gradeBadge(z)}<span class="qd-zr">${f2(z.bot)} – ${f2(z.top)}</span></div>
-    <div class="qd-zm"><span>${fDist(z)}</span><span>${st}</span><span>${htfCell(z)}</span></div>
+    <div class="qd-zm"><span>${fDist(z)}</span><span>${st}</span><span>${htfCell(z)}${fxBadges(z)}</span></div>
     <div class="qd-zs"><div class="qd-sbar"><b style="color:${scCol(z.score)}">${z.score}</b><div class="qd-bar2"><i style="width:${z.score}%;background:${scCol(z.score)}"></i></div></div><span>tahan <b>${z.hold}%</b></span><span>uji <b>${z.nT}×</b> <small>${z.held}✓</small></span><span>DOM <b>${domTxt(z)}</b></span></div>
     ${sel ? zoneDetail(z) : ''}</div>`;
 }
@@ -10971,7 +11074,7 @@ function paintHead() {
   setH('qdChips', `<span class="qd-chip">Sesi <b style="color:${SESS[sessOf(Date.now())].c}">${SESS[sessOf(Date.now())].n}</b> · sisa ${sessLeft()}</span><span class="qd-chip">ATR <b>${f2(Q.atr)} $</b>${isGold() ? ' · ' + Math.round(Q.atr * 100) + 'p' : ''}</span><span class="qd-chip" title="Selisih harga Binance ke broker">Offset <b>${ofsT}</b></span>${volChip()}`);
   const cp = curPreset(); $('qdPreSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === cp));
   $('qdTfSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.tf)); $('qdModeSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.mode));
-  $('qdAlertBtn').classList.toggle('on', !!Q.alOn); $('qdLiveBtn').hidden = Q.pan === 0; setT('qdOfsInfo', Q.ofsInfo); paintStale();
+  $('qdAlertBtn').classList.toggle('on', !!Q.alOn); $('qdLiveBtn').hidden = Q.pan === 0; setT('qdOfsInfo', Q.ofsInfo); paintStale(); paintNews();
   const ov = $('qdOv'); let h = '';
   if (Q.err && !Q.c.length) h = `<b style="color:var(--red)">Data tidak bisa dimuat</b><div>${Q.err}</div><button class="btn primary" data-act="retry">Coba lagi</button>`;
   else if (!Q.c.length && Q.started) h = '<div class="qd-spin"></div><div>Memuat chart & order book Binance…</div>';
@@ -10979,11 +11082,13 @@ function paintHead() {
 }
 function paintPane() {
   if (Q.tab === 'arus') { paintArus(); return; }
+  if (Q.tab === 'ana') { paintAna(); return; }
+  if (Q.tab === 'dom') { setH('qdDomList', paneDom()); paintCr(); return; }
   if (Q.ptrDown) return; const html = Q.tab === 'zona' ? paneZona() : Q.tab === 'dom' ? paneDom() : Q.tab === 'sesi' ? paneSesi() : paneLog(), p = $('qdPane');
   if (p.dataset.h !== html) { const st = p.scrollTop; p.dataset.h = html; p.innerHTML = html; p.scrollTop = st; }
 }
 function paintSt() { paintHead(); }
-function render() { rescore(); updWalls(); paintHead(); paintInsight(); paintPane(); Q.dirty = true; }
+function render() { rescore(); updPlan(); updWalls(); paintHead(); paintInsight(); paintPane(); Q.dirty = true; }
 
 /* ---------- Alert ---------- */
 function toast(msg, kind) {
@@ -11008,15 +11113,15 @@ function alertCheck() {
 }
 
 /* ---------- Kontrol & loop ---------- */
-function reload() { closeWs(); Q.tape = []; Q.wave = []; Q.cnt = { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }; Q.waveAcc = { b: 0, s: 0 }; Q.tickTs = []; Q.stale = false; Q.lastTick = Date.now(); Q.dir = null; Q.lastDirA = null; Q.pan = 0; Q.sel = null; Q.hist = []; Q.htfC = {}; Q.htfZ = []; Q.htfT = 0; Q.c = []; Q.all = []; Q.zones = []; Q.zs = {}; Q.bids = []; Q.asks = []; Q.flow = []; Q.str = null; Q.eq = null; Q.lastDepth = 0; Q.walls = []; Q.bins = null; Q.started = true; load(); render(); }
+function reload() { closeWs(); Q.lastAid = 0; Q.wsTick = 0; Q.wsKl = 0; Q.tape = []; Q.wave = []; Q.cnt = { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }; Q.waveAcc = { b: 0, s: 0 }; Q.tickTs = []; Q.stale = false; Q.lastTick = Date.now(); Q.dir = null; Q.lastDirA = null; Q.pan = 0; Q.sel = null; Q.hist = []; Q.htfC = {}; Q.htfZ = []; Q.htfT = 0; Q.c = []; Q.all = []; Q.zones = []; Q.zs = {}; Q.bids = []; Q.asks = []; Q.flow = []; Q.str = null; Q.eq = null; Q.lastDepth = 0; Q.walls = []; Q.bins = null; Q.started = true; load(); render(); }
 function select(key, scroll) {
   Q.sel = Q.sel === key ? null : key; Q.dirty = true; if (Q.sel) Q.tab = 'zona'; syncTabs(); paintPane(); paintInsight();
   if (Q.sel && scroll) { const e = $('qdPane').querySelector(`.qd-zc[data-key="${CSS.escape(key)}"]`); if (e) e.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 }
-function syncTabs() { $('qdTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === Q.tab)); $('qdPane').hidden = Q.tab === 'arus'; $('qdArus').hidden = Q.tab !== 'arus'; }
-const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optVol', 'Vol', 'qd_vol'], ['optVp', 'VP', 'qd_vp'], ['optEma', 'EMA', 'qd_emal'], ['optPin', 'Pin', 'qd_pin'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk']];
+function syncTabs() { $('qdTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === Q.tab)); $('qdPane').hidden = ['arus', 'ana', 'dom'].includes(Q.tab); $('qdArus').hidden = Q.tab !== 'arus'; $('qdAna').hidden = Q.tab !== 'ana'; $('qdDomx').hidden = Q.tab !== 'dom'; }
+const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optVol', 'Vol', 'qd_vol'], ['optVp', 'VP', 'qd_vp'], ['optEma', 'EMA', 'qd_emal'], ['optPin', 'Pin', 'qd_pin'], ['fxLiq', 'Liq', 'qd_fxliq'], ['fxCvd', 'CVD', 'qd_fxcvd'], ['fxPd', 'PD', 'qd_fxpd'], ['fxHeat', 'Heat', 'qd_fxheat'], ['fxPlan', 'Plan', 'qd_fxplan'], ['fxNews', 'News', 'qd_fxnews'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk']];
 $('qdLayers').innerHTML = LAYERS.map(([k, l]) => `<button class="qd-lay ${Q[k] ? 'on' : ''}" data-k="${k}">${l}</button>`).join('');
-$('qdLayers').onclick = e => { const b = e.target.closest('button'); if (!b) return; const L = LAYERS.find(x => x[0] === b.dataset.k); Q[L[0]] = !Q[L[0]]; LSS(L[2], Q[L[0]]); b.classList.toggle('on', Q[L[0]]); Q.dirty = true; if (L[0] === 'optMed') { analyze(); render(); } };
+$('qdLayers').onclick = e => { const b = e.target.closest('button'); if (!b) return; const L = LAYERS.find(x => x[0] === b.dataset.k); setFlag(L[0], !Q[L[0]]); };
 $('qdTfSeg').onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.v === Q.tf) return; Q.tf = b.dataset.v; LSS('qd_tf', Q.tf); reload(); };
 $('qdModeSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; Q.mode = b.dataset.v; LSS('qd_mode', Q.mode); Q.dir = null; Q.lastDirA = null; render(); };
 $('qdSetBtn').onclick = () => { const d = $('qdSet'); d.hidden = !d.hidden; $('qdSetBtn').classList.toggle('on', !d.hidden); };
@@ -11064,6 +11169,7 @@ pane.addEventListener('click', e => {
   if (v) { Q.view = v.dataset.v; LSS('qd_view', Q.view); $('qdPane').dataset.h = ''; paintPane(); return; }
   if (a) {
     const z = byKey(a.dataset.key);
+    if (a.dataset.act === 'plan' && z) { Q.tab = 'ana'; syncTabs(); paintPane(); }
     if (a.dataset.act === 'clrlog') { Q.log = []; LSS('qd_log', Q.log); paintPane(); }
     if (a.dataset.act === 'copy' && z) { const t = `${sideName(z)} ${tierName(z)} ${Q.sym} ${Q.tf}: ${f2(z.bot)}–${f2(z.top)} (50% ${f2(z.mid)}) · skor ${z.score} · tahan ${z.hold}% · diuji ${z.nT}×`; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Level disalin: ' + t, 'info'), () => toast(t, 'info')); }
     if (a.dataset.act === 'focus' && z) { Q.pan = clamp(Q.c.length - z.i - Math.floor(Math.min(Q.n, Q.c.length) / 2), 0, Math.max(0, Q.c.length - Math.min(Q.n, Q.c.length))); Q.dirty = true; $('qdBox').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
@@ -11122,7 +11228,7 @@ function renderSymMenu() {
   symMenu.innerHTML = '<div class="qd-symhead">Pilih instrumen · ★ favorit naik ke atas</div>' + symList().map(s => `<div class="qd-symrow ${s === Q.sym ? 'on' : ''}" data-sym="${s}"><span>${s}</span><span><button type="button" class="qd-star ${Q.fav.includes(s) ? 'on' : ''}" data-star="${s}" title="Jadikan favorit">${Q.fav.includes(s) ? '★' : '☆'}</button>${DEFSYMS.includes(s) ? '' : `<button type="button" class="qd-del" data-del="${s}" title="Hapus simbol">×</button>`}</span></div>`).join('') + '<div class="qd-symrow add" data-add="1">＋ Tambah simbol Binance…</div>';
 }
 function posSymMenu() { const r = $('qdSymBtn').getBoundingClientRect(); symMenu.style.left = Math.max(8, Math.min(innerWidth - 260, r.left)) + 'px'; symMenu.style.top = (r.bottom + 6) + 'px'; }
-function setSymbol(s) { Q.sym = s; LSS('qd_sym', s); Q.lot = lotFor(s); $('qdLot').value = Q.lot; reload(); }
+function setSymbol(s) { Q.sym = s; Q.heat = []; Q.heatEv = []; Q.hWalls = null; Q.hstp = 0; Q.lastAid = 0; LSS('qd_sym', s); Q.lot = lotFor(s); $('qdLot').value = Q.lot; reload(); }
 async function addSymbol() {
   const raw = prompt('Masukkan simbol Binance, mis. BTCUSDT, ETHUSDT, XAUUSDT:'); if (!raw) return; const s = raw.trim().toUpperCase();
   if (!/^[A-Z0-9]{4,20}$/.test(s)) { toast('Format simbol tidak valid', 'S'); return; }
@@ -11142,12 +11248,13 @@ addEventListener('scroll', () => { if (!symMenu.hidden) posSymMenu(); }, true);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { helpEl.hidden = true; symMenu.hidden = true; } });
 
 /* --- tape transaksi, gelombang, senyap --- */
-function tapeAdd(t, buy, q, px, ct) {
-  const L = Q.tape, f = L[0], now = Date.now();
+function tapeAdd(t, buy, q, px, ct, mode) {
+  const L = Q.tape, f = L[0], now = Date.now(), hist = mode === 'hist';
   if (f && f.buy === buy && t - f.t < 600) { f.q += q; f.px = px; f.n++; f.t = t; } else { L.unshift({ t, buy, q, px, n: 1 }); if (L.length > 150) L.pop(); }
   if (Q.cnt.t !== ct) Q.cnt = { t: ct, bq: 0, sq: 0, bn: 0, sn: 0 };
-  if (buy) { Q.cnt.bq += q; Q.cnt.bn++; Q.waveAcc.b += q; } else { Q.cnt.sq += q; Q.cnt.sn++; Q.waveAcc.s += q; }
-  Q.lastTick = now; Q.tickTs.push(now);
+  if (hist && t < ct) return;
+  if (buy) { Q.cnt.bq += q; Q.cnt.bn++; if (!hist) Q.waveAcc.b += q; } else { Q.cnt.sq += q; Q.cnt.sn++; if (!hist) Q.waveAcc.s += q; }
+  if (!hist) { Q.lastTick = now; Q.tickTs.push(now); }
 }
 function waveTick() { Q.wave.push({ b: Q.waveAcc.b / Q.lot, s: Q.waveAcc.s / Q.lot }); Q.waveAcc = { b: 0, s: 0 }; if (Q.wave.length > 120) Q.wave.shift(); const lim = Date.now() - 5000; while (Q.tickTs.length && Q.tickTs[0] < lim) Q.tickTs.shift(); }
 function staleCheck() {
@@ -11161,11 +11268,11 @@ function paintStale() {
 }
 function paintArus() {
   const c = Q.cnt, w = Q.wave.slice(-60), b = w.reduce((s, x) => s + x.b, 0), s = w.reduce((q, x) => q + x.s, 0), tot = b + s, bp = tot > 0 ? b / tot * 100 : 50, rate = Q.tickTs.length / 5, net = b - s;
-  setT('qaB', `BUYER ${c.bn}× · ${lot3(c.bq / Q.lot)} lot`); setT('qaS', `SELLER ${c.sn}× · ${lot3(c.sq / Q.lot)} lot`); setT('qaRate', `${rate.toFixed(1)} tick/dtk`);
+  setT('qaB', `BUYER ${c.bn}× · ${lot3(c.bq / Q.lot)} lot`); setT('qaS', `SELLER ${c.sn}× · ${lot3(c.sq / Q.lot)} lot`); setT('qaRate', `${rate.toFixed(1)} tick/dtk · ${Date.now() - Q.wsTick < 5000 ? 'WebSocket' : 'REST polling'}`);
   setT('qaWT', `▲ BUYER ${bp.toFixed(0)}%`); setT('qaWB', `▼ SELLER ${(100 - bp).toFixed(0)}%`); setT('qaWN', tot === 0 ? 'menunggu tick' : net >= 0 ? `▲ NAIK +${lot3(net)} lot/60s` : `▼ TURUN ${lot3(net)} lot/60s`);
   const dl = (c.bq - c.sq) / Q.lot; setT('qaK1', lot3(b)); setT('qaK2', lot3(s)); setT('qaK3', (dl >= 0 ? '+' : '') + lot3(dl)); $('qaK3').style.color = dl >= 0 ? 'var(--green)' : 'var(--red)'; setT('qaK4', Q.lastTick ? `${Math.max(0, Math.floor((Date.now() - Q.lastTick) / 1000))} dtk lalu` : '—');
   const L = Q.tape.filter(x => x.q / Q.lot >= Q.tapeMin).slice(0, 30), sz = L.map(x => x.q).sort((x, y) => x - y), p80 = sz.length ? sz[Math.floor(sz.length * .8)] : 0;
-  setH('qaTape', L.map(x => `<div class="qd-tp ${x.buy ? 'b' : 's'} ${sz.length > 4 && x.q >= p80 ? 'big' : ''}"><span>${wib(x.t, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span><span>${x.buy ? 'BUYER' : 'SELLER'} @ ${f2(x.px)}</span><span>${x.buy ? '▲' : '▼'} ${lot3(x.q / Q.lot)} lot${x.n > 1 ? ` <small>(${x.n}×)</small>` : ''}</span></div>`).join('') || '<div class="qd-empty">Menunggu transaksi live…</div>');
+  setH('qaTape', L.map(x => `<div class="qd-tp ${x.buy ? 'b' : 's'} ${sz.length > 4 && x.q >= p80 ? 'big' : ''}"><span>${wib(x.t, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span><span>${x.buy ? 'BUYER' : 'SELLER'} @ ${f2(x.px)}</span><span>${x.buy ? '▲' : '▼'} ${lot3(x.q / Q.lot)} lot${x.n > 1 ? ` <small>(${x.n}×)</small>` : ''}</span></div>`).join('') || `<div class="qd-empty">Belum ada transaksi. Sumber: ${Date.now() - Q.wsTick < 5000 ? 'WebSocket' : 'REST polling (WebSocket belum mengirim data)'}. Jika tetap kosong, periksa koneksi ke Binance (jaringan/ISP bisa memblokir) atau pastikan simbol aktif diperdagangkan.</div>`);
 }
 function drawWave() {
   const cv = $('qdWave'); if (!cv || $('qdArus').hidden) return; const W = cv.clientWidth, H = cv.clientHeight; if (!W || !H) return; const d = Math.min(2, devicePixelRatio || 1);
@@ -11189,6 +11296,340 @@ $('qdFrMode').value = Q.frMode; $('qdFrMode').onchange = e => { Q.frMode = e.tar
 $('qdNav').onclick = e => { const b = e.target.closest('button'); if (!b) return; const a = b.dataset.n, mp = Math.max(0, Q.c.length - Math.min(Q.n, Q.c.length)); if (a === 'left') Q.pan = clamp(Q.pan + 8, 0, mp); else if (a === 'right') Q.pan = clamp(Q.pan - 8, 0, mp); else if (a === 'live') Q.pan = 0; else if (a === 'zin') { Q.n = clamp(Math.round(Q.n * .85), 30, 400); $('qdN').value = Q.n; LSS('qd_n', Q.n); } else if (a === 'zout') { Q.n = clamp(Math.round(Q.n * 1.18), 30, 400); $('qdN').value = Q.n; LSS('qd_n', Q.n); } Q.dirty = true; };
 syncTabs();
 
+/* ===== v8: perbaikan feed + analisis lanjutan (sweep, rencana trade, CVD/ABS, PD/OTE, heatmap, berita) ===== */
+const TFMS = { '1m': 6e4, '3m': 18e4, '5m': 3e5, '15m': 9e5, '30m': 18e5, '1h': 36e5, '4h': 144e5, '1d': 864e5 };
+const FXLS = { fxLiq: 'qd_fxliq', fxCvd: 'qd_fxcvd', fxPd: 'qd_fxpd', fxHeat: 'qd_fxheat', fxPlan: 'qd_fxplan', fxNews: 'qd_fxnews' };
+
+/* --- feed cadangan: REST polling bila WebSocket diblokir / tidak mengirim data --- */
+function onPolled(T, p, q, m, hist) {
+  const last = Q.c[Q.c.length - 1]; if (!last) return; const pr = p + Q.ofs;
+  if (!hist) { Q.px = pr; last.c = pr; if (pr > last.h) last.h = pr; if (pr < last.l) last.l = pr; }
+  if (T >= Date.now() - 300000) { Q.flow.push({ t: T, q, buy: !m }); const lim = Date.now() - 300000; while (Q.flow.length && Q.flow[0].t < lim) Q.flow.shift(); }
+  tapeAdd(T, !m, q, pr, last.t, hist ? 'hist' : 'live'); Q.dirty = true;
+}
+async function loadTrades(first) {
+  if (Q.trBusy) return; Q.trBusy = true; const tok = Q.tok;
+  try {
+    const url = `${HOSTS[Q.host].rest}aggTrades?symbol=${Q.sym}&limit=${first || !Q.lastAid ? 200 : 1000}` + (!first && Q.lastAid ? `&fromId=${Q.lastAid + 1}` : '');
+    const d = await fj(url); if (tok !== Q.tok || !Array.isArray(d)) return;
+    d.forEach(t => { const a = +t.a; if (Q.lastAid && a <= Q.lastAid) return; Q.lastAid = a; onPolled(+t.T, +t.p, +t.q, !!t.m, !!first); });
+  } catch (e) { } finally { Q.trBusy = false; }
+}
+async function pollKl() {
+  if (Q.klBusy) return; Q.klBusy = true; const tok = Q.tok;
+  try {
+    const d = await fj(`${HOSTS[Q.host].rest}klines?symbol=${Q.sym}&interval=${Q.tf}&limit=2`); if (tok !== Q.tok || !Array.isArray(d)) return;
+    d.forEach(k => { const row = { t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5], tb: +k[9] }, last = Q.c[Q.c.length - 1]; if (!last) return; if (row.t === last.t) Q.c[Q.c.length - 1] = row; else if (row.t > last.t) { Q.c.push(row); if (Q.c.length > 1600) Q.c.shift(); Q.needAn = true; } else { const i = Q.c.findIndex(x => x.t === row.t); if (i >= 0) Q.c[i] = row; } });
+    Q.px = Q.c[Q.c.length - 1].c; Q.dirty = true;
+  } catch (e) { } finally { Q.klBusy = false; }
+}
+
+/* --- bendera fitur (chip chart + saklar di tab Analisis) --- */
+function setFlag(k, v) {
+  Q[k] = v; const L = LAYERS.find(x => x[0] === k); LSS(L ? L[2] : FXLS[k], v);
+  $('qdLayers').querySelectorAll('button').forEach(b => { if (b.dataset.k === k) b.classList.toggle('on', v); }); const sw = $('qd_' + k); if (sw) sw.checked = v;
+  Q.dirty = true; if (['optMed', 'fxLiq', 'fxCvd', 'fxPd'].includes(k)) analyze(); if (k === 'fxNews') newsTick(); render();
+}
+
+/* --- analisis: likuiditas, absorpsi, CVD, premium/discount --- */
+function anaCalc(c, A) {
+  const n = c.length, out = { liq: { pools: [], sweeps: [], open: [] }, abs: [], cv: null, cvDiv: null, pd: null };
+  const sw = Q.sw || swings(c, Q.swL), tol = Q.eqTol * A, L = Q.swL;
+  const scan = (lv, from, hs) => { for (let k = Math.max(0, from); k < n; k++) { const x = c[k]; if (hs ? x.h > lv : x.l < lv) return { k, sweep: hs ? x.c <= lv : x.c >= lv, wick: hs ? x.h - lv : lv - x.l }; } return null; };
+  const rx = (k, lv, hs) => { let m = hs ? Infinity : -Infinity; for (let j = k; j <= Math.min(n - 1, k + 5); j++) m = hs ? Math.min(m, c[j].l) : Math.max(m, c[j].h); return Number.isFinite(m) ? Math.abs(lv - m) / A : 0; };
+  const mk = (arr, type) => { const cl = []; arr.slice(-60).forEach(s => { const f = cl.find(k => Math.abs(k.price - s.p) <= tol); if (f) { f.n++; f.j = s.i; f.price = type === 'EQH' ? Math.max(f.price, s.p) : Math.min(f.price, s.p); } else cl.push({ type, price: s.p, n: 1, i: s.i, j: s.i }); }); return cl.filter(k => k.n >= 2); };
+  const pools = [...mk(sw.H, 'EQH'), ...mk(sw.L, 'EQL')];
+  pools.forEach(p => { const hs = p.type === 'EQH', r = scan(p.price, p.j + L + 1, hs); p.state = !r ? 'aktif' : r.sweep ? 'sweep' : 'tembus'; if (r) { p.k = r.k; if (r.sweep) out.liq.sweeps.push({ kind: p.type, dir: hs ? 'bear' : 'bull', idx: r.k, level: p.price, n: p.n, wick: r.wick, rx: rx(r.k, p.price, hs) }); } else out.liq.open.push({ type: hs ? 'BSL' : 'SSL', kind: `${p.type} ×${p.n}`, price: p.price, i: p.i }); });
+  [['H', true], ['L', false]].forEach(([key, hs]) => sw[key].slice(-30).forEach(s => {
+    if (n - s.i > 200) return; const r = scan(s.p, s.i + L + 1, hs), inPool = pools.some(p => Math.abs(p.price - s.p) <= tol);
+    if (r && r.sweep && r.wick >= .05 * A && r.k - s.i >= 8 && !out.liq.sweeps.some(x => x.idx === r.k && Math.abs(x.level - s.p) <= tol)) out.liq.sweeps.push({ kind: hs ? 'SWH' : 'SWL', dir: hs ? 'bear' : 'bull', idx: r.k, level: s.p, n: 1, wick: r.wick, rx: rx(r.k, s.p, hs) });
+    else if (!r && !inPool) out.liq.open.push({ type: hs ? 'BSL' : 'SSL', kind: hs ? 'SWH' : 'SWL', price: s.p, i: s.i });
+  }));
+  out.liq.pools = pools; out.liq.sweeps.sort((a, b) => b.idx - a.idx); out.liq.sweeps = out.liq.sweeps.slice(0, 25);
+  // CVD + divergensi
+  const cv = new Float64Array(n); let s0 = 0; for (let i = 0; i < n; i++) { s0 += 2 * c[i].tb - c[i].v; cv[i] = s0; } out.cv = cv;
+  const H = sw.H.slice(-2), Lw = sw.L.slice(-2);
+  if (H.length === 2 && n - H[0].i < 220 && H[1].p > H[0].p + .05 * A && cv[H[1].i] < cv[H[0].i]) out.cvDiv = { dir: 'bear', i1: H[0].i, i2: H[1].i };
+  else if (Lw.length === 2 && n - Lw[0].i < 220 && Lw[1].p < Lw[0].p - .05 * A && cv[Lw[1].i] > cv[Lw[0].i]) out.cvDiv = { dir: 'bull', i1: Lw[0].i, i2: Lw[1].i };
+  // absorpsi: volume tinggi + net agresif satu arah, tapi harga tidak ikut
+  for (let i = 21; i < n; i++) {
+    if (n - i > 200) continue; const x = c[i], rg = x.h - x.l; if (rg <= 0 || rg > 1.2 * A) continue; const v = volRatio(i); if (v.r < Q.absVol) continue;
+    const dr = x.v ? (2 * x.tb - x.v) / x.v : 0, pos = (x.c - x.l) / rg; let dir = null; if (dr <= -.12 && pos >= .5) dir = 'bull'; else if (dr >= .12 && pos <= .5) dir = 'bear'; if (!dir) continue;
+    const z = Q.all.find(o => !o.broken && Math.min(o.top, x.h + .2 * A) - Math.max(o.bot, x.l - .2 * A) > 0);
+    out.abs.push({ idx: i, dir, vr: v.r, dr, ctx: z ? `${z.type === 'D' ? 'Demand' : 'Supply'} ${f2(z.bot)}–${f2(z.top)}` : '' });
+  }
+  out.abs = out.abs.slice(-30);
+  // premium / discount + OTE
+  const N = Math.min(Q.pdN, n); let Hh = -Infinity, Ll = Infinity, ih = 0, il = 0; for (let k = n - N; k < n; k++) { if (c[k].h > Hh) { Hh = c[k].h; ih = k; } if (c[k].l < Ll) { Ll = c[k].l; il = k; } }
+  const R = Hh - Ll; if (R > 0) out.pd = { H: Hh, L: Ll, EQ: Ll + R / 2, ih, il, dir: ih > il ? 'bull' : 'bear', ote: ih > il ? [Hh - .79 * R, Hh - .62 * R] : [Ll + .62 * R, Ll + .79 * R], oteSide: ih > il ? 'BUY' : 'SELL' };
+  const s1 = out.liq.sweeps[0]; if (s1 && c[s1.idx].t > Q.lastSweepT) { if (Q.lastSweepT && n - s1.idx <= 2) notify(`🧹 Sweep ${s1.dir === 'bear' ? 'BSL (sisi atas disapu)' : 'SSL (sisi bawah disapu)'} @ ${f2(s1.level)} (${s1.kind}) — harga ditutup kembali`, s1.dir === 'bear' ? 'S' : 'D'); Q.lastSweepT = c[s1.idx].t; }
+  return out;
+}
+function pdOk(z) { if (!Q.pdF || !Q.ana || !Q.ana.pd) return true; const prem = z.mid > Q.ana.pd.EQ; return z.type === 'D' ? !prem : prem; }
+function zoneExtras(z) {
+  const pd = Q.ana && Q.ana.pd; z.pdTag = null; z.ote = false; z.sweeps = z.tests.filter(t => t.sw).length; z.newsOn = false;
+  if (pd) { const prem = z.mid > pd.EQ; z.pdTag = prem ? 'PREMIUM' : 'DISCOUNT'; z.pdAligned = z.type === 'D' ? !prem : prem; z.ote = Math.min(z.top, pd.ote[1]) - Math.max(z.bot, pd.ote[0]) > 0; }
+  if (Q.fxNews && Q.nws.active) { z.newsOn = true; if (Q.nwDamp) { z.hold = Math.round(z.hold * .8); z.holdSrc += ' · diredam berita (×0,8)'; } }
+}
+
+/* --- berita --- */
+function newsEvents() {
+  let ev = []; try { ev = (window.__CAL ? window.__CAL() : []).map(e => ({ t: e.t * 1000, ccy: String(e.ccy || '').toUpperCase(), title: e.title, imp: e.imp })); } catch (e) { }
+  if (!ev.length) try { ev = (window.__NEWS ? window.__NEWS() : []).map(n => { const t = n.time && n.time.toMillis ? n.time.toMillis() : Number(n.time); return { t, ccy: String(n.currency || '').toUpperCase(), title: n.title, imp: n.impact === 'high' ? 3 : n.impact === 'medium' ? 2 : 1 }; }); } catch (e) { }
+  const cc = String(Q.nwCcy).split(/[ ,;]+/).map(s => s.trim().toUpperCase()).filter(Boolean);
+  return ev.filter(e => e.t > 0 && e.title && e.imp >= Q.nwImp && (!cc.length || cc.includes('ALL') || cc.includes(e.ccy))).sort((a, b) => a.t - b.t);
+}
+function newsTick() {
+  const now = Date.now(), ev = newsEvents(), pre = Q.nwPre * 6e4, post = Q.nwPost * 6e4, act = ev.filter(e => now >= e.t - pre && now <= e.t + post);
+  Q.nws = { ev, active: Q.fxNews && act.length > 0, act, next: ev.find(e => e.t > now) || null, recent: ev.filter(e => e.t <= now && now - e.t <= 12 * 36e5).slice(-3) };
+  if (Q.fxNews) act.forEach(e => { const k = e.t + e.title; if (!Q.newsSeen[k]) { Q.newsSeen[k] = 1; notify(`📰 ${e.ccy} ${e.title} ${e.t > now ? 'dalam ' + Math.round((e.t - now) / 6e4) + ' mnt' : 'baru rilis'} — zona diberi tanda berita`, 'info'); } });
+}
+function paintNews() {
+  const el = $('qdNews'); if (!el) return; const n = Q.nws;
+  if (Q.fxNews && n.active) { const e = n.act[0], d = Math.round((e.t - Date.now()) / 6e4); el.innerHTML = `📰 <b>${e.title}</b> (${e.ccy}) ${d > 0 ? `dalam <b>${d} mnt</b>` : d === 0 ? '<b>sekarang</b>' : `<b>${-d} mnt lalu</b>`} — zona diberi tanda <b>⚠ BERITA</b>${Q.nwDamp ? ' dan peluang tahan diredam 20%' : ''}. Volatilitas bisa merusak zona; pertimbangkan menunggu. ${hq('fxnews')}`; el.hidden = false; } else if (!el.hidden) el.hidden = true;
+}
+
+/* --- Margin Rule Guard (membaca konfigurasi tab Risk) + rencana trade --- */
+function mgInfo() {
+  let cfg = { base: 'balance', pct: 80, buffer: 10, contract: 100, lev: '', price: '', maxLot: '', mode: 'auto', mBal: '', mLots: '' }; try { Object.assign(cfg, JSON.parse(localStorage.getItem('ffx_marginrule') || '{}')); } catch (e) { }
+  const a = (window.__FX && window.__FX.account) || {}, N = v => { const x = parseFloat(String(v == null ? '' : v).replace(',', '.')); return Number.isFinite(x) ? x : 0; }, manual = cfg.mode === 'manual';
+  const bal = manual ? N(cfg.mBal) : N(a.balance), eq = manual ? bal : N(a.equity), st = manual ? bal : N(a.startingBalance), base = cfg.base === 'equity' ? eq : cfg.base === 'start' ? (st || bal) : bal;
+  const limit = base * N(cfg.pct) / 100, safeLimit = limit * (1 - Math.min(90, Math.max(0, N(cfg.buffer))) / 100), pos = manual ? [] : (a.positions || []), lots = manual ? N(cfg.mLots) : pos.reduce((s, p) => s + N(p.volume), 0);
+  let used = manual ? 0 : N(a.margin); const lev = N(cfg.lev) > 0 ? N(cfg.lev) : N(a.leverage); let price = N(cfg.price); if (!(price > 0)) { const b = N(a.bid), k = N(a.ask); if (b > 0 && k > 0) price = (b + k) / 2; }
+  const contract = N(cfg.contract) || 100, formula = lev > 0 && price > 0 ? contract * price / lev : 0, calib = used > 0 && lots > 0 && new Set(pos.map(p => p.symbol)).size === 1 ? used / lots : 0, perLot = calib || formula; if (manual) used = lots * perLot;
+  const maxLot = N(cfg.maxLot), capLeft = maxLot > 0 ? Math.max(0, maxLot - lots) : Infinity, fl = x => Math.floor(Math.max(0, x) * 100 + 1e-9) / 100;
+  return { ok: limit > 0 && perLot > 0, balance: bal, base, pct: N(cfg.pct), limit, safeLimit, used, lots, perLot, lev, addMax: perLot > 0 ? Math.min(fl((limit - used) / perLot), capLeft) : 0, addSafe: perLot > 0 ? Math.min(fl((safeLimit - used) / perLot), capLeft) : 0 };
+}
+function planFor(z) {
+  if (!z || !Q.atr) return null; const D = z.type === 'D', A = Q.atr, entry = Q.plEntry === 'prox' ? (D ? z.top : z.bot) : z.mid, sl = D ? z.bot - Q.plBuf * A : z.top + Q.plBuf * A, risk = Math.abs(entry - sl); if (!(risk > 0)) return null;
+  const sg = D ? 1 : -1, cand = [];
+  Q.all.filter(o => !o.broken && o.type !== z.type && (D ? o.bot > entry : o.top < entry)).sort((a, b) => D ? a.bot - b.bot : b.top - a.top).slice(0, 2).forEach(o => cand.push({ label: `Zona ${o.type === 'S' ? 'Supply' : 'Demand'} ${o.tier === 'M' ? 'Medium' : 'Strong'}`, p: D ? o.bot : o.top }));
+  const lq = Q.ana && Q.ana.liq.open.filter(o => (D ? o.type === 'BSL' && o.price > entry : o.type === 'SSL' && o.price < entry)).sort((a, b) => D ? a.price - b.price : b.price - a.price)[0]; if (lq) cand.push({ label: `Likuiditas ${lq.type} (${lq.kind})`, p: lq.price });
+  cand.push({ label: '2R', p: entry + sg * 2 * risk });
+  const tps = cand.map(t => ({ ...t, r: Math.abs(t.p - entry) / risk })).filter(t => t.r >= .8).sort((a, b) => a.r - b.r).filter((t, i, ar) => !i || Math.abs(t.p - ar[i - 1].p) > .1 * A).slice(0, 3);
+  const mg = mgInfo(), bal = +Q.plBal > 0 ? +Q.plBal : mg.balance, lossPerLot = risk * Q.lot, warn = [], notes = [];
+  let lots = 0, riskUsd = 0; if (bal > 0) { riskUsd = bal * Q.plRisk / 100; lots = Math.floor(riskUsd / lossPerLot * 100 + 1e-9) / 100; } else warn.push('Balance belum tersedia — isi “Balance manual” atau tunggu data EA.');
+  let fin = lots, mgS = null; if (isGold() && mg.ok) { const nu = mg.used + lots * mg.perLot; mgS = { status: nu > mg.limit ? 'violation' : nu > mg.safeLimit ? 'warn' : 'ok', newUsed: nu }; if (lots > mg.addSafe) { fin = mg.addSafe; notes.push(`Lot dibatasi Margin Rule Guard: ${lots.toFixed(2)} → ${fin.toFixed(2)}`); } } else if (isGold()) notes.push('Margin Rule Guard belum bisa dihitung (data akun/EA atau leverage belum tersedia).'); else notes.push('Margin Guard hanya untuk simbol emas.');
+  if (bal > 0 && lots < .01) warn.push('Risiko terlalu kecil untuk lot minimum 0,01 — naikkan risiko % atau perlebar SL.');
+  if (tps[0] && tps[0].r < Q.plRR) warn.push(`RR target pertama ${tps[0].r.toFixed(1)} < minimum ${Q.plRR}.`); if (z.hold < 50) warn.push(`Peluang tahan zona hanya ${z.hold}%.`);
+  if (Q.fxPd && z.pdTag && !z.pdAligned) warn.push(`${D ? 'Demand' : 'Supply'} berada di area ${z.pdTag.toLowerCase()} (kontra PD).`); if (z.conf && z.conf.some(x => !x.ok)) warn.push('Zona berada di dalam zona HTF berlawanan.'); if (z.newsOn) warn.push('Ada berita high-impact di sekitar waktu ini.'); if (Q.stale) warn.push('Data live sedang senyap.');
+  if (z.inside) notes.push('Harga sedang di dalam zona — entry 50% bisa sudah terlewati.');
+  const ract = fin * lossPerLot; return { zkey: z.key, side: D ? 'BUY' : 'SELL', D, entry, sl, risk, tps, bal, lots, fin, riskUsd, ract, rpct: bal > 0 ? ract / bal * 100 : 0, mg, mgS, warn, notes, lossPerLot };
+}
+function updPlan() { const z = Q.fxPlan && Q.sel ? byKey(Q.sel) : null; Q.plan = z ? planFor(z) : null; }
+function planText(p, z) { return `${p.side} ${Q.sym} ${Q.tf} · zona ${sideName(z)} ${tierName(z)} ${f2(z.bot)}–${f2(z.top)} (skor ${z.score}, tahan ${z.hold}%)\nEntry ${f2(p.entry)} · SL ${f2(p.sl)} (${f2(p.risk)} $)\n${p.tps.map((t, i) => `TP${i + 1} ${f2(t.p)} (${t.r.toFixed(1)}R · ${t.label})`).join('\n')}\nLot ${p.fin.toFixed(2)} · risiko ${p.rpct.toFixed(2)}% (${p.ract.toFixed(2)} USD)`; }
+
+/* --- heatmap DOM historis --- */
+function niceStep(x) { const e = Math.pow(10, Math.floor(Math.log10(Math.max(x, 1e-9)))); return [1, 2, 5, 10].map(m => m * e).find(v => v >= x) || e * 10; }
+function heatWalls(s) {
+  const vals = []; for (let j = 0; j < s.n; j++) if (s.v[j] > 0) vals.push(s.v[j]); if (vals.length < 8) { Q.hWalls = null; return; }
+  vals.sort((a, b) => a - b); const thr = Math.max(vals[vals.length >> 1] * 3, vals[Math.floor(vals.length * .95)]), cur = new Map(); for (let j = 0; j < s.n; j++) if (s.v[j] >= thr) cur.set(j + s.b0, s.v[j]);
+  const prev = Q.hWalls;
+  if (prev && prev.ofs === Q.ofs && prev.stp === s.stp) {
+    const A = Q.atr || 1; prev.m.forEach((q0, gi) => { const j = gi - s.b0, q1 = j >= 0 && j < s.n ? s.v[j] : 0; if (q1 < q0 * .35) { const price = gi * s.stp + s.stp / 2, touched = Q.hLo <= price + s.stp && Q.hHi >= price - s.stp; Q.heatEv.unshift({ t: s.t, price, qty: q0, side: price < s.mid ? 'BID' : 'ASK', kind: touched ? 'dimakan' : 'ditarik' }); } });
+    cur.forEach((q1, gi) => { if (!prev.m.has(gi) && Math.abs(gi * s.stp - s.mid) <= A * 6) Q.heatEv.unshift({ t: s.t, price: gi * s.stp + s.stp / 2, qty: q1, side: gi * s.stp < s.mid ? 'BID' : 'ASK', kind: 'muncul' }); });
+    if (Q.heatEv.length > 60) Q.heatEv.length = 60;
+  }
+  Q.hWalls = { m: cur, ofs: Q.ofs, stp: s.stp };
+}
+function heatAdd() {
+  if (!Q.fxHeat || !Q.bids.length || !Q.asks.length) return; const now = Date.now(); if (Q.heat.length && now - Q.heat[Q.heat.length - 1].t < 3500) return;
+  const lo = Q.bids[Q.bids.length - 1][0], hi = Q.asks[Q.asks.length - 1][0]; if (!Q.hstp) Q.hstp = niceStep((hi - lo) / 100);
+  const stp = Q.hstp, b0 = Math.floor(lo / stp), n = Math.min(500, Math.floor(hi / stp) - b0 + 2), v = new Float32Array(n), put = arr => arr.forEach(([p, q]) => { const j = Math.floor(p / stp) - b0; if (j >= 0 && j < n) v[j] += q / Q.lot; });
+  put(Q.bids); put(Q.asks); const s = { t: now, b0, n, v, ofs: Q.ofs, mid: (Q.bids[0][0] + Q.asks[0][0]) / 2, stp }; heatWalls(s); Q.heat.push(s); if (Q.heat.length > 1500) Q.heat.shift(); Q.hHi = s.mid; Q.hLo = s.mid;
+}
+function drawHeat(c, g) {
+  const { all, start, cw, aw, lo, hi, Y } = g, tf = TFMS[Q.tf] || 9e5, t0 = all[0].t, stp = Q.hstp || 1, colW = 2, NC = Math.ceil(aw / colW), nb = Math.ceil((hi - lo) / stp) + 2, cols = new Map();
+  for (const s of Q.heat) { const x = ((s.t - t0) / tf - start) * cw; if (x < -2 || x > aw + 2) continue; const ci = Math.max(0, Math.min(NC - 1, Math.floor(x / colW))); let a = cols.get(ci); if (!a) { a = new Float32Array(nb); cols.set(ci, a); } const sh = Q.ofs - s.ofs; for (let j = 0; j < s.n; j++) { const q = s.v[j]; if (q <= 0) continue; const p = (s.b0 + j) * s.stp + sh; if (p < lo || p > hi) continue; const idx = Math.min(nb - 1, Math.floor((p - lo) / stp)), side = p < s.mid + sh ? 1 : -1; if (q > Math.abs(a[idx])) a[idx] = side * q; } }
+  let mx = 0, sum = 0, cnt = 0; cols.forEach(a => { for (let i = 0; i < nb; i++) { const q = Math.abs(a[i]); if (q > 0) { sum += q; cnt++; if (q > mx) mx = q; } } }); if (!cnt) return; const ref = Math.min(mx, sum / cnt * 6) || mx;
+  const B = [[], [], [], [], []], A2 = [[], [], [], [], []];
+  cols.forEach((a, ci) => { for (let i = 0; i < nb; i++) { const q = a[i]; if (!q) continue; const lv = Math.min(4, Math.floor(Math.pow(Math.min(1, Math.abs(q) / ref), .6) * 5)); (q > 0 ? B : A2)[lv].push(ci * colW, Y(lo + (i + 1) * stp), colW + .5, Math.max(1, Y(lo + i * stp) - Y(lo + (i + 1) * stp) + .5)); } });
+  const dw = (bk, rgb) => bk.forEach((arr, lv) => { if (!arr.length) return; c.fillStyle = `rgba(${rgb},${.08 + lv * .1})`; c.beginPath(); for (let i = 0; i < arr.length; i += 4) c.rect(arr[i], arr[i + 1], arr[i + 2], arr[i + 3]); c.fill(); });
+  dw(B, '45,245,163'); dw(A2, '255,75,110');
+  Q.heatEv.slice(0, 24).forEach(e => { if (e.kind === 'muncul') return; const x = ((e.t - t0) / tf - start) * cw, y = Y(e.price); if (x < 0 || x > aw || e.price < lo || e.price > hi) return; c.fillStyle = e.kind === 'ditarik' ? '#ffd25e' : '#c9d3ff'; c.font = '700 10px sans-serif'; c.fillText(e.kind === 'ditarik' ? '✕' : '●', x - 3, y + 3); });
+}
+
+/* --- badge zona --- */
+const fxBadges = z => (Q.fxPd && z.pdTag ? ` <span class="qd-badge ${z.pdAligned ? 'gT' : 'gR'}" title="${z.pdAligned ? 'Selaras' : 'Kontra'}: zona ${z.type === 'D' ? 'Demand' : 'Supply'} berada di area ${z.pdTag.toLowerCase()}">${z.pdTag === 'PREMIUM' ? 'PREM' : 'DISC'}${z.pdAligned ? ' ✓' : ' ⚠'}</span>` : '') + (Q.fxPd && z.ote ? ' <span class="qd-badge gW" title="Zona bertumpuk dengan area OTE 62–79%">OTE</span>' : '') + (Q.fxLiq && z.sweeps ? ` <span class="qd-badge gF" title="Wick menembus sisi jauh zona lalu ditutup kembali (sweep)">SWP×${z.sweeps}</span>` : '') + (z.newsOn ? ' <span class="qd-badge gR" title="Ada berita high-impact di sekitar waktu ini">⚠ BERITA</span>' : '');
+
+/* --- panel Analisis --- */
+const tm = t => wib(t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
+const off = txt => `<div class="qd-sub">${txt}</div>`;
+function paintAna() {
+  const A = Q.ana, px = Q.px, atr = Q.atr || 1;
+  // 1. likuiditas
+  if (!Q.fxLiq) setH('qaLiq', off('Fitur dimatikan.')); else if (!A) setH('qaLiq', off('Menghitung…')); else {
+    const L = A.liq, up = L.open.filter(o => o.price > px).sort((a, b) => a.price - b.price)[0], dn = L.open.filter(o => o.price < px).sort((a, b) => b.price - a.price)[0];
+    const row = (o, lab, cls) => o ? `<div class="qd-lr ${cls}"><b>${lab}</b><span>${o.kind}</span><span class="mono">${f2(o.price)}</span><span class="qd-sub">${f2(Math.abs(o.price - px))} $${pts(Math.abs(o.price - px))}</span></div>` : `<div class="qd-lr"><b>${lab}</b><span class="qd-sub">tidak ada yang terdeteksi</span></div>`;
+    setH('qaLiq', `<div class="qd-sub">Likuiditas terdekat yang <b>belum disapu</b>:</div>${row(up, 'BSL ▲', 'neg')}${row(dn, 'SSL ▼', 'pos')}<div class="qd-sub" style="margin:8px 0 4px">Sweep terakhir (wick menembus lalu ditutup kembali):</div>` + (L.sweeps.length ? `<table class="xt"><tr><th>Waktu</th><th>Jenis</th><th>Level</th><th>Reaksi</th></tr>${L.sweeps.slice(0, 6).map(s => `<tr><td class="mono">${tm(Q.c[s.idx].t)}</td><td><span class="qd-badge ${s.dir === 'bear' ? 'S' : 'D'}">${s.dir === 'bear' ? 'BSL disapu' : 'SSL disapu'}</span><div class="qd-sub">${s.kind}${s.n > 1 ? ' ×' + s.n : ''}</div></td><td class="mono">${f2(s.level)}<div class="qd-sub">wick ${f2(s.wick)} $</div></td><td class="mono">${s.rx.toFixed(1)}× ATR</td></tr>`).join('')}</table>` : off('Belum ada sweep pada data ini.')) + `<div class="qd-sub" style="margin-top:6px">EQH/EQL aktif: ${L.pools.filter(p => p.state === 'aktif').map(p => `${p.type} ×${p.n} @ ${f2(p.price)}`).join(' · ') || '—'}</div>`);
+  }
+  // 2. rencana trade
+  const z = Q.sel ? byKey(Q.sel) : null, p = Q.plan;
+  if (!Q.fxPlan) setH('qaPlan', off('Fitur dimatikan.')); else if (!z || !p) setH('qaPlan', off('Pilih zona (klik zona di chart atau kartu di tab Zona) untuk membuat rencana trade.')); else {
+    const mg = p.mg, msg = p.mgS ? `<span class="qd-badge ${p.mgS.status === 'ok' ? 'gT' : p.mgS.status === 'warn' ? 'gR' : 'S'}">${p.mgS.status === 'ok' ? 'AMAN' : p.mgS.status === 'warn' ? 'MENDEKATI BATAS' : 'MELANGGAR'}</span>` : '<span class="qd-badge gF">n/a</span>';
+    setH('qaPlan', `<div class="qd-plh"><span class="qd-badge ${p.D ? 'D' : 'S'}" style="font-size:12px;padding:3px 10px">${p.side}</span> <span class="qd-sub">${sideName(z)} ${tierName(z)} ${f2(z.bot)}–${f2(z.top)} · skor ${z.score} · tahan ${z.hold}%</span></div>
+    <table class="xt"><tr><th>Level</th><th>Harga</th><th>Jarak</th><th>R</th></tr>
+    <tr><td><b>ENTRY</b> <span class="qd-sub">${Q.plEntry === 'prox' ? 'tepi dekat' : 'tengah 50%'}</span></td><td class="mono">${f2(p.entry)}</td><td class="mono">—</td><td class="mono">—</td></tr>
+    <tr><td><b class="neg">SL</b></td><td class="mono">${f2(p.sl)}</td><td class="mono">${f2(p.risk)} $${pts(p.risk)}</td><td class="mono">−1R</td></tr>
+    ${p.tps.map((t, i) => `<tr><td><b class="pos">TP${i + 1}</b> <span class="qd-sub">${t.label}</span></td><td class="mono">${f2(t.p)}</td><td class="mono">${f2(Math.abs(t.p - p.entry))} $</td><td class="mono"><b>${t.r.toFixed(1)}R</b></td></tr>`).join('')}</table>
+    <div class="qd-k4" style="margin-top:8px"><div><span>Balance</span><b>${p.bal > 0 ? p.bal.toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—'}</b></div><div><span>Risiko ${Q.plRisk}%</span><b>${p.riskUsd ? p.riskUsd.toFixed(2) : '—'} $</b></div><div><span>Lot hitung</span><b>${p.lots.toFixed(2)}</b></div><div><span>Lot akhir</span><b style="color:var(--gold)">${p.fin.toFixed(2)}</b></div></div>
+    <div class="qd-sub" style="margin-top:6px">Risiko aktual ${p.rpct.toFixed(2)}% (${p.ract.toFixed(2)} $) · rugi per lot ${f2(p.lossPerLot)} $ (1 lot = ${Q.lot} unit) · belum termasuk spread/komisi.</div>
+    <div class="qd-mgb">Margin Rule Guard ${msg}${isGold() && mg.ok ? `<div class="qd-sub">Margin/lot ≈ ${mg.perLot.toFixed(2)} · terpakai ${mg.used.toFixed(2)} → ${p.mgS ? p.mgS.newUsed.toFixed(2) : '—'} · batas ${mg.limit.toFixed(2)} (aman ${mg.safeLimit.toFixed(2)}) · lot maks aman ${mg.addSafe.toFixed(2)}</div>` : ''}</div>
+    ${p.notes.map(n => `<div class="qd-note2">ℹ ${n}</div>`).join('')}${p.warn.map(n => `<div class="qd-note2 w">⚠ ${n}</div>`).join('')}
+    <div class="qd-acts"><button class="btn ghost" data-act="copyplan">Salin rencana</button></div>`);
+  }
+  // 3. CVD & absorpsi
+  if (!Q.fxCvd) setH('qaCvd', off('Fitur dimatikan.')); else if (!A) setH('qaCvd', off('Menghitung…')); else {
+    const n = Q.c.length, d20 = Q.c.slice(-20).reduce((s, k) => s + 2 * k.tb - k.v, 0) / Q.lot, d5 = Q.c.slice(-5).reduce((s, k) => s + 2 * k.tb - k.v, 0) / Q.lot, dv = A.cvDiv;
+    setH('qaCvd', `<div class="qd-k4"><div><span>Delta 5 candle</span><b style="color:${d5 >= 0 ? 'var(--green)' : 'var(--red)'}">${d5 >= 0 ? '+' : ''}${lot3(d5)}</b></div><div><span>Delta 20 candle</span><b style="color:${d20 >= 0 ? 'var(--green)' : 'var(--red)'}">${d20 >= 0 ? '+' : ''}${lot3(d20)}</b></div><div style="grid-column:span 2"><span>Divergensi CVD</span><b>${dv ? (dv.dir === 'bear' ? '<span class="neg">▼ Bearish: harga HH, CVD melemah</span>' : '<span class="pos">▲ Bullish: harga LL, CVD menguat</span>') : '<span class="qd-sub">tidak ada</span>'}</b></div></div>
+    <div class="qd-sub" style="margin:8px 0 4px">Absorpsi terakhir (volume tinggi + arus agresif satu arah, harga tidak ikut):</div>` + (A.abs.length ? `<table class="xt"><tr><th>Waktu</th><th>Jenis</th><th>Vol</th><th>Konteks</th></tr>${[...A.abs].reverse().slice(0, 6).map(a => `<tr><td class="mono">${tm(Q.c[a.idx].t)}</td><td><span class="qd-badge ${a.dir === 'bull' ? 'D' : 'S'}">${a.dir === 'bull' ? 'ABS ▲ beli' : 'ABS ▼ jual'}</span></td><td class="mono">${a.vr.toFixed(1)}×</td><td class="qd-sub">${a.ctx || '—'}</td></tr>`).join('')}</table>` : off('Belum ada absorpsi pada data ini.')) + `<div class="note qd-small">ABS ▲ = penjual agresif menekan tapi harga bertahan (potensi dukungan); ABS ▼ = pembeli agresif tapi harga tertahan. Data: volume taker Binance.</div>`);
+  }
+  // 4. premium / discount
+  if (!Q.fxPd) setH('qaPd', off('Fitur dimatikan.')); else if (!A || !A.pd) setH('qaPd', off('Menghitung…')); else {
+    const d = A.pd, prem = px > d.EQ, pct = (px - d.L) / (d.H - d.L) * 100, inOte = px >= d.ote[0] && px <= d.ote[1], al = Q.zones.filter(zz => zz.pdAligned).length;
+    setH('qaPd', `<div class="qd-k4"><div><span>Range H</span><b>${f2(d.H)}</b></div><div><span>Range L</span><b>${f2(d.L)}</b></div><div><span>EQ 50%</span><b>${f2(d.EQ)}</b></div><div><span>Posisi harga</span><b style="color:${prem ? 'var(--red)' : 'var(--green)'}">${prem ? 'PREMIUM' : 'DISCOUNT'} ${pct.toFixed(0)}%</b></div></div>
+    <div class="qd-sub" style="margin-top:6px">Leg ${d.dir === 'bull' ? 'naik' : 'turun'} · OTE ${d.oteSide} <b class="mono">${f2(d.ote[0])} – ${f2(d.ote[1])}</b> ${inOte ? '<span class="qd-badge gW">HARGA DI OTE</span>' : ''}</div>
+    <div class="qd-sub">Zona tampil selaras PD (Demand di discount / Supply di premium): <b>${al}</b> dari ${Q.zones.length}${Q.pdF ? ' · filter “saring zona kontra” aktif' : ''}.</div>`);
+  }
+  // 5. heatmap
+  if (!Q.fxHeat) setH('qaHeat', off('Fitur dimatikan. Aktifkan untuk mulai merekam snapshot order book (hanya saat halaman terbuka).')); else {
+    const H = Q.heat, mins = H.length > 1 ? (H[H.length - 1].t - H[0].t) / 6e4 : 0, ev = Q.heatEv.filter(e => e.kind !== 'muncul').slice(0, 6);
+    setH('qaHeat', `<div class="qd-k4"><div><span>Snapshot</span><b>${H.length}</b></div><div><span>Durasi rekam</span><b>${mins.toFixed(1)} mnt</b></div><div><span>Memori</span><b>${(H.reduce((s, x) => s + x.v.length * 4, 0) / 1024).toFixed(0)} KB</b></div><div><span>Event wall</span><b>${Q.heatEv.length}</b></div></div>
+    <div class="qd-sub" style="margin:8px 0 4px">Wall yang hilang: <b>✕ ditarik</b> (hilang saat harga jauh — kemungkinan spoofing / dibatalkan) vs <b>● dimakan</b> (hilang saat harga mengenainya — terisi transaksi).</div><div class="note qd-small">Paling terlihat di TF 5m. Di TF besar rekaman baru berjalan beberapa menit sehingga hanya tampak sebagai pita tipis di tepi kanan chart.</div>` + (ev.length ? `<table class="xt"><tr><th>Waktu</th><th>Sisi</th><th>Harga</th><th>Hasil</th></tr>${ev.map(e => `<tr><td class="mono">${wib(e.t, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</td><td class="${e.side === 'BID' ? 'pos' : 'neg'}">${e.side}</td><td class="mono">${f2(e.price)}<div class="qd-sub">${lot3(e.qty)} lot</div></td><td><b>${e.kind === 'ditarik' ? '✕ ditarik' : '● dimakan'}</b></td></tr>`).join('')}</table>` : off(H.length < 3 ? 'Merekam… tunggu beberapa detik.' : 'Belum ada wall yang hilang.')));
+  }
+  // 6. berita
+  const nw = Q.nws, rel = e => { const d = Math.round((e.t - Date.now()) / 6e4); return d > 0 ? `dalam ${d >= 120 ? Math.round(d / 60) + ' jam' : d + ' mnt'}` : `${-d >= 120 ? Math.round(-d / 60) + ' jam' : -d + ' mnt'} lalu`; };
+  if (!Q.fxNews) setH('qaNews', off('Fitur dimatikan.')); else {
+    const list = [...nw.recent, ...nw.ev.filter(e => e.t > Date.now()).slice(0, 5)];
+    setH('qaNews', `<div class="qd-sub">${nw.active ? '<b style="color:var(--amber)">⚠ Jendela berita AKTIF</b> — zona diberi tanda' + (Q.nwDamp ? ', peluang tahan ×0,8' : '') : 'Tidak ada berita di jendela ±' + Q.nwPre + '/' + Q.nwPost + ' mnt.'}</div>` + (list.length ? `<table class="xt"><tr><th>Event</th><th>Mata uang</th><th>Waktu</th></tr>${list.map(e => `<tr style="${nw.act.includes(e) ? 'background:rgba(255,176,46,.1)' : ''}"><td>${e.title} <span class="qd-badge ${e.imp >= 3 ? 'gR' : 'gF'}">${e.imp >= 3 ? 'HIGH' : 'MED'}</span></td><td class="mono">${e.ccy}</td><td class="mono">${rel(e)}<div class="qd-sub">${tm(e.t)}</div></td></tr>`).join('')}</table>` : off('Tidak ada event kalender sesuai filter. Data diambil dari tab Calendar/News dashboard; pastikan kalender sudah termuat.')));
+  }
+}
+
+/* --- kontrol baru --- */
+const FXN = [['qdEqTol', 'eqTol', 'qd_eqtol', .02, 2, 1], ['qdPlRisk', 'plRisk', 'qd_plrisk', .05, 10, 1], ['qdPlBuf', 'plBuf', 'qd_plbuf', 0, 2, 1], ['qdPlRR', 'plRR', 'qd_plrr', .5, 10, 1], ['qdAbsVol', 'absVol', 'qd_absvol', 1, 8, 1], ['qdPdN', 'pdN', 'qd_pdn', 20, 400, 0], ['qdNwPre', 'nwPre', 'qd_nwpre', 0, 240, 0], ['qdNwPost', 'nwPost', 'qd_nwpost', 0, 240, 0]];
+FXN.forEach(([id, k, ls, mn, mx, dec]) => { const el = $(id); el.value = Q[k]; el.onchange = e => { let v = +e.target.value; if (!Number.isFinite(v) || e.target.value === '') v = Q[k]; v = clamp(v, mn, mx); if (!dec) v = Math.round(v); Q[k] = v; e.target.value = v; LSS(ls, v); analyze(); newsTick(); render(); }; });
+$('qdPlBal').value = Q.plBal; $('qdPlBal').onchange = e => { Q.plBal = e.target.value.trim(); LSS('qd_plbal', Q.plBal); render(); };
+$('qdPlEntry').value = Q.plEntry; $('qdPlEntry').onchange = e => { Q.plEntry = e.target.value; LSS('qd_plentry', Q.plEntry); render(); };
+$('qdNwImp').value = String(Q.nwImp); $('qdNwImp').onchange = e => { Q.nwImp = +e.target.value; LSS('qd_nwimp', Q.nwImp); newsTick(); render(); };
+$('qdNwCcy').value = Q.nwCcy; $('qdNwCcy').onchange = e => { Q.nwCcy = e.target.value.trim() || 'USD'; LSS('qd_nwccy', Q.nwCcy); newsTick(); render(); };
+$('qdNwDamp').checked = !!Q.nwDamp; $('qdNwDamp').onchange = e => { Q.nwDamp = e.target.checked; LSS('qd_nwdamp', Q.nwDamp); render(); };
+$('qdPdF').checked = !!Q.pdF; $('qdPdF').onchange = e => { Q.pdF = e.target.checked; LSS('qd_pdf', Q.pdF); render(); };
+$('qdHeatClr').onclick = () => { Q.heat = []; Q.heatEv = []; Q.hWalls = null; Q.hstp = 0; Q.dirty = true; paintAna(); toast('Rekaman heatmap dihapus', 'info'); };
+Object.keys(FXLS).forEach(k => { const sw = $('qd_' + k); sw.checked = !!Q[k]; sw.onchange = e => setFlag(k, e.target.checked); });
+$('qdAna').addEventListener('click', e => { const b = e.target.closest('[data-act="copyplan"]'); if (b && Q.plan) { const z = byKey(Q.plan.zkey); if (z) { const t = planText(Q.plan, z); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Rencana trade disalin', 'info'), () => toast(t, 'info')); } } });
+Object.assign(HELP, {
+  fxliq: ['Liquidity sweep & EQH/EQL', '<b>EQH / EQL</b> = dua atau lebih swing high/low yang hampir sejajar (toleransi diatur dalam ATR). Di atas EQH menumpuk stop-loss penjual dan buy-stop (<b>BSL</b>); di bawah EQL menumpuk <b>SSL</b>.<br><br><b>Sweep</b> = wick candle menembus level likuiditas lalu candle <u>ditutup kembali</u> di sisi semula — tanda harga “mengambil” likuiditas lalu berbalik. Garis putus-putus = likuiditas yang belum disapu; garis abu-abu = sudah disapu/ditembus. Sweep pada sisi jauh zona ditandai <b>SWP</b> di kartu zona.'],
+  fxplan: ['Rencana trade dari zona', 'Klik zona, lalu tab Analisis menampilkan <b>Entry</b> (tengah 50% atau tepi dekat), <b>SL</b> (di luar sisi jauh zona + buffer ATR), dan <b>TP</b> (zona lawan terdekat, likuiditas, atau 2R).<br><br>Lot dihitung dari <b>risiko %</b> × balance (dari EA, atau isi manual) ÷ rugi per lot, lalu dicek terhadap <b>Margin Rule Guard</b> di tab Risk: bila melebihi batas aman, lot otomatis dipangkas. Belum memasukkan spread/komisi. Ini alat bantu hitung, bukan sinyal.'],
+  fxcvd: ['CVD & absorpsi', '<b>CVD</b> (cumulative volume delta) = akumulasi selisih volume beli agresif − jual agresif per candle (dari taker volume Binance). Garis oranye di panel bawah chart; batang = delta per candle.<br><br><b>Divergensi</b>: harga membuat high lebih tinggi tapi CVD lebih rendah (bearish) atau sebaliknya (bullish).<br><b>Absorpsi (ABS)</b>: volume tinggi dengan arus agresif satu arah tetapi harga tidak ikut bergerak — ditandai bulatan “A” di chart bila terjadi di zona.'],
+  fxpd: ['Premium / Discount & OTE', 'Range diambil dari high–low N candle terakhir. Di atas garis <b>EQ 50%</b> = <b>premium</b> (area jual), di bawahnya = <b>discount</b> (area beli). <b>OTE</b> = area retracement 62–79% dari leg terakhir.<br><br>Zona yang <b>selaras</b> (Demand di discount / Supply di premium) bertanda ✓, yang kontra bertanda ⚠. Aktifkan “saring zona kontra” untuk menyembunyikan zona kontra dari daftar.'],
+  fxheat: ['Heatmap DOM historis', 'Merekam snapshot order book setiap ±4 detik dan menggambarnya di belakang candle (hijau = antrean bid, merah = ask; makin terang makin tebal). <b>Hanya merekam saat halaman terbuka</b> dan disimpan di memori browser (tidak permanen).<br><br>Wall yang hilang ditandai: <b>✕ ditarik</b> (hilang saat harga jauh — bisa spoofing atau dibatalkan) dan <b>● dimakan</b> (hilang saat harga mengenainya — terisi transaksi).'],
+  fxnews: ['Peredam berita', 'Memakai event kalender dari tab Calendar/News dashboard. Saat ada event berdampak sesuai filter dalam jendela waktu (default 30 mnt sebelum–sesudah), zona diberi tanda <b>⚠ BERITA</b>, strip peringatan muncul, dan (opsional) peluang tahan diturunkan 20% karena zona lebih mudah tertembus saat rilis. Garis kuning di chart menandai waktu rilis.']
+});
+
+
+/* ===== Candle realtime M15 / M30 / H1 (sumber: EA → riwayat EA → Binance) ===== */
+const CRTF = [['15m', 'M15', 900000, 'qdCr15'], ['30m', 'M30', 1800000, 'qdCr30'], ['1h', 'H1', 3600000, 'qdCr60']];
+Q.crSrc = LSG('qd_crsrc', 'auto'); Q.cr = {}; Q.crBusy = {};
+function eaAcc() { return (window.__FX && window.__FX.account) || null; }
+function eaPrice() { const a = eaAcc(); if (!a) return 0; const age = a.priceTime ? Date.now() / 1000 - a.priceTime : 0; if (age > 120) return 0; const b = +a.bid, k = +a.ask; return b > 0 && k > 0 ? (b + k) / 2 : b > 0 ? b : 0; }
+function normBar(b) {
+  let t, o, h, l, c, v; if (Array.isArray(b)) { t = b[0]; o = b[1]; h = b[2]; l = b[3]; c = b[4]; v = b[5]; } else if (b && typeof b === 'object') { t = b.t != null ? b.t : b.time; o = b.o != null ? b.o : b.open; h = b.h != null ? b.h : b.high; l = b.l != null ? b.l : b.low; c = b.c != null ? b.c : b.close; v = b.v != null ? b.v : (b.volume != null ? b.volume : b.tick_volume); } else return null;
+  t = +t; o = +o; h = +h; l = +l; c = +c; v = +v || 0; if (![t, o, h, l, c].every(Number.isFinite) || t <= 0) return null; if (t < 1e12) t *= 1000; return { t, o, h, l, c, v };
+}
+function eaBars(label, ms) {
+  const a = eaAcc(); if (!a) return null; const B = a.bars;
+  if (B && typeof B === 'object') { const k = Object.keys(B).find(x => String(x).toUpperCase() === label || String(x) === String(ms / 60000)); if (k && Array.isArray(B[k])) { const arr = B[k].map(normBar).filter(Boolean).sort((x, y) => x.t - y.t); if (arr.length >= 3) return { src: 'ea', bars: arr, ts: +a.priceTime || 0 }; } }
+  const mb = (window.__FX && window.__FX.marketBars) || [], hb = mb.filter(b => String(b.timeframe || b.tf || '').toUpperCase() === label && /XAU|GOLD/i.test(String(b.symbol || 'XAU'))).map(normBar).filter(Boolean).sort((x, y) => x.t - y.t);
+  if (hb.length >= 3 && Date.now() - hb[hb.length - 1].t < 3 * ms) return { src: 'ea-hist', bars: hb.slice(-20), ts: 0 };
+  return null;
+}
+function eaRef(label) {
+  const a = eaAcc(), t = a && Array.isArray(a.mtf) ? a.mtf.find(x => x.tf === label && x.valid) : null; if (!t) return null;
+  const H = t.sell && t.sell.levels ? +t.sell.levels[1] : NaN, L = t.buy && t.buy.levels ? +t.buy.levels[1] : NaN; return Number.isFinite(H) && Number.isFinite(L) && H > L ? { H, L } : null;
+}
+async function crFetch(tf) {
+  if (Q.crBusy[tf]) return; Q.crBusy[tf] = true; const tok = Q.tok;
+  try { const d = await fj(`${HOSTS[Q.host].rest}klines?symbol=${Q.sym}&interval=${tf}&limit=20`); if (tok !== Q.tok || !Array.isArray(d)) return; Q.cr[tf] = { t: Date.now(), ofs: Q.ofs, bars: d.map(k => ({ t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5] })) }; } catch (e) { } finally { Q.crBusy[tf] = false; }
+}
+function crTick() { if (!act() || Q.tab !== 'dom' || Q.crSrc === 'ea') return; const now = Date.now(); CRTF.forEach(([tf]) => { if (!Q.cr[tf] || now - Q.cr[tf].t > 2500) crFetch(tf); }); }
+function crView(tf, label, ms) {
+  const mode = Q.crSrc; let pick = mode !== 'bn' ? eaBars(label, ms) : null;
+  if (!pick && mode !== 'ea') { const r = Q.cr[tf]; if (r && r.bars.length >= 3) { const sh = Q.ofs - r.ofs; pick = { src: 'bn', bars: r.bars.map(b => ({ t: b.t, v: b.v, o: b.o + sh, h: b.h + sh, l: b.l + sh, c: b.c + sh })), ts: r.t / 1000 }; } }
+  if (!pick) { const ref = mode !== 'bn' ? eaRef(label) : null; return ref ? { src: 'ea-ref', ref, price: eaPrice() } : null; }
+  let bars = pick.bars; const L = bars[bars.length - 1], lp = pick.src === 'bn' ? (Math.floor(Date.now() / ms) * ms === L.t ? Q.px : 0) : pick.src === 'ea' ? eaPrice() : 0;
+  if (lp > 0) { const n = { t: L.t, v: L.v, o: L.o, h: Math.max(L.h, lp), l: Math.min(L.l, lp), c: lp }; bars = bars.slice(0, -1).concat([n]); }
+  return { src: pick.src, bars, ts: pick.ts };
+}
+function crAnalyze(bars) {
+  const n = bars.length; if (n < 3) return null; const L = bars[n - 1], c1 = bars[n - 2], c2 = bars[n - 3], rg = bars.slice(-15, -1).map(b => b.h - b.l), A = rg.length ? rg.reduce((s, x) => s + x, 0) / rg.length : (L.h - L.l) || 1;
+  const refH = Math.max(c1.h, c2.h), refL = Math.min(c1.l, c2.l), range = L.h - L.l, body = Math.abs(L.c - L.o), bodyPct = range > 0 ? body / range * 100 : 0; let st, dist = 0;
+  if (L.c > refH) { st = 'UP'; dist = L.c - refH; } else if (L.c < refL) { st = 'DN'; dist = refL - L.c; } else if (L.h > refH) { st = 'FU'; dist = L.h - refH; } else if (L.l < refL) { st = 'FD'; dist = refL - L.l; } else st = 'IN';
+  let cl = 'in'; if (c1.c > c2.h) cl = 'up'; else if (c1.c < c2.l) cl = 'dn'; else if (c1.h > c2.h) cl = 'fu'; else if (c1.l < c2.l) cl = 'fd';
+  return { L, c1, c2, refH, refL, A, range, bodyPct, upW: L.h - Math.max(L.o, L.c), loW: Math.min(L.o, L.c) - L.l, st, dist, strong: (st === 'UP' || st === 'DN') && dist >= .25 * A && bodyPct >= 55, cl };
+}
+const CRST = { UP: ['u', '▲', 'BREAKOUT NAIK'], DN: ['d', '▼', 'BREAKOUT TURUN'], FU: ['f', '✕', 'FAKEOUT ATAS'], FD: ['f', '✕', 'FAKEOUT BAWAH'], IN: ['n', '▭', 'DI DALAM RANGE'] };
+const CRCL = { up: '✔ C-1 (candle tertutup terakhir) menutup di atas high C-2 → breakout naik terkonfirmasi.', dn: '✔ C-1 menutup di bawah low C-2 → breakout turun terkonfirmasi.', fu: '✕ C-1 menembus atas tapi ditutup kembali → fakeout.', fd: '✕ C-1 menembus bawah tapi ditutup kembali → fakeout.', in: 'C-1 masih di dalam range C-2.' };
+function crExplain(r, mode) {
+  const F = f2, d = `${F(r.dist)} $ (${(r.dist / r.A).toFixed(1)}× range rata-rata)`, base = mode === 'ref' ? 'level acuan EA' : '2 candle sebelumnya';
+  if (r.st === 'UP') return `Harga live ${F(r.L.c)} sudah <b>di atas high ${base}</b> (${F(r.refH)}) sebesar ${d}. ${r.strong ? 'Body besar → dorongan beli kuat.' : 'Penembusan / body masih kecil → belum meyakinkan.'} <b>Valid bila candle ditutup di atas ${F(r.refH)}.</b>`;
+  if (r.st === 'DN') return `Harga live ${F(r.L.c)} sudah <b>di bawah low ${base}</b> (${F(r.refL)}) sebesar ${d}. ${r.strong ? 'Body besar → dorongan jual kuat.' : 'Penembusan / body masih kecil → belum meyakinkan.'} <b>Valid bila candle ditutup di bawah ${F(r.refL)}.</b>`;
+  if (r.st === 'FU') return `Wick menyentuh ${F(r.L.h)} (di atas high acuan ${F(r.refH)}) tetapi harga kembali ke dalam range → kemungkinan <b>fakeout / sapuan likuiditas</b>. Jangan buru-buru ikut breakout.`;
+  if (r.st === 'FD') return `Wick menyentuh ${F(r.L.l)} (di bawah low acuan ${F(r.refL)}) tetapi harga kembali ke dalam range → kemungkinan <b>fakeout / sapuan likuiditas</b>. Jangan buru-buru ikut breakout.`;
+  return `Harga masih di dalam range ${base} (${F(r.refL)} – ${F(r.refH)}). <b>Belum ada breakout</b>; tunggu salah satu sisi ditembus.`;
+}
+const mmss = ms => { const s = Math.floor(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
+function paintCr() {
+  const lbl = { ea: ['EA', 'var(--green)'], 'ea-hist': ['EA riwayat', 'var(--amber)'], bn: ['Binance', 'var(--cyan)'], 'ea-ref': ['EA level', 'var(--amber)'] }; const srcs = new Set(); let ts = 0;
+  CRTF.forEach(([tf, label, ms, id]) => {
+    const v = crView(tf, label, ms), chip = $(id + 's');
+    if (!v) { chip.textContent = '—'; chip.style.color = ''; setH(id + 'd', `<div class="qd-sub">${Q.crSrc === 'ea' ? `EA belum mengirim OHLC ${label}.` : `Menunggu data ${label}…`}</div>`); return; }
+    srcs.add(v.src); if (v.ts) ts = Math.max(ts, v.ts); chip.textContent = lbl[v.src][0]; chip.style.color = lbl[v.src][1];
+    const left = ms - (Date.now() % ms);
+    if (v.src === 'ea-ref') {
+      const p = v.price, r = p > 0 ? { L: { c: p, h: p, l: p, o: p }, refH: v.ref.H, refL: v.ref.L, A: (v.ref.H - v.ref.L) || 1, dist: p > v.ref.H ? p - v.ref.H : p < v.ref.L ? v.ref.L - p : 0, st: p > v.ref.H ? 'UP' : p < v.ref.L ? 'DN' : 'IN', strong: false } : null, s = r ? CRST[r.st] : CRST.IN;
+      setH(id + 'd', r ? `<div class="qd-crs ${s[0]}">${s[1]} ${s[2]}</div><div class="qd-crx">${crExplain(r, 'ref')}</div><div class="qd-kv3"><span>High acuan</span><b>${f2(v.ref.H)}</b><span>Low acuan</span><b>${f2(v.ref.L)}</b><span>Harga EA</span><b>${f2(p)}</b><span>Tutup dalam</span><b>${mmss(left)}</b></div><div class="qd-sub" style="margin-top:3px">EA belum mengirim candle ${label}; level acuan = high/low 2 candle tertutup terakhir dari EA.</div>` : '<div class="qd-sub">Harga EA belum tersedia.</div>'); return;
+    }
+    const r = crAnalyze(v.bars), s = CRST[r.st];
+    setH(id + 'd', `<div class="qd-crs ${s[0]}">${s[1]} ${s[2]}${r.strong ? ' · KUAT' : ''}</div><div class="qd-crx">${crExplain(r)}</div><div class="qd-sub">${CRCL[r.cl]}</div>
+      <div class="qd-kv3" style="margin-top:4px"><span>Buka</span><b>${f2(r.L.o)}</b><span>Live</span><b>${f2(r.L.c)}</b><span>Tinggi</span><b>${f2(r.L.h)}</b><span>Rendah</span><b>${f2(r.L.l)}</b><span>High acuan (H)</span><b>${f2(r.refH)}</b><span>Low acuan (L)</span><b>${f2(r.refL)}</b><span>Range</span><b>${f2(r.range)} $</b><span>Body</span><b>${r.bodyPct.toFixed(0)}%</b><span>Wick atas/bawah</span><b>${f2(r.upW)} / ${f2(r.loW)}</b><span>Tutup dalam</span><b>${mmss(left)}</b></div>`);
+  });
+  let note = ''; const a = eaAcc();
+  if (srcs.has('ea')) note = `✔ Candle dari <b>EA</b>${ts ? ` (snapshot ${Math.max(0, Math.round(Date.now() / 1000 - ts))} dtk lalu)` : ''}; harga live dari bid/ask EA.`;
+  else if (srcs.has('ea-hist')) note = 'Candle dari riwayat EA (marketBars) — bukan realtime penuh.';
+  else if (srcs.has('bn')) note = `EA belum mengirim OHLC M15/M30/H1 (field <code>bars</code>) — sementara memakai <b>Binance</b> ${Q.ofs ? `dengan offset ${(Q.ofs >= 0 ? '+' : '') + f2(Q.ofs)}` : ''}. Untuk sumber EA, tambahkan blok <code>bars</code> di EA (lihat file panduan).`;
+  else if (srcs.has('ea-ref')) note = 'Memakai level acuan EA (tanpa candle). Tambahkan blok <code>bars</code> di EA untuk visual candle.';
+  else note = a ? 'Menunggu data candle…' : 'Data EA belum termuat; memakai Binance bila tersedia.';
+  setH('qdCrNote', note);
+}
+function drawCr() {
+  CRTF.forEach(([tf, label, ms, id]) => {
+    const cv = $(id); if (!cv) return; const W = cv.clientWidth, H = cv.clientHeight; if (!W || !H) return; const d = Math.min(2, devicePixelRatio || 1);
+    if (cv.width !== Math.round(W * d) || cv.height !== Math.round(H * d)) { cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
+    const c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H); c.textAlign = 'left';
+    const v = crView(tf, label, ms), pulse = .5 + .5 * Math.sin(Date.now() / 300);
+    if (!v) { c.fillStyle = '#7384b4'; c.font = '10px sans-serif'; c.textAlign = 'center'; c.fillText('menunggu data…', W / 2, H / 2); return; }
+    const top = 10, bot = H - 14, padL = 6, padR = 54, pw = W - padL - padR;
+    if (v.src === 'ea-ref') {
+      const { H: rh, L: rl } = v.ref, p = v.price || (rh + rl) / 2, lo0 = Math.min(rl, p), hi0 = Math.max(rh, p), pad = (hi0 - lo0) * .2 || 1, Yr = q => bot - (q - (lo0 - pad)) / ((hi0 + pad) - (lo0 - pad)) * (bot - top);
+      c.fillStyle = 'rgba(255,255,255,.04)'; c.fillRect(padL, Yr(rh), pw, Yr(rl) - Yr(rh)); [[rh, '#ffb02e', 'H'], [rl, '#7ce8ff', 'L']].forEach(([q, col, tx]) => { c.strokeStyle = col; c.lineWidth = 1.2; c.setLineDash([5, 3]); c.beginPath(); c.moveTo(padL, Yr(q)); c.lineTo(padL + pw, Yr(q)); c.stroke(); c.setLineDash([]); c.fillStyle = col; c.font = '700 9px sans-serif'; c.fillText(`${tx} ${f2(q)}`, padL + pw + 3, Yr(q) + 3); });
+      c.fillStyle = '#ffc94a'; c.beginPath(); c.arc(padL + pw / 2, Yr(p), 4 + pulse * 2, 0, 6.2832); c.fill(); c.fillStyle = '#a7b6dc'; c.font = '9px sans-serif'; c.fillText('level acuan EA', padL, H - 3); return;
+    }
+    const r = crAnalyze(v.bars); if (!r) return; const cs = [r.c2, r.c1, r.L];
+    let lo = Math.min(r.refL, r.L.l), hi = Math.max(r.refH, r.L.h); const pad = (hi - lo) * .14 || 1; lo -= pad; hi += pad; const Y = q => bot - (q - lo) / (hi - lo) * (bot - top);
+    if (r.st === 'UP') { c.fillStyle = 'rgba(45,245,163,.14)'; c.fillRect(padL, Y(r.L.c), pw, Y(r.refH) - Y(r.L.c)); } else if (r.st === 'DN') { c.fillStyle = 'rgba(255,75,110,.14)'; c.fillRect(padL, Y(r.refL), pw, Y(r.L.c) - Y(r.refL)); }
+    [[r.refH, '#ffb02e', 'H'], [r.refL, '#7ce8ff', 'L']].forEach(([q, col, tx]) => { c.strokeStyle = col; c.lineWidth = 1.2; c.setLineDash([5, 3]); c.beginPath(); c.moveTo(padL, Y(q)); c.lineTo(padL + pw, Y(q)); c.stroke(); c.setLineDash([]); c.fillStyle = col; c.font = '700 9px sans-serif'; c.fillText(`${tx} ${f2(q)}`, padL + pw + 3, Y(q) + 3); });
+    const bw = Math.min(24, pw / 5.5);
+    cs.forEach((k, i) => { const x = padL + pw * (i * 2 + 1) / 6, up = k.c >= k.o, col = up ? '#2df5a3' : '#ff4b6e', live = i === 2; c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 1.5; c.beginPath(); c.moveTo(x, Y(k.h)); c.lineTo(x, Y(k.l)); c.stroke(); const y1 = Y(Math.max(k.o, k.c)), y2 = Y(Math.min(k.o, k.c)); c.globalAlpha = live ? 1 : .8; c.fillRect(x - bw / 2, y1, bw, Math.max(2, y2 - y1)); c.globalAlpha = 1;
+      if (live) { c.strokeStyle = `rgba(255,201,74,${.35 + pulse * .6})`; c.lineWidth = 1.5; c.strokeRect(x - bw / 2 - 3, Y(k.h) - 3, bw + 6, Y(k.l) - Y(k.h) + 6); }
+      c.fillStyle = live ? '#ffd25e' : '#7384b4'; c.font = '700 9px sans-serif'; c.textAlign = 'center'; c.fillText(live ? 'LIVE' : i ? 'C-1' : 'C-2', x, H - 3); c.textAlign = 'left'; });
+    const xl = padL + pw * 5 / 6, mk = CRST[r.st];
+    if (r.st !== 'IN') { c.fillStyle = r.st === 'UP' ? '#2df5a3' : r.st === 'DN' ? '#ff4b6e' : '#ffb02e'; c.font = '800 13px sans-serif'; c.textAlign = 'center'; c.fillText(mk[1], xl, r.st === 'UP' || r.st === 'FU' ? Math.max(top + 6, Y(r.L.h) - 7) : Math.min(bot - 2, Y(r.L.l) + 15)); c.textAlign = 'left'; }
+    const yl = Y(r.L.c); c.strokeStyle = 'rgba(255,201,74,.8)'; c.lineWidth = 1; c.setLineDash([2, 3]); c.beginPath(); c.moveTo(padL + pw * 4 / 6, yl); c.lineTo(padL + pw, yl); c.stroke(); c.setLineDash([]); c.fillStyle = '#ffc94a'; c.fillRect(padL + pw + 1, yl - 7, padR - 2, 14); c.fillStyle = '#1c1300'; c.font = '700 9px sans-serif'; c.fillText(f2(r.L.c), padL + pw + 3, yl + 3);
+  });
+}
+$('qdCrSrc').value = Q.crSrc; $('qdCrSrc').onchange = e => { Q.crSrc = e.target.value; LSS('qd_crsrc', Q.crSrc); Q.cr = {}; paintCr(); };
+HELP.candle = ['Candle realtime M15 / M30 / H1', 'Menampilkan <b>3 candle terakhir</b> tiap timeframe: 2 candle tertutup (C-2, C-1) dan 1 candle berjalan (LIVE, berdenyut) untuk melihat breakout lebih awal.<br><br><b>Range acuan</b> = high tertinggi (H) dan low terendah (L) dari 2 candle tertutup. Status:<br>• <b>BREAKOUT NAIK/TURUN</b> — harga live di luar range.<br>• <b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range.<br>• <b>DI DALAM RANGE</b> — belum ada breakout.<br><b>KUAT</b> = penembusan ≥ 0,25× range rata-rata dan body ≥ 55%. Breakout baru valid bila candle <u>ditutup</u> di luar range.<br><br><b>Sumber data</b> (otomatis): ① EA — field <code>bars</code> di snapshot (OHLC realtime dari MT5, harga live dari bid/ask EA); ② riwayat EA (marketBars); ③ Binance + offset. Chip di tiap kartu menunjukkan sumber yang dipakai. Catatan: EA versi saat ini mengirim level Fibo/AO per TF (tanpa M30), bukan OHLC mentah — lihat panduan menambah <code>bars</code> di EA.'];
+
 setInterval(() => {
   const on = act(); if (on && !Q.started) { Q.started = true; load(); }
   if (!Q.started || !Q.c.length) { if (on) paintHead(); return; }
@@ -11197,10 +11638,12 @@ setInterval(() => {
   if (on && now - Q.lastDepth > 2000) pollDepth();
   if (now - Q.htfT > 120000) loadHtf();
   calib(); if (Q.needAn || Q.tick % 3 === 0) analyze();
+  const nT = Date.now(); if (nT - Q.wsTick > 5000 && nT - Q.lastPoll > 2000) { Q.lastPoll = nT; loadTrades(false); } if (nT - Q.wsKl > 6000 && nT - Q.lastKl > 3000) { Q.lastKl = nT; pollKl(); }
+  if (Q.px) { Q.hHi = Math.max(Q.hHi, Q.px); Q.hLo = Math.min(Q.hLo, Q.px); } newsTick(); crTick();
   staleCheck(); waveTick(); rescore(); track(); if (Q.str) { Q.hist.push(Q.str.buyer); if (Q.hist.length > 300) Q.hist.shift(); } alertCheck();
   if (on) render();
 }, 1000);
-(function loop(ts) { if (act() && Q.dirty && ts - Q.lastDraw > 80) { Q.dirty = false; Q.lastDraw = ts; try { draw(); } catch (e) { console.error('qdom draw', e); } } if (act() && Q.tab === 'arus' && ts - (Q.lastWave || 0) > 60) { Q.lastWave = ts; try { drawWave(); } catch (e) { } } requestAnimationFrame(loop); })(0);
+(function loop(ts) { if (act() && Q.dirty && ts - Q.lastDraw > 80) { Q.dirty = false; Q.lastDraw = ts; try { draw(); } catch (e) { console.error('qdom draw', e); } } if (act() && Q.tab === 'dom' && ts - (Q.lastCr || 0) > 80) { Q.lastCr = ts; try { drawCr(); } catch (e) { } } if (act() && Q.tab === 'arus' && ts - (Q.lastWave || 0) > 60) { Q.lastWave = ts; try { drawWave(); } catch (e) { } } requestAnimationFrame(loop); })(0);
 if (window.ResizeObserver) new ResizeObserver(() => { Q.dirty = true; }).observe($('qdBox'));
 addEventListener('resize', () => { Q.dirty = true; });
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { if (b.dataset.view === 'qdom') setTimeout(() => { if (!Q.started) { Q.started = true; load(); } Q.dirty = true; if (Q.c.length) render(); else paintHead(); }, 40); }));
