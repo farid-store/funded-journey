@@ -11533,13 +11533,46 @@ Q.crSrc = LSG('qd_crsrc', 'auto'); Q.cr = {}; Q.crBusy = {};
 function eaAcc() { return (window.__FX && window.__FX.account) || null; }
 function eaPrice() { const a = eaAcc(); if (!a) return 0; const age = a.priceTime ? Date.now() / 1000 - a.priceTime : 0; if (age > 120) return 0; const b = +a.bid, k = +a.ask; return b > 0 && k > 0 ? (b + k) / 2 : b > 0 ? b : 0; }
 function normBar(b) {
-  let t, o, h, l, c, v; if (Array.isArray(b)) { t = b[0]; o = b[1]; h = b[2]; l = b[3]; c = b[4]; v = b[5]; } else if (b && typeof b === 'object') { t = b.t != null ? b.t : b.time; o = b.o != null ? b.o : b.open; h = b.h != null ? b.h : b.high; l = b.l != null ? b.l : b.low; c = b.c != null ? b.c : b.close; v = b.v != null ? b.v : (b.volume != null ? b.volume : b.tick_volume); } else return null;
-  t = +t; o = +o; h = +h; l = +l; c = +c; v = +v || 0; if (![t, o, h, l, c].every(Number.isFinite) || t <= 0) return null; if (t < 1e12) t *= 1000; return { t, o, h, l, c, v };
+  let t, o, h, l, c, v;
+  if (Array.isArray(b)) { [t, o, h, l, c, v] = b; }
+  else if (b && typeof b === 'object') {
+    t = b.t != null ? b.t : (b.time != null ? b.time : (b.timestamp != null ? b.timestamp : b.timeUtc));
+    o = b.o != null ? b.o : b.open; h = b.h != null ? b.h : b.high;
+    l = b.l != null ? b.l : b.low; c = b.c != null ? b.c : b.close;
+    v = b.v != null ? b.v : (b.volume != null ? b.volume : (b.tick_volume != null ? b.tick_volume : b.tickVolume));
+  } else return null;
+  if (t && typeof t === 'object') {
+    if (typeof t.toMillis === 'function') t = t.toMillis();
+    else if (typeof t.toDate === 'function') t = t.toDate().getTime();
+    else if (Number.isFinite(+t.seconds)) t = +t.seconds * 1000;
+  }
+  if (typeof t === 'string' && !/^\d+(?:\.\d+)?$/.test(t)) { const parsed = Date.parse(t); t = Number.isFinite(parsed) ? parsed : NaN; }
+  t = +t; o = +o; h = +h; l = +l; c = +c; v = +v || 0;
+  if (![t, o, h, l, c].every(Number.isFinite) || t <= 0 || o <= 0 || h <= 0 || l <= 0 || c <= 0 || h < l) return null;
+  if (t < 1e12) t *= 1000;
+  return { t, o, h, l, c, v };
+}
+function tfMatches(value, label, ms) {
+  const s = String(value == null ? '' : value).trim().toUpperCase();
+  const aliases = label === 'M15' ? ['M15','15M','15MIN','15MINUTE','PERIOD_M15','15'] : label === 'M30' ? ['M30','30M','30MIN','30MINUTE','PERIOD_M30','30'] : ['H1','1H','60','60M','60MIN','PERIOD_H1'];
+  return aliases.includes(s) || s === String(ms / 60000);
 }
 function eaBars(label, ms) {
-  const a = eaAcc(); if (!a) return null; const B = a.bars;
-  if (B && typeof B === 'object') { const k = Object.keys(B).find(x => String(x).toUpperCase() === label || String(x) === String(ms / 60000)); if (k && Array.isArray(B[k])) { const arr = B[k].map(normBar).filter(Boolean).sort((x, y) => x.t - y.t); if (arr.length >= 3) return { src: 'ea', bars: arr, ts: +a.priceTime || 0 }; } }
-  const mb = (window.__FX && window.__FX.marketBars) || [], hb = mb.filter(b => String(b.timeframe || b.tf || '').toUpperCase() === label && /XAU|GOLD/i.test(String(b.symbol || 'XAU'))).map(normBar).filter(Boolean).sort((x, y) => x.t - y.t);
+  const a = eaAcc(); if (!a) return null;
+  // Webhook/versi EA tertentu menyimpan bars di root, sebagian di object account.
+  const containers = [a.bars, a.account && a.account.bars, a.marketBars, a.ohlc && a.ohlc.bars].filter(x => x && typeof x === 'object');
+  for (const B of containers) {
+    let raw = null;
+    if (Array.isArray(B)) raw = B.filter(b => tfMatches(b && (b.timeframe || b.tf || b.period), label, ms));
+    else { const k = Object.keys(B).find(x => tfMatches(x, label, ms)); if (k && Array.isArray(B[k])) raw = B[k]; }
+    if (raw) {
+      const arr = raw.map(normBar).filter(Boolean).sort((x, y) => x.t - y.t);
+      if (arr.length >= 3) return { src: 'ea', bars: arr.slice(-60), ts: +(a.priceTime || a.updatedAtMs || 0) / (+(a.priceTime || a.updatedAtMs || 0) > 1e12 ? 1000 : 1) };
+    }
+  }
+  const mb = (window.__FX && window.__FX.marketBars) || [];
+  const hb = mb.filter(b => tfMatches(b.timeframe || b.tf || b.period, label, ms) && /XAU|GOLD/i.test(String(b.symbol || b._symbol || 'XAU')))
+    .map(normBar).filter(Boolean).sort((x, y) => x.t - y.t);
   if (hb.length >= 3 && Date.now() - hb[hb.length - 1].t < 3 * ms) return { src: 'ea-hist', bars: hb.slice(-20), ts: 0 };
   return null;
 }
@@ -11596,8 +11629,8 @@ function paintCr() {
   let note = ''; const a = eaAcc();
   if (srcs.has('ea')) note = `✔ Candle dari <b>EA</b>${ts ? ` (snapshot ${Math.max(0, Math.round(Date.now() / 1000 - ts))} dtk lalu)` : ''}; harga live dari bid/ask EA.`;
   else if (srcs.has('ea-hist')) note = 'Candle dari riwayat EA (marketBars) — bukan realtime penuh.';
-  else if (srcs.has('bn')) note = `EA belum mengirim OHLC M15/M30/H1 (field <code>bars</code>) — sementara memakai <b>Binance</b> ${Q.ofs ? `dengan offset ${(Q.ofs >= 0 ? '+' : '') + f2(Q.ofs)}` : ''}. Untuk sumber EA, tambahkan blok <code>bars</code> di EA (lihat file panduan).`;
-  else if (srcs.has('ea-ref')) note = 'Memakai level acuan EA (tanpa candle). Tambahkan blok <code>bars</code> di EA untuk visual candle.';
+  else if (srcs.has('bn')) note = `OHLC EA belum terbaca dari dokumen akun — sementara memakai <b>Binance</b> ${Q.ofs ? `dengan offset ${(Q.ofs >= 0 ? '+' : '') + f2(Q.ofs)}` : ''}. Pastikan webhook menyimpan field <code>bars</code> dari payload EA ke dokumen akun Firestore.`;
+  else if (srcs.has('ea-ref')) note = 'Memakai level acuan EA (tanpa candle OHLC). Periksa field <code>bars</code> pada dokumen akun Firestore dan pastikan webhook menyimpannya.';
   else note = a ? 'Menunggu data candle…' : 'Data EA belum termuat; memakai Binance bila tersedia.';
   setH('qdCrNote', note);
 }
@@ -11628,7 +11661,7 @@ function drawCr() {
   });
 }
 $('qdCrSrc').value = Q.crSrc; $('qdCrSrc').onchange = e => { Q.crSrc = e.target.value; LSS('qd_crsrc', Q.crSrc); Q.cr = {}; paintCr(); };
-HELP.candle = ['Candle realtime M15 / M30 / H1', 'Menampilkan <b>3 candle terakhir</b> tiap timeframe: 2 candle tertutup (C-2, C-1) dan 1 candle berjalan (LIVE, berdenyut) untuk melihat breakout lebih awal.<br><br><b>Range acuan</b> = high tertinggi (H) dan low terendah (L) dari 2 candle tertutup. Status:<br>• <b>BREAKOUT NAIK/TURUN</b> — harga live di luar range.<br>• <b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range.<br>• <b>DI DALAM RANGE</b> — belum ada breakout.<br><b>KUAT</b> = penembusan ≥ 0,25× range rata-rata dan body ≥ 55%. Breakout baru valid bila candle <u>ditutup</u> di luar range.<br><br><b>Sumber data</b> (otomatis): ① EA — field <code>bars</code> di snapshot (OHLC realtime dari MT5, harga live dari bid/ask EA); ② riwayat EA (marketBars); ③ Binance + offset. Chip di tiap kartu menunjukkan sumber yang dipakai. Catatan: EA versi saat ini mengirim level Fibo/AO per TF (tanpa M30), bukan OHLC mentah — lihat panduan menambah <code>bars</code> di EA.'];
+HELP.candle = ['Candle realtime M15 / M30 / H1', 'Menampilkan <b>3 candle terakhir</b> tiap timeframe: 2 candle tertutup (C-2, C-1) dan 1 candle berjalan (LIVE, berdenyut) untuk melihat breakout lebih awal.<br><br><b>Range acuan</b> = high tertinggi (H) dan low terendah (L) dari 2 candle tertutup. Status: <br>• <b>BREAKOUT NAIK/TURUN</b> — harga live di luar range.<br>• <b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range.<br>• <b>DI DALAM RANGE</b> — belum ada breakout.<br><b>KUAT</b> = penembusan ≥ 0,25× range rata-rata dan body ≥ 55%. Breakout baru valid bila candle <u>ditutup</u> di luar range.<br><br><b>Sumber data</b> (otomatis): ① OHLC realtime EA dari field <code>bars</code> pada dokumen akun; ② riwayat EA <code>marketBars</code>; ③ Binance + offset sebagai fallback. Chip di tiap kartu menunjukkan sumber yang dipakai. Agar sumber EA tampil, webhook harus menyimpan field <code>bars</code> yang dikirim EA ke dokumen akun Firestore.'];
 
 setInterval(() => {
   const on = act(); if (on && !Q.started) { Q.started = true; load(); }
