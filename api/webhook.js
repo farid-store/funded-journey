@@ -654,13 +654,113 @@ module.exports = async (req, res) => {
       ? body.history
       : [];
 
-    // OHLC opsional dari EA.
-    // Format bar: {symbol,timeframe,time,open,high,low,close,volume?}
-    const marketBarsRaw = Array.isArray(body.chartBars)
-      ? body.chartBars
-      : Array.isArray(body.marketBars)
-        ? body.marketBars
-        : [];
+    
+    // OHLC historis + candle realtime EA untuk Quantum DOM.
+    // Format EA: body.bars = { M15: [[t,o,h,l,c,v]], M30: [...], H1: [...] }
+    const marketBarsRaw = [
+      ...(Array.isArray(body.chartBars) ? body.chartBars : []),
+      ...(Array.isArray(body.marketBars) ? body.marketBars : []),
+    ];
+
+    const realtimeBars = {};
+    const realtimeTfKeys = ['M15', 'M30', 'H1'];
+
+    const incomingBars =
+      body.bars &&
+      typeof body.bars === 'object' &&
+      !Array.isArray(body.bars)
+        ? body.bars
+        : {};
+
+    for (const tf of realtimeTfKeys) {
+      const sourceKey = Object.keys(incomingBars).find(
+        (key) => String(key).toUpperCase() === tf
+      );
+
+      const sourceRows =
+        sourceKey && Array.isArray(incomingBars[sourceKey])
+          ? incomingBars[sourceKey]
+          : [];
+
+      const normalized = sourceRows
+        .slice(-60)
+        .map((row) => {
+          let t, open, high, low, close, volume;
+
+          if (Array.isArray(row)) {
+            [t, open, high, low, close, volume] = row;
+          } else if (row && typeof row === 'object') {
+            t = row.t ?? row.time ?? row.ts;
+            open = row.o ?? row.open;
+            high = row.h ?? row.high;
+            low = row.l ?? row.low;
+            close = row.c ?? row.close;
+            volume = row.v ?? row.volume ?? row.tick_volume ?? 0;
+          } else {
+            return null;
+          }
+
+          t = num(t, NaN);
+          open = num(open, NaN);
+          high = num(high, NaN);
+          low = num(low, NaN);
+          close = num(close, NaN);
+          volume = num(volume, 0);
+
+          if (
+            ![t, open, high, low, close].every(Number.isFinite) ||
+            t <= 0
+          ) {
+            return null;
+          }
+
+          // Normalisasi timestamp: milidetik menjadi detik.
+          if (t >= 1e12) t = Math.floor(t / 1000);
+
+          // Validasi konsistensi OHLC.
+          if (
+            high < Math.max(open, close, low) ||
+            low > Math.min(open, close, high)
+          ) {
+            return null;
+          }
+
+          return [
+            Math.floor(t),
+            open,
+            high,
+            low,
+            close,
+            volume,
+          ];
+        })
+        .filter(Boolean)
+        .sort((a, b) => a[0] - b[0]);
+
+      if (normalized.length) {
+        realtimeBars[tf] = normalized;
+
+        const symbol = String(
+          account.symbol || account._symbol || 'XAUUSD'
+        ).trim().slice(0, 32) || 'XAUUSD';
+
+        // Masukkan candle realtime ke jalur penyimpanan marketBars
+        // yang sudah digunakan webhook sebelumnya.
+        normalized.forEach((bar) => {
+          marketBarsRaw.push({
+            symbol,
+            timeframe: tf,
+            time: bar[0],
+            open: bar[1],
+            high: bar[2],
+            low: bar[3],
+            close: bar[4],
+            volume: bar[5],
+          });
+        });
+      }
+    }
+
 
     const reason = body.reason || 'unknown';
     const now = Date.now();
@@ -1276,9 +1376,21 @@ module.exports = async (req, res) => {
           : lastEquityPointAt,
         lastDailyAlertTier: dailyTier,
         lastOverallAlertTier: overallTier,
+        
         positions,
         pendingOrders,
         exposure,
+
+        // Candle realtime Quantum DOM.
+        // Pertahankan data sebelumnya jika snapshot ini tidak
+        // membawa candle untuk semua timeframe.
+        bars: Object.keys(realtimeBars).length
+          ? {
+              ...(existing?.bars || {}),
+              ...realtimeBars,
+            }
+          : (existing?.bars || {}),
+
         mtf,
         fibo,
         sig,
@@ -1302,6 +1414,14 @@ module.exports = async (req, res) => {
       changedDays: affectedDays.size,
       equityPointWritten,
       marketBarsWritten,
+      
+      realtimeBarsReceived: Object.fromEntries(
+        realtimeTfKeys.map((tf) => [
+          tf,
+          (realtimeBars[tf] || []).length,
+        ])
+      ),
+
     });
   } catch (e) {
     console.error(e);
