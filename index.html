@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<script>try{var __t=localStorage.getItem('ffx_theme')||'graphite';if(__t==='soft'||__t==='graphite'||__t==='emerald'){document.documentElement.dataset.theme=__t;document.documentElement.dataset.pro='1'}}catch(e){}</script>
+<script>try{var __t=localStorage.getItem('ffx_theme')||'graphite';if(__t==='soft'||__t==='graphite'||__t==='emerald'){document.documentElement.dataset.theme=__t;document.documentElement.dataset.pro='1'}}catch(e){}</script><script>(function(){try{var f=localStorage.getItem('fx_low');var m=(window.matchMedia&&matchMedia('(pointer:coarse)').matches)||Math.min(screen.width||9999,window.innerWidth||9999)<=820;window.__MOBILE=!!m;if(f==='1'||(f===null&&m)){document.documentElement.classList.add('mlite');window.__MLITE=true}}catch(e){}})();</script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Golden Break Terminal</title>
@@ -2684,7 +2684,156 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
 .qd-gl{display:grid;grid-template-columns:20px 1fr;gap:6px;font-size:10.5px;line-height:1.4;margin-top:5px;color:var(--muted)}.qd-gl b{color:var(--text)}
 .qd-gl i{font-style:normal;font:800 12px var(--fm);text-align:center}.qd-gl i.u{color:var(--green)}.qd-gl i.d{color:var(--red)}.qd-gl i.f{color:var(--amber)}.qd-gl i.n{color:var(--muted)}
 @media(max-width:640px){.qd-crg{grid-template-columns:1fr 1fr}}
-</style></head>
+</style><style id="qd-v9-layout">
+/* ============ MODE RINGAN (HP / tombol FX: HEMAT) ============ */
+html.mlite .world{display:none!important}
+html.mlite *,html.mlite *::before,html.mlite *::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;transition:none!important;text-shadow:none!important}
+html.mlite .tilt{transform:none!important}
+html.mlite .coin,html.mlite .gb,html.mlite .rchip .ri,html.mlite .blk.bob,html.mlite .riskbar i::after,html.mlite .cal-cell.today,html.mlite .mtf-arrow,html.mlite .lrow.price,html.mlite .sig-card.trig::after,html.mlite .view.active{animation:none!important}
+html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
+
+/* ============ QUANTUM DOM v9 — layout rapi ============ */
+.qd-wrap{gap:12px}
+
+/* header + toolbar */
+.qd-head{display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:14px 16px}
+.qd-hrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px}
+.qd-head .qd-pricebox{margin-left:auto}
+.qd-ctrls{margin:0;width:100%;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-end;padding-top:12px;border-top:1px solid var(--line)}
+.qd-cg{display:flex;flex-direction:column;gap:5px;min-width:0}
+.qd-cl{font:700 9px var(--fh);letter-spacing:.18em;text-transform:uppercase;color:var(--faint);padding-left:2px}
+.qd-cg-ic{margin-left:auto}
+.qd-cg-ic .qd-cl{visibility:hidden}
+.qd-ibs{display:flex;gap:8px}
+.qd-seg{display:inline-flex;gap:2px;padding:3px;height:38px;border-radius:11px;background:var(--surface2);border:1px solid var(--brd)}
+.qd-seg button{height:30px;min-height:30px;padding:0 13px;border-radius:8px;font:700 11.5px var(--fm);display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;color:var(--muted);background:none;border:0;cursor:pointer}
+.qd-seg button:hover{color:#fff;background:rgba(255,255,255,.05)}
+.qd-seg button.on{background:linear-gradient(180deg,#ffd75e,#e69a1c);color:#2d1c00}
+.qd-seg.sm{height:32px;padding:2px}.qd-seg.sm button{height:26px;min-height:26px;padding:0 10px;font-size:10.5px}
+.qd-ib{height:38px!important;min-height:38px!important;min-width:40px;padding:0 13px!important;border-radius:11px!important;display:inline-flex!important;align-items:center;justify-content:center;gap:6px}
+
+/* pengaturan */
+.qd-drawer{padding:14px}
+.qd-dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}
+.qd-dg>div{background:var(--surface2);border:1px solid var(--brd);border-radius:12px;padding:12px 14px;min-width:0}
+.qd-dh{display:flex;align-items:center;gap:4px;padding-bottom:8px}
+.qd-dr{margin-top:0;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.06)}
+.qd-dr:last-of-type{border-bottom:0}
+.qd-dr .xin,.qd-asc .xin,select.qd-sel,.qd-symbtn{height:34px;border-radius:9px;background:var(--surface);border:1px solid var(--brd);color:var(--text);padding:0 9px;font:700 12px var(--fm)}
+.qd-dr .xin:focus,select.qd-sel:focus{outline:0;border-color:var(--cyan);box-shadow:0 0 0 2px rgba(53,224,255,.2)}
+.qd-rg input{width:110px}
+.qd-dfoot{padding-top:12px}
+.qd-dr input[type=checkbox],.qd-ck input[type=checkbox],.qd-fld-sw input[type=checkbox]{-webkit-appearance:none;appearance:none;position:relative;width:40px;height:24px;border-radius:24px;background:var(--surface3);border:1px solid var(--line2);cursor:pointer;flex:none;margin:0;transition:background .2s,border-color .2s}
+.qd-dr input[type=checkbox]::before,.qd-ck input[type=checkbox]::before,.qd-fld-sw input[type=checkbox]::before{content:"";position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:#8a97b8;transition:transform .2s,background .2s}
+.qd-dr input[type=checkbox]:checked,.qd-ck input[type=checkbox]:checked,.qd-fld-sw input[type=checkbox]:checked{background:rgba(255,201,74,.28);border-color:var(--gold)}
+.qd-dr input[type=checkbox]:checked::before,.qd-ck input[type=checkbox]:checked::before,.qd-fld-sw input[type=checkbox]:checked::before{transform:translateX(16px);background:var(--gold)}
+.qd-dr input[type=checkbox]:focus-visible,.qd-fld-sw input[type=checkbox]:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* grid utama: chart + tab bawah (kiri) | DOM (kanan) */
+.qd-main{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(340px,.9fr);grid-template-areas:"chart dom" "below dom";grid-template-rows:auto 1fr;gap:12px;align-items:start;min-width:0}
+.qd-chartcard{grid-area:chart}
+.qd-below{grid-area:below}
+.qd-domside{grid-area:dom}
+.qd-side{max-height:none!important;overflow:visible}
+
+/* chart + layer */
+.qd-nav button{flex:0 0 auto}
+.qd-layerbar{margin-top:8px;border:1px solid var(--brd);border-radius:12px;background:var(--surface2);overflow:hidden}
+.qd-layerbar>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;cursor:pointer;font:700 10.5px var(--fh);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);min-height:40px}
+.qd-layerbar>summary::-webkit-details-marker{display:none}
+.qd-layerbar>summary::after{content:"▾";color:var(--faint);margin-left:6px;transition:transform .2s}
+.qd-layerbar[open]>summary::after{transform:rotate(180deg)}
+.qd-layerbar>summary b{color:var(--gold);margin-left:auto}
+.qd-layerbar[open]>summary{border-bottom:1px solid var(--brd)}
+.qd-layers{position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 16px;padding:12px;max-width:none;overflow:visible;z-index:auto}
+.qd-lg{display:flex;flex-direction:column;gap:7px;min-width:0}
+.qd-lgt{font:700 9px var(--fh);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.qd-lgb{display:flex;flex-wrap:wrap;gap:6px}
+.qd-lay{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 11px;font:700 11px var(--fm)}
+.qd-lay::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--line2);flex:none}
+.qd-lay.on::before{background:var(--cyan);box-shadow:0 0 6px rgba(53,224,255,.7)}
+
+/* tab di bawah chart */
+.qd-below{padding:0;min-width:0;overflow:hidden}
+.qd-below .qd-tabs{display:flex;gap:2px;padding:6px 8px 0;border-bottom:1px solid var(--brd);overflow-x:auto}
+.qd-below .qd-tabs button{flex:1 0 auto!important;padding:11px 16px!important;border-radius:9px 9px 0 0;font-size:11px!important}
+.qd-below .qd-pane{overflow:visible!important;max-height:none!important;padding:14px}
+#qdPane:not([hidden]){display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 12px;align-items:start}
+#qdPane>*{grid-column:1/-1}
+#qdPane>.qd-zc{grid-column:auto}
+#qdAna:not([hidden]){display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;align-items:start}
+#qdAna>.note{grid-column:1/-1}
+#qdAna .qd-as{margin:0}
+#qdArus .qd-arus-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.qd-tape{max-height:300px}
+
+/* sisi kanan: hanya DOM */
+.qd-domside{padding:0;min-width:0;display:block}
+.qd-dsh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;border-bottom:1px solid var(--brd)}
+.qd-dst{font:800 14px var(--fh);letter-spacing:.16em;text-transform:uppercase;color:#fff}
+.qd-dst small{display:block;font:600 9.5px var(--fh);letter-spacing:.18em;color:var(--faint);margin-top:2px}
+.qd-dctl{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 14px 6px}
+.qd-fld{display:flex;flex-direction:column;gap:5px;min-width:0;font:700 9px var(--fh);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.qd-fld select{width:100%;text-overflow:ellipsis;font-size:11px}
+.qd-fld-sw{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;font-size:10px;padding-top:2px}
+.qd-crg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px 14px 0;align-items:start}
+.qd-crc{display:block;aspect-ratio:auto;overflow:visible;padding:9px 10px;min-width:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.qd-crc:not(.qd-crguide):hover{border-color:rgba(53,224,255,.45)}
+.qd-crc.open{grid-column:1/-1;border-color:var(--cyan);background:rgba(53,224,255,.05)}
+.qd-crt{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.qd-car{margin-left:auto;font-style:normal;color:var(--faint);transition:transform .2s}
+.qd-crc.open .qd-car{transform:rotate(180deg);color:var(--cyan)}
+.qd-crc canvas{height:92px}
+.qd-crc.open canvas{height:150px}
+.qd-crs{flex-wrap:wrap;font-size:10.5px}
+.qd-crl{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font:700 12px var(--fm)}
+.qd-crl span{color:var(--faint);font-weight:600;font-size:10px}
+.qd-crdet{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line2)}
+.qd-crc.open .qd-crdet{display:block}
+.qd-crguide{grid-column:1/-1;cursor:default;background:rgba(255,255,255,.02)}
+.qd-glg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px 16px}
+.qd-crn{padding:8px 14px 0}
+.qd-lad{padding:0 14px 14px}
+.qd-ladh{display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px;padding-top:12px;border-top:1px solid var(--brd);font:800 11px var(--fh);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.qd-lad .qd-scroll{overflow:visible}
+.qd-lad .xt{width:100%;min-width:0}
+.qd-lad .xt th,.qd-lad .xt td{padding:5px 5px!important;font-size:10.5px}
+.qd-lad td.mono{white-space:normal;word-break:break-word}
+.qd-lad .qd-dom .qd-bar{width:32px}
+
+/* responsif */
+@media(max-width:1100px){
+  .qd-main{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"chart" "dom" "below"}
+}
+@media(max-width:900px){
+  #qdArus .qd-arus-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:700px){
+  .qd-head{padding:12px}
+  .qd-ctrls{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .qd-cg-wide,.qd-cg-ic{grid-column:1/-1}
+  .qd-cg-ic{margin-left:0}
+  .qd-cg-ic .qd-cl{display:none}
+  .qd-ibs{width:100%}
+  .qd-ibs .qd-ib{flex:1}
+  .qd-ibs .qd-ib span{display:inline}
+  .qd-ctrls .qd-seg{display:flex;width:100%}
+  .qd-ctrls .qd-seg button{flex:1;padding:0 6px}
+  .qd-chartbox{height:clamp(340px,56vh,500px)}
+  .qd-below .qd-pane{padding:10px}
+  .qd-dctl,.qd-crg,.qd-crn,.qd-lad{padding-left:10px;padding-right:10px}
+  .qd-wrap select,.qd-wrap input.xin{font-size:16px!important}
+  .qd-layers{grid-template-columns:1fr 1fr}
+}
+@media(pointer:coarse){
+  .qd-lay{min-height:36px}
+  .qd-seg button{min-height:34px;height:34px}
+  .qd-seg{height:42px}
+  .qd-nav button{min-height:40px}
+}
+
+</style>
+</head>
 <body>
 <div class="world" aria-hidden="true">
   <div class="stars"></div><div class="horizon"></div><div class="floor"></div><div class="sparks"></div>
@@ -3301,21 +3450,20 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
 <div class="qd-wrap">
 
   <header class="qd-head card">
-    <div class="qd-id">
-      <div class="qd-title">⚛ Quantum DOM<small>Liquidity Matrix</small></div>
-    </div>
-    <div class="qd-pricebox">
+    <div class="qd-hrow">
+      <div class="qd-id"><div class="qd-title">⚛ Quantum DOM<small>Liquidity Matrix</small></div></div>
+      <div class="qd-pricebox">
       <button type="button" id="qdSymBtn" class="qd-sel qd-symbtn" aria-haspopup="listbox" title="Pilih instrumen · ★ untuk favorit">XAUUSDT ▾</button>
       <b id="qdPx" class="qd-px">—</b>
       <span id="qdLive" class="qd-live wait">◌ Memuat…</span>
     </div>
+    </div>
     <div class="qd-chips" id="qdChips"></div>
     <div class="qd-ctrls">
-      <div class="qd-seg" id="qdPreSeg" role="group" aria-label="Preset layout"><button data-v="scalp" title="Scalp: 5m · 100 candle · maks 3 zona · hanya zona ≤ 6 ATR · hold 4 · DOM + Wall aktif">⚡ Scalp</button><button data-v="intra" title="Intraday: 15m · 150 candle · maks 4 zona · zona ≤ 12 ATR · hold 6 · garis sesi aktif">◐ Intraday</button><button data-v="swing" title="Swing: 1h · 200 candle · maks 5 zona · semua jarak · hold 8 · DOM/Wall mati, zona tembus tampil">◎ Swing</button></div>
-      <div class="qd-seg" id="qdTfSeg" role="group" aria-label="Timeframe"><button data-v="5m">5m</button><button data-v="15m">15m</button><button data-v="1h">1h</button><button data-v="4h">4h</button></div>
-      <div class="qd-seg" id="qdModeSeg" role="group" aria-label="Mode"><button data-v="hybrid" title="Gambar Supply dan Demand">Hybrid</button><button data-v="follow" title="Hanya satu sisi, mengikuti tekanan / struktur">Follow</button></div>
-      <button class="btn ghost qd-ib" id="qdAlertBtn" title="Alert zona (suara + notifikasi)">🔔</button>
-      <button class="btn ghost qd-ib" id="qdSetBtn" title="Pengaturan">⚙ <span>Pengaturan</span></button>
+      <div class="qd-cg qd-cg-wide"><span class="qd-cl">Preset</span><div class="qd-seg" id="qdPreSeg" role="group" aria-label="Preset layout"><button data-v="scalp" title="Scalp: 5m · 100 candle · maks 3 zona · hanya zona ≤ 6 ATR · hold 4 · DOM + Wall aktif">⚡ Scalp</button><button data-v="intra" title="Intraday: 15m · 150 candle · maks 4 zona · zona ≤ 12 ATR · hold 6 · garis sesi aktif">◐ Intraday</button><button data-v="swing" title="Swing: 1h · 200 candle · maks 5 zona · semua jarak · hold 8 · DOM/Wall mati, zona tembus tampil">◎ Swing</button></div></div>
+      <div class="qd-cg"><span class="qd-cl">Timeframe</span><div class="qd-seg" id="qdTfSeg" role="group" aria-label="Timeframe"><button data-v="5m">5m</button><button data-v="15m">15m</button><button data-v="1h">1h</button><button data-v="4h">4h</button></div></div>
+      <div class="qd-cg"><span class="qd-cl">Mode zona</span><div class="qd-seg" id="qdModeSeg" role="group" aria-label="Mode"><button data-v="hybrid" title="Gambar Supply dan Demand">Hybrid</button><button data-v="follow" title="Hanya satu sisi, mengikuti tekanan / struktur">Follow</button></div></div>
+      <div class="qd-cg qd-cg-ic"><span class="qd-cl">Alat</span><div class="qd-ibs"><button class="btn ghost qd-ib" id="qdAlertBtn" title="Alert zona (suara + notifikasi)">🔔</button><button class="btn ghost qd-ib" id="qdSetBtn" title="Pengaturan">⚙ <span>Pengaturan</span></button></div></div>
     </div>
   </header>
   <div class="qd-stale" id="qdStale" hidden></div>
@@ -3390,36 +3538,20 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
     <div class="card qd-chartcard">
       <div class="qd-chartbox" id="qdBox">
         <canvas id="qdCv" aria-label="Chart candlestick dengan zona Supply dan Demand"></canvas>
-        <div class="qd-layers" id="qdLayers"></div>
         <button class="qd-livebtn" id="qdLiveBtn" hidden>⟳ ke live</button>
         <div class="qd-ov" id="qdOv" hidden></div>
       </div>
       <div class="qd-nav" id="qdNav"><button type="button" data-n="left" title="Lihat candle lebih lama">◀ Geser</button><button type="button" data-n="live" title="Kembali ke candle terbaru">⌖ Live</button><button type="button" data-n="right">Geser ▶</button><button type="button" data-n="zin" title="Perbesar">＋</button><button type="button" data-n="zout" title="Perkecil">－</button></div>
+      <details class="qd-layerbar" id="qdLayBar" open>
+        <summary><span>Layer chart</span><b id="qdLayCnt">—</b></summary>
+        <div class="qd-layers" id="qdLayers"></div>
+      </details>
       <div class="qd-legend"><button type="button" class="qd-help" data-h="chart" aria-label="Cara membaca chart">?</button><span style="color:#ff4b6e">■ Strong Supply</span><span style="color:#2df5a3">■ Strong Demand</span><span style="color:#ffd25e">■ Medium</span><span style="color:#c9b8ff">┅ HTF</span><span style="color:#ffd25e">┄ 50% zona</span><span style="color:#35e0ff">┄ EQ</span><span style="color:#ffc94a">┄ harga live</span><span style="color:#ffc94a">◆ volume tak biasa</span><span class="qd-hint">Geser = pan · roda mouse = zoom · klik zona = detail · klik dua kali = reset</span></div>
     </div>
 
-    <aside class="card qd-side">
-      <div class="qd-tabs" id="qdTabs" role="tablist"><button data-t="zona" class="on">Zona</button><button data-t="dom">DOM</button><button data-t="arus">Arus</button><button data-t="ana">Analisis</button><button data-t="sesi">Sesi</button><button data-t="log">Log</button></div>
+    <section class="card qd-below">
+      <div class="qd-tabs" id="qdTabs" role="tablist"><button data-t="zona" class="on">Zona</button><button data-t="arus">Arus</button><button data-t="ana">Analisis</button><button data-t="sesi">Sesi</button><button data-t="log">Log</button></div>
       <div class="qd-pane" id="qdPane"></div>
-
-      <div class="qd-pane" id="qdDomx" hidden>
-        <div class="qd-crh"><b>Candle realtime &amp; breakout <button type="button" class="qd-help" data-h="candle">?</button></b><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><label class="qd-sub">Jumlah candle <select id="qdCrCount" class="qd-sel" title="Jumlah candle acuan"><option value="3">3 candle</option><option value="5">5 candle</option></select></label><label class="qd-sub" style="display:flex;gap:5px;align-items:center"><input type="checkbox" id="qdBrkAlert" style="accent-color:var(--gold)"> Notif breakout</label><select id="qdCrSrc" class="qd-sel" title="Sumber data candle"><option value="auto">Otomatis: EA → Binance</option><option value="ea">Hanya EA</option><option value="bn">Hanya Binance</option></select></div></div>
-        <div class="qd-crg">
-          <div class="qd-crc" id="qdCrC15"><div class="qd-crt"><b>M15</b><span class="qd-chip" id="qdCr15s">—</span></div><canvas id="qdCr15"></canvas><div id="qdCr15d" class="qd-crd"></div></div>
-          <div class="qd-crc" id="qdCrC30"><div class="qd-crt"><b>M30</b><span class="qd-chip" id="qdCr30s">—</span></div><canvas id="qdCr30"></canvas><div id="qdCr30d" class="qd-crd"></div></div>
-          <div class="qd-crc" id="qdCrC60"><div class="qd-crt"><b>H1</b><span class="qd-chip" id="qdCr60s">—</span></div><canvas id="qdCr60"></canvas><div id="qdCr60d" class="qd-crd"></div></div>
-          <div class="qd-crc" id="qdCrC240"><div class="qd-crt"><b>H4</b><span class="qd-chip" id="qdCr240s">—</span></div><canvas id="qdCr240"></canvas><div id="qdCr240d" class="qd-crd"></div></div>
-          <div class="qd-crc qd-crguide"><div class="qd-crt"><b>Cara membaca</b></div>
-            <div class="qd-gl"><i class="u">▲</i><span><b>BREAKOUT naik</b> — harga live menutup di <u>atas</u> high 2 candle sebelumnya.</span></div>
-            <div class="qd-gl"><i class="d">▼</i><span><b>BREAKOUT turun</b> — di <u>bawah</u> low 2 candle sebelumnya.</span></div>
-            <div class="qd-gl"><i class="f">✕</i><span><b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range (sapuan likuiditas).</span></div>
-            <div class="qd-gl"><i class="n">▭</i><span><b>DI DALAM RANGE</b> — belum ada breakout.</span></div>
-            <div class="qd-sub" style="margin-top:6px">Garis oranye = <b>H</b> (high acuan), biru = <b>L</b> (low acuan). Candle terakhir berdenyut = candle berjalan. Breakout baru <u>valid</u> bila candle <b>ditutup</b> di luar range.</div>
-          </div>
-        </div>
-        <div class="note qd-small" id="qdCrNote"></div>
-        <div id="qdDomList"></div>
-      </div>
       <div class="qd-pane" id="qdAna" hidden>
         <div class="qd-as"><div class="qd-ash"><b>1 · Liquidity sweep &amp; EQH/EQL <button type="button" class="qd-help" data-h="fxliq">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxLiq"><i></i></label></div><div class="qd-asc"><label>Toleransi EQ (× ATR) <input id="qdEqTol" class="xin" type="number" step="0.05"></label></div><div class="qd-asb" id="qaLiq"></div></div>
         <div class="qd-as"><div class="qd-ash"><b>2 · Rencana trade dari zona <button type="button" class="qd-help" data-h="fxplan">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxPlan"><i></i></label></div><div class="qd-asc"><label>Risiko % <input id="qdPlRisk" class="xin" type="number" step="0.1"></label><label>Entry <select id="qdPlEntry" class="xin"><option value="mid">Tengah 50%</option><option value="prox">Tepi dekat</option></select></label><label>Buffer SL (ATR) <input id="qdPlBuf" class="xin" type="number" step="0.05"></label><label>Min RR <input id="qdPlRR" class="xin" type="number" step="0.1"></label><label>Balance manual <input id="qdPlBal" class="xin" type="text" placeholder="auto (EA)"></label></div><div class="qd-asb" id="qaPlan"></div></div>
@@ -3428,20 +3560,56 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
         <div class="qd-as"><div class="qd-ash"><b>5 · Heatmap DOM historis <button type="button" class="qd-help" data-h="fxheat">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxHeat"><i></i></label></div><div class="qd-asc"><button type="button" class="btn ghost" id="qdHeatClr" style="padding:4px 10px">Hapus rekaman</button></div><div class="qd-asb" id="qaHeat"></div></div>
         <div class="qd-as"><div class="qd-ash"><b>6 · Peredam berita <button type="button" class="qd-help" data-h="fxnews">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxNews"><i></i></label></div><div class="qd-asc"><label>Sebelum (mnt) <input id="qdNwPre" class="xin" type="number" step="5"></label><label>Sesudah (mnt) <input id="qdNwPost" class="xin" type="number" step="5"></label><label>Impact <select id="qdNwImp" class="xin"><option value="3">High</option><option value="2">Medium+</option></select></label><label>Mata uang <input id="qdNwCcy" class="xin" type="text" style="width:84px"></label><label class="qd-ck"><input type="checkbox" id="qdNwDamp"> Redam peluang tahan ×0,8</label></div><div class="qd-asb" id="qaNews"></div></div>
         <div class="note qd-small">Saklar juga ada sebagai chip di atas chart (Liq, Plan, CVD, PD, Heat, News). Semua analisis adalah alat bantu, bukan sinyal.</div>
+      
       </div>
       <div class="qd-pane" id="qdArus" hidden>
+        <div class="qd-arus-grid">
+          <div class="qd-arus-l">
         <div class="qd-pm"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Arus transaksi live <button type="button" class="qd-help" data-h="arus" aria-label="Bantuan">?</button></b><span class="qd-sub" id="qaRate">—</span></div>
         <div class="qd-cnt"><span style="color:var(--green)" id="qaB">BUYER 0×</span><span style="color:var(--red)" id="qaS">SELLER 0×</span></div>
         <div class="qd-wavebox"><canvas id="qdWave"></canvas><div class="qd-wl t" id="qaWT">▲ BUYER 50%</div><div class="qd-wl b" id="qaWB">▼ SELLER 50%</div><div class="qd-wl r" id="qaWN">menunggu tick</div></div>
         <div class="qd-k4"><div><span>Beli 60 dtk</span><b id="qaK1" style="color:var(--green)">—</b></div><div><span>Jual 60 dtk</span><b id="qaK2" style="color:var(--red)">—</b></div><div><span>Delta candle</span><b id="qaK3">—</b></div><div><span>Tick terakhir</span><b id="qaK4">—</b></div></div>
-        <div class="qd-pm" style="margin-top:12px"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Tape transaksi nyata</b><select id="qdTapeMin" class="qd-sel" title="Tampilkan hanya transaksi ≥ ukuran ini"><option value="0">Semua ukuran</option><option value="0.01">≥ 0,01 lot</option><option value="0.05">≥ 0,05 lot</option><option value="0.1">≥ 0,1 lot</option><option value="0.5">≥ 0,5 lot</option></select></div>
+        
+          </div>
+          <div class="qd-arus-r">
+<div class="qd-pm" style="margin-top:12px"><b class="qd-sub" style="text-transform:uppercase;letter-spacing:.12em">Tape transaksi nyata</b><select id="qdTapeMin" class="qd-sel" title="Tampilkan hanya transaksi ≥ ukuran ini"><option value="0">Semua ukuran</option><option value="0.01">≥ 0,01 lot</option><option value="0.05">≥ 0,05 lot</option><option value="0.1">≥ 0,1 lot</option><option value="0.5">≥ 0,5 lot</option></select></div>
         <div id="qaTape" class="qd-tape"></div>
         <div class="note qd-small">Data nyata dari transaksi Binance (bukan simulasi). Baris searah dalam 0,6 dtk digabung. Ukuran = jumlah ÷ “1 lot = … unit”.</div>
+      
+          </div>
+        </div>
       </div>
+    </section>
+
+    <aside class="card qd-side qd-domside" id="qdDomx">
+      <div class="qd-dsh"><div class="qd-dst">DOM<small>Candle realtime &amp; order book</small></div><button type="button" class="qd-help" data-h="candle" aria-label="Bantuan">?</button></div>
+      <div class="qd-dctl">
+        <label class="qd-fld"><span>Candle acuan</span><select id="qdCrCount" class="qd-sel" title="Jumlah candle acuan"><option value="3">3 candle</option><option value="5">5 candle</option></select></label>
+        <label class="qd-fld"><span>Sumber data</span><select id="qdCrSrc" class="qd-sel" title="Sumber data candle"><option value="auto">Otomatis: EA → Binance</option><option value="ea">Hanya EA</option><option value="bn">Hanya Binance</option></select></label>
+        <label class="qd-fld qd-fld-sw"><span>Notif breakout</span><input type="checkbox" id="qdBrkAlert"></label>
+      </div>
+      <div class="qd-crg" id="qdCrg">
+        <div class="qd-crc" id="qdCrC15" data-tf="15m" role="button" tabindex="0" aria-expanded="false" title="Ketuk untuk penjelasan"><div class="qd-crt"><b>M15</b><span class="qd-chip" id="qdCr15s">—</span><i class="qd-car" aria-hidden="true">▾</i></div><canvas id="qdCr15"></canvas><div id="qdCr15d" class="qd-crd"></div><div id="qdCr15x" class="qd-crdet"></div></div>
+        <div class="qd-crc" id="qdCrC30" data-tf="30m" role="button" tabindex="0" aria-expanded="false" title="Ketuk untuk penjelasan"><div class="qd-crt"><b>M30</b><span class="qd-chip" id="qdCr30s">—</span><i class="qd-car" aria-hidden="true">▾</i></div><canvas id="qdCr30"></canvas><div id="qdCr30d" class="qd-crd"></div><div id="qdCr30x" class="qd-crdet"></div></div>
+        <div class="qd-crc" id="qdCrC60" data-tf="1h" role="button" tabindex="0" aria-expanded="false" title="Ketuk untuk penjelasan"><div class="qd-crt"><b>H1</b><span class="qd-chip" id="qdCr60s">—</span><i class="qd-car" aria-hidden="true">▾</i></div><canvas id="qdCr60"></canvas><div id="qdCr60d" class="qd-crd"></div><div id="qdCr60x" class="qd-crdet"></div></div>
+        <div class="qd-crc" id="qdCrC240" data-tf="4h" role="button" tabindex="0" aria-expanded="false" title="Ketuk untuk penjelasan"><div class="qd-crt"><b>H4</b><span class="qd-chip" id="qdCr240s">—</span><i class="qd-car" aria-hidden="true">▾</i></div><canvas id="qdCr240"></canvas><div id="qdCr240d" class="qd-crd"></div><div id="qdCr240x" class="qd-crdet"></div></div>
+        <div class="qd-crc qd-crguide" id="qdCrGuide">
+          <div class="qd-crt"><b>Cara membaca</b><span class="qd-sub">ketuk panel TF untuk penjelasan lengkap</span></div>
+          <div class="qd-glg">
+            <div class="qd-gl"><i class="u">▲</i><span><b>BREAKOUT naik</b> — harga live menutup di <u>atas</u> high 2 candle sebelumnya.</span></div>
+            <div class="qd-gl"><i class="d">▼</i><span><b>BREAKOUT turun</b> — di <u>bawah</u> low 2 candle sebelumnya.</span></div>
+            <div class="qd-gl"><i class="f">✕</i><span><b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range (sapuan likuiditas).</span></div>
+            <div class="qd-gl"><i class="n">▭</i><span><b>DI DALAM RANGE</b> — belum ada breakout.</span></div>
+          </div>
+          <div class="qd-sub" style="margin-top:6px">Garis oranye = <b>H</b> (high acuan), biru = <b>L</b> (low acuan). Candle terakhir berdenyut = candle berjalan. Breakout baru <u>valid</u> bila candle <b>ditutup</b> di luar range.</div>
+        </div>
+      </div>
+      <div class="note qd-small qd-crn" id="qdCrNote"></div>
+      <div class="qd-lad"><div class="qd-ladh"><b>Order book (DOM)</b></div><div id="qdDomList"></div></div>
     </aside>
   </div>
 
-  <div class="note qd-foot">Sumber: Binance Futures publik (kline, aggTrade, depth 1000 level). Harga bisa berbeda tipis dari XAUUSD broker — gunakan Offset. Lot memakai asumsi 1 lot = 100 unit (oz untuk emas); ubah di Pengaturan untuk simbol lain. DOM hanya mencakup ±1000 level order book (zona di luar jangkauan ditandai “di luar DOM”). Zona dideteksi dari candle yang sudah tertutup. Sesi (UTC / WIB): Asia 00–08 / 07–15 · London 08–13 / 15–20 · New York 13–24 / 20–07. Skor &amp; peluang tahan adalah estimasi, bukan jaminan.</div>
+  <div class="note qd-foot">Sumber: Binance Futures publik (kline, aggTrade, depth 500–1000 level). Harga bisa berbeda tipis dari XAUUSD broker — gunakan Offset. Lot memakai asumsi 1 lot = 100 unit (oz untuk emas); ubah di Pengaturan untuk simbol lain. DOM hanya mencakup level order book yang diambil (zona di luar jangkauan ditandai “di luar DOM”). Zona dideteksi dari candle yang sudah tertutup. Sesi (UTC / WIB): Asia 00–08 / 07–15 · London 08–13 / 15–20 · New York 13–24 / 20–07. Skor &amp; peluang tahan adalah estimasi, bukan jaminan.</div>
 </div>
 </section>
 
@@ -4621,7 +4789,7 @@ window.__THEME = { apply, get };
     else {dot.classList.add('offline');label.textContent='Terputus';sub.textContent='Update '+Math.round(age)+'d lalu'}
   }
   setInterval(setStatus, 1000);
-  setInterval(() => { if (currentAccount) renderPositions(); }, 1000); // live min-hold countdown
+  setInterval(() => { if (currentAccount && !document.hidden) renderPositions(); }, 1000); // live min-hold countdown
 
   // ================= MASTER RENDER =================
   let renderTimer = null;
@@ -6525,7 +6693,7 @@ window.__THEME = { apply, get };
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
   const M = n => FX().fmt.money(n);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const lowAuto = reduce || (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
+  const lowAuto = reduce || (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) || window.__MOBILE;
   let lowfx = localStorage.getItem('fx_low') !== null ? localStorage.getItem('fx_low') === '1' : !!lowAuto;
 
   /* ================= tilt 3D (kartu miring mengikuti kursor) ================= */
@@ -6742,7 +6910,7 @@ window.__THEME = { apply, get };
       canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); ready = false; wrap.classList.add('nogl'); });
     }
     async function init() {
-      if (ready || failed || loading) return; wrap = $('arena'); canvas = $('arenaCanvas'); tipEl = $('arenaTip'); if (!wrap || !canvas) return; loading = true;
+      if (ready || failed || loading) return; wrap = $('arena'); canvas = $('arenaCanvas'); tipEl = $('arenaTip'); if (!wrap || !canvas) return; if (lowfx && window.__MOBILE) { wrap.classList.add('nogl'); const f0 = $('arenaFb'); if (f0) f0.textContent = 'Scene 3D dimatikan di mode hemat HP supaya ringan. Tekan tombol FX untuk menyalakan.'; return; } wrap.classList.remove('nogl'); loading = true;
       try {
         await loadThree(); T = window.THREE;
         renderer = new T.WebGLRenderer({ canvas, antialias: !low, alpha: true, powerPreference: 'low-power' }); renderer.setClearColor(0x000000, 0);
@@ -6759,8 +6927,8 @@ window.__THEME = { apply, get };
 
   /* ================= tombol FX & notifikasi ================= */
   function applyLow() {
-    document.body.classList.toggle('lowfx', lowfx); const b = $('fxBtn'); if (b) { b.classList.toggle('on', lowfx); b.textContent = lowfx ? '🎞 FX: HEMAT' : '🎞 FX: PENUH'; }
-    Arena.setLow(lowfx);
+    document.body.classList.toggle('lowfx', lowfx); document.documentElement.classList.toggle('mlite', lowfx); window.__MLITE = lowfx; const b = $('fxBtn'); if (b) { b.classList.toggle('on', lowfx); b.textContent = lowfx ? '🎞 FX: HEMAT' : '🎞 FX: PENUH'; }
+    Arena.setLow(lowfx); if (!lowfx) Arena.init();
   }
   $('fxBtn')?.addEventListener('click', () => { lowfx = !lowfx; localStorage.setItem('fx_low', lowfx ? '1' : '0'); applyLow(); FX().toast(lowfx ? 'Mode hemat: animasi 3D diminimalkan' : 'Mode penuh: animasi 3D aktif'); });
   $('notifBtn')?.addEventListener('click', () => {
@@ -10512,7 +10680,8 @@ const $ = id => document.getElementById(id);
 if (!$('view-qdom') || !$('qdCv')) return;
 const LSG = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
 const LSS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
-const act = () => $('view-qdom').classList.contains('active');
+const act = () => $('view-qdom').classList.contains('active') && !document.hidden;
+const ML = !!window.__MLITE; /* mode ringan HP */
 const f2 = (v, d) => Number.isFinite(v) ? v.toFixed(d == null ? (Q.dec || 2) : d) : '—';
 const lotF = v => !Number.isFinite(v) ? '—' : v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -10530,12 +10699,13 @@ const sessStart = t => { const d = new Date(t), h = d.getUTCHours(); return Date
 const wib = (t, o) => new Date(t).toLocaleString('id-ID', Object.assign({ timeZone: 'Asia/Jakarta' }, o));
 
 const Q = {
-  sym: LSG('qd_sym', 'XAUUSDT'), tf: LSG('qd_tf', '15m'), n: +LSG('qd_n', 150) || 150, lot: +LSG('qd_lot', 100) || 100,
+  sym: LSG('qd_sym', 'XAUUSDT'), tf: LSG('qd_tf', '15m'), n: +LSG('qd_n', ML ? 90 : 150) || (ML ? 90 : 150), lot: +LSG('qd_lot', 100) || 100,
   optDom: LSG('qd_dom', true), optMid: LSG('qd_mid', true), optSess: LSG('qd_sess', true),
-  host: 'fut', fxLiq: LSG('qd_fxliq', true), fxCvd: LSG('qd_fxcvd', true), fxPd: LSG('qd_fxpd', false), fxHeat: LSG('qd_fxheat', false), fxPlan: LSG('qd_fxplan', true), fxNews: LSG('qd_fxnews', true), eqTol: +LSG('qd_eqtol', .15), pdN: +LSG('qd_pdn', 100), pdF: LSG('qd_pdf', false), absVol: +LSG('qd_absvol', 1.5), plRisk: +LSG('qd_plrisk', 1), plBuf: +LSG('qd_plbuf', .15), plEntry: LSG('qd_plentry', 'mid'), plRR: +LSG('qd_plrr', 1.5), plBal: LSG('qd_plbal', ''), nwPre: +LSG('qd_nwpre', 30), nwPost: +LSG('qd_nwpost', 30), nwImp: +LSG('qd_nwimp', 3), nwCcy: LSG('qd_nwccy', 'USD'), nwDamp: LSG('qd_nwdamp', true), ana: null, plan: null, heat: [], heatEv: [], hstp: 0, hHi: 0, hLo: 1e18, hWalls: null, lastAid: 0, wsTick: 0, wsKl: 0, lastPoll: 0, lastKl: 0, trBusy: false, klBusy: false, lastSweepT: 0, newsSeen: {}, nws: { ev: [], active: false, act: [], next: null, recent: [] }, wImp: +LSG('qd_wimp', 30), wFr: +LSG('qd_wfr', 25), wVol: +LSG('qd_wvol', 20), wDom: +LSG('qd_wdom', 15), wFlow: +LSG('qd_wflow', 10), frMode: LSG('qd_frmode', 'absorb'), gap: +LSG('qd_gap', .5), staleSec: +LSG('qd_stale', 15), fav: LSG('qd_fav', []), syms: LSG('qd_syms', []), lots: LSG('qd_lots', {}), optVp: LSG('qd_vp', true), optEma: LSG('qd_emal', true), optPin: LSG('qd_pin', true), zf: 'all', tapeMin: 0, tape: [], cnt: { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }, wave: [], waveAcc: { b: 0, s: 0 }, tickTs: [], lastTick: 0, stale: false, dec: 2, near: +LSG('qd_near', 0) || 0, optVol: LSG('qd_vol', true), volTh: +LSG('qd_volth', 2) || 2, sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
+  host: 'fut', fxLiq: LSG('qd_fxliq', true), fxCvd: LSG('qd_fxcvd', !ML), fxPd: LSG('qd_fxpd', false), fxHeat: LSG('qd_fxheat', false), fxPlan: LSG('qd_fxplan', true), fxNews: LSG('qd_fxnews', true), eqTol: +LSG('qd_eqtol', .15), pdN: +LSG('qd_pdn', 100), pdF: LSG('qd_pdf', false), absVol: +LSG('qd_absvol', 1.5), plRisk: +LSG('qd_plrisk', 1), plBuf: +LSG('qd_plbuf', .15), plEntry: LSG('qd_plentry', 'mid'), plRR: +LSG('qd_plrr', 1.5), plBal: LSG('qd_plbal', ''), nwPre: +LSG('qd_nwpre', 30), nwPost: +LSG('qd_nwpost', 30), nwImp: +LSG('qd_nwimp', 3), nwCcy: LSG('qd_nwccy', 'USD'), nwDamp: LSG('qd_nwdamp', true), ana: null, plan: null, heat: [], heatEv: [], hstp: 0, hHi: 0, hLo: 1e18, hWalls: null, lastAid: 0, wsTick: 0, wsKl: 0, lastPoll: 0, lastKl: 0, trBusy: false, klBusy: false, lastSweepT: 0, newsSeen: {}, nws: { ev: [], active: false, act: [], next: null, recent: [] }, wImp: +LSG('qd_wimp', 30), wFr: +LSG('qd_wfr', 25), wVol: +LSG('qd_wvol', 20), wDom: +LSG('qd_wdom', 15), wFlow: +LSG('qd_wflow', 10), frMode: LSG('qd_frmode', 'absorb'), gap: +LSG('qd_gap', .5), staleSec: +LSG('qd_stale', 15), fav: LSG('qd_fav', []), syms: LSG('qd_syms', []), lots: LSG('qd_lots', {}), optVp: LSG('qd_vp', !ML), optEma: LSG('qd_emal', true), optPin: LSG('qd_pin', true), zf: 'all', tapeMin: 0, tape: [], cnt: { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }, wave: [], waveAcc: { b: 0, s: 0 }, tickTs: [], lastTick: 0, stale: false, dec: 2, near: +LSG('qd_near', 0) || 0, optVol: LSG('qd_vol', true), volTh: +LSG('qd_volth', 2) || 2, sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
   log: LSG('qd_log', []), zs: {}, ws: null, wsOk: false, wsTry: 0, lastMsg: 0, lastDepth: 0, depthBusy: false, depthErr: '',
   mouse: null, dirty: true, tok: 0, started: false, needAn: false, err: '', tick: 0, lastDraw: 0
 };
+Q.mlite = ML; Q.crOpen = {}; Q.domVis = true; if (!['zona', 'arus', 'ana', 'sesi', 'log'].includes(Q.tab)) Q.tab = 'zona';
 if (!Array.isArray(Q.log)) Q.log = []; if (!Array.isArray(Q.fav)) Q.fav = []; if (!Array.isArray(Q.syms)) Q.syms = []; if (!Q.lots || typeof Q.lots !== 'object') Q.lots = {};
 if (!Object.keys(Q.lots).length) { const ol = +LSG('qd_lot', 0); if (ol) Q.lots[Q.sym] = ol; }
 function lotFor(sym) { return +Q.lots[sym] || (/^(XAU|PAXG)/.test(sym) ? 100 : 1); }
@@ -10548,13 +10718,15 @@ fixTh();
 /* ---------- Jaringan ---------- */
 async function fj(url) {
   const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 9000);
-  try { const r = await fetch(url, { signal: ac.signal }); return await r.json(); } finally { clearTimeout(tm); }
+  try { const r = await fetch(url, { signal: ac.signal }); return await r.json(); }
+  catch (e) { if (!/^https:\/\/api\.binance\.com\/api\/v3\//.test(url)) throw e; const ac2 = new AbortController(), tm2 = setTimeout(() => ac2.abort(), 9000); try { const r2 = await fetch(url.replace('https://api.binance.com/api/v3/', 'https://data-api.binance.vision/api/v3/'), { signal: ac2.signal }); return await r2.json(); } finally { clearTimeout(tm2); } }
+  finally { clearTimeout(tm); }
 }
 async function load() {
   const tok = ++Q.tok, sym = Q.sym, tf = Q.tf; Q.err = ''; paintSt();
   try {
     let host = Q.host, d;
-    const get = h => fj(`${HOSTS[h].rest}klines?symbol=${sym}&interval=${tf}&limit=${h === 'fut' ? 1500 : 1000}`);
+    const get = h => fj(`${HOSTS[h].rest}klines?symbol=${sym}&interval=${tf}&limit=${ML ? 600 : h === 'fut' ? 1500 : 1000}`);
     try { d = await get(host); if (!Array.isArray(d)) throw new Error((d && d.msg) || 'respon tidak valid'); }
     catch (e) { const alt = host === 'fut' ? 'spot' : 'fut'; let d2; try { d2 = await get(alt); } catch (e2) { d2 = null; } if (!Array.isArray(d2)) throw e; d = d2; host = alt; }
     if (tok !== Q.tok) return;
@@ -10567,7 +10739,7 @@ async function load() {
 async function pollDepth() {
   if (Q.depthBusy) return; Q.depthBusy = true; const tok = Q.tok;
   try {
-    const d = await fj(`${HOSTS[Q.host].rest}depth?symbol=${Q.sym}&limit=1000`);
+    const d = await fj(`${HOSTS[Q.host].rest}depth?symbol=${Q.sym}&limit=${ML ? 500 : 1000}`);
     if (tok !== Q.tok) return; if (!d || !d.bids) throw new Error((d && d.msg) || 'depth tidak valid');
     Q.bids = d.bids.map(a => [+a[0] + Q.ofs, +a[1]]); Q.asks = d.asks.map(a => [+a[0] + Q.ofs, +a[1]]); Q.lastDepth = Date.now(); Q.depthErr = ''; Q.dirty = true; heatAdd();
   } catch (e) { Q.depthErr = e.message || String(e); } finally { Q.depthBusy = false; }
@@ -10816,7 +10988,7 @@ function volRatio(gi) { const a = Math.max(0, gi - 20); let s = 0, n = 0; for (l
 
 /* ---------- Gambar chart ---------- */
 function draw() {
-  const el = $('qdCv'), box = $('qdBox'), W = box.clientWidth || 600, H = box.clientHeight || 420, d = Math.min(2, devicePixelRatio || 1);
+  const el = $('qdCv'), box = $('qdBox'), W = box.clientWidth || 600, H = box.clientHeight || 420, d = Math.min(ML ? 1.5 : 2, devicePixelRatio || 1);
   if (el.width !== Math.round(W * d) || el.height !== Math.round(H * d)) { el.width = Math.round(W * d); el.height = Math.round(H * d); }
   const c = el.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H); c.textAlign = 'left'; c.textBaseline = 'alphabetic'; Q.hit = [];
   const all = Q.c; if (all.length < 5) return;
@@ -11014,8 +11186,8 @@ function paneDom() {
   const top = (a, n) => [...a].sort((x, y) => y.l - x.l).slice(0, n).sort((x, y) => y.p - x.p), A = top(B.A, 6), Bd = top(B.B, 6), mx = Math.max(...A.map(x => x.l), ...Bd.map(x => x.l), 1e-9);
   const tb = Q.bids.reduce((s, x) => s + x[1], 0) / Q.lot, ta = Q.asks.reduce((s, x) => s + x[1], 0) / Q.lot, pb = tb / (tb + ta || 1) * 100, wallP = new Set(Q.walls.map(w => w.p));
   const tr = (x, ask) => { const mid = x.p + B.stp / 2, dd = Math.abs(mid - px); return `<tr><td class="${ask ? 'neg' : 'pos'}">${ask ? 'ASK' : 'BID'}</td><td class="mono">${f2(x.p)}–${f2(x.p + B.stp)}${wallP.has(mid) ? ' <span class="qd-badge M">WALL</span>' : ''}</td><td>${bar(x.l / mx * 100, ask ? 'var(--red)' : 'var(--green)')}<b>${lotF(x.l)}</b> lot</td><td class="qd-sub">${f2(dd)} $${isGold() ? ' · ' + Math.round(dd * 100) + 'p' : ''}</td></tr>`; };
-  return `<div class="qd-pm"><span class="qd-sub">${hq('dom')} bin ${B.stp} · 1 lot = ${Q.lot} unit</span></div><div class="qd-sub">Total book (±1000 level): bid <b class="pos">${lotF(tb)}</b> · ask <b class="neg">${lotF(ta)}</b> lot</div><div class="qd-tsplit"><i style="width:${pb}%;background:var(--green)"></i><i style="width:${100 - pb}%;background:var(--red)"></i></div>
-  <div class="qd-scroll"><table class="xt qd-dom" style="min-width:330px"><tr><th>Sisi</th><th>Level</th><th>Volume</th><th>Jarak</th></tr>${A.map(x => tr(x, 1)).join('')}<tr class="qd-pxrow"><td colspan="4">▶ ${f2(px)} ◀</td></tr>${Bd.map(x => tr(x, 0)).join('')}</table></div>`;
+  return `<div class="qd-pm"><span class="qd-sub">${hq('dom')} bin ${B.stp} · 1 lot = ${Q.lot} unit</span></div><div class="qd-sub">Total book (±${ML ? 500 : 1000} level): bid <b class="pos">${lotF(tb)}</b> · ask <b class="neg">${lotF(ta)}</b> lot</div><div class="qd-tsplit"><i style="width:${pb}%;background:var(--green)"></i><i style="width:${100 - pb}%;background:var(--red)"></i></div>
+  <div class="qd-scroll"><table class="xt qd-dom" style="min-width:0"><tr><th>Sisi</th><th>Level</th><th>Volume</th><th>Jarak</th></tr>${A.map(x => tr(x, 1)).join('')}<tr class="qd-pxrow"><td colspan="4">▶ ${f2(px)} ◀</td></tr>${Bd.map(x => tr(x, 0)).join('')}</table></div>`;
 }
 function paneSesi() {
   const zs = [...Q.zones].sort((a, b) => b.mid - a.mid);
@@ -11048,7 +11220,7 @@ function ncard(id, type, z, hidden) {
   setH(id, `<div class="qd-nh"><span>${type === 'S' ? 'Supply' : 'Demand'} terdekat ${hq('nearest')}</span><span class="qd-badge ${M ? 'M' : 'ST'}">${tierName(z)}</span></div><div class="qd-nr">${f2(z.bot)} – ${f2(z.top)}</div><div class="qd-nm"><span>${fDist(z)}</span><span>${z.inside ? '<b class="warn">● sedang diuji</b>' : near ? '<span class="qd-near">⚡ mendekati</span>' : ''}</span></div><div class="qd-nbar"><i style="width:${z.score}%;background:${scCol(z.score)}"></i></div><div class="qd-nstat"><div>Skor<b>${z.score}</b></div><div>Tahan<b>${z.hold}%</b></div><div>Uji<b>${z.nT}×</b></div><div>DOM<b>${domTxt(z)}</b></div></div>`);
 }
 function spark() {
-  const cv = $('qdSpark'), W = cv.clientWidth || 200, H = 30, d = Math.min(2, devicePixelRatio || 1); if (cv.width !== Math.round(W * d)) { cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
+  const cv = $('qdSpark'), W = cv.clientWidth || 200, H = 30, d = Math.min(ML ? 1.5 : 2, devicePixelRatio || 1); if (cv.width !== Math.round(W * d)) { cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
   const c = cv.getContext('2d'); c.setTransform(d, 0, 0, H / 30 * d, 0, 0); c.clearRect(0, 0, W, H); const h = Q.hist; if (h.length < 3) return;
   const y = v => H - 3 - v / 100 * (H - 6), x = i => i / Math.max(1, h.length - 1) * (W - 2) + 1; c.strokeStyle = 'rgba(130,165,255,.25)'; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(0, y(50)); c.lineTo(W, y(50)); c.stroke(); c.setLineDash([]);
   c.beginPath(); h.forEach((v, i) => { i ? c.lineTo(x(i), y(v)) : c.moveTo(x(i), y(v)); }); const last = h[h.length - 1]; c.strokeStyle = last >= 50 ? '#2df5a3' : '#ff4b6e'; c.lineWidth = 1.5; c.stroke();
@@ -11073,6 +11245,7 @@ function paintHead() {
   const px = $('qdPx'); if (Q.px) { const t = f2(Q.px); if (px.textContent !== t) { px.className = 'qd-px ' + (Q.pxPrev && Q.px > Q.pxPrev ? 'up' : Q.pxPrev && Q.px < Q.pxPrev ? 'down' : ''); px.textContent = t; Q.pxPrev = Q.px; } }
   const ofsT = Q.ofsMode === 'off' ? 'off' : (Q.ofs >= 0 ? '+' : '') + f2(Q.ofs) + (Q.ofsMode === 'auto' ? ' auto' : '');
   setH('qdChips', `<span class="qd-chip">Sesi <b style="color:${SESS[sessOf(Date.now())].c}">${SESS[sessOf(Date.now())].n}</b> · sisa ${sessLeft()}</span><span class="qd-chip">ATR <b>${f2(Q.atr)} $</b>${isGold() ? ' · ' + Math.round(Q.atr * 100) + 'p' : ''}</span><span class="qd-chip" title="Selisih harga Binance ke broker">Offset <b>${ofsT}</b></span>${volChip()}`);
+  try { let ln = 0; $('qdLayers').querySelectorAll('button').forEach(b => { const on = !!Q[b.dataset.k]; if (on) ln++; if (b.classList.contains('on') !== on) b.classList.toggle('on', on); if (b.getAttribute('aria-pressed') !== String(on)) b.setAttribute('aria-pressed', on); }); setT('qdLayCnt', ln + ' / ' + LAYERS.length + ' aktif'); } catch (e) { }
   const cp = curPreset(); $('qdPreSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === cp));
   $('qdTfSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.tf)); $('qdModeSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.mode));
   $('qdAlertBtn').classList.toggle('on', !!Q.alOn); $('qdLiveBtn').hidden = Q.pan === 0; setT('qdOfsInfo', Q.ofsInfo); paintStale(); paintNews();
@@ -11082,10 +11255,10 @@ function paintHead() {
   if (ov.dataset.h !== h) { ov.dataset.h = h; ov.innerHTML = h; ov.hidden = !h; }
 }
 function paintPane() {
+  if (Q.domVis !== false) { setH('qdDomList', paneDom()); paintCr(); }
   if (Q.tab === 'arus') { paintArus(); return; }
   if (Q.tab === 'ana') { paintAna(); return; }
-  if (Q.tab === 'dom') { setH('qdDomList', paneDom()); paintCr(); return; }
-  if (Q.ptrDown) return; const html = Q.tab === 'zona' ? paneZona() : Q.tab === 'dom' ? paneDom() : Q.tab === 'sesi' ? paneSesi() : paneLog(), p = $('qdPane');
+  if (Q.ptrDown) return; const html = Q.tab === 'zona' ? paneZona() : Q.tab === 'sesi' ? paneSesi() : paneLog(), p = $('qdPane');
   if (p.dataset.h !== html) { const st = p.scrollTop; p.dataset.h = html; p.innerHTML = html; p.scrollTop = st; }
 }
 function paintSt() { paintHead(); }
@@ -11117,11 +11290,14 @@ function alertCheck() {
 function reload() { closeWs(); Q.lastAid = 0; Q.wsTick = 0; Q.wsKl = 0; Q.tape = []; Q.wave = []; Q.cnt = { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }; Q.waveAcc = { b: 0, s: 0 }; Q.tickTs = []; Q.stale = false; Q.lastTick = Date.now(); Q.dir = null; Q.lastDirA = null; Q.pan = 0; Q.sel = null; Q.hist = []; Q.htfC = {}; Q.htfZ = []; Q.htfT = 0; Q.c = []; Q.all = []; Q.zones = []; Q.zs = {}; Q.bids = []; Q.asks = []; Q.flow = []; Q.str = null; Q.eq = null; Q.lastDepth = 0; Q.walls = []; Q.bins = null; Q.started = true; load(); render(); }
 function select(key, scroll) {
   Q.sel = Q.sel === key ? null : key; Q.dirty = true; if (Q.sel) Q.tab = 'zona'; syncTabs(); paintPane(); paintInsight();
-  if (Q.sel && scroll) { const e = $('qdPane').querySelector(`.qd-zc[data-key="${CSS.escape(key)}"]`); if (e) e.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 }
-function syncTabs() { $('qdTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === Q.tab)); $('qdPane').hidden = ['arus', 'ana', 'dom'].includes(Q.tab); $('qdArus').hidden = Q.tab !== 'arus'; $('qdAna').hidden = Q.tab !== 'ana'; $('qdDomx').hidden = Q.tab !== 'dom'; }
+function syncTabs() { $('qdTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === Q.tab)); $('qdPane').hidden = ['arus', 'ana'].includes(Q.tab); $('qdArus').hidden = Q.tab !== 'arus'; $('qdAna').hidden = Q.tab !== 'ana'; }
 const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optVol', 'Vol', 'qd_vol'], ['optVp', 'VP', 'qd_vp'], ['optEma', 'EMA', 'qd_emal'], ['optPin', 'Pin', 'qd_pin'], ['fxLiq', 'Liq', 'qd_fxliq'], ['fxCvd', 'CVD', 'qd_fxcvd'], ['fxPd', 'PD', 'qd_fxpd'], ['fxHeat', 'Heat', 'qd_fxheat'], ['fxPlan', 'Plan', 'qd_fxplan'], ['fxNews', 'News', 'qd_fxnews'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk']];
-$('qdLayers').innerHTML = LAYERS.map(([k, l]) => `<button class="qd-lay ${Q[k] ? 'on' : ''}" data-k="${k}">${l}</button>`).join('');
+const LGRP = [['Zona', ['optZ', 'optMid', 'optMed', 'optHtf', 'optBrk']], ['Order book', ['optDom', 'optWall', 'fxHeat', 'optVp']], ['Aliran', ['optVol', 'fxCvd', 'fxLiq']], ['Struktur', ['optEma', 'fxPd', 'optPin', 'optSess']], ['Trade', ['fxPlan', 'fxNews']]];
+const LNAME = { optZ: 'Zona Supply / Demand', optMid: 'Garis 50% zona', optMed: 'Zona Medium (kuning)', optHtf: 'Zona timeframe tinggi', optBrk: 'Zona yang tembus', optDom: 'Bar DOM di sisi kanan', optWall: 'Dinding order (wall)', fxHeat: 'Heatmap DOM historis', optVp: 'Volume profile', optVol: 'Bar volume', fxCvd: 'CVD (delta kumulatif)', fxLiq: 'Liquidity sweep & EQH/EQL', optEma: 'Garis EMA', fxPd: 'Premium / Discount & OTE', optPin: 'Pin uji (Uji #n)', optSess: 'Garis sesi', fxPlan: 'Rencana trade', fxNews: 'Peredam berita' };
+const layerBtn = k => { const L = LAYERS.find(x => x[0] === k); return L ? `<button type="button" class="qd-lay ${Q[k] ? 'on' : ''}" data-k="${k}" aria-pressed="${!!Q[k]}" title="${LNAME[k] || L[1]}">${L[1]}</button>` : ''; };
+$('qdLayers').innerHTML = LGRP.map(([t, ks]) => `<div class="qd-lg"><div class="qd-lgt">${t}</div><div class="qd-lgb">${ks.map(layerBtn).join('')}</div></div>`).join('');
+if (window.matchMedia && matchMedia('(max-width:700px)').matches && $('qdLayBar')) $('qdLayBar').open = false;
 $('qdLayers').onclick = e => { const b = e.target.closest('button'); if (!b) return; const L = LAYERS.find(x => x[0] === b.dataset.k); setFlag(L[0], !Q[L[0]]); };
 $('qdTfSeg').onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.v === Q.tf) return; Q.tf = b.dataset.v; LSS('qd_tf', Q.tf); reload(); };
 $('qdModeSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; Q.mode = b.dataset.v; LSS('qd_mode', Q.mode); Q.dir = null; Q.lastDirA = null; render(); };
@@ -11276,7 +11452,7 @@ function paintArus() {
   setH('qaTape', L.map(x => `<div class="qd-tp ${x.buy ? 'b' : 's'} ${sz.length > 4 && x.q >= p80 ? 'big' : ''}"><span>${wib(x.t, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span><span>${x.buy ? 'BUYER' : 'SELLER'} @ ${f2(x.px)}</span><span>${x.buy ? '▲' : '▼'} ${lot3(x.q / Q.lot)} lot${x.n > 1 ? ` <small>(${x.n}×)</small>` : ''}</span></div>`).join('') || `<div class="qd-empty">Belum ada transaksi. Sumber: ${Date.now() - Q.wsTick < 5000 ? 'WebSocket' : 'REST polling (WebSocket belum mengirim data)'}. Jika tetap kosong, periksa koneksi ke Binance (jaringan/ISP bisa memblokir) atau pastikan simbol aktif diperdagangkan.</div>`);
 }
 function drawWave() {
-  const cv = $('qdWave'); if (!cv || $('qdArus').hidden) return; const W = cv.clientWidth, H = cv.clientHeight; if (!W || !H) return; const d = Math.min(2, devicePixelRatio || 1);
+  const cv = $('qdWave'); if (!cv || $('qdArus').hidden) return; const W = cv.clientWidth, H = cv.clientHeight; if (!W || !H) return; const d = Math.min(ML ? 1.5 : 2, devicePixelRatio || 1);
   if (cv.width !== Math.round(W * d) || cv.height !== Math.round(H * d)) { cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
   const c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H);
   const mid = H / 2, amp = H / 2 - 20, NW = 120, sm = []; Q.wave.forEach((x, i) => { const v = x.b - x.s; sm.push(i ? sm[i - 1] * .6 + v * .4 : v); });
@@ -11585,7 +11761,7 @@ async function crFetch(tf) {
   if (Q.crBusy[tf]) return; Q.crBusy[tf] = true; const tok = Q.tok;
   try { const d = await fj(`${HOSTS[Q.host].rest}klines?symbol=${Q.sym}&interval=${tf}&limit=20`); if (tok !== Q.tok || !Array.isArray(d)) return; Q.cr[tf] = { t: Date.now(), ofs: Q.ofs, bars: d.map(k => ({ t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5] })) }; } catch (e) { } finally { Q.crBusy[tf] = false; }
 }
-function crTick() { if (!act() || Q.tab !== 'dom' || Q.crSrc === 'ea') return; const now = Date.now(); CRTF.forEach(([tf]) => { if (!Q.cr[tf] || now - Q.cr[tf].t > 2500) crFetch(tf); }); }
+function crTick() { if (!act() || Q.domVis === false || Q.crSrc === 'ea') return; const now = Date.now(); CRTF.forEach(([tf]) => { if (!Q.cr[tf] || now - Q.cr[tf].t > (ML ? 6000 : 2500)) crFetch(tf); }); }
 function crView(tf, label, ms) {
   const mode = Q.crSrc; let pick = mode !== 'bn' ? eaBars(label, ms) : null;
   if (!pick && mode !== 'ea') { const r = Q.cr[tf]; if (r && r.bars.length >= 3) { const sh = Q.ofs - r.ofs; pick = { src: 'bn', bars: r.bars.map(b => ({ t: b.t, v: b.v, o: b.o + sh, h: b.h + sh, l: b.l + sh, c: b.c + sh })), ts: r.t / 1000 }; } }
@@ -11615,21 +11791,22 @@ const mmss = ms => { const s = Math.floor(ms / 1000); return `${String(Math.floo
 function paintCr() {
   const lbl = { ea: ['EA', 'var(--green)'], 'ea-hist': ['EA riwayat', 'var(--amber)'], bn: ['Binance', 'var(--cyan)'], 'ea-ref': ['EA level', 'var(--amber)'] }; const srcs = new Set(); let ts = 0;
   CRTF.forEach(([tf, label, ms, id]) => {
-    const v = crView(tf, label, ms), chip = $(id + 's');
-    if (!v) { chip.textContent = '—'; chip.style.color = ''; setH(id + 'd', `<div class="qd-sub">${Q.crSrc === 'ea' ? `EA belum mengirim OHLC ${label}.` : `Menunggu data ${label}…`}</div>`); return; }
+    const v = crView(tf, label, ms), chip = $(id + 's'), open = !!Q.crOpen[tf];
+    if (!v) { chip.textContent = '—'; chip.style.color = ''; setH(id + 'd', `<div class="qd-sub">${Q.crSrc === 'ea' ? `EA belum mengirim OHLC ${label}.` : `Menunggu data ${label}…`}</div>`); setH(id + 'x', ''); return; }
     srcs.add(v.src); if (v.ts) ts = Math.max(ts, v.ts); chip.textContent = lbl[v.src][0]; chip.style.color = lbl[v.src][1];
     const left = ms - (Date.now() % ms);
     if (v.src === 'ea-ref') {
       const p = v.price, r = p > 0 ? { L: { c: p, h: p, l: p, o: p }, refH: v.ref.H, refL: v.ref.L, A: (v.ref.H - v.ref.L) || 1, dist: p > v.ref.H ? p - v.ref.H : p < v.ref.L ? v.ref.L - p : 0, st: p > v.ref.H ? 'UP' : p < v.ref.L ? 'DN' : 'IN', strong: false } : null, s = r ? CRST[r.st] : CRST.IN;
-      setH(id + 'd', r ? `<div class="qd-crs ${s[0]}">${s[1]} ${s[2]}</div><div class="qd-crx">${crExplain(r, 'ref')}</div><div class="qd-kv3"><span>High acuan</span><b>${f2(v.ref.H)}</b><span>Low acuan</span><b>${f2(v.ref.L)}</b><span>Harga EA</span><b>${f2(p)}</b><span>Tutup dalam</span><b>${mmss(left)}</b></div><div class="qd-sub" style="margin-top:3px">EA belum mengirim candle ${label}; level acuan = high/low 2 candle tertutup terakhir dari EA.</div>` : '<div class="qd-sub">Harga EA belum tersedia.</div>'); return;
+      setH(id + 'd', r ? `<div class="qd-crs ${s[0]}">${s[1]} ${s[2]}</div><div class="qd-crl"><b>${f2(p)}</b><span>tutup ${mmss(left)}</span></div>` : '<div class="qd-sub">Harga EA belum tersedia.</div>');
+      setH(id + 'x', open && r ? `<div class="qd-crx">${crExplain(r, 'ref')}</div><div class="qd-kv3"><span>High acuan</span><b>${f2(v.ref.H)}</b><span>Low acuan</span><b>${f2(v.ref.L)}</b><span>Harga EA</span><b>${f2(p)}</b><span>Tutup dalam</span><b>${mmss(left)}</b></div><div class="qd-sub" style="margin-top:4px">EA belum mengirim candle ${label}; level acuan = high/low 2 candle tertutup terakhir dari EA.</div>` : ''); return;
     }
-    const r = crAnalyze(v.bars), s = CRST[r.st];
-    if (r && Q.brkAlert && (r.st === 'UP' || r.st === 'DN')) {
+    const r = crAnalyze(v.bars); if (!r) { setH(id + 'd', `<div class="qd-sub">Menunggu candle ${label}…</div>`); setH(id + 'x', ''); return; } const s = CRST[r.st];
+    if (Q.brkAlert && (r.st === 'UP' || r.st === 'DN')) {
       const key = `${label}:${r.L.t}:${r.st}`;
       if (!Q.brkSeen[key]) { Q.brkSeen[key] = true; const msg = `${label} breakout ${r.st === 'UP' ? 'NAIK' : 'TURUN'} · ${f2(r.L.c)}`; toast('⚡ ' + msg, r.st === 'UP' ? 'buy' : 'sell'); if ('Notification' in window && Notification.permission === 'granted') { try { new Notification('Quantum DOM · ' + label, { body: msg }); } catch (_) {} } }
     }
-    setH(id + 'd', `<div class="qd-crs ${s[0]}">${s[1]} ${s[2]}${r.strong ? ' · KUAT' : ''}</div><div class="qd-crx">${crExplain(r)}</div><div class="qd-sub">${CRCL[r.cl]}</div>
-      <div class="qd-kv3" style="margin-top:4px"><span>Buka</span><b>${f2(r.L.o)}</b><span>Live</span><b>${f2(r.L.c)}</b><span>Tinggi</span><b>${f2(r.L.h)}</b><span>Rendah</span><b>${f2(r.L.l)}</b><span>High acuan (H)</span><b>${f2(r.refH)}</b><span>Low acuan (L)</span><b>${f2(r.refL)}</b><span>Range</span><b>${f2(r.range)} $</b><span>Body</span><b>${r.bodyPct.toFixed(0)}%</b><span>Wick atas/bawah</span><b>${f2(r.upW)} / ${f2(r.loW)}</b><span>Tutup dalam</span><b>${mmss(left)}</b></div>`);
+    setH(id + 'd', `<div class="qd-crs ${s[0]}">${s[1]} ${s[2]}${r.strong ? ' · KUAT' : ''}</div><div class="qd-crl"><b>${f2(r.L.c)}</b><span>tutup ${mmss(left)}</span></div>`);
+    setH(id + 'x', open ? `<div class="qd-crx">${crExplain(r)}</div><div class="qd-sub">${CRCL[r.cl]}</div><div class="qd-kv3" style="margin-top:6px"><span>Buka</span><b>${f2(r.L.o)}</b><span>Live</span><b>${f2(r.L.c)}</b><span>Tinggi</span><b>${f2(r.L.h)}</b><span>Rendah</span><b>${f2(r.L.l)}</b><span>High acuan (H)</span><b>${f2(r.refH)}</b><span>Low acuan (L)</span><b>${f2(r.refL)}</b><span>Range</span><b>${f2(r.range)} $</b><span>Body</span><b>${r.bodyPct.toFixed(0)}%</b><span>Wick atas/bawah</span><b>${f2(r.upW)} / ${f2(r.loW)}</b><span>Tutup dalam</span><b>${mmss(left)}</b></div>` : '');
   });
   let note = ''; const a = eaAcc();
   if (srcs.has('ea')) note = `✔ Candle dari <b>EA</b>${ts ? ` (snapshot ${Math.max(0, Math.round(Date.now() / 1000 - ts))} dtk lalu)` : ''}; harga live dari bid/ask EA.`;
@@ -11639,9 +11816,19 @@ function paintCr() {
   else note = a ? 'Menunggu data candle…' : 'Data EA belum termuat; memakai Binance bila tersedia.';
   setH('qdCrNote', note);
 }
+function crToggle(c) {
+  const tf = c.dataset.tf; Q.crOpen[tf] = !Q.crOpen[tf]; c.classList.toggle('open', !!Q.crOpen[tf]); c.setAttribute('aria-expanded', String(!!Q.crOpen[tf]));
+  paintCr(); Q.lastCr = 0; try { drawCr(); } catch (e) { }
+}
+(() => {
+  const g = $('qdCrg'); if (!g) return;
+  g.addEventListener('click', e => { if (e.target.closest('.qd-help')) return; const c = e.target.closest('.qd-crc[data-tf]'); if (c) crToggle(c); });
+  g.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.qd-crc[data-tf]')) { e.preventDefault(); crToggle(e.target); } });
+  if (window.IntersectionObserver && $('qdDomx')) new IntersectionObserver(es => { Q.domVis = es[0].isIntersecting; if (Q.domVis) { Q.lastCr = 0; if (act()) { try { paintCr(); } catch (e) { } } } }, { rootMargin: '160px' }).observe($('qdDomx'));
+})();
 function drawCr() {
   CRTF.forEach(([tf, label, ms, id]) => {
-    const cv = $(id); if (!cv) return; const W = cv.clientWidth, H = cv.clientHeight; if (!W || !H) return; const d = Math.min(2, devicePixelRatio || 1);
+    const cv = $(id); if (!cv) return; const W = cv.clientWidth, H = cv.clientHeight; if (!W || !H) return; const d = Math.min(ML ? 1.5 : 2, devicePixelRatio || 1);
     if (cv.width !== Math.round(W * d) || cv.height !== Math.round(H * d)) { cv.width = Math.round(W * d); cv.height = Math.round(H * d); }
     const c = cv.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H); c.textAlign = 'left';
     const v = crView(tf, label, ms), pulse = .5 + .5 * Math.sin(Date.now() / 300);
@@ -11674,9 +11861,9 @@ HELP.candle = ['Candle realtime M15 / M30 / H1', 'Menampilkan <b>3 candle terakh
 setInterval(() => {
   const on = act(); if (on && !Q.started) { Q.started = true; load(); }
   if (!Q.started || !Q.c.length) { if (on) paintHead(); return; }
-  Q.tick++; const now = Date.now();
+  Q.tick++; const now = Date.now(); if (!on && ML && Q.tick % 5) return;
   if ((!Q.ws || now - Q.lastMsg > 20000) && now - Q.wsTry > 6000) openWs();
-  if (on && now - Q.lastDepth > 2000) pollDepth();
+  if (on && now - Q.lastDepth > (ML ? 4000 : 2000)) pollDepth();
   if (now - Q.htfT > 120000) loadHtf();
   calib(); if (Q.needAn || Q.tick % 3 === 0) analyze();
   const nT = Date.now(); if (nT - Q.wsTick > 5000 && nT - Q.lastPoll > 2000) { Q.lastPoll = nT; loadTrades(false); } if (nT - Q.wsKl > 6000 && nT - Q.lastKl > 3000) { Q.lastKl = nT; pollKl(); }
@@ -11684,7 +11871,7 @@ setInterval(() => {
   staleCheck(); waveTick(); rescore(); track(); if (Q.str) { Q.hist.push(Q.str.buyer); if (Q.hist.length > 300) Q.hist.shift(); } alertCheck();
   if (on) render();
 }, 1000);
-(function loop(ts) { if (act() && Q.dirty && ts - Q.lastDraw > 80) { Q.dirty = false; Q.lastDraw = ts; try { draw(); } catch (e) { console.error('qdom draw', e); } } if (act() && Q.tab === 'dom' && ts - (Q.lastCr || 0) > 80) { Q.lastCr = ts; try { drawCr(); } catch (e) { } } if (act() && Q.tab === 'arus' && ts - (Q.lastWave || 0) > 60) { Q.lastWave = ts; try { drawWave(); } catch (e) { } } requestAnimationFrame(loop); })(0);
+(function loop(ts) { if (act() && Q.dirty && ts - Q.lastDraw > (ML ? 130 : 80)) { Q.dirty = false; Q.lastDraw = ts; try { draw(); } catch (e) { console.error('qdom draw', e); } } if (act() && Q.domVis !== false && ts - (Q.lastCr || 0) > (ML ? 220 : 80)) { Q.lastCr = ts; try { drawCr(); } catch (e) { } } if (act() && Q.tab === 'arus' && ts - (Q.lastWave || 0) > 60) { Q.lastWave = ts; try { drawWave(); } catch (e) { } } requestAnimationFrame(loop); })(0);
 if (window.ResizeObserver) new ResizeObserver(() => { Q.dirty = true; }).observe($('qdBox'));
 addEventListener('resize', () => { Q.dirty = true; });
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { if (b.dataset.view === 'qdom') setTimeout(() => { if (!Q.started) { Q.started = true; load(); } Q.dirty = true; if (Q.c.length) render(); else paintHead(); }, 40); }));
