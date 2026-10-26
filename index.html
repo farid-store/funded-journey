@@ -3586,8 +3586,8 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
       <div class="qd-dctl">
         <label class="qd-fld"><span>Candle acuan</span><select id="qdCrCount" class="qd-sel" title="Jumlah candle acuan"><option value="3">3 candle</option><option value="5">5 candle</option></select></label>
         <label class="qd-fld"><span>Sumber data</span><select id="qdCrSrc" class="qd-sel" title="Sumber data candle"><option value="auto">Otomatis: EA → Binance</option><option value="ea">Hanya EA</option><option value="bn">Hanya Binance</option></select></label>
-        <label class="qd-fld"><span>Auto update</span><select id="qdCrRefreshSec" class="qd-sel" title="Interval pembaruan candle"><option value="5">5 detik</option><option value="15">15 detik</option><option value="30">30 detik</option><option value="60">60 detik</option><option value="90">90 detik</option><option value="120">120 detik</option></select></label>
-        <button type="button" id="qdCrRefresh" title="Ambil ulang candle sekarang" style="align-self:end;min-height:36px;border:1px solid var(--line2);border-radius:9px;padding:7px 10px;background:var(--surface2);color:var(--text);font-weight:700;cursor:pointer">↻ Refresh</button>
+        <label class="qd-fld"><span>Update panel</span><select id="qdCrInt" class="qd-sel" title="Seberapa sering data panel diperbarui"><option value="live">Live (Firestore realtime)</option><option value="5">Tiap 5 detik</option><option value="15">Tiap 15 detik</option><option value="30">Tiap 30 detik</option><option value="60">Tiap 60 detik</option><option value="90">Tiap 90 detik</option><option value="120">Tiap 120 detik</option></select></label>
+        <div class="qd-fld"><span>Manual</span><button type="button" class="btn ghost qd-ib" id="qdCrRef">↻ Refresh sekarang</button></div>
         <label class="qd-fld qd-fld-sw"><span>Notif breakout</span><input type="checkbox" id="qdBrkAlert"></label>
       </div>
       <div class="qd-crg" id="qdCrg">
@@ -5892,7 +5892,7 @@ window.__THEME = { apply, get };
     get account(){ return currentAccount; }, get accountId(){ return currentAccountId; }, get history(){ return historyCache; },
     get marketBars(){ return marketBarsCache; },
     get daily(){ return dayMap(); }, get curve(){ return equityCurveCache; }, get news(){ return newsCache; }, get commands(){ return commandsCache; },
-    get accountsMeta(){ return accountsMeta; }, get calendarMonth(){ return calendarMonth; }, get diag(){ return diag; }, get db(){ return db; },
+    get accountsMeta(){ return accountsMeta; }, get calendarMonth(){ return calendarMonth; }, get diag(){ return diag; }, get db(){ return db; }, refreshAcc(){ return ECO.refreshNow('doc'); }, get ecoMode(){ return ECO.mode; }, setEco(m){ ECO.setMode(m); },
     // Ambil candle OHLC (marketBars) untuk rentang waktu tertentu — dipakai Kartu P/L & Sertifikat per-trade.
     async fetchBarsRange(fromSec, toSec){
       if(!db || !currentAccountId) return [];
@@ -10728,7 +10728,7 @@ async function load() {
   const tok = ++Q.tok, sym = Q.sym, tf = Q.tf; Q.err = ''; paintSt();
   try {
     let host = Q.host, d;
-    const get = h => fj(`${HOSTS[h].rest}klines?symbol=${sym}&interval=${tf}&limit=${h === 'fut' ? 1500 : 1000}`);
+    const get = h => fj(`${HOSTS[h].rest}klines?symbol=${sym}&interval=${tf}&limit=${ML ? 600 : h === 'fut' ? 1500 : 1000}`);
     try { d = await get(host); if (!Array.isArray(d)) throw new Error((d && d.msg) || 'respon tidak valid'); }
     catch (e) { const alt = host === 'fut' ? 'spot' : 'fut'; let d2; try { d2 = await get(alt); } catch (e2) { d2 = null; } if (!Array.isArray(d2)) throw e; d = d2; host = alt; }
     if (tok !== Q.tok) return;
@@ -11708,7 +11708,7 @@ Object.assign(HELP, {
 
 /* ===== Candle realtime M15 / M30 / H1 (sumber: EA → riwayat EA → Binance) ===== */
 const CRTF = [['15m', 'M15', 900000, 'qdCr15'], ['30m', 'M30', 1800000, 'qdCr30'], ['1h', 'H1', 3600000, 'qdCr60'], ['4h', 'H4', 14400000, 'qdCr240']];
-Q.crSrc = LSG('qd_crsrc', 'auto'); Q.crCount = +LSG('qd_crcount', 3) === 5 ? 5 : 3; Q.crRefreshSec = [5,15,30,60,90,120].includes(+LSG('qd_crrefresh',15)) ? +LSG('qd_crrefresh',15) : 15; Q.crLastFetch = 0; Q.crStatus = ''; Q.brkAlert = !!LSG('qd_brkalert', false); Q.brkSeen = {}; Q.cr = {}; Q.crBusy = {};
+Q.crSrc = LSG('qd_crsrc', 'auto'); Q.crInt = String(LSG('qd_crint', '5')); if (!['live', '5', '15', '30', '60', '90', '120'].includes(Q.crInt)) Q.crInt = '5'; Q.crCount = +LSG('qd_crcount', 3) === 5 ? 5 : 3; Q.brkAlert = !!LSG('qd_brkalert', false); Q.brkSeen = {}; Q.cr = {}; Q.crBusy = {};
 function eaAcc() { return (window.__FX && window.__FX.account) || null; }
 function eaPrice() { const a = eaAcc(); if (!a) return 0; const age = a.priceTime ? Date.now() / 1000 - a.priceTime : 0; if (age > 120) return 0; const b = +a.bid, k = +a.ask; return b > 0 && k > 0 ? (b + k) / 2 : b > 0 ? b : 0; }
 function normBar(b) {
@@ -11738,13 +11738,9 @@ function tfMatches(value, label, ms) {
 }
 function eaBars(label, ms) {
   const a = eaAcc(); if (!a) return null;
-  // Jangan mengunci mode otomatis pada OHLC EA yang snapshot akunnya sudah basi.
-  const ptRaw = +(a.priceTime || a.updatedAtMs || 0);
-  const ptSec = ptRaw > 1e12 ? ptRaw / 1000 : ptRaw;
-  const snapshotStale = ptSec > 0 && (Date.now() / 1000 - ptSec) > 60;
   // Webhook/versi EA tertentu menyimpan bars di root, sebagian di object account.
   const containers = [a.bars, a.account && a.account.bars, a.marketBars, a.ohlc && a.ohlc.bars].filter(x => x && typeof x === 'object');
-  for (const B of (snapshotStale ? [] : containers)) {
+  for (const B of containers) {
     let raw = null;
     if (Array.isArray(B)) raw = B.filter(b => tfMatches(b && (b.timeframe || b.tf || b.period), label, ms));
     else { const k = Object.keys(B).find(x => tfMatches(x, label, ms)); if (k && Array.isArray(B[k])) raw = B[k]; }
@@ -11764,34 +11760,15 @@ function eaRef(label) {
   const H = t.sell && t.sell.levels ? +t.sell.levels[1] : NaN, L = t.buy && t.buy.levels ? +t.buy.levels[1] : NaN; return Number.isFinite(H) && Number.isFinite(L) && H > L ? { H, L } : null;
 }
 async function crFetch(tf) {
-  if (Q.crBusy[tf]) return false; Q.crBusy[tf] = true; const tok = Q.tok;
-  try {
-    const d = await fj(`${HOSTS[Q.host].rest}klines?symbol=${Q.sym}&interval=${tf}&limit=20`);
-    if (tok !== Q.tok || !Array.isArray(d) || d.length < 3) throw new Error('Data OHLC tidak lengkap');
-    Q.cr[tf] = { t: Date.now(), ofs: Q.ofs, bars: d.map(k => ({ t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5] })) };
-    Q.crLastFetch = Date.now(); Q.crStatus = 'Data candle berhasil diperbarui'; return true;
-  } catch (e) { Q.crStatus = 'Refresh gagal: ' + (e && e.message ? e.message : 'koneksi/data tidak tersedia'); return false; }
-  finally { Q.crBusy[tf] = false; }
+  if (Q.crBusy[tf]) return; Q.crBusy[tf] = true; const tok = Q.tok;
+  try { const d = await fj(`${HOSTS[Q.host].rest}klines?symbol=${Q.sym}&interval=${tf}&limit=20`); if (tok !== Q.tok || !Array.isArray(d)) return; Q.cr[tf] = { t: Date.now(), ofs: Q.ofs, bars: d.map(k => ({ t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5] })) }; } catch (e) { } finally { Q.crBusy[tf] = false; }
 }
-async function crRefreshNow(manual = false) {
-  if (!act()) { Q.crStatus = 'Buka tab Quantum agar data bisa diperbarui.'; paintCr(); return; }
-  if (Q.crSrc === 'ea') { Q.crStatus = eaBars('M15', 900000) ? 'Snapshot EA diperiksa; update realtime mengikuti webhook/tick EA.' : 'EA belum mengirim candle OHLC terbaru.'; paintCr(); drawCr(); return; }
-  Q.crStatus = manual ? 'Memperbarui semua timeframe…' : Q.crStatus;
-  const results = await Promise.all(CRTF.map(([tf]) => crFetch(tf)));
-  if (results.every(Boolean)) Q.crStatus = 'Berhasil diperbarui · ' + new Date().toLocaleTimeString('id-ID');
-  else if (!results.some(Boolean)) Q.crStatus = 'Refresh gagal. Periksa koneksi atau sumber data.';
-  paintCr(); drawCr();
-}
-function crTick() {
-  if (!act() || Q.domVis === false || Q.crSrc === 'ea') return;
-  const now = Date.now(), interval = Math.max(5, Q.crRefreshSec || 15) * 1000;
-  if (!Q.crLastFetch || now - Q.crLastFetch >= interval) { Q.crLastFetch = now; crRefreshNow(false); }
-}
+function crTick() { if (!act() || Q.domVis === false || Q.crSrc === 'ea') return; const now = Date.now(); CRTF.forEach(([tf]) => { if (!Q.cr[tf] || now - Q.cr[tf].t > crThr()) crFetch(tf); }); }
 function crView(tf, label, ms) {
   const mode = Q.crSrc; let pick = mode !== 'bn' ? eaBars(label, ms) : null;
   if (!pick && mode !== 'ea') { const r = Q.cr[tf]; if (r && r.bars.length >= 3) { const sh = Q.ofs - r.ofs; pick = { src: 'bn', bars: r.bars.map(b => ({ t: b.t, v: b.v, o: b.o + sh, h: b.h + sh, l: b.l + sh, c: b.c + sh })), ts: r.t / 1000 }; } }
   if (!pick) { const ref = mode !== 'bn' ? eaRef(label) : null; return ref ? { src: 'ea-ref', ref, price: eaPrice() } : null; }
-  let bars = pick.bars; const L = bars[bars.length - 1], lp = pick.src === 'bn' ? (Math.floor(Date.now() / ms) * ms === L.t ? Q.px : 0) : pick.src === 'ea' ? eaPrice() : 0;
+  let bars = pick.bars; const L = bars[bars.length - 1], lp = pick.src === 'bn' ? (Math.floor(Date.now() / ms) * ms === L.t ? Q.px : 0) : pick.src === 'ea' ? crLive() : 0;
   if (lp > 0) { const n = { t: L.t, v: L.v, o: L.o, h: Math.max(L.h, lp), l: Math.min(L.l, lp), c: lp }; bars = bars.slice(0, -1).concat([n]); }
   return { src: pick.src, bars, ts: pick.ts };
 }
@@ -11834,12 +11811,36 @@ function paintCr() {
     setH(id + 'x', open ? `<div class="qd-crx">${crExplain(r)}</div><div class="qd-sub">${CRCL[r.cl]}</div><div class="qd-kv3" style="margin-top:6px"><span>Buka</span><b>${f2(r.L.o)}</b><span>Live</span><b>${f2(r.L.c)}</b><span>Tinggi</span><b>${f2(r.L.h)}</b><span>Rendah</span><b>${f2(r.L.l)}</b><span>High acuan (H)</span><b>${f2(r.refH)}</b><span>Low acuan (L)</span><b>${f2(r.refL)}</b><span>Range</span><b>${f2(r.range)} $</b><span>Body</span><b>${r.bodyPct.toFixed(0)}%</b><span>Wick atas/bawah</span><b>${f2(r.upW)} / ${f2(r.loW)}</b><span>Tutup dalam</span><b>${mmss(left)}</b></div>` : '');
   });
   let note = ''; const a = eaAcc();
-  if (srcs.has('ea')) note = `✔ Candle dari <b>EA</b>${ts ? ` (snapshot ${Math.max(0, Math.round(Date.now() / 1000 - ts))} dtk lalu)` : ''}; harga live dari bid/ask EA.`;
+  if (srcs.has('ea')) note = `✔ Candle dari <b>EA</b>${ts ? ` (snapshot ${Math.max(0, Math.round(Date.now() / 1000 - ts))} dtk lalu)` : ''}; harga live dari bid/ask EA. Refresh panel: ${Q.crInt === 'live' ? 'live' : 'tiap ' + Q.crInt + ' dtk'}.${ts && Date.now() / 1000 - ts > 60 ? ' <b style="color:var(--amber)">⚠ EA belum mengirim data >60 dtk — periksa EA/webhook atau tekan Refresh.</b>' : ''}`;
   else if (srcs.has('ea-hist')) note = 'Candle dari riwayat EA (marketBars) — bukan realtime penuh.';
   else if (srcs.has('bn')) note = `OHLC EA belum terbaca dari dokumen akun — sementara memakai <b>Binance</b> ${Q.ofs ? `dengan offset ${(Q.ofs >= 0 ? '+' : '') + f2(Q.ofs)}` : ''}. Pastikan webhook menyimpan field <code>bars</code> dari payload EA ke dokumen akun Firestore.`;
   else if (srcs.has('ea-ref')) note = 'Memakai level acuan EA (tanpa candle OHLC). Periksa field <code>bars</code> pada dokumen akun Firestore dan pastikan webhook menyimpannya.';
   else note = a ? 'Menunggu data candle…' : 'Data EA belum termuat; memakai Binance bila tersedia.';
-  setH('qdCrNote', note + (Q.crStatus ? `<div style="margin-top:5px;opacity:.85">${Q.crStatus}</div>` : '') + `<div style="margin-top:4px;opacity:.75">Pembaruan otomatis: tiap ${Q.crRefreshSec || 15} dtk · pembaruan visual LIVE mengikuti tick yang tersedia.</div>`);
+  setH('qdCrNote', note);
+}
+function crThr() { return Q.crInt === 'live' ? (ML ? 6000 : 2500) : Math.max(2500, (+Q.crInt || 5) * 1000); }
+function crLive() {
+  const p = eaPrice(), a = eaAcc(), pt = a && a.priceTime ? (+a.priceTime > 1e12 ? +a.priceTime / 1000 : +a.priceTime) : 0, age = pt ? Date.now() / 1000 - pt : 999;
+  if (Q.px > 0 && Q.wsOk && Date.now() - Q.lastMsg < 5000 && (!p || (age > 3 && Math.abs(Q.px - p) <= Math.max(3, p * 0.001)))) return Q.px;
+  return p;
+}
+function crRefresh(manual) {
+  Q.crRefAt = Date.now(); const FX = window.__FX; Object.keys(Q.cr).forEach(k => { if (Q.cr[k]) Q.cr[k].t = 0; });
+  const done = () => { Q.lastCr = 0; try { paintCr(); crTick(); } catch (e) { } if (manual) toast('Panel breakout diperbarui'); };
+  if (FX && FX.refreshAcc) { Promise.resolve(FX.refreshAcc()).then(done, done); } else done();
+}
+function initCrInt() {
+  const sel = $('qdCrInt'), btn = $('qdCrRef'); if (!sel) return; sel.value = Q.crInt;
+  sel.onchange = e => {
+    Q.crInt = e.target.value; LSS('qd_crint', Q.crInt); const FX = window.__FX;
+    if (FX && FX.setEco) {
+      if (Q.crInt === 'live' && FX.ecoMode !== 'realtime') { FX.setEco('realtime'); toast('Mode Live: akun dibaca realtime dari Firestore (boros kuota)'); }
+      else if (Q.crInt !== 'live' && FX.ecoMode === 'realtime') { FX.setEco('eco'); toast('Mode Hemat aktif; panel di-refresh tiap ' + Q.crInt + ' dtk'); }
+    }
+    crRefresh(false);
+  };
+  if (btn) btn.onclick = () => crRefresh(true);
+  setInterval(() => { if (!act() || Q.domVis === false || Q.crInt === 'live') return; if (Date.now() - (Q.crRefAt || 0) >= (+Q.crInt || 5) * 1000) crRefresh(false); }, 1000);
 }
 function crToggle(c) {
   const tf = c.dataset.tf; Q.crOpen[tf] = !Q.crOpen[tf]; c.classList.toggle('open', !!Q.crOpen[tf]); c.setAttribute('aria-expanded', String(!!Q.crOpen[tf]));
@@ -11877,13 +11878,11 @@ function drawCr() {
     const yl = Y(r.L.c); c.strokeStyle = 'rgba(255,201,74,.8)'; c.lineWidth = 1; c.setLineDash([2, 3]); c.beginPath(); c.moveTo(padL + pw * 4 / 6, yl); c.lineTo(padL + pw, yl); c.stroke(); c.setLineDash([]); c.fillStyle = '#ffc94a'; c.fillRect(padL + pw + 1, yl - 7, padR - 2, 14); c.fillStyle = '#1c1300'; c.font = '700 9px sans-serif'; c.fillText(f2(r.L.c), padL + pw + 3, yl + 3);
   });
 }
-$('qdCrSrc').value = Q.crSrc; $('qdCrSrc').onchange = e => { Q.crSrc = e.target.value; LSS('qd_crsrc', Q.crSrc); Q.cr = {}; Q.crLastFetch = 0; Q.crStatus = ''; if (Q.crSrc !== 'ea') crRefreshNow(false); else { paintCr(); drawCr(); } };
-if ($('qdCrRefreshSec')) { $('qdCrRefreshSec').value = String(Q.crRefreshSec); $('qdCrRefreshSec').onchange = e => { Q.crRefreshSec = [5,15,30,60,90,120].includes(+e.target.value) ? +e.target.value : 15; LSS('qd_crrefresh', Q.crRefreshSec); Q.crLastFetch = 0; paintCr(); }; }
-if ($('qdCrRefresh')) $('qdCrRefresh').onclick = () => { Q.crLastFetch = Date.now(); crRefreshNow(true); };
+initCrInt(); $('qdCrSrc').value = Q.crSrc; $('qdCrSrc').onchange = e => { Q.crSrc = e.target.value; LSS('qd_crsrc', Q.crSrc); Q.cr = {}; paintCr(); };
 if ($('qdCrCount')) { $('qdCrCount').value = String(Q.crCount); $('qdCrCount').onchange = e => { Q.crCount = +e.target.value === 5 ? 5 : 3; LSS('qd_crcount', Q.crCount); Q.brkSeen = {}; paintCr(); drawCr(); }; }
 if ($('qdBrkAlert')) { $('qdBrkAlert').checked = Q.brkAlert; $('qdBrkAlert').onchange = async e => { Q.brkAlert = e.target.checked; LSS('qd_brkalert', Q.brkAlert); if (Q.brkAlert && 'Notification' in window && Notification.permission === 'default') { try { await Notification.requestPermission(); } catch (_) {} } }; }
 
-HELP.candle = ['Candle realtime M15 / M30 / H1 / H4', 'Menampilkan candle terakhir sesuai pilihan acuan 3 atau 5 candle, termasuk candle berjalan (LIVE, berdenyut) untuk melihat breakout lebih awal.<br><br><b>Range acuan</b> = high tertinggi (H) dan low terendah (L) dari 2 candle tertutup. Status: <br>• <b>BREAKOUT NAIK/TURUN</b> — harga live di luar range.<br>• <b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range.<br>• <b>DI DALAM RANGE</b> — belum ada breakout.<br><b>KUAT</b> = penembusan ≥ 0,25× range rata-rata dan body ≥ 55%. Breakout baru valid bila candle <u>ditutup</u> di luar range.<br><br><b>Auto update</b> dapat diatur 5–120 detik dan tombol Refresh mengambil ulang semua timeframe. Snapshot EA yang lebih tua dari 60 detik tidak lagi mengunci mode otomatis; sistem beralih ke fallback Binance jika tersedia.<br><br><b>Sumber data</b> (otomatis): ① OHLC EA dari field <code>bars</code> pada dokumen akun; ② riwayat EA <code>marketBars</code>; ③ Binance + offset sebagai fallback. Chip di tiap kartu menunjukkan sumber yang dipakai. Agar sumber EA tampil, webhook harus menyimpan field <code>bars</code> yang dikirim EA ke dokumen akun Firestore.'];
+HELP.candle = ['Candle realtime M15 / M30 / H1', 'Menampilkan <b>3 candle terakhir</b> tiap timeframe: 2 candle tertutup (C-2, C-1) dan 1 candle berjalan (LIVE, berdenyut) untuk melihat breakout lebih awal.<br><br><b>Range acuan</b> = high tertinggi (H) dan low terendah (L) dari 2 candle tertutup. Status: <br>• <b>BREAKOUT NAIK/TURUN</b> — harga live di luar range.<br>• <b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range.<br>• <b>DI DALAM RANGE</b> — belum ada breakout.<br><b>KUAT</b> = penembusan ≥ 0,25× range rata-rata dan body ≥ 55%. Breakout baru valid bila candle <u>ditutup</u> di luar range.<br><br><b>Sumber data</b> (otomatis): ① OHLC realtime EA dari field <code>bars</code> pada dokumen akun; ② riwayat EA <code>marketBars</code>; ③ Binance + offset sebagai fallback. Chip di tiap kartu menunjukkan sumber yang dipakai. Agar sumber EA tampil, webhook harus menyimpan field <code>bars</code> yang dikirim EA ke dokumen akun Firestore.'];
 
 setInterval(() => {
   const on = act(); if (on && !Q.started) { Q.started = true; load(); }
