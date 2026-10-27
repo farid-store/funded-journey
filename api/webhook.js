@@ -42,6 +42,7 @@ function cleanPartners(input) {
 
 const EQUITY_POINT_INTERVAL_MS = 5 * 60 * 1000;
 const BATCH_CHUNK = 400;
+const RT_SEEN = new Set(); // candle realtime tertutup yang sudah pernah ditulis ke marketBars (per instance)
 const HISTORY_V = 3;
 const MAX_MARKET_BARS_PER_SYNC = 900; // chart simbol + candle per-trade (EA kirim maks ~600/sync)
 
@@ -418,7 +419,7 @@ const flagList = (f) =>
 
 // ---------------------------------------------------------------- handler
 
-module.exports = async (req, res) => {
+async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -663,7 +664,7 @@ module.exports = async (req, res) => {
     ];
 
     const realtimeBars = {};
-    const realtimeTfKeys = ['M15', 'M30', 'H1'];
+    const realtimeTfKeys = ['M15', 'M30', 'H1', 'H4'];
 
     const incomingBars =
       body.bars &&
@@ -746,7 +747,14 @@ module.exports = async (req, res) => {
 
         // Masukkan candle realtime ke jalur penyimpanan marketBars
         // yang sudah digunakan webhook sebelumnya.
-        normalized.forEach((bar) => {
+        // HEMAT WRITE: candle realtime sudah tersimpan di field `bars` pada dokumen akun
+        // (1 write per snapshot). Ke koleksi marketBars hanya 3 candle TERTUTUP terakhir,
+        // dan tiap candle ditulis sekali saja. Sebelumnya 60 write/snapshot (= ~170 ribu write/hari).
+        if (RT_SEEN.size > 3000) RT_SEEN.clear();
+        normalized.slice(-4, -1).forEach((bar) => {
+          const rk = `${accountId}|${tf}|${bar[0]}`;
+          if (RT_SEEN.has(rk)) return;
+          RT_SEEN.add(rk);
           marketBarsRaw.push({
             symbol,
             timeframe: tf,
@@ -1430,5 +1438,72 @@ module.exports = async (req, res) => {
       ok: false,
       error: String(e),
     });
+  }
+}
+
+// ===================================================================
+// Pelindung timeout / kuota Firestore + throttle snapshot periodik
+// ===================================================================
+// Bila Firestore menahan write (kuota habis / jaringan), fungsi dulu menggantung 300 dtk
+// dan EA hanya melihat timeout. Sekarang: jawab 503 dalam HANDLER_TIMEOUT_MS, lalu
+// "circuit breaker" menolak cepat selama BREAKER_MS supaya EA tidak ikut tersendat.
+const HANDLER_TIMEOUT_MS = Number(process.env.WEBHOOK_TIMEOUT_MS || 15000);
+const BREAKER_MS = Number(process.env.WEBHOOK_BREAKER_MS || 120000);
+// Snapshot 'periodic' tanpa muatan baru ditulis paling sering sekali per N detik (0 = nonaktif).
+const PERIODIC_MIN_MS = Number(process.env.PERIODIC_MIN_SEC || 60) * 1000;
+let breakerUntil = 0;
+const lastWrite = new Map();
+
+function peekBody(req) {
+  let b = req.body;
+  if (typeof b === 'string') { try { b = JSON.parse(b); } catch (e) { return null; } }
+  return b && typeof b === 'object' ? b : null;
+}
+
+function isPlainPeriodic(b) {
+  if (!b || b.reason !== 'periodic') return false;
+  const filled = (k) => Array.isArray(b[k]) && b[k].length > 0;
+  return !(filled('chartBars') || filled('marketBars') || filled('sigEv') || filled('sigOut'));
+}
+
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') return handler(req, res);
+
+  const b = peekBody(req);
+  const accKey = b && b.account ? String(b.account.login || '').trim() : '';
+  const t0 = Date.now();
+
+  if (t0 < breakerUntil) {
+    const wait = Math.ceil((breakerUntil - t0) / 1000);
+    res.setHeader('Retry-After', String(wait));
+    return res.status(503).json({ ok: false, error: 'firestore_unavailable', retryAfterSec: wait });
+  }
+
+  if (PERIODIC_MIN_MS > 0 && accKey && isPlainPeriodic(b) && t0 - (lastWrite.get(accKey) || 0) < PERIODIC_MIN_MS) {
+    return res.status(200).json({ ok: true, throttled: true, newTrades: 0, marketBarsWritten: 0 });
+  }
+
+  let timedOut = false, timer;
+  const guard = new Promise((resolve) => {
+    timer = setTimeout(() => {
+      timedOut = true;
+      breakerUntil = Date.now() + BREAKER_MS;
+      console.error('webhook timeout >' + HANDLER_TIMEOUT_MS + 'ms (Firestore menahan write? cek kuota) — breaker aktif ' + BREAKER_MS + 'ms');
+      if (!res.headersSent) res.status(503).json({ ok: false, error: 'firestore_timeout' });
+      resolve();   // lepaskan fungsi segera, jangan menunggu write yang menggantung
+    }, HANDLER_TIMEOUT_MS);
+  });
+
+  try {
+    await Promise.race([handler(req, res), guard]);
+    if (!timedOut) {
+      breakerUntil = 0;
+      if (res.statusCode === 200 && accKey) lastWrite.set(accKey, Date.now());
+    }
+  } catch (e) {
+    if (!res.headersSent) res.status(500).json({ ok: false, error: String(e) });
+    else console.error('late error after response', e);
+  } finally {
+    clearTimeout(timer);
   }
 };
