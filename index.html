@@ -2832,6 +2832,21 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
   .qd-nav button{min-height:40px}
 }
 
+/* tes koneksi */
+.qd-fld-wide{grid-column:1/-1}
+.qd-fld-wide .qd-ib{width:100%}
+.qd-test{margin:8px 14px 0;padding:10px 12px;border:1px solid var(--brd);border-radius:12px;background:var(--surface2)}
+.qd-test[hidden]{display:none}
+.qd-th{font:800 10px var(--fh);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.qd-tr{display:grid;grid-template-columns:10px minmax(96px,auto) 1fr auto;gap:8px;align-items:baseline;padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.06);font-size:11px}
+.qd-tr i{width:8px;height:8px;border-radius:50%;background:var(--faint);align-self:center}
+.qd-tr.ok i{background:var(--green)}.qd-tr.warn i{background:var(--amber)}.qd-tr.bad i{background:var(--red)}
+.qd-tr b{color:#fff;font-weight:700}
+.qd-tr span{color:var(--muted);word-break:break-word}
+.qd-tr em{font-style:normal;color:var(--faint);font-size:10px}
+.qd-tc{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:11px;line-height:1.55;color:var(--text)}
+@media(max-width:700px){.qd-test{margin:8px 10px 0}.qd-tr{grid-template-columns:10px 1fr auto}.qd-tr span{grid-column:2/4;grid-row:2}}
+
 </style>
 </head>
 <body>
@@ -3588,8 +3603,10 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
         <label class="qd-fld"><span>Sumber data</span><select id="qdCrSrc" class="qd-sel" title="Sumber data candle"><option value="auto">Otomatis: EA → Binance</option><option value="ea">Hanya EA</option><option value="bn">Hanya Binance</option></select></label>
         <label class="qd-fld"><span>Update panel</span><select id="qdCrInt" class="qd-sel" title="Seberapa sering data panel diperbarui"><option value="live">Live (Firestore realtime)</option><option value="5">Tiap 5 detik</option><option value="15">Tiap 15 detik</option><option value="30">Tiap 30 detik</option><option value="60">Tiap 60 detik</option><option value="90">Tiap 90 detik</option><option value="120">Tiap 120 detik</option></select></label>
         <div class="qd-fld"><span>Manual</span><button type="button" class="btn ghost qd-ib" id="qdCrRef">↻ Refresh sekarang</button></div>
+        <div class="qd-fld qd-fld-wide"><button type="button" class="btn ghost qd-ib" id="qdTestBtn">Tes koneksi</button></div>
         <label class="qd-fld qd-fld-sw"><span>Notif breakout</span><input type="checkbox" id="qdBrkAlert"></label>
       </div>
+      <div class="qd-test" id="qdTestOut" hidden></div>
       <div class="qd-crg" id="qdCrg">
         <div class="qd-crc" id="qdCrC15" data-tf="15m" role="button" tabindex="0" aria-expanded="false" title="Ketuk untuk penjelasan"><div class="qd-crt"><b>M15</b><span class="qd-chip" id="qdCr15s">—</span><i class="qd-car" aria-hidden="true">▾</i></div><canvas id="qdCr15"></canvas><div id="qdCr15d" class="qd-crd"></div><div id="qdCr15x" class="qd-crdet"></div></div>
         <div class="qd-crc" id="qdCrC30" data-tf="30m" role="button" tabindex="0" aria-expanded="false" title="Ketuk untuk penjelasan"><div class="qd-crt"><b>M30</b><span class="qd-chip" id="qdCr30s">—</span><i class="qd-car" aria-hidden="true">▾</i></div><canvas id="qdCr30"></canvas><div id="qdCr30d" class="qd-crd"></div><div id="qdCr30x" class="qd-crdet"></div></div>
@@ -4781,14 +4798,38 @@ window.__THEME = { apply, get };
     }, err => console.warn('commands listener', err)));
   }
 
+  // ---- Diagnosis penyebab Stale/Terputus: probe /api/webhook?health=1 (maks 1x / 30 dtk) ----
+  const DIAG = { at: 0, busy: false, res: null };
+  async function diagProbe(force){
+    if (DIAG.busy || (!force && Date.now() - DIAG.at < 30000)) return DIAG.res;
+    DIAG.busy = true; const t0 = performance.now(), ac = new AbortController(), tm = setTimeout(() => ac.abort(), 6000);
+    const base = (new URLSearchParams(location.search).get('api') || 'https://funded-journey-nu.vercel.app').replace(/\/+$/, '');
+    try { const r = await fetch(base + '/api/webhook?health=1&_=' + Date.now(), { signal: ac.signal, cache: 'no-store' }); const j = await r.json(); DIAG.res = { ok: !!(r.ok && j && j.ok), ms: Math.round(performance.now() - t0), h: j, status: r.status }; }
+    catch (e) { DIAG.res = { ok: false, ms: Math.round(performance.now() - t0), err: String((e && e.name) || e) }; }
+    finally { clearTimeout(tm); DIAG.busy = false; DIAG.at = Date.now(); }
+    return DIAG.res;
+  }
+  function diagReason(){
+    if (!navigator.onLine) return ['perangkat offline', 'Perangkat ini tidak punya koneksi internet.'];
+    const d = DIAG.res; if (!d) return null;
+    if (!d.ok) return ['webhook tak terjangkau', 'Webhook Vercel tidak bisa dihubungi (' + (d.err || 'HTTP ' + d.status) + '). Cek deployment/domain Vercel.'];
+    const h = d.h || {};
+    if (h.breaker) return ['Firestore menolak', 'Webhook menahan sinkron: Firestore tidak merespons (kemungkinan kuota write harian habis). Reset sekitar 14.00 WIB atau upgrade ke Blaze.'];
+    if (h.lastFailAgoSec != null && (h.lastOkAgoSec == null || h.lastFailAgoSec < h.lastOkAgoSec)) return ['webhook error', 'Webhook gagal ' + h.lastFailAgoSec + ' dtk lalu: ' + (h.lastFailMsg || 'tidak diketahui')];
+    if (h.lastOkAgoSec == null) return ['EA belum kirim', 'Webhook sehat tetapi belum menerima kiriman EA sejak instance ini aktif. Cek MT5 (tab Experts, whitelist URL, secret, tombol SYNC).'];
+    if (h.lastOkAgoSec > 150) return ['EA diam', 'Webhook sehat, terakhir menerima EA ' + h.lastOkAgoSec + ' dtk lalu. Cek terminal MT5 (online? AutoTrading? SYNC aktif?).'];
+    return ['dashboard belum baca', 'Webhook menerima EA (' + h.lastOkAgoSec + ' dtk lalu) tetapi dashboard belum membaca dokumen akun. Cek mode Hemat/Refresh & koneksi Firestore.'];
+  }
+  window.__diagProbe = diagProbe; window.__diagReason = diagReason;
   function setStatus(){
     const age = receivedAt ? (Date.now()-receivedAt)/1000 : Infinity;
     const dot=$('dot'), label=$('status'), sub=$('statusSub');
-    dot.className='dot';
-    if(!receivedAt){dot.classList.add('offline');label.textContent='Menunggu data';sub.textContent='Belum ada snapshot'}
+    dot.className='dot'; sub.title='';
+    const why = () => { diagProbe(false); const r = diagReason(); if (r) sub.title = r[1]; return r ? ' \u00b7 ' + r[0] : ''; };
+    if(!receivedAt){dot.classList.add('offline');label.textContent='Menunggu data';sub.textContent='Belum ada snapshot'+why()}
     else if(age<=STALE_SEC+ECO.pollSec()){dot.classList.add('live');label.textContent='Live';sub.textContent='Update '+Math.round(age)+'d lalu'}
-    else if(age<=OFFLINE_SEC+ECO.pollSec()){dot.classList.add('warn');label.textContent='Stale';sub.textContent='Update '+Math.round(age)+'d lalu'}
-    else {dot.classList.add('offline');label.textContent='Terputus';sub.textContent='Update '+Math.round(age)+'d lalu'}
+    else if(age<=OFFLINE_SEC+ECO.pollSec()){dot.classList.add('warn');label.textContent='Stale';sub.textContent='Update '+Math.round(age)+'d lalu'+why()}
+    else {dot.classList.add('offline');label.textContent='Terputus';sub.textContent='Update '+Math.round(age)+'d lalu'+why()}
   }
   setInterval(setStatus, 1000);
   setInterval(() => { if (currentAccount && !document.hidden) renderPositions(); }, 1000); // live min-hold countdown
@@ -11840,7 +11881,51 @@ function initCrInt() {
     crRefresh(false);
   };
   if (btn) btn.onclick = () => crRefresh(true);
+  if ($('qdTestBtn')) $('qdTestBtn').onclick = qdTest;
   setInterval(() => { if (!act() || Q.domVis === false || Q.crInt === 'live') return; if (Date.now() - (Q.crRefAt || 0) >= (+Q.crInt || 5) * 1000) crRefresh(false); }, 1000);
+}
+async function qdTest() {
+  const out = $('qdTestOut'), btn = $('qdTestBtn'); if (!out || !btn || btn.disabled) return;
+  out.hidden = false; btn.disabled = true; const old = btn.textContent; btn.textContent = 'Menguji…';
+  const R = {}, rows = []; let concl = '', eaAge = null;
+  const esc = x => String(x).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const draw = () => { out.innerHTML = '<div class="qd-th">Hasil tes koneksi</div>' + rows.map(r => `<div class="qd-tr ${r[1]}"><i></i><b>${r[0]}</b><span>${esc(r[2])}</span><em>${r[3] != null ? r[3] + ' ms' : ''}</em></div>`).join('') + (concl ? `<div class="qd-tc">${concl}</div>` : ''); };
+  const add = (n, st, t, ms) => { rows.push([n, st, t, ms == null ? null : ms]); draw(); };
+  const timed = async (fn, lim) => { const t0 = performance.now(); try { const v = await Promise.race([fn(), new Promise((_, rj) => setTimeout(() => rj(new Error('timeout')), lim))]); return { ok: true, ms: Math.round(performance.now() - t0), v }; } catch (e) { return { ok: false, ms: Math.round(performance.now() - t0), err: String((e && e.message) || e) }; } };
+  const getj = async url => { const r = await fetch(url, { cache: 'no-store' }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); };
+  try {
+    const net = navigator.connection ? (navigator.connection.effectiveType || '') : '';
+    add('Perangkat', navigator.onLine ? 'ok' : 'bad', navigator.onLine ? 'online' + (net ? ' · ' + net : '') + (ML ? ' · mode hemat' : '') : 'tidak ada koneksi internet');
+    await Promise.all([['Binance Futures', () => getj(HOSTS.fut.rest + 'time'), 'fut'], ['Binance Spot', () => getj(HOSTS.spot.rest + 'time'), 'spot'], ['Mirror Binance', () => getj('https://data-api.binance.vision/api/v3/time'), 'mir']].map(async ([n, fn, k]) => {
+      const r = await timed(fn, 7000); R[k] = r.ok; add(n, r.ok ? (r.ms > 2500 ? 'warn' : 'ok') : 'bad', r.ok ? (r.ms > 2500 ? 'terhubung tetapi lambat' : 'terhubung') : 'gagal: ' + r.err, r.ms);
+    }));
+    const fresh = !!Q.wsOk && Date.now() - (Q.lastMsg || 0) < 6000;
+    add('Stream live', fresh ? 'ok' : 'warn', fresh ? 'data masuk ' + Math.round((Date.now() - Q.lastMsg) / 1000) + ' dtk lalu' : 'belum ada data stream (memakai polling REST)');
+    let d = null; try { d = window.__diagProbe ? await window.__diagProbe(true) : null; } catch (e) { }
+    if (!d) add('Webhook Vercel', 'warn', 'tes tidak tersedia');
+    else if (!d.ok) { R.wh = false; add('Webhook Vercel', 'bad', 'tidak terjangkau: ' + (d.err || 'HTTP ' + d.status), d.ms); }
+    else {
+      const h = d.h || {}; R.wh = true;
+      if (h.breaker) { R.brk = true; add('Webhook Vercel', 'bad', 'menahan sinkron ' + h.breakerSecLeft + ' dtk: ' + (h.lastFailMsg || 'Firestore tidak merespons'), d.ms); }
+      else { const failed = h.lastFailAgoSec != null && (h.lastOkAgoSec == null || h.lastFailAgoSec < h.lastOkAgoSec); add('Webhook Vercel', failed ? 'warn' : 'ok', 'sehat' + (h.lastOkAgoSec != null ? ' · terima EA ' + h.lastOkAgoSec + ' dtk lalu' : ' · belum menerima EA sejak aktif') + (failed && h.lastFailMsg ? ' · error terakhir: ' + h.lastFailMsg : ''), d.ms); }
+    }
+    const a = eaAcc();
+    if (!a) add('Data EA', 'bad', 'dokumen akun belum terbaca di dashboard');
+    else { const ts = Date.parse(a.receivedAt || a.webhookReceivedAt || '') || 0; eaAge = ts ? (Date.now() - ts) / 1000 : null; R.ea = eaAge != null && eaAge < 180; add('Data EA', eaAge == null ? 'warn' : eaAge < 60 ? 'ok' : eaAge < 180 ? 'warn' : 'bad', eaAge == null ? 'waktu snapshot tidak diketahui' : 'snapshot ' + Math.round(eaAge) + ' dtk lalu'); }
+    const bars = a && a.bars && typeof a.bars === 'object' ? a.bars : null, keys = bars ? Object.keys(bars).map(k => k.toUpperCase()) : [], miss = ['M15', 'M30', 'H1', 'H4'].filter(k => !keys.includes(k));
+    add('Candle EA', !bars ? 'bad' : miss.length ? 'warn' : 'ok', !bars ? 'EA belum mengirim candle' : miss.length ? 'ada: ' + keys.join(', ') + ' · belum ada: ' + miss.join(', ') + (miss.includes('H4') ? ' (H4 butuh EA terbaru; sementara memakai Binance)' : '') : 'M15, M30, H1, H4 lengkap');
+    const binOk = R.fut || R.spot || R.mir, msgs = [];
+    if (!navigator.onLine) msgs.push('Perangkat offline.');
+    else if (!binOk) msgs.push('Binance tidak terjangkau dari jaringan ini. Coba WiFi atau data seluler lain, ganti DNS, atau VPN.');
+    else if (!R.fut) msgs.push('Binance Futures tidak terjangkau, tetapi Spot/mirror aktif: harga dan DOM tetap berjalan lewat fallback.');
+    if (R.brk) msgs.push('Sinkron EA terputus karena Firestore menolak write (kemungkinan kuota harian habis; reset sekitar 14.00 WIB atau upgrade Blaze).');
+    else if (R.wh === false) msgs.push('Webhook Vercel tidak terjangkau dari perangkat ini.');
+    else if (!a || eaAge == null || eaAge >= 180) { const r = window.__diagReason && window.__diagReason(); if (r) msgs.push(r[1]); }
+    if (!msgs.length) msgs.push('Semua jalur utama normal.');
+    if (!R.ea && binOk) msgs.push('Saran: set Sumber data ke Hanya Binance agar panel candle tetap realtime sampai EA pulih.');
+    concl = msgs.map(m => '<div>' + esc(m) + '</div>').join(''); draw();
+  } catch (e) { add('Tes', 'bad', 'error: ' + ((e && e.message) || e)); }
+  finally { btn.disabled = false; btn.textContent = old; }
 }
 function crToggle(c) {
   const tf = c.dataset.tf; Q.crOpen[tf] = !Q.crOpen[tf]; c.classList.toggle('open', !!Q.crOpen[tf]); c.setAttribute('aria-expanded', String(!!Q.crOpen[tf]));
