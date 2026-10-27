@@ -1433,6 +1433,7 @@ async function handler(req, res) {
     });
   } catch (e) {
     console.error(e);
+    await noteHandlerError(e);
 
     return res.status(500).json({
       ok: false,
@@ -1453,6 +1454,55 @@ const BREAKER_MS = Number(process.env.WEBHOOK_BREAKER_MS || 120000);
 const PERIODIC_MIN_MS = Number(process.env.PERIODIC_MIN_SEC || 60) * 1000;
 let breakerUntil = 0;
 const lastWrite = new Map();
+let lastOkAt = 0, lastFailAt = 0, lastFailMsg = '', outageAlertAt = 0, outageOpen = false;
+const ALERT_GAP_MS = 30 * 60 * 1000;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Kabar ke admin Telegram (tidak bergantung pada Firestore). Dibatasi 1x / 30 menit per gangguan.
+async function notifyOutage(reason) {
+  try {
+    if (!TG_TOKEN || !TG_ADMIN_CHAT_ID) return;
+    if (Date.now() - outageAlertAt < ALERT_GAP_MS) return;
+    outageAlertAt = Date.now();
+    outageOpen = true;
+    await Promise.race([
+      sendTelegram(
+        TG_ADMIN_CHAT_ID,
+        '⚠️ *Webhook FaridFX bermasalah*\n' +
+          `${mdEsc(reason)}\n` +
+          'Sinkronisasi EA ditahan sementara lalu dicoba lagi otomatis.\n' +
+          'Cek: Firebase Console → Firestore → Usage (Writes harian 20.000 di paket Spark).'
+      ),
+      sleep(4000),
+    ]);
+  } catch (e) { console.error('notifyOutage', e); }
+}
+
+async function notifyRecovery() {
+  try {
+    if (!outageOpen) return;
+    outageOpen = false;
+    if (!TG_TOKEN || !TG_ADMIN_CHAT_ID) return;
+    await Promise.race([
+      sendTelegram(TG_ADMIN_CHAT_ID, '✅ *Webhook FaridFX pulih* — sinkronisasi EA berjalan normal lagi.'),
+      sleep(4000),
+    ]);
+  } catch (e) { console.error('notifyRecovery', e); }
+}
+
+// Dipanggil dari catch utama handler: tandai kegagalan; kuota habis => aktifkan breaker + kabari admin.
+async function noteHandlerError(e) {
+  lastFailAt = Date.now();
+  lastFailMsg = String((e && e.message) || e).slice(0, 160);
+  if ((e && e.code === 8) || /RESOURCE_EXHAUSTED|quota/i.test(String(e))) {
+    breakerUntil = Date.now() + BREAKER_MS;
+    await notifyOutage('Firestore menolak write: kuota habis (RESOURCE_EXHAUSTED).');
+  }
+}
+
+function healthRequested(req) {
+  try { return new URL(req.url, 'http://x').searchParams.get('health') === '1'; } catch (e) { return false; }
+}
 
 function peekBody(req) {
   let b = req.body;
@@ -1467,6 +1517,22 @@ function isPlainPeriodic(b) {
 }
 
 module.exports = async (req, res) => {
+  if (req.method === 'GET' && healthRequested(req)) {
+    const n = Date.now();
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(200).json({
+      ok: true,
+      now: n,
+      breaker: n < breakerUntil,
+      breakerSecLeft: n < breakerUntil ? Math.ceil((breakerUntil - n) / 1000) : 0,
+      lastOkAgoSec: lastOkAt ? Math.round((n - lastOkAt) / 1000) : null,
+      lastFailAgoSec: lastFailAt ? Math.round((n - lastFailAt) / 1000) : null,
+      lastFailMsg,
+      periodicMinSec: PERIODIC_MIN_MS / 1000,
+      timeoutMs: HANDLER_TIMEOUT_MS,
+    });
+  }
   if (req.method !== 'POST') return handler(req, res);
 
   const b = peekBody(req);
@@ -1480,25 +1546,33 @@ module.exports = async (req, res) => {
   }
 
   if (PERIODIC_MIN_MS > 0 && accKey && isPlainPeriodic(b) && t0 - (lastWrite.get(accKey) || 0) < PERIODIC_MIN_MS) {
+    lastOkAt = t0;
     return res.status(200).json({ ok: true, throttled: true, newTrades: 0, marketBarsWritten: 0 });
   }
 
   let timedOut = false, timer;
   const guard = new Promise((resolve) => {
-    timer = setTimeout(() => {
+    timer = setTimeout(async () => {
       timedOut = true;
       breakerUntil = Date.now() + BREAKER_MS;
+      lastFailAt = Date.now();
+      lastFailMsg = 'timeout >' + HANDLER_TIMEOUT_MS + 'ms';
       console.error('webhook timeout >' + HANDLER_TIMEOUT_MS + 'ms (Firestore menahan write? cek kuota) — breaker aktif ' + BREAKER_MS + 'ms');
-      if (!res.headersSent) res.status(503).json({ ok: false, error: 'firestore_timeout' });
-      resolve();   // lepaskan fungsi segera, jangan menunggu write yang menggantung
+      if (!res.headersSent) res.status(503).json({ ok: false, error: 'firestore_timeout', retryAfterSec: Math.ceil(BREAKER_MS / 1000) });
+      await notifyOutage('Firestore tidak merespons >' + Math.round(HANDLER_TIMEOUT_MS / 1000) + ' dtk (kemungkinan kuota write harian habis).');
+      resolve();   // lepaskan fungsi setelah respons & notifikasi, jangan menunggu write yang menggantung
     }, HANDLER_TIMEOUT_MS);
   });
 
   try {
     await Promise.race([handler(req, res), guard]);
     if (!timedOut) {
-      breakerUntil = 0;
-      if (res.statusCode === 200 && accKey) lastWrite.set(accKey, Date.now());
+      if (res.statusCode === 200) {
+        breakerUntil = 0;
+        lastOkAt = Date.now();
+        if (accKey) lastWrite.set(accKey, Date.now());
+        await notifyRecovery();
+      }
     }
   } catch (e) {
     if (!res.headersSent) res.status(500).json({ ok: false, error: String(e) });
