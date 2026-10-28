@@ -2887,6 +2887,94 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
   .btx-card.full .btx-grp{flex-direction:row;align-items:center}
 }
 </style>
+<style id="bt-mobile-fix">
+/* Backtest Lab: perbaikan khusus layar HP */
+@media(max-width:760px){
+  #view-backtest{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  #view-backtest input:not([type=checkbox]),#view-backtest select{font-size:16px}
+  #view-backtest .btx-card button:not(.btx-dot):not(.btx-chip button),#view-backtest .btx-selbar .btx-sbtn,#view-backtest .btx-acts .btn{min-height:42px}
+  .btx-tfs button{min-height:40px}
+  .btx-lotbox button{min-height:44px;min-width:44px}
+  .btx-grp-lbl{display:none}
+  .btx-grp{padding:6px;gap:6px}
+  /* Replay: grid 5 kolom, semua tombol terlihat tanpa geser */
+  .btx-grp-replay .btx-replay{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;overflow:visible;flex-wrap:wrap;padding:0}
+  .btx-grp-replay .btx-replay>*{flex:initial;min-width:0}
+  .btx-grp-replay .btx-vsep{display:none}
+  .btx-grp-replay .btx-rb{min-width:0;min-height:44px;padding:0 4px}
+  .btx-grp-replay #btPlay{grid-column:span 2}
+  .btx-grp-replay #btSpeed{width:100%;min-height:44px;padding:0 6px}
+  .btx-grp-replay #btJumpToggle .tx{display:none}
+  /* Sync: satu baris ringkas */
+  .btx-sync{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:6px}
+  .btx-sync .btn{min-height:44px;padding:0 8px;font-size:12px;white-space:normal;line-height:1.2}
+  .btx-sess{grid-column:auto;max-width:130px;justify-content:center;padding:0 10px}
+  .btx-sess .sl{max-width:64px}
+  .btx-grp-sync #btCloudStatus{font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  #btCloudAuthBox{padding:10px}
+  /* Order ticket 2 kolom */
+  #view-backtest .bt-form-ticket{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #view-backtest .bt-form-ticket>label{min-width:0;margin:0}
+  #view-backtest .bt-form-ticket>label:nth-child(1){order:1;grid-column:auto!important}
+  #view-backtest .bt-form-ticket>label:nth-child(5){order:2;grid-column:auto!important}
+  #view-backtest .bt-form-ticket>label:nth-child(2){order:3;grid-column:1/-1!important}
+  #view-backtest .bt-form-ticket>label:nth-child(3){order:4;grid-column:auto!important}
+  #view-backtest .bt-form-ticket>label:nth-child(4){order:5;grid-column:auto!important}
+  #view-backtest .bt-form-ticket>label:nth-child(6){order:6;grid-column:1/-1!important}
+  #view-backtest .bt-form-ticket>label:nth-child(7){order:7;grid-column:1/-1!important}
+  #view-backtest .bt-form-ticket .sel,#view-backtest .bt-form-ticket .bt-row{min-width:0;width:100%;box-sizing:border-box}
+  #view-backtest .bt-form-ticket .bt-row .sel{flex:1 1 0}
+  #view-backtest .bt-trade-btns button{min-height:56px}
+  /* Pengaturan simulasi 2 kolom */
+  #view-backtest .bt-form-set{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #view-backtest .bt-form-set>label{min-width:0;margin:0;overflow-wrap:anywhere}
+  #view-backtest .bt-form-set .sel{width:100%;min-width:0;box-sizing:border-box}
+  #view-backtest .bt-form-set>.bt-check,#view-backtest .bt-form-set>.bt-dd-explain,#view-backtest .bt-form-set>.bt-consistency-state,#view-backtest .bt-form-set>.bt-consistency-custom.on,#view-backtest .bt-form-set>label:has(#btMBase),#view-backtest .bt-form-set>label:has(#btDDMode),#view-backtest .bt-form-set>label:has(#btDDBasis),#view-backtest .bt-form-set>label:has(#btConsistencyPreset){grid-column:1/-1}
+  #view-backtest .bt-apply-row .btn{flex:1 1 100%;min-height:48px}
+  #view-backtest .bt-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+  #view-backtest .bt-actions .btn{min-height:44px}
+  #view-backtest .section-head{flex-wrap:wrap;gap:10px}
+}
+/* Layar penuh di HP: replay tetap satu baris geser, tanpa Sync */
+@media(max-width:760px){
+  .btx-card.full .btx-grp-replay .btx-replay{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .btx-card.full .btx-grp-replay .btx-replay>*{flex:0 0 auto}
+  .btx-card.full .btx-grp-replay .btx-vsep{display:block}
+  .btx-card.full .btx-grp-replay #btPlay{grid-column:auto}
+  .btx-card.full .btx-grp-replay #btSpeed{width:auto}
+  .btx-card.full .btx-grp-replay .btx-rb{min-height:40px;min-width:40px}
+}
+@media(max-width:380px){
+  .btx-sync .btn{font-size:11.5px;padding:0 6px}
+  .btx-sess .sl{display:none}
+  #view-backtest .bt-form-set{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:760px){
+  .btx-sync .cw{display:none}
+  .btx-sync .btn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap!important}
+  .btx-sync{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.9fr)}
+  .btx-sync .btn{padding:0 4px;font-size:11.5px}
+  .btx-sess{max-width:none;padding:0 6px;gap:4px}
+  .btx-sess .sl{max-width:52px}
+  .btx-q{min-width:0;padding:0 6px}
+  .btx-q b{white-space:nowrap;font-size:14px}
+  .btx-quick{display:grid;grid-template-columns:minmax(0,1fr) 140px minmax(0,1fr);gap:6px}
+  .btx-lotbox{min-width:0;display:flex;align-items:center}
+  .btx-lotbox input{flex:1 1 auto;min-width:0;width:0}
+  .btx-lotbox button{min-width:36px;flex:0 0 36px}
+  .btx-grp-replay #btRewind .ic{font-size:13px;letter-spacing:-.02em}
+  #btUseMax{min-height:36px;padding:0 10px}
+}
+@media(max-width:380px){
+  .btx-tools{gap:4px}
+  .btx-tools .btx-ib{min-width:0;padding:0 2px}
+  .btx-tfs button{padding:0 8px;min-width:0}
+  .btx-grp-replay .btx-rb{font-size:12px}
+  .btx-grp-replay #btSpeed{padding:0 2px;font-size:14px}
+  .btx-q b{font-size:13px}
+}
+#view-backtest .bt-form-set>.bt-consistency-custom:not(.on){display:none!important}
+</style>
 </head>
 <body>
 <div class="world" aria-hidden="true">
@@ -3145,7 +3233,7 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
             <div class="btx-grp btx-grp-sync" role="group" aria-label="Sinkronisasi akun dan cloud">
               <span class="btx-grp-lbl">Sync</span>
               <div class="btx-sync">
-                <button id="btCloudSave" class="btn ghost" type="button" title="Simpan backtest dan drawing ke Firestore">☁ Simpan Cloud</button><button id="btCloudRestore" class="btn ghost" type="button" title="Pulihkan sesi dari Firestore">↻ Pulihkan Cloud</button><button id="btCloudAuthToggle" class="btn ghost btx-sess" type="button" aria-expanded="false" aria-controls="btCloudAuthBox" title="Tampilkan / sembunyikan kolom sesi login"><span class="si">👤</span><span class="sl">Belum login</span><span class="caret">▾</span></button>
+                <button id="btCloudSave" class="btn ghost" type="button" title="Simpan backtest dan drawing ke Firestore">☁ Simpan<span class="cw"> Cloud</span></button><button id="btCloudRestore" class="btn ghost" type="button" title="Pulihkan sesi dari Firestore">↻ Pulihkan<span class="cw"> Cloud</span></button><button id="btCloudAuthToggle" class="btn ghost btx-sess" type="button" aria-expanded="false" aria-controls="btCloudAuthBox" title="Tampilkan / sembunyikan kolom sesi login"><span class="si">👤</span><span class="sl">Login</span><span class="caret">▾</span></button>
               </div>
               <span id="btCloudStatus" role="status" aria-live="polite">Cloud: menunggu login</span>
             </div>
@@ -9680,7 +9768,7 @@ function drawChart(){
   const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
   const C=pal(),FF=getComputedStyle(document.body).fontFamily||'sans-serif';
   S.hits=[];S.lines=[];
-  if(!S.B){g.fillStyle=C.faint;g.textAlign='center';g.textBaseline='middle';g.font='13px '+FF;g.fillText('Muat data (CSV atau Binance) untuk memulai replay',W/2,H/2);geo=null;return;}
+  if(!S.B){g.fillStyle=C.faint;g.textAlign='center';g.textBaseline='middle';g.font='13px '+FF;if(W<460){g.fillText('Muat data (CSV atau Binance)',W/2,H/2-10);g.fillText('untuk memulai replay',W/2,H/2+10);}else g.fillText('Muat data (CSV atau Binance) untuk memulai replay',W/2,H/2);geo=null;return;}
   const touch=S.touch,fs=touch?12:11,LH=touch?28:22;
   const T=tfData(),last=T.bidx[S.i],N=S.view.n;
   g.font=`600 ${fs}px ${FF}`;
@@ -10236,7 +10324,7 @@ const idb={open(){return new Promise((res,rej)=>{if(!window.indexedDB)return rej
 let cloudSaveTimer=0, cloudBusy=false;
 const cloudDb=()=>{try{return window.firebase&&firebase.apps&&firebase.apps.length&&firebase.firestore?firebase.firestore():null}catch(e){return null}};
 const cloudUser=()=>{try{return firebase.auth&&firebase.auth().currentUser||null}catch(e){return null}};
-function cloudSessionBadge(){try{const b=$('btCloudAuthToggle');if(!b)return;const u=cloudUser();const l=b.querySelector('.sl');if(l)l.textContent=u?(u.isAnonymous?'Anonim':(u.email||'Akun aktif')):'Belum login';b.dataset.state=u?(u.isAnonymous?'anon':'in'):'out';}catch(e){}}
+function cloudSessionBadge(){try{const b=$('btCloudAuthToggle');if(!b)return;const u=cloudUser();const l=b.querySelector('.sl');if(l)l.textContent=u?(u.isAnonymous?'Anonim':(u.email||'Akun aktif')):'Login';b.dataset.state=u?(u.isAnonymous?'anon':'in'):'out';}catch(e){}}
 function cloudStatus(t,k){const e=$('btCloudStatus');if(e){e.textContent=t;e.dataset.kind=k||'info';}cloudSessionBadge();}
 /* Observe Firebase auth asynchronously; currentUser can be null on first render. */
 let cloudAuthUnsub=null;
