@@ -2214,6 +2214,19 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
 #view-backtest #btChartOrderType{min-width:120px;width:auto}
 #view-backtest #btOrderCursor.on{border-color:var(--gold);background:rgba(217,176,104,.14);color:var(--gold)}
 #view-backtest .bt-order-help{font-size:10px;color:var(--muted);flex:1;min-width:180px}
+@media(max-width:760px){
+ #view-backtest .btx-menu{width:188px;max-width:calc(100% - 10px);padding:7px;gap:6px;border-radius:10px}
+ #view-backtest .btx-mh small{font-size:9px}
+ #view-backtest .btx-mh b{font-size:14px}
+ #view-backtest .btx-mh em{font-size:10px}
+ #view-backtest .btx-x{min-width:28px;min-height:28px}
+ #view-backtest .btx-lotrow{font-size:10px}
+ #view-backtest .btx-lot button{width:30px;min-height:30px}
+ #view-backtest .btx-lot b{min-width:42px;font-size:12px}
+ #view-backtest .btx-opt{min-height:36px;padding:6px 8px;border-radius:8px}
+ #view-backtest .btx-opt span,#view-backtest .btx-opt b{font-size:10px}
+ #view-backtest .btx-mkt .btn{min-height:32px;padding:6px 8px;font-size:10px}
+}
 @media(max-width:760px){#view-backtest .bt-orderbar{gap:6px}#view-backtest .bt-order-help{flex-basis:100%;min-width:0}#view-backtest #btChartOrderType{flex:1}}
 
 @media(max-width:760px){
@@ -2317,11 +2330,11 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
 .btx-msg.ok,.btx-msg.err,.btx-msg:not(:empty){background:color-mix(in srgb,var(--bg0,#080a0f) 90%,transparent);border:1px solid var(--line2);border-radius:10px;padding:7px 10px;color:var(--text)}
 .btx-msg.ok{border-color:color-mix(in srgb,var(--green) 50%,transparent);color:var(--green)}
 .btx-msg.err{border-color:color-mix(in srgb,var(--red) 55%,transparent);color:var(--red)}
-.btx-menu{position:absolute;z-index:6;width:244px;max-width:calc(100% - 12px);max-height:70%;overflow-y:auto;overscroll-behavior:contain;padding:10px;border:1px solid var(--gold);border-radius:14px;background:var(--surface,#12161f);box-shadow:0 18px 50px rgba(0,0,0,.5);display:grid;gap:8px}
+.btx-menu{position:absolute;z-index:6;width:220px;max-width:calc(100% - 12px);padding:8px;border:1px solid var(--gold);border-radius:14px;background:var(--surface,#12161f);box-shadow:0 18px 50px rgba(0,0,0,.5);display:grid;gap:8px}
 .btx-menu[hidden]{display:none}
 .btx-mh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .btx-mh small{display:block;font-size:11px;color:var(--faint)}
-.btx-mh b{font:700 18px var(--fm);color:var(--gold)}
+.btx-mh b{font:700 16px var(--fm);color:var(--gold)}
 .btx-mh em{display:block;font:12px var(--fm);font-style:normal}
 .btx-mh em.pos{color:var(--green)}.btx-mh em.neg{color:var(--red)}
 .btx-x{border:0;background:transparent;color:var(--muted);font-size:16px;min-width:34px;min-height:34px;cursor:pointer;border-radius:8px}
@@ -2329,7 +2342,7 @@ html[data-pro] #mgTable th,html[data-pro] #mgTable td{padding:9px 8px;white-spac
 .btx-lot{display:flex;align-items:center;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
 .btx-lot button{width:38px;min-height:38px;border:0;background:transparent;color:var(--text);font-size:18px;cursor:pointer}
 .btx-lot b{min-width:52px;text-align:center;font:700 14px var(--fm);color:var(--text)}
-.btx-opt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:48px;padding:8px 12px;border-radius:12px;border:1px solid transparent;cursor:pointer;font-family:var(--fb);text-align:left}
+.btx-opt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:42px;padding:7px 10px;border-radius:12px;border:1px solid transparent;cursor:pointer;font-family:var(--fb);text-align:left}
 .btx-opt span{font-size:12px;font-weight:800;letter-spacing:.06em}
 .btx-opt b{font:600 12px var(--fm);color:var(--text)}
 .btx-opt.buy{background:color-mix(in srgb,var(--green) 20%,transparent);border-color:color-mix(in srgb,var(--green) 60%,transparent);color:var(--green)}
@@ -2411,27 +2424,7 @@ html.btx-noscroll,html.btx-noscroll body{overflow:hidden!important}
   .btx-replay{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
   .btx-replay::-webkit-scrollbar{display:none}
   .btx-replay>*{flex:0 0 auto}
-  /* Popup entry minimalis: ringkas dan tidak menutupi chart di ponsel */
-  .btx-menu{width:min(208px,calc(100% - 12px));max-height:46%;overflow-y:auto;overscroll-behavior:contain;padding:7px;gap:5px;grid-template-columns:repeat(2,minmax(0,1fr));border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.38)}
-  .btx-menu .btx-mh,.btx-menu .btx-lotrow,.btx-menu .btx-mkt,.btx-menu .btx-chk{grid-column:1/-1}
-  .btx-mh{gap:4px;align-items:center}
-  .btx-mh small{font-size:9px;line-height:1.2}
-  .btx-mh b{font-size:14px;line-height:1.25}
-  .btx-mh em{font-size:10px;line-height:1.25}
-  .btx-x{min-width:27px;min-height:27px;font-size:13px}
-  .btx-lotrow{font-size:10px;min-height:27px}
-  .btx-lot button{width:28px;min-height:28px;font-size:16px}
-  .btx-lot b{min-width:38px;font-size:12px}
-  .btx-menu .btx-opt{min-height:34px;padding:5px 6px;border-radius:8px;gap:1px}
-  .btx-menu .btx-opt span{font-size:9px;letter-spacing:.02em}
-  .btx-menu .btx-opt b{font-size:10px;overflow-wrap:anywhere}
-  .btx-menu .btx-opt{display:flex}
-  .btx-menu .btx-opt:nth-of-type(1){grid-column:auto}
-  .btx-menu .btx-mkt{gap:4px}
-  .btx-menu .btx-mkt button{min-height:32px;border-radius:8px;font-size:9px;padding:3px}
-  .btx-menu .btx-mkt button b{font-size:10px}
-  .btx-menu .btx-chk{gap:5px;font-size:9px;line-height:1.25;min-height:24px}
-  .btx-menu .btx-chk input{width:14px;height:14px;flex:0 0 auto}
+  .btx-menu{width:min(262px,calc(100% - 12px))}
   .btx-card.full .btx-stage{flex-direction:column-reverse}
   .btx-card.full .btx-plot{min-height:0}
   /* tabel -> kartu */
@@ -10668,7 +10661,7 @@ function bindChart(){
     if(S.drawTool==='cursor'&&!S.pick&&inPlot(p)){
       // SL/TP get hit priority over the price tag underneath, so the very first
       // pointer press starts dragging rather than merely selecting the order.
-      const thr=S.touch?44:22;let best=null;
+      const thr=S.touch?30:16;let best=null;
       for(const L of S.lines){
         const d=Math.abs(p.y-L.y);if(d>thr)continue;
         const priority=(L.field==='sl'||L.field==='tp')?0:(L.field==='entry'&&L.drag?1:2);
@@ -10678,7 +10671,7 @@ function bindChart(){
     }
     for(let i=S.hits.length-1;i>=0;i--){const h=S.hits[i];if(p.x>=h.x&&p.x<=h.x+h.w&&p.y>=h.y&&p.y<=h.y+h.h)return {k:'hit',h};}
     if(S.drawTool==='cursor'&&!S.pick&&inPlot(p)){
-      const thr=S.touch?44:22;let best=null;
+      const thr=S.touch?30:16;let best=null;
       for(const L of S.lines){const d=Math.abs(p.y-L.y);if(d>thr)continue;const priority=(L.field==='entry'&&L.drag)?0:1;if(!best||priority<best.priority||(priority===best.priority&&d<best.d))best={d,L,priority};}
       if(best)return {k:'line',L:best.L};
       const dh=drawHit(p);if(dh)return {k:'draw',...dh};
@@ -10687,14 +10680,12 @@ function bindChart(){
   }
   function updateHover(p){
     if(S.drawTool!=='cursor'||S.pick||!inPlot(p)){S.hoverLine=null;cv.style.cursor='crosshair';return;}
-    let best=null;for(const L of S.lines){if(L.field!=='sl'&&L.field!=='tp')continue;const d=Math.abs(p.y-L.y),thr=S.touch?44:22;if(d<=thr&&(!best||d<best.d))best={d,L};}
+    let best=null;for(const L of S.lines){if(L.field!=='sl'&&L.field!=='tp')continue;const d=Math.abs(p.y-L.y),thr=S.touch?30:16;if(d<=thr&&(!best||d<best.d))best={d,L};}
     const next=best?{kind:best.L.kind,id:best.L.id,field:best.L.field}:null;
     const changed=JSON.stringify(next)!==JSON.stringify(S.hoverLine||null);S.hoverLine=next;cv.style.cursor=best?'ns-resize':'crosshair';if(changed)dirty();
   }
   cv.addEventListener('pointerdown',e=>{
     if(!S.B||!geo)return;if(e.pointerType==='mouse'&&e.button!==0)return;
-    // Cegah browser mengambil alih gesture saat drag SL/TP, termasuk sentuhan mobile.
-    if(e.cancelable)e.preventDefault();
     S.touch=e.pointerType!=='mouse';
     const p=rel(e);try{cv.setPointerCapture(e.pointerId);}catch(_){}
     ptrs.set(e.pointerId,p);
@@ -10725,13 +10716,13 @@ function bindChart(){
       case 'pan':if(drag.moved){const maxOff=Math.max(0,geo.last-10);S.view.off=cl(Math.round(drag.off+(p.x-drag.sx)/geo.step),0,maxOff);S.view.yShift=cl(drag.ys+(p.y-drag.sy)/geo.chh*1.12*(S.view.yZoom||1),-3,3);}break;
       case 'axis':if(drag.moved)S.view.yZoom=cl(drag.z0*Math.exp((p.y-drag.sy)/200),0.15,10);break;
       case 'line':
-        if(drag.moved&&p.y>=geo.padT-44&&p.y<=geo.padT+geo.chh+44){
+        if(drag.moved&&p.y>=geo.padT-4&&p.y<=geo.padT+geo.chh+4){
           const price=geo.priceAt(cl(p.y,geo.padT,geo.padT+geo.chh));
           applyDrag(drag.L,price);
         }
         break;
       case 'lvl':
-        if(drag.moved&&p.y>=geo.padT-44&&p.y<=geo.padT+geo.chh+44){
+        if(drag.moved&&p.y>=geo.padT-4&&p.y<=geo.padT+geo.chh+4){
           const o=getObj(drag.kind,drag.id);if(!o)break;
           const price=geo.priceAt(cl(p.y,geo.padT,geo.padT+geo.chh)),e=drag.kind==='pos'?o.entry:o.price;
           const below=price<e,field=(o.side==='buy')===below?'sl':'tp';
