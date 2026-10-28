@@ -2849,6 +2849,8 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
 
 </style>
 <style id="bt-ctl-layout">
+.btx-slwarn{padding:8px 10px;border:1px solid var(--amber);border-radius:10px;background:color-mix(in srgb,var(--amber) 12%,transparent);color:var(--amber);font-size:12px;font-weight:700;line-height:1.45}
+.btx-slwarn[hidden]{display:none}
 /* Backtest Lab: utilitas chart (Replay) dan Sync akun dipisah; sesi login tersembunyi secara default */
 .btx-ctl{display:flex;flex-direction:column;gap:8px;min-width:0}
 .btx-grp{display:flex;align-items:center;gap:12px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface2,rgba(255,255,255,.025));min-width:0}
@@ -3245,6 +3247,7 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
             <button id="btQBuy" class="btx-q buy" type="button"><small>BUY</small><b>—</b></button>
           </div>
           <div class="btx-mini" id="btMini">—</div>
+          <div class="btx-slwarn" id="btSlWarn" role="status" aria-live="polite" hidden></div>
           <div class="btx-stage">
             <div class="btx-rail" id="btRail" aria-label="Drawing tools"><button type="button" data-draw="cursor" title="Cursor (geser chart, pilih & seret)" aria-label="Cursor">↖</button><button type="button" data-draw="trend" title="Trendline" aria-label="Trendline">╱</button><button type="button" data-draw="ray" title="Ray" aria-label="Ray">↗</button><button type="button" data-draw="hline" title="Garis horizontal" aria-label="Horizontal">━</button><button type="button" data-draw="vline" title="Garis vertikal" aria-label="Vertical">┃</button><button type="button" data-draw="rect" title="Zona / kotak" aria-label="Zona">▱</button><button type="button" data-draw="fib" title="Fibonacci" aria-label="Fibonacci">Fib</button><button type="button" data-draw="measure" title="Ukur jarak harga/waktu" aria-label="Ukur">↔</button><button type="button" data-draw="long" title="Long position (RR)" aria-label="Long">▲</button><button type="button" data-draw="short" title="Short position (RR)" aria-label="Short">▼</button><span class="sep"></span><button type="button" id="btDrawUndo" title="Hapus drawing terakhir" aria-label="Undo">↶</button><button type="button" id="btDrawClear" title="Hapus semua drawing" aria-label="Hapus semua">🗑</button></div>
             <div class="btx-plot"><canvas id="btChart" aria-label="Chart replay"></canvas><div id="btMenu" class="btx-menu" hidden></div><div id="btSelBar" class="btx-selbar" hidden></div><div id="btMsg" class="bt-msg btx-msg" role="status"></div></div>
@@ -3307,6 +3310,7 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
           <label>Buffer keamanan lot (%)<input id="btBuf" class="sel" type="number" min="0" max="90" step="1" inputmode="decimal"></label>
           <label>Max floating loss per order (%)<input id="btMaxFL" class="sel" type="number" min="0" max="100" step="0.1" inputmode="decimal"></label>
           <label>Buffer floating loss / slippage (%)<input id="btFLBuffer" class="sel" type="number" min="0" max="99" step="0.1" inputmode="decimal"></label>
+          <label>Batas waktu pasang SL setelah posisi terbuka (detik)<input id="btSlGrace" class="sel" type="number" min="5" max="600" step="1" inputmode="numeric"></label>
           <label>Daily loss limit (%)<input id="btDaily" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
           <label>Overall loss limit (%)<input id="btOverall" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
           <label>Mode overall drawdown<select id="btDDMode" class="sel"><option value="static">Static DD — batas tetap</option><option value="trailing">Trailing DD — mengikuti peak</option></select></label>
@@ -3323,7 +3327,7 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
           <label class="bt-check"><input id="btBlock" type="checkbox"> Tolak order yang melanggar margin rule</label>
           <label class="bt-check"><input id="btStop" type="checkbox"> Hentikan akun saat rule dilanggar (breach)</label>
         </div>
-        <p class="bt-hint">Contoh contract size: XAUUSD 100, BTC/ETH 1. Pair dengan quote non-USD tidak dikonversi ke dolar. Angka daily/overall/target hanya contoh awal, samakan dengan aturan firm kamu. Margin rule memakai pengaturan yang sama dengan Margin Rule Guard di tab Risk. Max FL efektif = Max FL per order dikurangi buffer slippage; order tanpa SL atau dengan risiko SL di atas batas akan ditolak.</p>
+        <p class="bt-hint">Contoh contract size: XAUUSD 100, BTC/ETH 1. Pair dengan quote non-USD tidak dikonversi ke dolar. Angka daily/overall/target hanya contoh awal, samakan dengan aturan firm kamu. Margin rule memakai pengaturan yang sama dengan Margin Rule Guard di tab Risk. Max FL efektif = Max FL per order dikurangi buffer slippage; order boleh dibuka tanpa SL, tetapi posisi ditutup otomatis bila SL belum dipasang dalam batas waktu di atas; SL dengan risiko di atas batas akan ditolak.</p>
         <div class="bt-apply-row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">
           <button id="btApplySettings" class="btn primary" type="button">✓ Terapkan Pengaturan</button>
           <span id="btApplyStatus" role="status" aria-live="polite" style="font-size:11px;color:var(--muted)">Pengaturan tersimpan lokal; tekan Terapkan untuk menyegarkan Akun &amp; Aturan Prop.</span>
@@ -9052,7 +9056,7 @@ const $=id=>document.getElementById(id);
 const TFS=[['M1',60],['M5',300],['M15',900],['M30',1800],['H1',3600],['H4',14400],['D1',86400]];
 const BIN_TF={'1m':60,'5m':300,'15m':900,'30m':1800,'1h':3600,'4h':14400,'1d':86400};
 const LS_CFG='ffx_bt_cfg', LS_MG='ffx_marginrule', LS_IND='ffx_bt_ind';
-const DEF={balance:10000,contract:100,leverage:100,spread:0.3,comm:0,prop:true,marginPct:80,marginBase:'balance',buffer:10,maxFL:1,flBuffer:0.5,daily:5,overall:10,overallMode:'static',ddBasis:'equity',target:8,consistencyPct:40,block:true,stop:true,risk:1,autoBr:false,autoSL:0,magnet:false};
+const DEF={balance:10000,contract:100,leverage:100,spread:0.3,comm:0,prop:true,marginPct:80,marginBase:'balance',buffer:10,maxFL:1,flBuffer:0.5,slGrace:30,daily:5,overall:10,overallMode:'static',ddBasis:'equity',target:8,consistencyPct:40,block:true,stop:true,risk:1,autoBr:false,autoSL:0,magnet:false};
 
 function loadCfg(){
   let c=Object.assign({},DEF), saved=null;
@@ -9477,9 +9481,36 @@ function slWithinMaxFL(kind,o,price,quiet){
   return false;
 }
 function slRequiredByMaxFL(){return !!(cfg.prop && nz(cfg.maxFL)>0);}
+/* Posisi tanpa SL saat Max FL aktif: diberi waktu (default 30 dtk) untuk pasang SL, lalu ditutup otomatis. */
+const slTimers={};let slLastTick=0;
+const slGraceMs=()=>Math.min(600,Math.max(5,nz(cfg.slGrace)||30))*1000;
+function slWarnUpdate(txt){const e=$('btSlWarn');if(!e)return;if(txt){e.textContent=txt;e.hidden=false;}else e.hidden=true;}
+function slGraceTick(){
+  try{
+    const now=Date.now(),gap=slLastTick?now-slLastTick:0;slLastTick=now;
+    if(!S.B||S.breach||!slRequiredByMaxFL()){for(const k in slTimers)delete slTimers[k];slWarnUpdate('');return;}
+    if(gap>2500)for(const k in slTimers)slTimers[k]+=gap; /* tab di background: timer dijeda */
+    let worst=null;
+    for(const p of S.pos.slice()){
+      if(p.sl>0){delete slTimers[p.id];continue;}
+      if(!slTimers[p.id])slTimers[p.id]=now+slGraceMs();
+      const left=slTimers[p.id]-now;
+      if(left<=0){
+        delete slTimers[p.id];
+        const pnl=closePos(p,p.side==='buy'?px():px()+sp(),'NO_SL',S.i);
+        recordEq(S.i);S.sig.pos='';dirty();persist();
+        msg(`Posisi #${p.id} ditutup otomatis: Stop Loss tidak dipasang dalam ${Math.round(slGraceMs()/1000)} dtk (Max FL aktif) · ${fm(pnl,true)}.`,'err');
+      }else if(!worst||left<worst.left)worst={id:p.id,left};
+    }
+    for(const k in slTimers)if(!S.pos.some(p=>String(p.id)===k))delete slTimers[k];
+    slWarnUpdate(worst?`⏱ Posisi #${worst.id} belum punya Stop Loss. Pasang SL dalam ${Math.ceil(worst.left/1000)} dtk atau posisi ditutup otomatis (Max FL aktif).`:'');
+  }catch(e){console.warn('slGraceTick',e);}
+}
+setInterval(slGraceTick,500);
 function validateFloatingLossOrder(side,lots,entry,sl){
   if(!cfg.prop || !(nz(cfg.maxFL)>0)) return true;
-  if(!(sl>0)) { msg('Order ditolak: Stop Loss wajib diisi saat aturan Max Floating Loss aktif.','err'); return false; }
+  /* SL kosong boleh saat order dibuka; batas waktu pasang SL ditangani slGraceTick (auto close). */
+  if(!(sl>0)) return true;
   const risk = floatingLossRisk(side,lots,entry,sl);
   const base = Math.max(0,nz(S.initial)||nz(cfg.balance));
   const maxPct = Math.max(0,nz(cfg.maxFL));
@@ -10556,7 +10587,7 @@ async function offerResume(){
   }catch(e){}
 }
 /* ---------- settings ---------- */
-const CFG_MAP={btBal:['balance',1],btContract:['contract',1],btLev:['leverage',1],btSpread:['spread',1],btComm:['comm',1],btMPct:['marginPct',1],btBuf:['buffer',1],btMaxFL:['maxFL',1],btFLBuffer:['flBuffer',1],btDaily:['daily',1],btOverall:['overall',1],btTarget:['target',1],btConsistency:['consistencyPct',1],btMBase:['marginBase',0],btDDMode:['overallMode',0],btDDBasis:['ddBasis',0],btProp:['prop','c'],btBlock:['block','c'],btStop:['stop','c']};
+const CFG_MAP={btBal:['balance',1],btContract:['contract',1],btLev:['leverage',1],btSpread:['spread',1],btComm:['comm',1],btMPct:['marginPct',1],btBuf:['buffer',1],btMaxFL:['maxFL',1],btFLBuffer:['flBuffer',1],btSlGrace:['slGrace',1],btDaily:['daily',1],btOverall:['overall',1],btTarget:['target',1],btConsistency:['consistencyPct',1],btMBase:['marginBase',0],btDDMode:['overallMode',0],btDDBasis:['ddBasis',0],btProp:['prop','c'],btBlock:['block','c'],btStop:['stop','c']};
 function syncCfgInputs(){Object.keys(CFG_MAP).forEach(id=>{const [k,t]=CFG_MAP[id],el=$(id);if(!el)return;if(t==='c')el.checked=!!cfg[k];else el.value=cfg[k];});$('btRisk').value=cfg.risk;}
 function updateDDExplain(){
   const e=$('btDDExplain');if(!e)return;
