@@ -2990,6 +2990,120 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
 }
 #view-backtest .bt-form-set>.bt-consistency-custom:not(.on){display:none!important}
 </style>
+<style id="qd-dual-style">
+/* ===== Quantum DOM · Dual Market + Sinyal Realtime ===== */
+.qd-dualwrap{display:flex;flex-direction:column;gap:14px;margin-top:6px;min-width:0}
+.qd-dualwrap *{box-sizing:border-box}
+.qd-duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start;min-width:0}
+.qd-duo.stack{grid-template-columns:minmax(0,1fr)}
+@media(max-width:1240px){.qd-duo{grid-template-columns:minmax(0,1fr)}}
+.qd-inst{--qi:#ffc94a;display:flex;flex-direction:column;gap:12px;min-width:0}
+.qd-inst[data-i="1"]{--qi:#35e0ff}
+/* di dalam kolom: satu kolom — chart → panel breakout (DOM) → tab analisis */
+.qd-inst .qd-main{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:none!important;grid-template-areas:"chart" "dom" "below"!important}
+.qd-inst .qd-insight{grid-template-columns:1fr 1fr}
+.qd-inst .qd-insight .qd-bias{grid-column:1/-1;order:-1}
+.qd-inst .qd-chartbox{height:clamp(360px,54vh,600px)}
+.qd-inst #qdArus .qd-arus-grid{grid-template-columns:minmax(0,1fr)}
+.qd-inst .qd-head{border-top:3px solid var(--qi)}
+.qd-inst .qd-domside{border-top:2px solid color-mix(in srgb,var(--qi) 55%,transparent)}
+.qd-inst .qd-title{display:flex;align-items:center;gap:0}
+.qi-no{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;background:var(--qi);color:#04110c;font:800 13px/1 var(--fh);margin-right:9px;flex:none}
+@media(max-width:560px){.qd-inst .qd-insight{grid-template-columns:1fr}.qd-inst .qd-chartbox{height:clamp(320px,52vh,460px)}}
+/* breakout panel: 4 TF dalam 2×2 tetap, penjelasan hanya saat diketuk */
+.qd-inst .qd-crg{padding-top:10px}
+
+/* ---------- Panel Sinyal Realtime ---------- */
+.qs-top{padding:14px 16px;display:flex;flex-direction:column;gap:12px;border:1px solid rgba(255,201,74,.35);background:linear-gradient(180deg,rgba(255,201,74,.06),rgba(13,20,40,.96) 38%)}
+.qs-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px}
+.qs-t b{font:800 15px/1.2 var(--fh);letter-spacing:.04em;color:var(--gold)}
+.qs-t small{display:block;margin-top:3px;font-size:11px;color:var(--muted);font-weight:500}
+.qs-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.qs-fld,.qs-chk{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);white-space:nowrap}
+.qs-fld input{width:64px}
+.qs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+@media(max-width:980px){.qs-grid{grid-template-columns:minmax(0,1fr)}}
+.qs-card{--qc:#7384b4;position:relative;border:1px solid var(--brd);border-left:4px solid var(--qc);border-radius:var(--radius);background:rgba(8,13,28,.78);padding:12px 13px;display:flex;flex-direction:column;gap:10px;min-width:0;transition:border-color .2s,box-shadow .2s}
+.qs-card.READY.BUY{--qc:var(--green);box-shadow:0 0 0 1px rgba(45,245,163,.35),0 6px 26px rgba(45,245,163,.12)}
+.qs-card.READY.SELL{--qc:var(--red);box-shadow:0 0 0 1px rgba(255,75,110,.35),0 6px 26px rgba(255,75,110,.12)}
+.qs-card.WATCH{--qc:var(--amber)}
+.qs-card.APPROACH{--qc:var(--cyan)}
+.qs-card.PAUSE{--qc:#566086}
+.qs-ch{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.qs-sym{font:800 15px var(--fh);letter-spacing:.04em}
+.qs-tf{font:700 10px var(--fm);padding:2px 7px;border-radius:6px;background:var(--surface3);color:var(--muted)}
+.qs-px{font:700 15px var(--fm);color:var(--gold)}
+.qs-badge{margin-left:auto;font:800 11px var(--fh);letter-spacing:.06em;padding:5px 11px;border-radius:999px;background:var(--surface3);color:var(--muted);border:1px solid var(--line2);white-space:nowrap}
+.qs-badge.READY.BUY{background:var(--green-soft);color:var(--green);border-color:rgba(45,245,163,.55)}
+.qs-badge.READY.SELL{background:var(--red-soft);color:var(--red);border-color:rgba(255,75,110,.55)}
+.qs-badge.READY{animation:qsPulse 1.6s ease-in-out infinite}
+.qs-badge.WATCH{background:var(--amber-soft);color:var(--amber);border-color:rgba(255,176,46,.5)}
+.qs-badge.APPROACH{background:var(--cyan-soft);color:var(--cyan);border-color:rgba(53,224,255,.45)}
+@keyframes qsPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.0)}50%{box-shadow:0 0 0 5px rgba(255,255,255,.07)}}
+@media(prefers-reduced-motion:reduce){.qs-badge.READY{animation:none}}
+.qs-sc{display:flex;gap:12px;align-items:center}
+.qs-ring{--p:0;flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;align-content:center;background:conic-gradient(var(--qc) calc(var(--p)*1%),rgba(130,165,255,.14) 0);position:relative}
+.qs-ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#0a1124}
+.qs-ring b,.qs-ring small{position:relative;line-height:1}
+.qs-ring b{font:800 19px var(--fm)}
+.qs-ring small{font-size:8.5px;color:var(--faint);margin-top:2px}
+.qs-sw{min-width:0;display:flex;flex-direction:column;gap:6px}
+.qs-why{font-size:12px;line-height:1.5;color:var(--text)}
+.qs-zn{display:flex;flex-wrap:wrap;gap:5px}
+.qs-chip{font:600 10px var(--fm);padding:2px 7px;border-radius:6px;background:var(--surface3);color:var(--muted)}
+.qs-chip.BUY{background:var(--green-soft);color:var(--green)}
+.qs-chip.SELL{background:var(--red-soft);color:var(--red)}
+.qs-go{font-size:11.5px;font-weight:600;color:var(--green);background:var(--green-soft);border:1px solid rgba(45,245,163,.3);border-radius:10px;padding:8px 10px;line-height:1.45}
+.qs-plan{border:1px solid var(--line2);border-radius:12px;background:rgba(19,28,56,.6);padding:9px 10px}
+.qs-plh{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-bottom:7px}
+.qs-plh b{font:800 12px var(--fh);letter-spacing:.05em}
+.qs-plh span{font-size:10px;color:var(--faint)}
+.qs-mg{margin-left:auto;font:700 10px var(--fm);padding:2px 8px;border-radius:999px;background:var(--green-soft);color:var(--green)}
+.qs-mg.warn{background:var(--amber-soft);color:var(--amber)}
+.qs-mg.violation{background:var(--red-soft);color:var(--red)}
+.qs-pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:6px}
+.qs-pg>div{background:rgba(4,6,13,.55);border:1px solid var(--line);border-radius:9px;padding:6px 8px;min-width:0}
+.qs-pg span{display:block;font-size:9.5px;color:var(--faint);letter-spacing:.04em;text-transform:uppercase}
+.qs-pg b{display:block;margin-top:2px;font:700 12.5px var(--fm);overflow-wrap:anywhere}
+.qs-pg .neg,.qs-pos .neg{color:var(--red)}.qs-pg .pos,.qs-pos .pos{color:var(--green)}
+.qs-pos{font-size:11px;color:var(--muted);padding:6px 9px;border:1px dashed var(--line2);border-radius:9px}
+.qs-need{border:1px solid rgba(255,176,46,.35);background:var(--amber-soft);border-radius:10px;padding:8px 10px;font-size:11.5px;line-height:1.5}
+.qs-need b{color:var(--amber);font-size:11px;letter-spacing:.04em}
+.qs-need ul{margin:4px 0 0;padding-left:18px}
+.qs-det{border:1px solid var(--line);border-radius:10px;background:rgba(4,6,13,.4)}
+.qs-det>summary{cursor:pointer;padding:8px 10px;font:700 11px var(--fh);letter-spacing:.05em;color:var(--muted);list-style:none}
+.qs-det>summary::-webkit-details-marker{display:none}
+.qs-det>summary::before{content:"▸ ";color:var(--gold)}
+.qs-det[open]>summary::before{content:"▾ "}
+.qs-rows{list-style:none;margin:0;padding:2px 8px 8px;display:flex;flex-direction:column;gap:5px}
+.qs-rows .r{display:grid;grid-template-columns:20px minmax(0,1fr) 66px;gap:8px;align-items:start;padding:6px 7px;border-radius:9px;background:rgba(19,28,56,.45)}
+.qs-rows .r>i{font-style:normal;font-weight:800;text-align:center;line-height:1.35}
+.qs-rows .r.ok>i{color:var(--green)}.qs-rows .r.warn>i{color:var(--amber)}.qs-rows .r.bad>i{color:var(--red)}.qs-rows .r.na>i{color:var(--faint)}
+.qs-rows .rt b{display:block;font-size:11.5px}
+.qs-rows .rt span{display:block;margin-top:1px;font-size:11px;line-height:1.45;color:var(--muted)}
+.qs-rows .rp{text-align:right}
+.qs-rows .rp em{font:700 11px var(--fm);font-style:normal;color:var(--text)}
+.qs-bar{height:4px;border-radius:3px;background:rgba(130,165,255,.16);margin-top:4px;overflow:hidden}
+.qs-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--green))}
+.qs-rows .r.warn .qs-bar i{background:var(--amber)}.qs-rows .r.bad .qs-bar i{background:var(--red)}
+.qs-flags{display:flex;flex-direction:column;gap:5px;padding:0 8px 8px}
+.qs-flag{display:flex;gap:7px;font-size:11px;line-height:1.45;padding:6px 8px;border-radius:9px;background:rgba(19,28,56,.45);color:var(--muted)}
+.qs-flag.bad{background:var(--red-soft);color:#ffc2cf}.qs-flag.warn{background:var(--amber-soft);color:#ffe2ad}
+.qs-flag i{font-style:normal;flex:none}
+.qs-acts{display:flex;flex-wrap:wrap;gap:6px}
+.qs-acts .btn{padding:6px 11px;font-size:11px}
+.qs-feed{border:1px solid var(--line);border-radius:12px;background:rgba(4,6,13,.35)}
+.qs-feed>summary{cursor:pointer;padding:9px 12px;font:700 11px var(--fh);letter-spacing:.06em;color:var(--muted);display:flex;gap:8px;align-items:center}
+.qs-feed>summary .btn{margin-left:auto;padding:3px 9px;font-size:10px}
+#qsFeed{display:flex;flex-direction:column;gap:4px;padding:0 10px 10px;max-height:240px;overflow:auto}
+.qs-ev{display:grid;grid-template-columns:auto auto auto minmax(0,1fr);gap:4px 10px;align-items:baseline;font-size:11px;padding:5px 7px;border-radius:8px;background:rgba(19,28,56,.4)}
+.qs-ev .qs-et{font:600 10px var(--fm);color:var(--faint)}
+.qs-ev .qs-ek{font:800 10px var(--fh);letter-spacing:.05em}
+.qs-ev.ready.BUY .qs-ek{color:var(--green)}.qs-ev.ready.SELL .qs-ek{color:var(--red)}.qs-ev.watch .qs-ek{color:var(--amber)}.qs-ev.end .qs-ek{color:var(--faint)}
+.qs-ev .qs-etx{color:var(--muted);min-width:0;overflow-wrap:anywhere}
+@media(max-width:640px){.qs-ev{grid-template-columns:auto minmax(0,1fr)}.qs-ev .qs-etx{grid-column:1/-1}.qs-sc{flex-direction:row}.qs-ring{width:56px;height:56px}.qs-rows .r{grid-template-columns:18px minmax(0,1fr) 54px}}
+.qs-note{font-size:10.5px;color:var(--faint);line-height:1.5}
+</style>
 </head>
 <body>
 <div class="world" aria-hidden="true">
@@ -3611,11 +3725,36 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
 </section>
 
 <section id="view-qdom" class="view">
-<div class="qd-wrap">
+<div class="qd-dualwrap">
+
+  <section class="card qs-top" id="qsTop">
+    <div class="qs-h">
+      <div class="qs-t"><b>⚡ Sinyal Realtime · Siap Open Posisi</b><small>Konfluensi zona Supply/Demand + tekanan buyer/seller + order flow + sapuan likuiditas + breakout M15–H4 + struktur. Dihitung ulang tiap detik untuk kedua pasar.</small></div>
+      <div class="qs-ctl">
+        <label class="qs-fld">Skor siap ≥ <input id="qsMin" class="xin" type="number" min="40" max="95" step="1"></label>
+        <label class="qs-chk"><input type="checkbox" id="qsNotif"> Notif</label>
+        <label class="qs-chk"><input type="checkbox" id="qsSnd"> Suara</label>
+        <div class="qd-seg" id="qsLay" role="group" aria-label="Tata letak chart"><button type="button" data-v="side">Berdampingan</button><button type="button" data-v="stack">Bertumpuk</button></div>
+      </div>
+    </div>
+    <div class="qs-grid" id="qsGrid"><div class="qs-card LOAD" data-i="0"></div><div class="qs-card LOAD" data-i="1"></div></div>
+    <details class="qs-feed" open><summary>Riwayat sinyal <b id="qsEvN"></b><button type="button" class="btn ghost" id="qsClr">Hapus</button></summary><div id="qsFeed"></div></details>
+    <div class="note qs-note">Sinyal adalah skor konfluensi dari data Binance publik (bukan rekomendasi pasti). <b>SIAP</b> = skor ≥ batas, harga di/dekat zona (≤ 0,35 ATR), RR ≥ minimum, tidak ada jendela berita, margin rule aman, dan bertahan ≥ 3 detik. <b>PANTAU</b> = sebagian syarat terpenuhi. Selalu validasi di chart dan pasang SL.</div>
+  </section>
+
+  <div class="qd-duo" id="qdDuo">
+    <div class="qd-inst qd-wrap" id="qdInstA" data-i="0"></div>
+    <div class="qd-inst qd-wrap" id="qdInstB" data-i="1"></div>
+  </div>
+
+  <div class="note qd-foot">Sumber: Binance Futures publik (kline, aggTrade, depth 500–1000 level). Harga bisa berbeda tipis dari XAUUSD broker — gunakan Offset (khusus emas). Lot memakai asumsi 1 lot = 100 unit untuk emas dan 1 unit untuk simbol lain (mis. QQQUSDT); ubah di Pengaturan tiap chart. Panel breakout pasar non-emas selalu memakai candle Binance (EA hanya mengirim data emas). DOM hanya mencakup level order book yang diambil (zona di luar jangkauan ditandai “di luar DOM”). Zona dideteksi dari candle yang sudah tertutup. Sesi (UTC / WIB): Asia 00–08 / 07–15 · London 08–13 / 15–20 · New York 13–24 / 20–07. Skor &amp; peluang tahan adalah estimasi, bukan jaminan. Pasar saham/ETF punya jam buka sendiri — saat tutup, chart akan menampilkan “senyap”.</div>
+</div>
+</section>
+<template id="qdTpl">
 
   <header class="qd-head card">
     <div class="qd-hrow">
-      <div class="qd-id"><div class="qd-title">⚛ Quantum DOM<small>Liquidity Matrix</small></div></div>
+      <div class="qd-id"><div class="qd-title"><span class="qi-no">1</span>⚛ Quantum DOM<small>Liquidity Matrix</small></div></div>
       <div class="qd-pricebox">
       <button type="button" id="qdSymBtn" class="qd-sel qd-symbtn" aria-haspopup="listbox" title="Pilih instrumen · ★ untuk favorit">XAUUSDT ▾</button>
       <b id="qdPx" class="qd-px">—</b>
@@ -3777,9 +3916,7 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
     </aside>
   </div>
 
-  <div class="note qd-foot">Sumber: Binance Futures publik (kline, aggTrade, depth 500–1000 level). Harga bisa berbeda tipis dari XAUUSD broker — gunakan Offset. Lot memakai asumsi 1 lot = 100 unit (oz untuk emas); ubah di Pengaturan untuk simbol lain. DOM hanya mencakup level order book yang diambil (zona di luar jangkauan ditandai “di luar DOM”). Zona dideteksi dari candle yang sudah tertutup. Sesi (UTC / WIB): Asia 00–08 / 07–15 · London 08–13 / 15–20 · New York 13–24 / 20–07. Skor &amp; peluang tahan adalah estimasi, bukan jaminan.</div>
-</div>
-</section>
+</template>
 
     <section id="view-intel" class="view">
       <div class="hero" data-scene="intel"><div class="hero-info"><b>COMMAND INTELLIGENCE</b><span>Integritas data → survival akun → konfluensi setup → performa → replay trade. Semua berbasis data yang tersedia di dashboard; tidak membuat sinyal atau harga fiktif.</span><em id="intelStamp">Menunggu snapshot…</em></div><div class="hero-scene"></div></div>
@@ -10909,14 +11046,94 @@ bind();offerResume();dirty();
 
 
 <script>
-/* ===== Quantum DOM Liquidity Matrix (Binance Futures publik, realtime) ===== */
+/* ===== Quantum DOM · Dual Market (XAUUSDT + QQQUSDT) + panel Sinyal Realtime ===== */
 (() => {
 'use strict';
-const $ = id => document.getElementById(id);
-if (!$('view-qdom') || !$('qdCv')) return;
-const LSG = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
-const LSS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
-const act = () => $('view-qdom').classList.contains('active') && !document.hidden;
+const VIEW = document.getElementById('view-qdom'), TPL = document.getElementById('qdTpl');
+if (!VIEW || !TPL) return;
+
+/* ---------- Status bersama panel sinyal ---------- */
+const LS = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+const SS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
+const SIG = { min: Math.min(95, Math.max(40, +LS('qs_min', 70) || 70)), notif: LS('qs_notif', true) !== false, snd: !!LS('qs_snd', false), lay: LS('qs_lay', 'side') === 'stack' ? 'stack' : 'side', ev: LS('qs_ev', []), open: {}, insts: [], dirty: false };
+if (!Array.isArray(SIG.ev)) SIG.ev = [];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const $q = id => document.getElementById(id);
+const wibT = (t, o) => new Date(t).toLocaleString('id-ID', Object.assign({ timeZone: 'Asia/Jakarta' }, o));
+const BADGE = (S) => ({ READY: S.side === 'BUY' ? '▲ SIAP BUY' : '▼ SIAP SELL', WATCH: S.confirming ? `◐ MENGONFIRMASI ${S.side}` : `◐ PANTAU ${S.side}`, APPROACH: `➜ MENDEKATI ${S.side === 'BUY' ? 'DEMAND' : 'SUPPLY'}`, WAIT: '◌ MENUNGGU SETUP', PAUSE: '⏸ PASAR SENYAP', LOAD: '◌ MEMUAT…' }[S.state] || '—');
+const ICO = { ok: '✓', warn: '◐', bad: '✕', na: '–', info: 'ℹ' };
+
+function planBlock(api, S) {
+  const p = S.plan; if (!p || !S.zone) return '';
+  const f2 = api.f2, mg = p.mgS ? `<span class="qs-mg ${p.mgS.status}">${p.mgS.status === 'ok' ? 'Margin AMAN' : p.mgS.status === 'warn' ? 'Margin MENDEKATI BATAS' : 'Margin MELANGGAR'}</span>` : '';
+  const tps = p.tps.slice(0, 3).map((t, i) => `<div><span>TP${i + 1} · ${t.r.toFixed(1)}R</span><b class="pos">${f2(t.p)}</b></div>`).join('');
+  return `<div class="qs-plan"><div class="qs-plh"><b>Rencana ${p.side}</b><span>${api.Q.plEntry === 'prox' ? 'entry tepi dekat zona' : 'entry tengah 50% zona'} · SL di luar sisi jauh + buffer ATR</span>${mg}</div>
+    <div class="qs-pg"><div><span>Entry</span><b>${f2(p.entry)}</b></div><div><span>Stop loss</span><b class="neg">${f2(p.sl)}</b></div>${tps}<div><span>Lot akhir</span><b>${p.bal > 0 ? p.fin.toFixed(2) : '—'}</b></div><div><span>Risiko aktual</span><b>${p.bal > 0 ? p.rpct.toFixed(2) + '% · ' + p.ract.toFixed(2) + ' $' : 'isi balance'}</b></div></div></div>`;
+}
+function cardHTML(i, api) {
+  const Q = api.Q, S = Q.sig, f2 = api.f2;
+  if (!S) return `<div class="qs-ch"><span class="qs-sym">${esc(Q.sym)}</span><span class="qs-badge LOAD">◌ MEMUAT…</span></div><div class="qs-why">Menunggu data pertama…</div>`;
+  const op = SIG.open[i] != null ? SIG.open[i] : (S.state === 'READY' || S.state === 'WATCH');
+  const rows = S.rows.map(r => `<li class="r ${r.st}"><i>${ICO[r.st]}</i><div class="rt"><b>${esc(r.l)}</b><span>${esc(r.txt)}</span></div><div class="rp"><em>${r.st === 'na' ? '–' : r.pts.toFixed(0) + '/' + r.max}</em><div class="qs-bar"><i style="width:${r.max ? r.pts / r.max * 100 : 0}%"></i></div></div></li>`).join('');
+  const flags = S.flags.map(f => `<div class="qs-flag ${f.st}"><i>${f.st === 'bad' ? '⛔' : f.st === 'warn' ? '⚠' : 'ℹ'}</i><span>${esc(f.txt)}</span></div>`).join('');
+  const need = S.need.length && S.state !== 'READY' ? `<div class="qs-need"><b>Yang masih kurang sebelum layak entry</b><ul>${S.need.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>` : '';
+  const ready = S.state === 'READY' ? `<div class="qs-go">✔ Syarat utama terpenuhi. Ini alat bantu keputusan — validasi manual di chart, pastikan SL terpasang sebelum entry.</div>` : '';
+  const pos = S.pos && S.pos.n ? `<div class="qs-pos">Posisi EA terbuka: <b>${S.pos.side}</b> · BUY ${S.pos.buy.toFixed(2)} / SELL ${S.pos.sell.toFixed(2)} lot · floating <b class="${S.pos.pl >= 0 ? 'pos' : 'neg'}">${S.pos.pl >= 0 ? '+' : ''}${S.pos.pl.toFixed(2)} $</b></div>` : '';
+  const hasZ = S.zone && (S.state === 'READY' || S.state === 'WATCH' || S.state === 'APPROACH');
+  return `<div class="qs-ch"><span class="qs-sym">${esc(Q.sym)}</span><span class="qs-tf">${esc(Q.tf)}</span><b class="qs-px" data-px>${Q.px ? f2(Q.px) : '—'}</b><span class="qs-badge ${S.state} ${S.side || ''}">${BADGE(S)}</span></div>
+  <div class="qs-sc"><div class="qs-ring" style="--p:${S.score || 0}"><b>${S.state === 'LOAD' || S.state === 'PAUSE' || (!S.rows.length) ? '—' : S.score}</b><small>/100</small></div>
+    <div class="qs-sw"><div class="qs-why">${esc(S.why)}</div>${S.zinfo ? `<div class="qs-zn"><span class="qs-chip ${S.side}">${esc(S.zinfo)}</span><span class="qs-chip">ATR ${f2(S.atr)}</span><span class="qs-chip">min siap ${S.min}</span></div>` : ''}</div></div>
+  ${ready}${planBlock(api, S)}${pos}${need}
+  ${S.rows.length ? `<details class="qs-det" data-i="${i}" ${op ? 'open' : ''}><summary>Alasan lengkap · ${S.rows.filter(r => r.st === 'ok').length}/${S.rows.filter(r => r.st !== 'na').length} faktor mendukung</summary><ul class="qs-rows">${rows}</ul>${flags ? `<div class="qs-flags">${flags}</div>` : ''}</details>` : (flags ? `<div class="qs-flags">${flags}</div>` : '')}
+  <div class="qs-acts"><button type="button" class="btn ghost" data-act="chart">Ke chart ↓</button>${hasZ ? '<button type="button" class="btn ghost" data-act="zone">Tampilkan zona &amp; rencana di chart</button>' : ''}${S.plan && hasZ ? '<button type="button" class="btn ghost" data-act="copy">Salin rencana</button>' : ''}</div>`;
+}
+function paintTop() {
+  SIG.dirty = false;
+  const g = $q('qsGrid'); if (!g) return;
+  SIG.insts.forEach((api, i) => {
+    let el = g.children[i]; if (!el) return;
+    const S = api.Q.sig, cls = `qs-card ${S ? S.state : 'LOAD'} ${S && S.side ? S.side : ''}`, f2 = api.f2;
+    if (el.className !== cls) el.className = cls;
+    const px = el.querySelector('[data-px]'), sigKey = S ? [S.state, S.side, S.score, S.why, S.rows.map(r => r.txt + r.pts).join('|'), S.flags.map(f => f.txt).join('|'), S.plan ? S.plan.entry + ':' + S.plan.sl + ':' + S.plan.fin : '', S.need.join('|'), api.Q.tf, api.Q.sym, S.pos ? S.pos.pl.toFixed(1) : ''].join('~') : 'load';
+    if (el.dataset.k !== sigKey) { el.dataset.k = sigKey; el.innerHTML = cardHTML(i, api); }
+    else if (px && api.Q.px) { const t = f2(api.Q.px); if (px.textContent !== t) px.textContent = t; }
+  });
+  const ev = SIG.ev.slice(0, 14), h = ev.length ? ev.map(e => `<div class="qs-ev ${e.k} ${e.side || ''}"><span class="qs-et">${wibT(e.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span><b>${esc(e.sym)} ${esc(e.tf)}</b><span class="qs-ek">${e.k === 'ready' ? (e.side === 'BUY' ? '▲ SIAP BUY' : '▼ SIAP SELL') : e.k === 'end' ? '✕ SINYAL SELESAI' : '◐ PANTAU ' + esc(e.side)}</span><span class="qs-etx">skor ${e.score} · ${esc(e.txt)}</span></div>`).join('') : '<div class="qd-sub">Belum ada kejadian sinyal. Panel mencatat setiap kali setup berubah menjadi PANTAU / SIAP / selesai (tersimpan di browser ini).</div>';
+  const fe = $q('qsFeed'); if (fe && fe.dataset.h !== h) { fe.dataset.h = h; fe.innerHTML = h; }
+  const n = $q('qsEvN'); if (n) n.textContent = SIG.ev.length ? `(${SIG.ev.length})` : '';
+}
+function schedulePaint() { if (SIG.dirty) return; SIG.dirty = true; requestAnimationFrame(paintTop); }
+function pushEv(e) {
+  const last = SIG.ev[0]; if (last && last.sym === e.sym && last.k === e.k && last.side === e.side && e.t - last.t < 60000) return;
+  SIG.ev.unshift(e); if (SIG.ev.length > 60) SIG.ev.length = 60; SS('qs_ev', SIG.ev);
+}
+function onEvent(api, kind, S, pv) {
+  const Q = api.Q, f2 = api.f2, now = Date.now();
+  if (kind === 'ready') {
+    const p = S.plan, tp = p && p.tps[0] ? ` · TP1 ${f2(p.tps[0].p)} (${p.tps[0].r.toFixed(1)}R)` : '';
+    pushEv({ t: now, k: 'ready', sym: Q.sym, tf: Q.tf, side: S.side, score: S.score, txt: `${S.zinfo}${p ? ` · entry ${f2(p.entry)} · SL ${f2(p.sl)}${tp}` : ''}` });
+    const msg = `⚡ SIAP ${S.side} ${Q.sym} ${Q.tf} · skor ${S.score} · ${S.zinfo}${p ? ' · entry ' + f2(p.entry) + ' · SL ' + f2(p.sl) : ''}`;
+    if (SIG.notif) { api.toast(msg, S.side === 'BUY' ? 'buy' : 'sell'); try { if (window.Notification && Notification.permission === 'granted') new Notification('Sinyal ' + Q.sym, { body: msg }); } catch (e) { } }
+    if (SIG.snd) api.beep();
+  } else if (kind === 'end') {
+    const side = pv && pv.key ? pv.key.slice(0, pv.key.startsWith('BUY') ? 3 : 4) : '';
+    pushEv({ t: now, k: 'end', sym: Q.sym, tf: Q.tf, side, score: S.score, txt: S.why || 'kondisi setup berubah' });
+  } else if (kind === 'watch') {
+    pushEv({ t: now, k: 'watch', sym: Q.sym, tf: Q.tf, side: S.side, score: S.score, txt: `${S.zinfo} — ${S.need[0] || 'menunggu konfirmasi'}` });
+  }
+  schedulePaint();
+}
+
+/* ---------- Mesin instance Quantum DOM (satu per pasar) ---------- */
+function QDInit(CFG) {
+'use strict';
+const root = CFG.root, _c = {};
+const $ = id => { const c = _c[id]; if (c && c.isConnected) return c; const e = root.querySelector('#' + id); _c[id] = e; return e; };
+if (!$('qdCv')) return null;
+const KM = k => /^qd_/.test(k) ? CFG.ls + k.slice(3) : k;
+const LSG = (k, d) => { try { const v = localStorage.getItem(KM(k)); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+const LSS = (k, v) => { try { localStorage.setItem(KM(k), JSON.stringify(v)); } catch (e) { } };
+const act = () => document.getElementById('view-qdom').classList.contains('active') && !document.hidden;
 const ML = !!window.__MLITE; /* mode ringan HP */
 const f2 = (v, d) => Number.isFinite(v) ? v.toFixed(d == null ? (Q.dec || 2) : d) : '—';
 const lotF = v => !Number.isFinite(v) ? '—' : v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2);
@@ -10935,7 +11152,7 @@ const sessStart = t => { const d = new Date(t), h = d.getUTCHours(); return Date
 const wib = (t, o) => new Date(t).toLocaleString('id-ID', Object.assign({ timeZone: 'Asia/Jakarta' }, o));
 
 const Q = {
-  sym: LSG('qd_sym', 'XAUUSDT'), tf: LSG('qd_tf', '15m'), n: +LSG('qd_n', ML ? 90 : 150) || (ML ? 90 : 150), lot: +LSG('qd_lot', 100) || 100,
+  sym: LSG('qd_sym', CFG.defSym), tf: LSG('qd_tf', '15m'), n: +LSG('qd_n', ML ? 90 : 150) || (ML ? 90 : 150), lot: +LSG('qd_lot', 100) || 100,
   optDom: LSG('qd_dom', true), optMid: LSG('qd_mid', true), optSess: LSG('qd_sess', true),
   host: 'fut', fxLiq: LSG('qd_fxliq', true), fxCvd: LSG('qd_fxcvd', !ML), fxPd: LSG('qd_fxpd', false), fxHeat: LSG('qd_fxheat', false), fxPlan: LSG('qd_fxplan', true), fxNews: LSG('qd_fxnews', true), eqTol: +LSG('qd_eqtol', .15), pdN: +LSG('qd_pdn', 100), pdF: LSG('qd_pdf', false), absVol: +LSG('qd_absvol', 1.5), plRisk: +LSG('qd_plrisk', 1), plBuf: +LSG('qd_plbuf', .15), plEntry: LSG('qd_plentry', 'mid'), plRR: +LSG('qd_plrr', 1.5), plBal: LSG('qd_plbal', ''), nwPre: +LSG('qd_nwpre', 30), nwPost: +LSG('qd_nwpost', 30), nwImp: +LSG('qd_nwimp', 3), nwCcy: LSG('qd_nwccy', 'USD'), nwDamp: LSG('qd_nwdamp', true), ana: null, plan: null, heat: [], heatEv: [], hstp: 0, hHi: 0, hLo: 1e18, hWalls: null, lastAid: 0, wsTick: 0, wsKl: 0, lastPoll: 0, lastKl: 0, trBusy: false, klBusy: false, lastSweepT: 0, newsSeen: {}, nws: { ev: [], active: false, act: [], next: null, recent: [] }, wImp: +LSG('qd_wimp', 30), wFr: +LSG('qd_wfr', 25), wVol: +LSG('qd_wvol', 20), wDom: +LSG('qd_wdom', 15), wFlow: +LSG('qd_wflow', 10), frMode: LSG('qd_frmode', 'absorb'), gap: +LSG('qd_gap', .5), staleSec: +LSG('qd_stale', 15), fav: LSG('qd_fav', []), syms: LSG('qd_syms', []), lots: LSG('qd_lots', {}), optVp: LSG('qd_vp', !ML), optEma: LSG('qd_emal', true), optPin: LSG('qd_pin', true), zf: 'all', tapeMin: 0, tape: [], cnt: { t: 0, bq: 0, sq: 0, bn: 0, sn: 0 }, wave: [], waveAcc: { b: 0, s: 0 }, tickTs: [], lastTick: 0, stale: false, dec: 2, near: +LSG('qd_near', 0) || 0, optVol: LSG('qd_vol', true), volTh: +LSG('qd_volth', 2) || 2, sel: null, pan: 0, tab: LSG('qd_tab', 'zona'), view: LSG('qd_view', 'card'), optZ: LSG('qd_z', true), optWall: LSG('qd_wall', true), alOn: LSG('qd_alon', false), alSnd: LSG('qd_alsnd', true), alNtf: LSG('qd_alntf', false), alDist: +LSG('qd_aldist', .3) || .3, alS: {}, lastDirA: null, hist: [], hit: [], bins: null, walls: [], ptrDown: false, drag: null, cw: 6, pxPrev: 0, thS: +LSG('qd_ths', 1.8) || 1.8, thM: +LSG('qd_thm', 1.0) || 1.0, hold: +LSG('qd_hold', 6) || 6, maxZ: +LSG('qd_maxz', 4) || 4, emaN: +LSG('qd_ema', 50) || 50, swL: +LSG('qd_swl', 5) || 5, src: LSG('qd_src', 'press'), optHtf: LSG('qd_htf', true), htfC: {}, htfZ: [], htfT: 0, htfBusy: false, emaV: null, sw: null, dirWhy: '', optMed: LSG('qd_med', true), optBrk: LSG('qd_brk', false), mode: LSG('qd_mode', 'hybrid'), ofsMode: LSG('qd_om', 'auto'), ofsMan: +LSG('qd_ov', 0) || 0, ofsU: LSG('qd_ou', 'pt'), ofs: 0, ofsS: [], ofsStamp: null, ofsInfo: '', dir: null, dirT: 0, c: [], px: 0, atr: 0, bids: [], asks: [], flow: [], all: [], zones: [], str: null,
   log: LSG('qd_log', []), zs: {}, ws: null, wsOk: false, wsTry: 0, lastMsg: 0, lastDepth: 0, depthBusy: false, depthErr: '',
@@ -11502,7 +11719,7 @@ function render() { rescore(); updPlan(); updWalls(); paintHead(); paintInsight(
 
 /* ---------- Alert ---------- */
 function toast(msg, kind) {
-  let box = $('qdToasts'); if (!box) { box = document.createElement('div'); box.id = 'qdToasts'; box.className = 'qd-toasts'; document.body.appendChild(box); }
+  let box = document.getElementById('qdToasts'); if (!box) { box = document.createElement('div'); box.id = 'qdToasts'; box.className = 'qd-toasts'; document.body.appendChild(box); }
   const d = document.createElement('div'); d.className = 'qd-toast ' + (kind || ''); d.textContent = msg; box.appendChild(d); setTimeout(() => d.classList.add('show'), 20);
   setTimeout(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 400); }, 7000); while (box.children.length > 4) box.firstChild.remove();
 }
@@ -11590,7 +11807,7 @@ pane.addEventListener('click', e => {
   }
   const card = e.target.closest('.qd-zc'); if (card) select(card.dataset.key, false);
 });
-document.querySelector('.qd-insight').addEventListener('click', e => { const c = e.target.closest('.qd-ncard'); if (c && c.dataset.key) select(c.dataset.key, true); });
+root.querySelector('.qd-insight').addEventListener('click', e => { const c = e.target.closest('.qd-ncard'); if (c && c.dataset.key) select(c.dataset.key, true); });
 $('qdOv').addEventListener('click', e => { if (e.target.closest('[data-act="retry"]')) reload(); });
 $('qdLiveBtn').onclick = () => { Q.pan = 0; Q.dirty = true; };
 /* interaksi chart: geser, zoom, klik zona */
@@ -11603,7 +11820,7 @@ cvEl.addEventListener('pointerleave', () => { if (!Q.drag) { Q.mouse = null; Q.d
 cvEl.addEventListener('wheel', e => { e.preventDefault(); Q.n = clamp(Math.round(Q.n * (e.deltaY > 0 ? 1.12 : .89)), 30, 400); $('qdN').value = Q.n; LSS('qd_n', Q.n); Q.dirty = true; }, { passive: false });
 cvEl.addEventListener('dblclick', () => { Q.pan = 0; Q.sel = null; Q.dirty = true; paintPane(); paintInsight(); });
 /* ---------- Tambahan v7: simbol & favorit, bantuan, arus transaksi, senyap ---------- */
-const DEFSYMS = ['XAUUSDT', 'XAUTUSDT', 'PAXGUSDT'];
+const DEFSYMS = ['XAUUSDT', 'QQQUSDT', 'XAUTUSDT', 'PAXGUSDT'];
 const isGold = () => /^(XAU|PAXG)/.test(Q.sym), pts = v => isGold() ? ` · ${Math.round(v * 100)} poin` : '';
 const lot3 = v => !Number.isFinite(v) ? '—' : Math.abs(v) >= 10 ? v.toFixed(1) : Math.abs(v) >= 1 ? v.toFixed(2) : v.toFixed(3);
 const hq = k => `<button type="button" class="qd-help" data-h="${k}" aria-label="Bantuan">?</button>`;
@@ -11628,14 +11845,15 @@ const HELP = {
   alert: ['Alert zona', 'Memberi tahu (notifikasi dalam dashboard, suara, dan opsional notifikasi browser) saat harga mendekati/masuk zona Strong, saat zona ditahan atau tembus, dan saat Follow berbalik arah.'],
   stale: ['Deteksi senyap', 'Jika tidak ada transaksi baru selama beberapa detik (default 15), tab menampilkan peringatan “senyap”: pasar kemungkinan tutup/jeda, likuiditas sangat tipis, atau koneksi terputus. Otomatis kembali normal begitu transaksi masuk. Isi 0 untuk mematikan.']
 };
-const helpEl = document.createElement('div'); helpEl.id = 'qdHelp'; helpEl.className = 'qd-modal'; helpEl.hidden = true;
-helpEl.innerHTML = '<div class="qd-mw" role="dialog" aria-modal="true"><div class="qd-mt2"><b id="qdHelpT"></b><button type="button" id="qdHelpX">Paham ✕</button></div><div id="qdHelpB" class="qd-mb2"></div></div>'; document.body.appendChild(helpEl);
-function openHelp(k) { const h = HELP[k]; if (!h) return; $('qdHelpT').textContent = h[0]; $('qdHelpB').innerHTML = h[1]; helpEl.hidden = false; }
-helpEl.addEventListener('click', e => { if (e.target === helpEl || e.target.id === 'qdHelpX') helpEl.hidden = true; });
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('.qd-help'); if (b) { e.stopPropagation(); e.preventDefault(); openHelp(b.dataset.h); } }, true);
+let helpEl = document.getElementById('qdHelp'); const helpNew = !helpEl;
+if (helpNew) { helpEl = document.createElement('div'); helpEl.id = 'qdHelp'; helpEl.className = 'qd-modal'; helpEl.hidden = true;
+helpEl.innerHTML = '<div class="qd-mw" role="dialog" aria-modal="true"><div class="qd-mt2"><b id="qdHelpT"></b><button type="button" id="qdHelpX">Paham ✕</button></div><div id="qdHelpB" class="qd-mb2"></div></div>'; document.body.appendChild(helpEl); }
+function openHelp(k) { const h = HELP[k]; if (!h) return; helpEl.querySelector('#qdHelpT').textContent = h[0]; helpEl.querySelector('#qdHelpB').innerHTML = h[1]; helpEl.hidden = false; }
+if (helpNew) helpEl.addEventListener('click', e => { if (e.target === helpEl || e.target.id === 'qdHelpX') helpEl.hidden = true; });
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('.qd-help'); if (b && root.contains(b)) { e.stopPropagation(); e.preventDefault(); openHelp(b.dataset.h); } }, true);
 
 /* --- simbol, favorit, tambah simbol --- */
-const symMenu = document.createElement('div'); symMenu.id = 'qdSymMenu'; symMenu.className = 'qd-symmenu'; symMenu.hidden = true; document.body.appendChild(symMenu);
+const symMenu = document.createElement('div'); symMenu.id = 'qdSymMenu' + CFG.sfx; symMenu.className = 'qd-symmenu'; symMenu.hidden = true; document.body.appendChild(symMenu);
 function symList() { const all = Array.from(new Set([...DEFSYMS, ...Q.syms])); return all.map((s, i) => [s, i]).sort((a, b) => (Q.fav.includes(b[0]) - Q.fav.includes(a[0])) || (Q.fav.indexOf(a[0]) - Q.fav.indexOf(b[0])) || (a[1] - b[1])).map(x => x[0]); }
 function renderSymMenu() {
   symMenu.innerHTML = '<div class="qd-symhead">Pilih instrumen · ★ favorit naik ke atas</div>' + symList().map(s => `<div class="qd-symrow ${s === Q.sym ? 'on' : ''}" data-sym="${s}"><span>${s}</span><span><button type="button" class="qd-star ${Q.fav.includes(s) ? 'on' : ''}" data-star="${s}" title="Jadikan favorit">${Q.fav.includes(s) ? '★' : '☆'}</button>${DEFSYMS.includes(s) ? '' : `<button type="button" class="qd-del" data-del="${s}" title="Hapus simbol">×</button>`}</span></div>`).join('') + '<div class="qd-symrow add" data-add="1">＋ Tambah simbol Binance…</div>';
@@ -11652,7 +11870,7 @@ $('qdSymBtn').onclick = e => { e.stopPropagation(); symMenu.hidden = !symMenu.hi
 symMenu.addEventListener('click', e => {
   e.stopPropagation(); const st = e.target.closest('[data-star]'), dl = e.target.closest('[data-del]'), ad = e.target.closest('[data-add]'), r = e.target.closest('[data-sym]');
   if (st) { const s = st.dataset.star, i = Q.fav.indexOf(s); if (i >= 0) Q.fav.splice(i, 1); else Q.fav.push(s); LSS('qd_fav', Q.fav); renderSymMenu(); paintHead(); return; }
-  if (dl) { const s = dl.dataset.del; Q.syms = Q.syms.filter(x => x !== s); Q.fav = Q.fav.filter(x => x !== s); LSS('qd_syms', Q.syms); LSS('qd_fav', Q.fav); renderSymMenu(); if (Q.sym === s) setSymbol('XAUUSDT'); return; }
+  if (dl) { const s = dl.dataset.del; Q.syms = Q.syms.filter(x => x !== s); Q.fav = Q.fav.filter(x => x !== s); LSS('qd_syms', Q.syms); LSS('qd_fav', Q.fav); renderSymMenu(); if (Q.sym === s) setSymbol(CFG.defSym); return; }
   if (ad) { symMenu.hidden = true; addSymbol(); return; }
   if (r) { symMenu.hidden = true; if (r.dataset.sym !== Q.sym) setSymbol(r.dataset.sym); }
 });
@@ -11942,7 +12160,7 @@ Object.assign(HELP, {
 
 /* ===== Candle realtime M15 / M30 / H1 (sumber: EA → riwayat EA → Binance) ===== */
 const CRTF = [['15m', 'M15', 900000, 'qdCr15'], ['30m', 'M30', 1800000, 'qdCr30'], ['1h', 'H1', 3600000, 'qdCr60'], ['4h', 'H4', 14400000, 'qdCr240']];
-Q.crSrc = LSG('qd_crsrc', 'auto'); Q.crInt = String(LSG('qd_crint', '5')); if (!['live', '5', '15', '30', '60', '90', '120'].includes(Q.crInt)) Q.crInt = '5'; Q.crCount = +LSG('qd_crcount', 3) === 5 ? 5 : 3; Q.brkAlert = !!LSG('qd_brkalert', false); Q.brkSeen = {}; Q.cr = {}; Q.crBusy = {};
+const crMode = () => isGold() ? Q.crSrc : 'bn'; Q.crSrc = LSG('qd_crsrc', 'auto'); Q.crInt = String(LSG('qd_crint', '5')); if (!['live', '5', '15', '30', '60', '90', '120'].includes(Q.crInt)) Q.crInt = '5'; Q.crCount = +LSG('qd_crcount', 3) === 5 ? 5 : 3; Q.brkAlert = !!LSG('qd_brkalert', false); Q.brkSeen = {}; Q.cr = {}; Q.crBusy = {};
 function eaAcc() { return (window.__FX && window.__FX.account) || null; }
 function eaPrice() { const a = eaAcc(); if (!a) return 0; const age = a.priceTime ? Date.now() / 1000 - a.priceTime : 0; if (age > 120) return 0; const b = +a.bid, k = +a.ask; return b > 0 && k > 0 ? (b + k) / 2 : b > 0 ? b : 0; }
 function normBar(b) {
@@ -11997,9 +12215,9 @@ async function crFetch(tf) {
   if (Q.crBusy[tf]) return; Q.crBusy[tf] = true; const tok = Q.tok;
   try { const d = await fj(`${HOSTS[Q.host].rest}klines?symbol=${Q.sym}&interval=${tf}&limit=20`); if (tok !== Q.tok || !Array.isArray(d)) return; Q.cr[tf] = { t: Date.now(), ofs: Q.ofs, bars: d.map(k => ({ t: +k[0], o: +k[1] + Q.ofs, h: +k[2] + Q.ofs, l: +k[3] + Q.ofs, c: +k[4] + Q.ofs, v: +k[5] })) }; } catch (e) { } finally { Q.crBusy[tf] = false; }
 }
-function crTick() { if (!act() || Q.domVis === false || Q.crSrc === 'ea') return; const now = Date.now(); CRTF.forEach(([tf]) => { if (!Q.cr[tf] || now - Q.cr[tf].t > crThr()) crFetch(tf); }); }
+function crTick() { if (!act() || Q.domVis === false || crMode() === 'ea') return; const now = Date.now(); CRTF.forEach(([tf]) => { if (!Q.cr[tf] || now - Q.cr[tf].t > crThr()) crFetch(tf); }); }
 function crView(tf, label, ms) {
-  const mode = Q.crSrc; let pick = mode !== 'bn' ? eaBars(label, ms) : null;
+  const mode = crMode(); let pick = mode !== 'bn' ? eaBars(label, ms) : null;
   if (!pick && mode !== 'ea') { const r = Q.cr[tf]; if (r && r.bars.length >= 3) { const sh = Q.ofs - r.ofs; pick = { src: 'bn', bars: r.bars.map(b => ({ t: b.t, v: b.v, o: b.o + sh, h: b.h + sh, l: b.l + sh, c: b.c + sh })), ts: r.t / 1000 }; } }
   if (!pick) { const ref = mode !== 'bn' ? eaRef(label) : null; return ref ? { src: 'ea-ref', ref, price: eaPrice() } : null; }
   let bars = pick.bars; const L = bars[bars.length - 1], lp = pick.src === 'bn' ? (Math.floor(Date.now() / ms) * ms === L.t ? Q.px : 0) : pick.src === 'ea' ? crLive() : 0;
@@ -12025,10 +12243,11 @@ function crExplain(r, mode) {
 }
 const mmss = ms => { const s = Math.floor(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
 function paintCr() {
+  { const srcSel = $('qdCrSrc'); if (srcSel) { srcSel.disabled = !isGold(); srcSel.title = isGold() ? 'Sumber data candle' : 'Pasar non-emas: candle selalu dari Binance (EA hanya mengirim data emas)'; } }
   const lbl = { ea: ['EA', 'var(--green)'], 'ea-hist': ['EA riwayat', 'var(--amber)'], bn: ['Binance', 'var(--cyan)'], 'ea-ref': ['EA level', 'var(--amber)'] }; const srcs = new Set(); let ts = 0;
   CRTF.forEach(([tf, label, ms, id]) => {
     const v = crView(tf, label, ms), chip = $(id + 's'), open = !!Q.crOpen[tf];
-    if (!v) { chip.textContent = '—'; chip.style.color = ''; setH(id + 'd', `<div class="qd-sub">${Q.crSrc === 'ea' ? `EA belum mengirim OHLC ${label}.` : `Menunggu data ${label}…`}</div>`); setH(id + 'x', ''); return; }
+    if (!v) { chip.textContent = '—'; chip.style.color = ''; setH(id + 'd', `<div class="qd-sub">${crMode() === 'ea' ? `EA belum mengirim OHLC ${label}.` : `Menunggu data ${label}…`}</div>`); setH(id + 'x', ''); return; }
     srcs.add(v.src); if (v.ts) ts = Math.max(ts, v.ts); chip.textContent = lbl[v.src][0]; chip.style.color = lbl[v.src][1];
     const left = ms - (Date.now() % ms);
     if (v.src === 'ea-ref') {
@@ -12050,6 +12269,7 @@ function paintCr() {
   else if (srcs.has('bn')) note = `OHLC EA belum terbaca dari dokumen akun — sementara memakai <b>Binance</b> ${Q.ofs ? `dengan offset ${(Q.ofs >= 0 ? '+' : '') + f2(Q.ofs)}` : ''}. Pastikan webhook menyimpan field <code>bars</code> dari payload EA ke dokumen akun Firestore.`;
   else if (srcs.has('ea-ref')) note = 'Memakai level acuan EA (tanpa candle OHLC). Periksa field <code>bars</code> pada dokumen akun Firestore dan pastikan webhook menyimpannya.';
   else note = a ? 'Menunggu data candle…' : 'Data EA belum termuat; memakai Binance bila tersedia.';
+  if (!isGold()) note = `Pasar <b>${Q.sym}</b>: candle breakout M15/M30/H1/H4 dari <b>Binance</b> (realtime, harga live dari stream). EA hanya mengirim data emas, jadi sumber EA tidak dipakai di chart ini.`;
   setH('qdCrNote', note);
 }
 function crThr() { return Q.crInt === 'live' ? (ML ? 6000 : 2500) : Math.max(2500, (+Q.crInt || 5) * 1000); }
@@ -12061,13 +12281,13 @@ function crLive() {
 function crRefresh(manual) {
   Q.crRefAt = Date.now(); const FX = window.__FX; Object.keys(Q.cr).forEach(k => { if (Q.cr[k]) Q.cr[k].t = 0; });
   const done = () => { Q.lastCr = 0; try { paintCr(); crTick(); } catch (e) { } if (manual) toast('Panel breakout diperbarui'); };
-  if (FX && FX.refreshAcc) { Promise.resolve(FX.refreshAcc()).then(done, done); } else done();
+  if (isGold() && FX && FX.refreshAcc) { Promise.resolve(FX.refreshAcc()).then(done, done); } else done();
 }
 function initCrInt() {
   const sel = $('qdCrInt'), btn = $('qdCrRef'); if (!sel) return; sel.value = Q.crInt;
   sel.onchange = e => {
     Q.crInt = e.target.value; LSS('qd_crint', Q.crInt); const FX = window.__FX;
-    if (FX && FX.setEco) {
+    if (isGold() && FX && FX.setEco) {
       if (Q.crInt === 'live' && FX.ecoMode !== 'realtime') { FX.setEco('realtime'); toast('Mode Live: akun dibaca realtime dari Firestore (boros kuota)'); }
       else if (Q.crInt !== 'live' && FX.ecoMode === 'realtime') { FX.setEco('eco'); toast('Mode Hemat aktif; panel di-refresh tiap ' + Q.crInt + ' dtk'); }
     }
@@ -12162,26 +12382,200 @@ if ($('qdBrkAlert')) { $('qdBrkAlert').checked = Q.brkAlert; $('qdBrkAlert').onc
 
 HELP.candle = ['Candle realtime M15 / M30 / H1', 'Menampilkan <b>3 candle terakhir</b> tiap timeframe: 2 candle tertutup (C-2, C-1) dan 1 candle berjalan (LIVE, berdenyut) untuk melihat breakout lebih awal.<br><br><b>Range acuan</b> = high tertinggi (H) dan low terendah (L) dari 2 candle tertutup. Status: <br>• <b>BREAKOUT NAIK/TURUN</b> — harga live di luar range.<br>• <b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range.<br>• <b>DI DALAM RANGE</b> — belum ada breakout.<br><b>KUAT</b> = penembusan ≥ 0,25× range rata-rata dan body ≥ 55%. Breakout baru valid bila candle <u>ditutup</u> di luar range.<br><br><b>Sumber data</b> (otomatis): ① OHLC realtime EA dari field <code>bars</code> pada dokumen akun; ② riwayat EA <code>marketBars</code>; ③ Binance + offset sebagai fallback. Chip di tiap kartu menunjukkan sumber yang dipakai. Agar sumber EA tampil, webhook harus menyimpan field <code>bars</code> yang dikirim EA ke dokumen akun Firestore.'];
 
+/* ===== Sinyal realtime: mesin skor konfluensi per instance (dibaca panel "Sinyal Realtime" di atas) ===== */
+let API = null; Q.sig = null; Q.sigRun = null; Q.sigPrev = null; Q.sigAt = 0;
+function sigPos() {
+  if (!isGold()) return null; const a = eaAcc(); if (!a || !Array.isArray(a.positions)) return null;
+  const ps = a.positions.filter(p => /XAU|GOLD/i.test(String(p.symbol || ''))), o = { n: ps.length, buy: 0, sell: 0, pl: 0 };
+  ps.forEach(p => { const v = +p.volume || 0, sell = /sell/i.test(String(p.type)) || +p.type === 1; if (sell) o.sell += v; else o.buy += v; o.pl += +p.profit || 0; });
+  o.side = o.buy > o.sell ? 'BUY' : o.sell > o.buy ? 'SELL' : (o.n ? 'HEDGE' : null); return o;
+}
+function sigBreakouts() {
+  const out = {};
+  CRTF.forEach(([tf, label, ms]) => {
+    try { const v = crView(tf, label, ms); if (!v || !v.bars) return; const r = crAnalyze(v.bars); if (r) out[label] = { st: r.st, strong: r.strong, dist: r.dist, refH: r.refH, refL: r.refL, px: r.L.c, src: v.src }; } catch (e) { }
+  });
+  return out;
+}
+function sigTrend() {
+  const px = Q.px, A = Q.atr || 1, m = .1 * A, o = { ema: 0, st: 0, emaTxt: '', stTxt: '' };
+  if (Q.emaV != null) { o.ema = px > Q.emaV + m ? 1 : px < Q.emaV - m ? -1 : 0; o.emaTxt = `harga ${o.ema > 0 ? 'di atas' : o.ema < 0 ? 'di bawah' : 'menempel'} EMA${Q.emaN} (${f2(Q.emaV)})`; }
+  const sw = Q.sw;
+  if (sw && sw.H.length >= 2 && sw.L.length >= 2) {
+    const H = sw.H.slice(-2), L = sw.L.slice(-2);
+    if (H[1].p > H[0].p && L[1].p > L[0].p) { o.st = 1; o.stTxt = 'struktur HH + HL (naik)'; } else if (H[1].p < H[0].p && L[1].p < L[0].p) { o.st = -1; o.stTxt = 'struktur LH + LL (turun)'; } else o.stTxt = 'struktur campuran';
+    if (px > H[1].p + m) { o.st = 1; o.stTxt = `BOS naik (tembus swing high ${f2(H[1].p)})`; } else if (px < L[1].p - m) { o.st = -1; o.stTxt = `BOS turun (tembus swing low ${f2(L[1].p)})`; }
+  }
+  return o;
+}
+function sigCalc() {
+  const now = Date.now(), px = Q.px, A = Q.atr, S = { sym: Q.sym, tf: Q.tf, px, atr: A, t: now, state: 'LOAD', side: null, score: 0, rows: [], flags: [], need: [], plan: null, zone: null, zinfo: null, pos: sigPos(), why: '', min: CFG.sigMin(), run: 0 };
+  if (!px || !A || !Q.c.length) { S.why = 'Memuat data harga & zona…'; return S; }
+  if (Q.stale) { S.state = 'PAUSE'; S.why = `Tidak ada tick baru ${Q.sym} selama ${Math.floor((now - Q.lastTick) / 1000)} dtk — pasar kemungkinan tutup/jeda atau koneksi terputus. Sinyal dibekukan.`; return S; }
+  const zs = Q.zones || [], byDist = [...zs].sort((a, b) => (b.inside - a.inside) || (a.dist - b.dist) || (b.score - a.score)), z = byDist.find(x => x.inside || x.dist <= 3 * A) || null;
+  if (!z) {
+    S.state = 'WAIT'; const nz = byDist[0];
+    S.why = nz ? `Zona terdekat ${nz.type === 'D' ? 'Demand' : 'Supply'} ${nz.tier === 'M' ? 'Medium' : 'Strong'} ${f2(nz.bot)}–${f2(nz.top)} berjarak ${f2(nz.dist)} (${(nz.dist / A).toFixed(1)} ATR) — belum cukup dekat untuk setup.` : (Q.mode === 'follow' ? `Mode Follow (${Q.dir === 'buy' ? 'BUY' : 'SELL'}): belum ada zona searah yang aktif.` : 'Belum ada zona Supply/Demand aktif yang lolos filter.');
+    return S;
+  }
+  const D = z.type === 'D', side = D ? 'BUY' : 'SELL', dA = z.dist / A, n = Q.c.length, R = [];
+  S.side = side; S.zone = z; S.zinfo = `${D ? 'Demand' : 'Supply'} ${z.tier === 'M' ? 'Medium' : 'Strong'} ${f2(z.bot)}–${f2(z.top)}`;
+  const add = (k, l, max, p, st, txt, need) => R.push({ k, l, max, pts: clamp(p, 0, max), st, txt, need: need || '' });
+  const pa = v => v == null ? '—' : (D ? v : 100 - v).toFixed(0) + '%', sgn = v => (v >= 0 ? '+' : '') + lot3(v);
+  // 1 · kualitas zona
+  add('zone', 'Kualitas zona', 20, z.score / 100 * 20, z.score >= 65 ? 'ok' : z.score >= 45 ? 'warn' : 'bad',
+    `${S.zinfo} · skor ${z.score}/100 · peluang tahan ${z.hold}% · diuji ${z.nT}× (${z.held} ditahan)${z.nT === 0 ? ' · FRESH' : ''}${z.tier === 'M' ? ' · Medium' : ''}`, `Skor zona baru ${z.score} (butuh ≥ 65)`);
+  // 2 · posisi harga terhadap zona
+  add('price', 'Posisi harga', 15, z.inside ? 15 : dA <= .15 ? 12 : dA <= .35 ? 8 : dA <= 1 ? 3 : 0, z.inside || dA <= .35 ? 'ok' : dA <= 1 ? 'warn' : 'bad',
+    z.inside ? `Harga ${f2(px)} sedang di dalam zona` : `Harga ${f2(px)} berjarak ${f2(z.dist)}${pts(z.dist)} (${dA.toFixed(2)} ATR) dari tepi zona`, `Tunggu harga masuk / ≤ 0,35 ATR dari zona (kini ${dA.toFixed(2)} ATR)`);
+  // 3 · tekanan buyer / seller
+  const St = Q.str, al = St ? (D ? St.buyer : St.seller) : null;
+  if (al == null) add('press', 'Tekanan pasar', 12, 0, 'na', 'Data tekanan belum tersedia', '');
+  else add('press', 'Tekanan pasar', 12, clamp((al - 45) / 20, 0, 1) * 12, al >= 58 ? 'ok' : al >= 50 ? 'warn' : 'bad',
+    `${D ? 'Buyer' : 'Seller'} ${al.toFixed(0)}% — DOM ${pa(St.dom)} · taker 20 candle ${pa(St.fc)} · arus 5 mnt ${pa(St.fl)}`, `Tunggu tekanan ${D ? 'buyer' : 'seller'} ≥ 58% (kini ${al.toFixed(0)}%)`);
+  // 4 · order flow: delta, CVD, absorpsi
+  const A_ = Q.ana, d5 = Q.c.slice(-5).reduce((s, k) => s + 2 * k.tb - k.v, 0) / Q.lot, d20 = Q.c.slice(-20).reduce((s, k) => s + 2 * k.tb - k.v, 0) / Q.lot, want = D ? 1 : -1;
+  let fp = 0; const ft = [];
+  if (Math.sign(d5) === want) { fp += 4; ft.push(`delta 5 candle ${sgn(d5)} lot`); } else ft.push(`delta 5 candle ${sgn(d5)} lot (berlawanan)`);
+  if (Math.sign(d20) === want) { fp += 3; ft.push(`delta 20 candle ${sgn(d20)} lot`); } else ft.push(`delta 20 candle ${sgn(d20)} lot (berlawanan)`);
+  if (A_ && A_.cvDiv) { if (A_.cvDiv.dir === (D ? 'bull' : 'bear')) { fp += 3; ft.push(`divergensi CVD ${D ? 'bullish' : 'bearish'}`); } else ft.push(`divergensi CVD ${D ? 'bearish' : 'bullish'} (berlawanan)`); }
+  const ab = A_ && A_.abs.filter(a => a.dir === (D ? 'bull' : 'bear') && n - 1 - a.idx <= 8).slice(-1)[0];
+  if (ab) { fp += 4; ft.push(`absorpsi ${D ? 'bullish' : 'bearish'} ${n - 1 - ab.idx} candle lalu (vol ${ab.vr.toFixed(1)}×${ab.ctx ? ' di ' + ab.ctx : ''})`); }
+  add('flow', 'Order flow (delta · CVD · absorpsi)', 12, fp, fp >= 7 ? 'ok' : fp >= 3 ? 'warn' : 'bad', ft.join(' · '), `Butuh delta ${D ? 'beli' : 'jual'} searah atau absorpsi di zona`);
+  // 5 · sapuan likuiditas
+  const sw = A_ && A_.liq.sweeps.find(s => n - 1 - s.idx <= 10 && s.dir === (D ? 'bull' : 'bear'));
+  add('sweep', 'Liquidity sweep', 10, sw ? 10 : 0, sw ? 'ok' : 'na', sw ? `${D ? 'SSL' : 'BSL'} (${sw.kind}) @ ${f2(sw.level)} disapu ${n - 1 - sw.idx} candle lalu lalu ditutup kembali${sw.rx ? ' · reaksi ' + sw.rx.toFixed(1) + ' ATR' : ''}` : 'Belum ada sapuan likuiditas searah dalam 10 candle (opsional — menambah keyakinan)', '');
+  // 6 · konfirmasi breakout multi timeframe (panel M15/M30/H1/H4)
+  const B = sigBreakouts(), BW = { M15: 4, M30: 3, H1: 4, H4: 4 }; let bp = 0, bw = 0; const bt = [];
+  Object.keys(BW).forEach(lab => {
+    const b = B[lab]; if (!b) return; const w = BW[lab]; bw += w; let v = 0, tx;
+    if (b.st === (D ? 'UP' : 'DN')) { v = 1; tx = `${lab} breakout ${D ? 'naik' : 'turun'}${b.strong ? ' KUAT' : ''}`; }
+    else if (b.st === (D ? 'FD' : 'FU')) { v = .7; tx = `${lab} fakeout ${D ? 'bawah' : 'atas'} (sapuan → mendukung ${side})`; }
+    else if (b.st === (D ? 'DN' : 'UP')) { v = -1; tx = `${lab} breakout ${D ? 'turun' : 'naik'} (MELAWAN ${side})`; }
+    else if (b.st === (D ? 'FU' : 'FD')) { v = -.3; tx = `${lab} fakeout ${D ? 'atas' : 'bawah'}`; }
+    else tx = `${lab} di dalam range`;
+    bp += w * v; bt.push(tx);
+  });
+  if (!bw) add('brk', 'Konfirmasi breakout M15–H4', 15, 0, 'na', 'Data candle panel breakout belum tersedia', '');
+  else add('brk', 'Konfirmasi breakout M15–H4', 15, clamp(bp / bw, 0, 1) * 15, bp / bw >= .4 ? 'ok' : bp / bw > -.2 ? 'warn' : 'bad', bt.join(' · '), `Tunggu M15/M30 breakout ${D ? 'naik' : 'turun'} atau fakeout sapuan`);
+  // 7 · struktur & EMA
+  const T = sigTrend(); let tp = 0; const tt = [];
+  if (T.emaTxt) { if (T.ema === want) tp += 4; tt.push(T.emaTxt + (T.ema === want ? '' : T.ema === 0 ? '' : ' (berlawanan)')); }
+  if (T.stTxt) { if (T.st === want) tp += 4; tt.push(T.stTxt + (T.st === want || T.st === 0 ? '' : ' (berlawanan)')); }
+  add('trend', 'Struktur & EMA', 8, tp, tp >= 8 ? 'ok' : tp >= 4 ? 'warn' : 'bad', tt.join(' · ') || 'Data struktur belum cukup', `Struktur/EMA belum searah ${side}`);
+  // 8 · konfluensi HTF, premium/discount, OTE
+  let hp = 0; const ht = [];
+  if (z.conf && z.conf.length) {
+    const ok = z.conf.filter(x => x.ok), bad = z.conf.filter(x => !x.ok);
+    if (ok.length) { hp += 4; ht.push('bertumpuk zona ' + ok.map(x => TFL[x.tf] + (x.tier === 'S' ? ' Strong' : ' Medium')).join(' + ')); }
+    if (bad.length) ht.push('di dalam zona HTF berlawanan: ' + bad.map(x => TFL[x.tf]).join(', '));
+  } else ht.push('belum ada konfluensi zona HTF');
+  if (z.pdTag) { if (z.pdAligned) { hp += 2; ht.push(`area ${z.pdTag.toLowerCase()} (selaras)`); } else ht.push(`area ${z.pdTag.toLowerCase()} (kontra)`); if (z.ote) { hp += 2; ht.push('masuk OTE 62–79%'); } }
+  add('conf', 'Konfluensi HTF · Premium/Discount', 8, hp, hp >= 6 ? 'ok' : hp >= 2 ? 'warn' : 'bad', ht.join(' · '), 'Belum ada konfluensi HTF / premium-discount');
+  // hambatan & peringatan
+  const F = S.flags; let pen = 0;
+  if (Q.fxNews && Q.nws && Q.nws.active && Q.nws.act[0]) { const e = Q.nws.act[0], d = Math.round((e.t - now) / 6e4); pen += 10; F.push({ st: 'bad', block: true, txt: `Jendela berita ${e.ccy} “${e.title}” ${d > 0 ? 'dalam ' + d + ' mnt' : d === 0 ? 'sekarang' : -d + ' mnt lalu'} — volatilitas tinggi, tunggu reda.` }); }
+  if (z.conf && z.conf.some(x => !x.ok)) { pen += 6; F.push({ st: 'warn', block: false, txt: 'Zona berada di dalam zona HTF berlawanan — rawan tertembus.' }); }
+  if (z.hold < 50) F.push({ st: 'warn', block: false, txt: `Peluang tahan zona hanya ${z.hold}% (kategori rawan).` });
+  if (Q.mode === 'follow') F.push({ st: 'info', block: false, txt: `Mode Follow aktif: hanya zona ${Q.dir === 'buy' ? 'Demand (BUY)' : 'Supply (SELL)'} yang dinilai — ${Q.dirWhy}.` });
+  let plan = null; try { plan = planFor(z); } catch (e) { plan = null; }
+  if (plan) {
+    S.plan = plan;
+    if (plan.tps[0] && plan.tps[0].r < Q.plRR) F.push({ st: 'warn', block: true, txt: `RR TP1 hanya ${plan.tps[0].r.toFixed(1)}R < minimum ${Q.plRR}R — entry belum layak.` });
+    if (plan.mgS && plan.mgS.status === 'violation') F.push({ st: 'bad', block: true, txt: 'Lot rencana melanggar Margin Rule Guard — kurangi lot.' });
+    else if (plan.mgS && plan.mgS.status === 'warn') F.push({ st: 'warn', block: false, txt: 'Lot rencana mendekati batas Margin Rule Guard.' });
+    if (plan.bal > 0 && plan.lots < .01) F.push({ st: 'warn', block: false, txt: 'Risiko % terlalu kecil untuk lot minimum 0,01.' });
+  }
+  if (S.pos && S.pos.n) {
+    if (S.pos.side === side) F.push({ st: 'info', block: false, txt: `Sudah ada posisi EA searah: ${S.pos.side} ${lot3(S.pos.side === 'BUY' ? S.pos.buy : S.pos.sell)} lot (floating ${S.pos.pl >= 0 ? '+' : ''}${S.pos.pl.toFixed(2)} $) — hindari menumpuk berlebihan.` });
+    else if (S.pos.side === 'BUY' || S.pos.side === 'SELL') F.push({ st: 'warn', block: false, txt: `Ada posisi EA ${S.pos.side} ${lot3(S.pos.side === 'BUY' ? S.pos.buy : S.pos.sell)} lot yang BERLAWANAN dengan sinyal ${side}.` });
+  }
+  // skor akhir & keputusan
+  const total = Math.round(clamp(R.reduce((s, r) => s + r.pts, 0) - pen, 0, 100)), blockers = F.filter(f => f.block), near = z.inside || dA <= .35, MIN = S.min;
+  S.rows = R; S.score = total; S.dA = dA;
+  const key = side + z.key, pv = Q.sigPrev, holdOn = pv && pv.state === 'READY' && pv.key === key && total >= MIN - 8 && dA <= .5 && !blockers.length;
+  const cand = ((total >= MIN && near) || holdOn) && !blockers.length;
+  Q.sigRun = cand ? (Q.sigRun && Q.sigRun.key === key ? { key, n: Q.sigRun.n + 1 } : { key, n: 1 }) : null; S.run = Q.sigRun ? Q.sigRun.n : 0;
+  if (cand && (S.run >= 3 || holdOn)) S.state = 'READY';
+  else if (cand) { S.state = 'WATCH'; S.confirming = true; }
+  else if (total >= Math.max(40, MIN - 20) && dA <= 1) S.state = 'WATCH';
+  else S.state = dA <= 3 ? 'APPROACH' : 'WAIT';
+  S.key = key;
+  const miss = R.filter(r => (r.st === 'bad' || r.st === 'warn') && r.need).sort((a, b) => (b.max - b.pts) - (a.max - a.pts)).slice(0, 4);
+  S.need = miss.map(r => r.need); blockers.forEach(b => S.need.unshift(b.txt));
+  const okN = R.filter(r => r.st === 'ok').length, valid = R.filter(r => r.st !== 'na').length;
+  S.why = S.state === 'READY' ? `${okN} dari ${valid} faktor mendukung ${side} · skor ${total}/${MIN} minimum · ${z.inside ? 'harga di dalam zona' : 'harga ' + dA.toFixed(2) + ' ATR dari zona'}.`
+    : S.state === 'WATCH' ? (S.confirming ? `Syarat terpenuhi — mengonfirmasi ${S.run}/3 dtk agar tidak sinyal palsu sesaat…` : `${okN} dari ${valid} faktor mendukung ${side}; skor ${total} (siap bila ≥ ${MIN}) — pantau, belum layak entry.`)
+      : S.state === 'APPROACH' ? `Harga mendekati ${S.zinfo} (${dA.toFixed(1)} ATR). Siapkan rencana; belum ada konfirmasi.` : `Setup ${side} lemah / jauh dari zona (skor ${total}).`;
+  return S;
+}
+function sigUpdate() {
+  const S = sigCalc(), pv = Q.sigPrev; Q.sig = S; Q.sigAt = Date.now();
+  const rdy = S.state === 'READY', wasRdy = pv && pv.state === 'READY';
+  if (rdy && (!wasRdy || pv.key !== S.key)) { if (CFG.onEvent) CFG.onEvent(API, 'ready', S); }
+  else if (!rdy && wasRdy) { if (CFG.onEvent) CFG.onEvent(API, 'end', S, pv); }
+  else if (S.state === 'WATCH' && !S.confirming && (!pv || pv.state === 'APPROACH' || pv.state === 'WAIT' || pv.state === 'LOAD') && S.key) { if (CFG.onEvent) CFG.onEvent(API, 'watch', S); }
+  if (!pv || pv.state !== S.state || pv.key !== S.key) Q.sigPrev = { state: S.state, key: S.key, score: S.score, t: S.t }; else Q.sigPrev.score = S.score;
+  if (CFG.onSig) CFG.onSig(API);
+}
+
 setInterval(() => {
-  const on = act(); if (on && !Q.started) { Q.started = true; load(); }
+  const on = act(); if (on && !Q.started) { if (!Q.startAt) Q.startAt = Date.now() + CFG.delay; if (Date.now() >= Q.startAt) { Q.started = true; load(); } }
   if (!Q.started || !Q.c.length) { if (on) paintHead(); return; }
   Q.tick++; const now = Date.now(); if (!on && ML && Q.tick % 5) return;
   if ((!Q.ws || now - Q.lastMsg > 20000) && now - Q.wsTry > 6000) openWs();
-  if (on && now - Q.lastDepth > (ML ? 4000 : 2000)) pollDepth();
+  if (on && now - Q.lastDepth > (ML ? 4000 : 2500)) pollDepth();
   if (now - Q.htfT > 120000) loadHtf();
   calib(); if (Q.needAn || Q.tick % 3 === 0) analyze();
   const nT = Date.now(); if (nT - Q.wsTick > 5000 && nT - Q.lastPoll > 2000) { Q.lastPoll = nT; loadTrades(false); } if (nT - Q.wsKl > 6000 && nT - Q.lastKl > 3000) { Q.lastKl = nT; pollKl(); }
   if (Q.px) { Q.hHi = Math.max(Q.hHi, Q.px); Q.hLo = Math.min(Q.hLo, Q.px); } newsTick(); crTick();
   staleCheck(); waveTick(); rescore(); track(); if (Q.str) { Q.hist.push(Q.str.buyer); if (Q.hist.length > 300) Q.hist.shift(); } alertCheck();
-  if (on) render();
+  if (on) { render(); try { sigUpdate(); } catch (e) { console.error('qdom sig', e); } }
 }, 1000);
 (function loop(ts) { if (act() && Q.dirty && ts - Q.lastDraw > (ML ? 130 : 80)) { Q.dirty = false; Q.lastDraw = ts; try { draw(); } catch (e) { console.error('qdom draw', e); } } if (act() && Q.domVis !== false && ts - (Q.lastCr || 0) > (ML ? 220 : 80)) { Q.lastCr = ts; try { drawCr(); } catch (e) { } } if (act() && Q.tab === 'arus' && ts - (Q.lastWave || 0) > 60) { Q.lastWave = ts; try { drawWave(); } catch (e) { } } requestAnimationFrame(loop); })(0);
 if (window.ResizeObserver) new ResizeObserver(() => { Q.dirty = true; }).observe($('qdBox'));
 addEventListener('resize', () => { Q.dirty = true; });
-document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { if (b.dataset.view === 'qdom') setTimeout(() => { if (!Q.started) { Q.started = true; load(); } Q.dirty = true; if (Q.c.length) render(); else paintHead(); }, 40); }));
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { if (b.dataset.view === 'qdom') setTimeout(() => { if (!Q.started) { Q.started = true; load(); } Q.dirty = true; if (Q.c.length) render(); else paintHead(); }, 40 + CFG.delay); }));
 paintHead();
+API = {
+  Q, cfg: CFG, root, f2, toast, beep,
+  focusZone() { const S = Q.sig; if (!S || !S.zone) return; if (Q.sel !== S.zone.key) select(S.zone.key, false); Q.pan = 0; Q.dirty = true; },
+  copyPlan() { const S = Q.sig; if (!S || !S.zone || !S.plan) return; const t = planText(S.plan, S.zone); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Rencana trade disalin', 'info'), () => toast(t, 'info')); }
+};
+return API;
+
+}
+
+/* ---------- Bootstrap: dua instance + kontrol panel atas ---------- */
+const hosts = [$q('qdInstA'), $q('qdInstB')];
+const CFGS = [
+  { sfx: '', ls: 'qd_', defSym: 'XAUUSDT', delay: 0 },
+  { sfx: '_b', ls: 'qd2_', defSym: 'QQQUSDT', delay: 900 }
+];
+hosts.forEach((h, i) => { h.appendChild(TPL.content.cloneNode(true)); const no = h.querySelector('.qi-no'); if (no) no.textContent = i + 1; });
+CFGS.forEach((c, i) => { c.root = hosts[i]; c.idx = i; c.sigMin = () => SIG.min; c.onSig = schedulePaint; c.onEvent = onEvent; });
+SIG.insts = CFGS.map(c => { try { return QDInit(c); } catch (e) { console.error('qdom init #' + (c.idx + 1), e); return null; } }).filter(Boolean);
+
+const duo = $q('qdDuo'), minEl = $q('qsMin'), nEl = $q('qsNotif'), sEl = $q('qsSnd'), lay = $q('qsLay');
+function applyLay() { duo.classList.toggle('stack', SIG.lay === 'stack'); lay.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === SIG.lay)); try { window.dispatchEvent(new Event('resize')); } catch (e) { } }
+lay.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; SIG.lay = b.dataset.v; SS('qs_lay', SIG.lay); applyLay(); });
+minEl.value = SIG.min; minEl.onchange = e => { SIG.min = Math.min(95, Math.max(40, Math.round(+e.target.value || 70))); e.target.value = SIG.min; SS('qs_min', SIG.min); };
+nEl.checked = SIG.notif; nEl.onchange = e => { SIG.notif = e.target.checked; SS('qs_notif', SIG.notif); if (SIG.notif && window.Notification && Notification.permission === 'default') { try { Notification.requestPermission(); } catch (x) { } } };
+sEl.checked = SIG.snd; sEl.onchange = e => { SIG.snd = e.target.checked; SS('qs_snd', SIG.snd); if (SIG.snd && SIG.insts[0]) SIG.insts[0].beep(); };
+$q('qsClr').onclick = e => { e.preventDefault(); e.stopPropagation(); SIG.ev = []; SS('qs_ev', SIG.ev); schedulePaint(); };
+$q('qsGrid').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return; const c = b.closest('.qs-card'), api = SIG.insts[+c.dataset.i]; if (!api) return;
+  if (b.dataset.act === 'chart') api.root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  else if (b.dataset.act === 'zone') { api.focusZone(); const cc = api.root.querySelector('.qd-chartcard'); if (cc) cc.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  else if (b.dataset.act === 'copy') api.copyPlan();
+});
+$q('qsGrid').addEventListener('toggle', e => { const d = e.target; if (d && d.classList && d.classList.contains('qs-det')) SIG.open[+d.dataset.i] = d.open; }, true);
+applyLay(); paintTop();
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { if (b.dataset.view === 'qdom') setTimeout(schedulePaint, 60); }));
+setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) schedulePaint(); }, 1000);
 })();
 </script>
+
 
 </body>
 </html>
