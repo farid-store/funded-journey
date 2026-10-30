@@ -3103,6 +3103,29 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
 .qs-ev .qs-etx{color:var(--muted);min-width:0;overflow-wrap:anywhere}
 @media(max-width:640px){.qs-ev{grid-template-columns:auto minmax(0,1fr)}.qs-ev .qs-etx{grid-column:1/-1}.qs-sc{flex-direction:row}.qs-ring{width:56px;height:56px}.qs-rows .r{grid-template-columns:18px minmax(0,1fr) 54px}}
 .qs-note{font-size:10.5px;color:var(--faint);line-height:1.5}
+
+/* ---------- Tab Analisis: kartu tidak saling tumpuk ---------- */
+.qd-inst #qdAna:not([hidden]){display:flex!important;flex-direction:column;gap:12px;align-items:stretch}
+.qd-inst #qdAna>*{min-width:0;max-width:100%}
+.qd-inst #qdAna .qd-as{margin:0!important;padding:12px 14px;min-width:0;overflow:hidden;position:relative}
+.qd-inst #qdAna .qd-ash{flex-wrap:wrap}
+.qd-inst #qdAna .qd-ash b{min-width:0;line-height:1.5}
+.qd-inst #qdAna .qd-asc{margin:10px 0}
+.qd-inst #qdAna .qd-asb{min-width:0;max-width:100%;overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch;line-height:1.5}
+.qd-inst #qdAna .qd-asb>*+*{margin-top:8px}
+.qd-inst #qdAna .qd-asb table.xt{width:100%;min-width:420px;border-collapse:collapse;table-layout:auto}
+.qd-inst #qdAna .qd-asb table.xt th,.qd-inst #qdAna .qd-asb table.xt td{padding:6px 8px!important;white-space:nowrap;vertical-align:middle;font-size:11px}
+.qd-inst #qdAna .qd-asb table.xt td:last-child{white-space:normal}
+.qd-inst #qdAna .qd-k4{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:6px}
+.qd-inst #qdAna .qd-k4>div{min-width:0;padding:8px 10px;overflow-wrap:anywhere}
+.qd-inst #qdAna .qd-lr{grid-template-columns:48px minmax(0,1fr) auto;row-gap:2px}
+.qd-inst #qdAna .qd-lr>.qd-sub{grid-column:2/-1}
+.qd-inst #qdAna .qd-plh{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:10px}
+.qd-inst #qdAna .qd-mgb{overflow-wrap:anywhere;line-height:1.55}
+.qd-inst #qdAna .qd-note2{margin-top:6px;line-height:1.5;overflow-wrap:anywhere}
+.qd-inst #qdAna .qd-acts{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+.qd-inst #qdAna .qd-sub{overflow-wrap:anywhere}
+@media(min-width:1500px){.qd-duo.stack #qdAna:not([hidden]){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.qd-duo.stack #qdAna>.note{grid-column:1/-1}}
 </style>
 </head>
 <body>
