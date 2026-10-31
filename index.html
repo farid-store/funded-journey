@@ -3126,6 +3126,35 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
 .qd-inst #qdAna .qd-acts{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
 .qd-inst #qdAna .qd-sub{overflow-wrap:anywhere}
 @media(min-width:1500px){.qd-duo.stack #qdAna:not([hidden]){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.qd-duo.stack #qdAna>.note{grid-column:1/-1}}
+
+/* ---------- Tab Likuidasi ---------- */
+.qd-lqcard{padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-width:0;border:1px solid rgba(255,140,60,.3);background:linear-gradient(180deg,rgba(255,140,60,.05),rgba(13,20,40,.96) 40%)}
+.qd-lqt0{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.qd-lqt0>b{font:800 12.5px var(--fh);letter-spacing:.05em;color:#fdba74}
+.qd-lqt0 .btn{margin-left:auto;padding:4px 10px;font-size:10.5px}
+.qd-lqmode{font:700 10.5px var(--fm);padding:3px 9px;border-radius:999px;background:var(--surface3);color:var(--muted);min-width:0;overflow-wrap:anywhere;line-height:1.4}
+.qd-lqmode.buy{background:var(--green-soft);color:var(--green)}.qd-lqmode.sell{background:var(--red-soft);color:var(--red)}
+.qd-inst .qd-lqbody:not([hidden]){display:flex!important;flex-direction:column;gap:10px;min-width:0}
+.qd-lqd{border:1px solid var(--line);border-radius:10px;background:rgba(4,6,13,.35);padding:0 10px 10px}
+.qd-lqd>summary{cursor:pointer;padding:9px 0;font:700 11px var(--fh);letter-spacing:.05em;color:var(--muted)}
+.qd-lqh{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font:600 10.5px var(--fm);color:var(--muted)}
+.qd-lqh label{display:flex;align-items:center;gap:6px}
+.qd-lqh input[type=range]{width:90px;accent-color:var(--gold)}
+.qd-lqbox{position:relative;height:clamp(280px,40vh,420px);border:1px solid var(--line2);border-radius:12px;background:#070807;overflow:hidden;touch-action:pan-y}
+.qd-lqbox canvas{width:100%;height:100%;display:block}
+.qd-lqk{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.qd-lqk>div{border:1px solid var(--line);border-radius:10px;background:rgba(19,28,56,.5);padding:8px 10px;min-width:0}
+.qd-lqk span{display:block;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
+.qd-lqk b{display:block;margin-top:3px;font:700 13px var(--fm);overflow-wrap:anywhere}
+.qd-lqk small{display:block;margin-top:2px;font-size:10px;color:var(--muted);line-height:1.4}
+.qd-lqk .wl{border-color:rgba(74,168,255,.5)}.qd-lqk .wl b{color:#4aa8ff}
+.qd-lqk .ws{border-color:rgba(255,107,138,.5)}.qd-lqk .ws b{color:#ff6b8a}
+.qd-lqk .lb b{color:var(--green)}.qd-lqk .sa b{color:var(--red)}
+.qd-lqt{width:100%;border-collapse:collapse;font-size:11px}
+.qd-lqt th,.qd-lqt td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--line)}
+.qd-lqt th:first-child,.qd-lqt td:first-child{text-align:left}
+.qd-lqt th{font:700 10px var(--fm);color:var(--faint);text-transform:uppercase;letter-spacing:.04em}
+.qd-lqt .neg{color:var(--red)}.qd-lqt .pos{color:var(--green)}
 </style>
 </head>
 <body>
@@ -3860,6 +3889,25 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
     <div class="qd-ncard D" id="qdND"></div>
   </div>
 
+  <section class="card qd-lqcard" id="qdLqCard">
+    <div class="qd-lqt0"><b>🔥 Liquidation Heatmap &amp; Whale</b><span id="qdLqMode" class="qd-lqmode"></span><button type="button" class="btn ghost" id="qdLqTg" aria-expanded="true">Sembunyikan ▴</button></div>
+    <div class="qd-lqbody" id="qdLq">
+      <div class="qd-lqh">
+        <div class="qd-seg" id="qdLqWin" role="group" aria-label="Jendela waktu"><button type="button" data-v="12h">12J</button><button type="button" data-v="24h">24J</button><button type="button" data-v="3d">3H</button><button type="button" data-v="7d">7H</button></div>
+        <label>Rentang <select id="qdLqRng" class="xin"><option value="5">±5%</option><option value="10">±10%</option><option value="15">±15%</option></select></label>
+        <label>Kontras <input id="qdLqCon" type="range" min="10" max="95"></label>
+        <label>Basis whale <select id="qdLqBasis" class="xin"><option value="win">Arus jendela</option><option value="run">Posisi berjalan (~20 hari)</option></select></label>
+        <label class="qd-ck"><input type="checkbox" id="qdLqWh"> Garis whale di chart</label>
+        <button type="button" class="btn ghost" id="qdLqRef" style="padding:4px 10px;font-size:10.5px">Muat ulang</button>
+      </div>
+      <div id="qdLqSt" class="qd-sub"></div>
+      <div class="qd-sub" id="qdLqScale"></div>
+      <div class="qd-lqbox" id="qdLqBox"><canvas id="qdLqCv"></canvas></div>
+      <div class="qd-sub" id="qdLqHv" style="min-height:16px"></div>
+      <div id="qdLqSum"></div>
+      <div class="note qd-note2">Estimasi: Binance tidak menyediakan data likuidasi atau entry akun whale secara publik, jadi dihitung dari open interest, harga, dan rasio posisi top trader. Mengikuti <b>Mode zona</b> di atas: Hybrid menampilkan whale long &amp; short, Follow hanya posisi searah tren (sesuai Sumber arah: EMA / HH-LL / tekanan buyer-seller). Peta menunjukkan di mana ukuran posisi berada, bukan ke mana harga akan pergi.</div>
+    </div>
+  </section>
   <div class="qd-main">
     <div class="card qd-chartcard">
       <div class="qd-chartbox" id="qdBox">
@@ -11544,6 +11592,7 @@ function draw() {
   // berita (garis rilis + jendela)
   if (Q.fxNews && Q.nws.ev.length) { const tf = TFMS[Q.tf] || 9e5; Q.nws.ev.forEach(e => { const x = ((e.t - all[0].t) / tf - start) * cw + cw / 2; if (x < -5 || x > aw + 5) return; const w0 = Q.nwPre * 6e4 / tf * cw, w1 = Q.nwPost * 6e4 / tf * cw; c.fillStyle = 'rgba(255,176,46,.07)'; c.fillRect(Math.max(0, x - w0), pt, Math.min(aw, x + w1) - Math.max(0, x - w0), ph); c.strokeStyle = 'rgba(255,176,46,.8)'; c.lineWidth = 1; c.setLineDash([5, 3]); c.beginPath(); c.moveTo(x, pt); c.lineTo(x, pt + ph); c.stroke(); c.setLineDash([]); c.font = '700 9px sans-serif'; const lb = `📰 ${e.ccy} ${e.title.slice(0, 18)}`, w = c.measureText(lb).width + 6; c.fillStyle = 'rgba(5,10,24,.85)'; c.fillRect(Math.min(aw - w, x + 2), pt + 14, w, 12); c.fillStyle = '#ffd25e'; c.fillText(lb, Math.min(aw - w, x + 2) + 3, pt + 23); }); }
   // rencana trade (zona terpilih)
+  drawLq(c, { aw, lo, hi, Y, tag, small, ph });
   if (Q.fxPlan && Q.plan && Q.plan.zkey === Q.sel) { const p = Q.plan, xr = aw * .72;
     c.fillStyle = 'rgba(255,75,110,.09)'; c.fillRect(xr, Math.min(Y(p.entry), Y(p.sl)), aw - xr, Math.abs(Y(p.sl) - Y(p.entry))); if (p.tps[0]) { c.fillStyle = 'rgba(45,245,163,.08)'; c.fillRect(xr, Math.min(Y(p.entry), Y(p.tps[0].p)), aw - xr, Math.abs(Y(p.tps[0].p) - Y(p.entry))); }
     const ln = (pr, col, dash) => { if (pr < lo || pr > hi) return; c.strokeStyle = col; c.lineWidth = 1.4; c.setLineDash(dash); c.beginPath(); c.moveTo(xr, Y(pr)); c.lineTo(aw, Y(pr)); c.stroke(); c.setLineDash([]); };
@@ -11731,6 +11780,7 @@ function paintHead() {
   if (ov.dataset.h !== h) { ov.dataset.h = h; ov.innerHTML = h; ov.hidden = !h; }
 }
 function paintPane() {
+  if (Q.lqOpen) { try { paintLq(); } catch (e) { console.error('qdom lq', e); } }
   if (Q.domVis !== false) { setH('qdDomList', paneDom()); paintCr(); }
   if (Q.tab === 'arus') { paintArus(); return; }
   if (Q.tab === 'ana') { paintAna(); return; }
@@ -11768,9 +11818,9 @@ function select(key, scroll) {
   Q.sel = Q.sel === key ? null : key; Q.dirty = true; if (Q.sel) Q.tab = 'zona'; syncTabs(); paintPane(); paintInsight();
 }
 function syncTabs() { $('qdTabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === Q.tab)); $('qdPane').hidden = ['arus', 'ana'].includes(Q.tab); $('qdArus').hidden = Q.tab !== 'arus'; $('qdAna').hidden = Q.tab !== 'ana'; }
-const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optVol', 'Vol', 'qd_vol'], ['optVp', 'VP', 'qd_vp'], ['optEma', 'EMA', 'qd_emal'], ['optPin', 'Pin', 'qd_pin'], ['fxLiq', 'Liq', 'qd_fxliq'], ['fxCvd', 'CVD', 'qd_fxcvd'], ['fxPd', 'PD', 'qd_fxpd'], ['fxHeat', 'Heat', 'qd_fxheat'], ['fxPlan', 'Plan', 'qd_fxplan'], ['fxNews', 'News', 'qd_fxnews'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk']];
-const LGRP = [['Zona', ['optZ', 'optMid', 'optMed', 'optHtf', 'optBrk']], ['Order book', ['optDom', 'optWall', 'fxHeat', 'optVp']], ['Aliran', ['optVol', 'fxCvd', 'fxLiq']], ['Struktur', ['optEma', 'fxPd', 'optPin', 'optSess']], ['Trade', ['fxPlan', 'fxNews']]];
-const LNAME = { optZ: 'Zona Supply / Demand', optMid: 'Garis 50% zona', optMed: 'Zona Medium (kuning)', optHtf: 'Zona timeframe tinggi', optBrk: 'Zona yang tembus', optDom: 'Bar DOM di sisi kanan', optWall: 'Dinding order (wall)', fxHeat: 'Heatmap DOM historis', optVp: 'Volume profile', optVol: 'Bar volume', fxCvd: 'CVD (delta kumulatif)', fxLiq: 'Liquidity sweep & EQH/EQL', optEma: 'Garis EMA', fxPd: 'Premium / Discount & OTE', optPin: 'Pin uji (Uji #n)', optSess: 'Garis sesi', fxPlan: 'Rencana trade', fxNews: 'Peredam berita' };
+const LAYERS = [['optZ', 'Zona', 'qd_z'], ['optMid', '50%', 'qd_mid'], ['optMed', 'Medium', 'qd_med'], ['optHtf', 'HTF', 'qd_htf'], ['optDom', 'DOM', 'qd_dom'], ['optWall', 'Wall', 'qd_wall'], ['optVol', 'Vol', 'qd_vol'], ['optVp', 'VP', 'qd_vp'], ['optEma', 'EMA', 'qd_emal'], ['optPin', 'Pin', 'qd_pin'], ['fxLiq', 'Liq', 'qd_fxliq'], ['fxCvd', 'CVD', 'qd_fxcvd'], ['fxPd', 'PD', 'qd_fxpd'], ['fxHeat', 'Heat', 'qd_fxheat'], ['fxPlan', 'Plan', 'qd_fxplan'], ['fxNews', 'News', 'qd_fxnews'], ['optSess', 'Sesi', 'qd_sess'], ['optBrk', 'Tembus', 'qd_brk'], ['fxLq', 'Likuid', 'qd_fxlq'], ['fxWh', 'Whale', 'qd_fxwh']];
+const LGRP = [['Zona', ['optZ', 'optMid', 'optMed', 'optHtf', 'optBrk']], ['Order book', ['optDom', 'optWall', 'fxHeat', 'optVp']], ['Aliran', ['optVol', 'fxCvd', 'fxLiq']], ['Struktur', ['optEma', 'fxPd', 'optPin', 'optSess']], ['Trade', ['fxPlan', 'fxNews']], ['Whale & Likuidasi', ['fxLq', 'fxWh']]];
+const LNAME = { optZ: 'Zona Supply / Demand', optMid: 'Garis 50% zona', optMed: 'Zona Medium (kuning)', optHtf: 'Zona timeframe tinggi', optBrk: 'Zona yang tembus', optDom: 'Bar DOM di sisi kanan', optWall: 'Dinding order (wall)', fxHeat: 'Heatmap DOM historis', optVp: 'Volume profile', optVol: 'Bar volume', fxCvd: 'CVD (delta kumulatif)', fxLiq: 'Liquidity sweep & EQH/EQL', optEma: 'Garis EMA', fxPd: 'Premium / Discount & OTE', optPin: 'Pin uji (Uji #n)', optSess: 'Garis sesi', fxPlan: 'Rencana trade', fxNews: 'Peredam berita', fxLq: 'Cluster likuidasi (estimasi) di chart', fxWh: 'Rata-rata entry whale (long/short)' };
 const layerBtn = k => { const L = LAYERS.find(x => x[0] === k); return L ? `<button type="button" class="qd-lay ${Q[k] ? 'on' : ''}" data-k="${k}" aria-pressed="${!!Q[k]}" title="${LNAME[k] || L[1]}">${L[1]}</button>` : ''; };
 $('qdLayers').innerHTML = LGRP.map(([t, ks]) => `<div class="qd-lg"><div class="qd-lgt">${t}</div><div class="qd-lgb">${ks.map(layerBtn).join('')}</div></div>`).join('');
 if (window.matchMedia && matchMedia('(max-width:700px)').matches && $('qdLayBar')) $('qdLayBar').open = false;
@@ -12405,6 +12455,216 @@ if ($('qdBrkAlert')) { $('qdBrkAlert').checked = Q.brkAlert; $('qdBrkAlert').onc
 
 HELP.candle = ['Candle realtime M15 / M30 / H1', 'Menampilkan <b>3 candle terakhir</b> tiap timeframe: 2 candle tertutup (C-2, C-1) dan 1 candle berjalan (LIVE, berdenyut) untuk melihat breakout lebih awal.<br><br><b>Range acuan</b> = high tertinggi (H) dan low terendah (L) dari 2 candle tertutup. Status: <br>• <b>BREAKOUT NAIK/TURUN</b> — harga live di luar range.<br>• <b>FAKEOUT</b> — wick menembus tapi harga kembali ke dalam range.<br>• <b>DI DALAM RANGE</b> — belum ada breakout.<br><b>KUAT</b> = penembusan ≥ 0,25× range rata-rata dan body ≥ 55%. Breakout baru valid bila candle <u>ditutup</u> di luar range.<br><br><b>Sumber data</b> (otomatis): ① OHLC realtime EA dari field <code>bars</code> pada dokumen akun; ② riwayat EA <code>marketBars</code>; ③ Binance + offset sebagai fallback. Chip di tiap kartu menunjukkan sumber yang dipakai. Agar sumber EA tampil, webhook harus menyimpan field <code>bars</code> yang dikirim EA ke dokumen akun Firestore.'];
 
+/* ===== Likuidasi heatmap + rata-rata posisi whale (ESTIMASI dari data publik Binance Futures) · di atas chart utama ===== */
+Q.fxLq = LSG('qd_fxlq', true); Q.fxWh = LSG('qd_fxwh', true); Q.lqOpen = LSG('qd_lqopen', !ML) !== false;
+Q.lqWin = ['12h', '24h', '3d', '7d'].includes(LSG('qd_lqwin', '24h')) ? LSG('qd_lqwin', '24h') : '24h';
+Q.lqRng = [5, 10, 15].includes(+LSG('qd_lqrng', 10)) ? +LSG('qd_lqrng', 10) : 10;
+Q.lqCon = clamp(+LSG('qd_lqcon', 55) || 55, 10, 95);
+Q.whBasis = LSG('qd_whbasis', 'win') === 'run' ? 'run' : 'win';
+Q.lq = null; Q.lqT = 0; Q.lqBusy = false; Q.lqErr = ''; Q.lqImg = null; Q.lqImgK = ''; Q.lqMy = null; Q.lqRun = null;
+const LQW = { '12h': { iv: '5m', ms: 3e5, n: 144 }, '24h': { iv: '5m', ms: 3e5, n: 288 }, '3d': { iv: '15m', ms: 9e5, n: 288 }, '7d': { iv: '30m', ms: 18e5, n: 336 } };
+const LQLEV = [[5, .10], [10, .25], [25, .30], [50, .20], [100, .15]], LQMMR = .005, LQNB = 120, LQSTEP = .0025, LQBASE = 'https://fapi.binance.com/';
+const LQSTOPS = [[0, [20, 10, 50, 0]], [.2, [70, 30, 140, .55]], [.45, [190, 40, 200, .8]], [.7, [250, 120, 50, .9]], [1, [255, 235, 90, 1]]];
+const LQLUT = Array.from({ length: 49 }, (_, k) => { const t = k / 48; for (let i = 1; i < LQSTOPS.length; i++) if (t <= LQSTOPS[i][0]) { const a = LQSTOPS[i - 1], b = LQSTOPS[i], u = (t - a[0]) / (b[0] - a[0]), m = j => a[1][j] + (b[1][j] - a[1][j]) * u; return `rgba(${m(0) | 0},${m(1) | 0},${m(2) | 0},${m(3).toFixed(2)})`; } return 'rgba(255,235,90,1)'; });
+const lqCol = t => LQLUT[clamp(Math.round(t * 48), 0, 48)];
+const esc2 = s => String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+function usd(v) { return '$' + (v >= 1e9 ? (v / 1e9).toFixed(2) + 'B' : v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? Math.round(v / 1e3) + 'K' : Math.round(v)); }
+const pctTxt = (p, px) => { const d = (p - px) / px * 100; return (d >= 0 ? '+' : '') + d.toFixed(1) + '%'; };
+const lqOk = () => !!(Q.lq && Q.lq.ok && Q.lq.sym === Q.sym);
+const whNow = () => { if (!lqOk()) return null; if (Q.whBasis === 'run' && Q.lqRun && Q.lqRun.sym === Q.sym && Q.lqRun.wh) return Q.lqRun.wh; return Q.lq.wh; };
+/* Hybrid = tampilkan posisi kedua sisi; Follow = hanya posisi searah tren (EMA / HH-LL / tekanan buyer-seller sesuai "Sumber arah" Follow) */
+function lqView() { const fol = Q.mode === 'follow' && (Q.dir === 'buy' || Q.dir === 'sell'); const al = fol ? (Q.dir === 'buy' ? 'L' : 'S') : null; return { fol, al, wL: !fol || al === 'L' ? 1 : .28, wS: !fol || al === 'S' ? 1 : .28, showL: !fol || al === 'L', showS: !fol || al === 'S' }; }
+
+/* ---------- ambil & susun deret data ---------- */
+function lqSeries(kl, oiA, trA, ms) {
+  const C = kl.map(k => ({ t: +k[0], o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5], q: +k[7], tb: +k[9] })).filter(k => k.h > 0 && k.l > 0);
+  const key = t => Math.floor(t / ms) * ms, oiM = {}, trM = {}; let nOi = 0, nTr = 0;
+  if (Array.isArray(oiA)) oiA.forEach(r => { const v = +r.sumOpenInterestValue; if (v > 0) { oiM[key(+r.timestamp)] = v; nOi++; } });
+  if (Array.isArray(trA)) trA.forEach(r => { const la = +r.longAccount, sa = +r.shortAccount; if (la >= 0 && sa >= 0 && la + sa > 0) { trM[key(+r.timestamp)] = [la / (la + sa), sa / (la + sa)]; nTr++; } });
+  const hasOi = nOi >= 10, hasTr = hasOi && nTr >= 10, n = C.length, oi = new Array(n), tr = new Array(n); let po = null, pt = null, miss = 0;
+  for (let i = 0; i < n; i++) { const k = key(C[i].t); if (hasOi && oiM[k] != null) po = oiM[k]; else miss++; oi[i] = po; if (hasTr && trM[k] != null) pt = trM[k]; tr[i] = pt; }
+  if (hasOi) { const f = oi.find(v => v != null); for (let i = 0; i < n && oi[i] == null; i++) oi[i] = f; }
+  return { C, oi, tr, hasOi, hasTr, n, cov: hasOi ? 1 - miss / Math.max(1, n) : 0 };
+}
+/* ---------- rata-rata entry whale v2: cost-basis berbobot VWAP, filter noise, pengurangan proporsional ---------- */
+function whaleCalc(S, px) {
+  if (!S.hasTr || S.n < 12) return null;
+  const { C, oi, tr, n } = S, bw = px * .0005, sm = (arr, i) => { let s = 0, c = 0; for (let j = Math.max(0, i - 2); j <= i; j++) if (arr[j] != null) { s += arr[j]; c++; } return c ? s / c : null; };
+  const side = idx => {
+    const lots = new Map(); let sPS = 0, sS = 0, ref = null, adds = 0, subs = 0;
+    const shares = tr.map(r => r ? r[idx] : null);
+    for (let i = 0; i < n; i++) {
+      const sh = sm(shares, i); if (sh == null || oi[i] == null) continue; const W = oi[i] * sh, thr = .0008 * oi[i];
+      if (ref == null) { ref = W; continue; }
+      if (Math.abs(W - ref) < thr) continue;                                   // abaikan fluktuasi rasio kecil (noise)
+      const d = W - ref; ref = W;
+      if (d > 0) { const k = C[i], vw = k.v > 0 && k.q > 0 ? k.q / k.v : (k.h + k.l + k.c) / 3, key = Math.round(vw / bw); lots.set(key, (lots.get(key) || 0) + d); sPS += vw * d; sS += d; adds++; }
+      else if (sS > 0) { const f = Math.max(0, 1 + d / sS); lots.forEach((v, k) => lots.set(k, v * f)); sPS *= f; sS *= f; subs++; }   // pengurangan proporsional: rata-rata tetap
+    }
+    if (sS <= 0 || !adds) return null;
+    const ks = [...lots.keys()].sort((a, b) => a - b); let acc = 0, p25 = null, p75 = null; const tot = ks.reduce((s, k) => s + lots.get(k), 0);
+    ks.forEach(k => { acc += lots.get(k); if (p25 == null && acc >= tot * .25) p25 = k * bw; if (p75 == null && acc >= tot * .75) p75 = k * bw; });
+    const conf = clamp(adds / 8, 0, 1) * .6 + S.cov * .4;
+    return { avg: sPS / sS, p25, p75, stock: sS, adds, subs, conf, lvl: conf >= .75 ? 'Tinggi' : conf >= .45 ? 'Sedang' : 'Rendah' };
+  };
+  let last = null; for (let i = n - 1; i >= 0; i--) if (tr[i]) { last = tr[i]; break; }
+  return { long: side(0), short: side(1), shL: last ? last[0] : null, shS: last ? last[1] : null };
+}
+async function lqRunLoad(sym, px) {
+  if (Q.lqRun && Q.lqRun.sym === sym && Date.now() - Q.lqRun.t < 300000) return;
+  const [kl, oi, tr] = await Promise.all([
+    fj(`${LQBASE}fapi/v1/klines?symbol=${sym}&interval=1h&limit=500`),
+    fj(`${LQBASE}futures/data/openInterestHist?symbol=${sym}&period=1h&limit=500`).catch(() => null),
+    fj(`${LQBASE}futures/data/topLongShortPositionRatio?symbol=${sym}&period=1h&limit=500`).catch(() => null)
+  ]);
+  if (!Array.isArray(kl)) return; const S = lqSeries(kl, oi, tr, 36e5);
+  Q.lqRun = { sym, t: Date.now(), wh: S.hasTr ? whaleCalc(S, px) : null, days: Math.round(S.n / 24) };
+}
+async function lqLoad() {
+  if (Q.lqBusy) return; const w = LQW[Q.lqWin], sym = Q.sym; Q.lqBusy = true; Q.lqT = Date.now(); Q.lqErr = '';
+  try {
+    const [kl, oi, tr] = await Promise.all([
+      fj(`${LQBASE}fapi/v1/klines?symbol=${sym}&interval=${w.iv}&limit=${w.n + 2}`),
+      fj(`${LQBASE}futures/data/openInterestHist?symbol=${sym}&period=${w.iv}&limit=${Math.min(500, w.n + 2)}`).catch(() => null),
+      fj(`${LQBASE}futures/data/topLongShortPositionRatio?symbol=${sym}&period=${w.iv}&limit=${Math.min(500, w.n + 2)}`).catch(() => null)
+    ]);
+    if (sym !== Q.sym) return;
+    if (!Array.isArray(kl)) throw new Error((kl && kl.msg) || 'simbol tidak ada di Binance Futures');
+    const r = lqCalc(kl, oi, tr, w, Q.px || +kl[kl.length - 1][4]); r.sym = sym; r.win = Q.lqWin; r.t = Date.now(); r.stamp = r.t;
+    Q.lq = r; if (!r.ok) Q.lqErr = r.msg || 'gagal menghitung';
+    if (r.ok && Q.whBasis === 'run') { try { await lqRunLoad(sym, Q.px || r.px); } catch (e) { } }
+  } catch (e) { Q.lqErr = String(e && e.message || e).slice(0, 120); Q.lqT = Date.now() - 40000; }
+  finally { Q.lqBusy = false; Q.dirty = true; if (Q.lqOpen) paintLq(); }
+}
+function lqCalc(kl, oiA, trA, w, px) {
+  const S = lqSeries(kl, oiA, trA, w.ms), { C, hasOi } = S, n = S.n; let oi = S.oi;
+  if (n < 20) return { ok: false, msg: 'Data candle futures tidak cukup' };
+  if (!hasOi) { oi = new Array(n); let o = 0; for (let i = 0; i < n; i++) { o = Math.max(0, o * .996 + .08 * C[i].q); oi[i] = o; } }
+  const step = px * LQSTEP, pLo = px * (1 - LQSTEP * LQNB / 2), NB = LQNB, Lg = new Float64Array(NB), Sh = new Float64Array(NB), snL = [], snS = [];
+  const bin = p => { const b = Math.floor((p - pLo) / step); return b >= 0 && b < NB ? b : -1; }, ctr = b => pLo + (b + .5) * step;
+  const open = (typ, amt, fb, lo, hi) => LQLEV.forEach(([Lv, wl]) => { const lp = typ * (1 - 1 / Lv + LQMMR), sp = typ * (1 + 1 / Lv - LQMMR); let b = bin(lp); if (b >= 0 && lp < lo) Lg[b] += amt * fb * wl; b = bin(sp); if (b >= 0 && sp > hi) Sh[b] += amt * (1 - fb) * wl; });
+  const k0 = Math.min(12, n);
+  for (let i = 0; i < n; i++) {
+    const k = C[i], typ = (k.h + k.l + k.c) / 3;
+    for (let b = 0; b < NB; b++) { const pc = ctr(b); if (pc >= k.l) Lg[b] = 0; if (pc <= k.h) Sh[b] = 0; }
+    if (i === 0) { for (let j = 0; j < k0; j++) { const kj = C[j]; open((kj.h + kj.l + kj.c) / 3, oi[0] / k0, .5, k.l, k.h); } }
+    else { const d = oi[i] - oi[i - 1]; if (d < 0 && oi[i - 1] > 0) { const f = oi[i] / oi[i - 1]; for (let b = 0; b < NB; b++) { Lg[b] *= f; Sh[b] *= f; } } else if (d > 0) open(typ, d, k.v > 0 ? clamp(k.tb / k.v, .15, .85) : .5, k.l, k.h); }
+    snL.push(Float32Array.from(Lg)); snS.push(Float32Array.from(Sh));
+  }
+  let gmax = 0; for (let j = 0; j < n; j++) for (let b = 0; b < NB; b++) { const v = Math.max(snL[j][b], snS[j][b]); if (v > gmax) gmax = v; }
+  const cl = []; for (let b = 0; b < NB; b++) { const L = Lg[b], Sv = Sh[b], v = Math.max(L, Sv); if (v <= 0) continue; let top = true; for (let j = -2; j <= 2; j++) { if (!j || b + j < 0 || b + j >= NB) continue; if (Math.max(Lg[b + j], Sh[b + j]) > v) { top = false; break; } } if (top) cl.push({ p: ctr(b), v, side: L >= Sv ? 'L' : 'S' }); }
+  cl.sort((a, b) => b.v - a.v);
+  const cum = [1, 3, 5, 10].map(pc => { const r = pc / 100; let dn = 0, up = 0; for (let b = 0; b < NB; b++) { const c = ctr(b); if (c < px && c >= px * (1 - r)) dn += Lg[b]; if (c > px && c <= px * (1 + r)) up += Sh[b]; } return { pc, dn, up }; });
+  let below = 0, above = 0; for (let b = 0; b < NB; b++) { const c = ctr(b); if (c < px) below += Lg[b]; else above += Sh[b]; }
+  return { ok: true, C, snL, snS, step, pLo, NB, gmax, px, cl, cum, below, above, wh: whaleCalc(S, px), last: { Lg: Float32Array.from(Lg), Sh: Float32Array.from(Sh) }, proxy: !hasOi, noTr: !S.hasTr, cov: S.cov };
+}
+function lqTick() {
+  if (!Q.started || !Q.c.length || Q.lqBusy) return; if (!(Q.fxLq || Q.fxWh || Q.lqOpen)) return;
+  if (Q.lq && Q.lq.sym !== Q.sym) { Q.lq = null; Q.lqImg = null; }
+  if (Date.now() - Q.lqT < 60000 && (Q.lq || Q.lqErr)) return; lqLoad();
+}
+
+/* ---------- overlay di chart utama ---------- */
+function drawLq(c, g) {
+  if (!lqOk()) return; const L = Q.lq, V = lqView(), { aw, lo, hi, Y, tag, small } = g;
+  if (Q.fxLq) {
+    const tops = L.cl.filter(x => x.p >= lo && x.p <= hi).slice(0, small ? 5 : 8), vm = tops.length ? tops[0].v : 1, wmax = aw * .16, bh = Math.max(2, L.step / (hi - lo) * (g.ph || 300));
+    tops.forEach((x, i) => { const al = x.side === 'L' ? V.wL : V.wS, y = Y(x.p), w = Math.max(8, x.v / vm * wmax), t = x.v / vm; c.fillStyle = lqCol(.35 + .65 * t); c.globalAlpha = .55 * al; c.fillRect(aw - w, y - bh / 2, w, bh); c.globalAlpha = 1;
+      if (i < 4 && al === 1) { c.strokeStyle = 'rgba(253,186,116,.35)'; c.lineWidth = 1; c.setLineDash([1, 4]); c.beginPath(); c.moveTo(0, y); c.lineTo(aw - w, y); c.stroke(); c.setLineDash([]); tag(`LIQ ${x.side === 'L' ? 'long' : 'short'} ${usd(x.v)}`, y - 3, '#fdba74', false, true); } });
+  }
+  const W = whNow();
+  if (Q.fxWh && W) [[W.long, '#4aa8ff', 'WHALE LONG', V.showL], [W.short, '#ff6b8a', 'WHALE SHORT', V.showS]].forEach(([o, col, lab, show]) => {
+    if (!o || !show) return; if (o.p25 != null && o.p75 > o.p25) { const y1 = Y(Math.min(hi, o.p75)), y2 = Y(Math.max(lo, o.p25)); if (y2 > y1) { c.fillStyle = col; c.globalAlpha = .08; c.fillRect(0, y1, aw, y2 - y1); c.globalAlpha = 1; } }
+    if (o.avg < lo || o.avg > hi) return; const y = Y(o.avg); c.strokeStyle = col; c.lineWidth = 1.2; c.setLineDash([6, 4]); c.beginPath(); c.moveTo(0, y); c.lineTo(aw, y); c.stroke(); c.setLineDash([]); tag(`${lab} ${f2(o.avg)}`, y - 3, col, true, false);
+  });
+}
+
+/* ---------- panel di atas chart ---------- */
+function lqRender(L, W, H) {
+  const AXW = 58, NW = W < 520 ? 54 : 84, pw = W - AXW - NW, pt = 8, pb = 18, ph = H - pt - pb, px = Q.px || L.px, R = Q.lqRng / 100, lo = px * (1 - R), hi = px * (1 + R);
+  return { AXW, NW, pw, pt, pb, ph, px, lo, hi, Y: p => pt + (hi - p) / (hi - lo) * ph, vmax: L.gmax * (1.05 - .9 * Q.lqCon / 100) || 1 };
+}
+function drawLqMap() {
+  const L = Q.lq, el = $('qdLqCv'), box = $('qdLqBox'); if (!el || !box || !lqOk()) return;
+  const W = box.clientWidth || 600, H = box.clientHeight || 300, d = Math.min(ML ? 1.5 : 2, devicePixelRatio || 1), V = lqView();
+  if (el.width !== Math.round(W * d) || el.height !== Math.round(H * d)) { el.width = Math.round(W * d); el.height = Math.round(H * d); }
+  const c = el.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0); c.clearRect(0, 0, W, H); c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+  const G = lqRender(L, W, H), { AXW, NW, pw, pt, ph, px, lo, hi, Y, vmax } = G, n = L.C.length, cw = pw / n, Yl = p => (hi - p) / (hi - lo) * ph, WH = whNow();
+  const key = [W, H, Q.lqCon, Q.lqRng, L.stamp, Math.round(px / (px * .001)), V.wL, V.wS].join('|');
+  if (!Q.lqImg || Q.lqImgK !== key) {
+    const off = document.createElement('canvas'); off.width = Math.max(1, Math.round(pw * d)); off.height = Math.max(1, Math.round(ph * d)); const o = off.getContext('2d'); o.setTransform(d, 0, 0, d, 0, 0);
+    for (let j = 0; j < n; j++) { const a = L.snL[j], b2 = L.snS[j]; for (let b = 0; b < L.NB; b++) { const v = Math.max(a[b] * V.wL, b2[b] * V.wS); if (v <= 0) continue; const t = v / vmax; if (t < .03) continue; const p0 = L.pLo + b * L.step, y2 = Yl(p0), y1 = Yl(p0 + L.step); if (y2 < 0 || y1 > ph) continue; o.fillStyle = lqCol(t); o.fillRect(j * cw, y1, cw + .6, Math.max(1, y2 - y1) + .4); } }
+    Q.lqImg = off; Q.lqImgK = key;
+  }
+  c.fillStyle = '#070807'; c.fillRect(0, 0, W, H); c.drawImage(Q.lqImg, 0, 0, Q.lqImg.width, Q.lqImg.height, 0, pt, pw, ph);
+  c.font = '9.5px sans-serif'; c.fillStyle = 'rgba(167,182,220,.8)'; c.strokeStyle = 'rgba(130,165,255,.08)'; c.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) { const p = hi - (hi - lo) * i / 5, y = Math.round(Y(p)) + .5; c.beginPath(); c.moveTo(0, y); c.lineTo(pw, y); c.stroke(); c.fillText(f2(p), pw + NW + 4, y + 3); }
+  const up = 'rgba(45,245,163,.95)', dn = 'rgba(255,75,110,.95)';
+  if (cw >= 2.2) L.C.forEach((k, j) => { const x = j * cw + cw / 2, col = k.c >= k.o ? up : dn; c.strokeStyle = col; c.fillStyle = col; c.beginPath(); c.moveTo(x, Y(k.h)); c.lineTo(x, Y(k.l)); c.stroke(); const y1 = Y(Math.max(k.o, k.c)), y2 = Y(Math.min(k.o, k.c)); c.fillRect(x - cw * .32, y1, Math.max(1, cw * .64), Math.max(1, y2 - y1)); });
+  else { c.strokeStyle = 'rgba(255,255,255,.9)'; c.lineWidth = 1.2; c.beginPath(); L.C.forEach((k, j) => { const x = j * cw + cw / 2; j ? c.lineTo(x, Y(k.c)) : c.moveTo(x, Y(k.c)); }); c.stroke(); }
+  const occ = []; const put = (txt, y, col) => { let yy = y; for (const dy of [0, 12, -12, 24, -24]) { if (!occ.some(o => Math.abs(o - (y + dy)) < 11)) { yy = y + dy; occ.push(yy); break; } } c.font = '700 9.5px sans-serif'; const w = c.measureText(txt).width + 8; c.fillStyle = 'rgba(5,8,5,.82)'; c.fillRect(pw - w - 2, yy - 9, w, 12); c.fillStyle = col; c.textAlign = 'right'; c.fillText(txt, pw - 6, yy); c.textAlign = 'left'; };
+  L.cl.filter(x => x.p > lo && x.p < hi && (x.side === 'L' ? V.showL : V.showS)).slice(0, 5).forEach(x => { const y = Y(x.p); c.strokeStyle = 'rgba(253,186,116,.4)'; c.setLineDash([1, 4]); c.beginPath(); c.moveTo(0, y); c.lineTo(pw, y); c.stroke(); c.setLineDash([]); put(`${usd(x.v)} · ${pctTxt(x.p, px)}`, y - 3, '#fdba74'); });
+  if (Q.fxWh && WH) [[WH.long, '#4aa8ff', 'WHALE LONG', V.showL], [WH.short, '#ff6b8a', 'WHALE SHORT', V.showS]].forEach(([o, col, lab, show]) => {
+    if (!o || !show) return; if (o.p25 != null && o.p75 > o.p25) { const y1 = Y(Math.min(hi, o.p75)), y2 = Y(Math.max(lo, o.p25)); if (y2 > y1) { c.fillStyle = col; c.globalAlpha = .12; c.fillRect(0, y1, pw, y2 - y1); c.globalAlpha = 1; } }
+    if (o.avg < lo || o.avg > hi) return; const y = Y(o.avg); c.strokeStyle = col; c.lineWidth = 1.3; c.setLineDash([6, 4]); c.beginPath(); c.moveTo(0, y); c.lineTo(pw, y); c.stroke(); c.setLineDash([]); c.font = '700 9.5px sans-serif'; const t = `${lab} ${f2(o.avg)}`, w = c.measureText(t).width + 8; c.fillStyle = 'rgba(5,8,5,.85)'; c.fillRect(2, y - 9, w, 12); c.fillStyle = col; c.fillText(t, 6, y);
+  });
+  { const y = Y(px); c.strokeStyle = 'rgba(255,201,74,.9)'; c.lineWidth = 1; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(0, y); c.lineTo(pw + NW, y); c.stroke(); c.setLineDash([]); c.fillStyle = '#ffc94a'; c.fillRect(pw + NW, y - 8, AXW, 14); c.fillStyle = '#1a1200'; c.font = '700 10px sans-serif'; c.fillText(f2(px), pw + NW + 4, y + 3); }
+  { c.fillStyle = 'rgba(255,255,255,.04)'; c.fillRect(pw, pt, NW, ph); let mx = 0; for (let b = 0; b < L.NB; b++) mx = Math.max(mx, L.last.Lg[b] * V.wL + L.last.Sh[b] * V.wS); mx = mx || 1;
+    for (let b = 0; b < L.NB; b++) { const v = L.last.Lg[b] * V.wL + L.last.Sh[b] * V.wS; if (v <= 0) continue; const p0 = L.pLo + b * L.step; if (p0 + L.step < lo || p0 > hi) continue; const y1 = Y(p0 + L.step), y2 = Y(p0), w = v / mx * (NW - 6); c.fillStyle = lqCol(clamp(v / vmax, .1, 1)); c.fillRect(pw + 2, y1, w, Math.max(1, y2 - y1 - .5)); }
+    c.fillStyle = 'rgba(167,182,220,.7)'; c.font = '8.5px sans-serif'; c.fillText('SEKARANG', pw + 4, pt + 9); }
+  c.fillStyle = 'rgba(167,182,220,.7)'; c.font = '9px sans-serif'; const tf = t => wib(t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false }); c.fillText(tf(L.C[0].t), 2, H - 5); c.textAlign = 'right'; c.fillText(tf(L.C[n - 1].t), pw - 2, H - 5); c.textAlign = 'left';
+  const hv = $('qdLqHv');
+  if (Q.lqMy != null && Q.lqMy > pt && Q.lqMy < pt + ph) { const p = hi - (Q.lqMy - pt) / ph * (hi - lo), b = Math.floor((p - L.pLo) / L.step), lv = b >= 0 && b < L.NB ? L.last.Lg[b] : 0, sv = b >= 0 && b < L.NB ? L.last.Sh[b] : 0; c.strokeStyle = 'rgba(255,255,255,.35)'; c.setLineDash([2, 3]); c.beginPath(); c.moveTo(0, Q.lqMy); c.lineTo(pw + NW, Q.lqMy); c.stroke(); c.setLineDash([]); if (hv) hv.textContent = `${f2(p)} (${pctTxt(p, px)}) · likuidasi long ${usd(lv)} · short ${usd(sv)}`; }
+  const sc = $('qdLqScale'); if (sc) sc.textContent = `Skala warna per level 0,25%: paling redup ≈ ${usd(vmax * .03)}, paling terang ≈ ${usd(vmax)}`;
+}
+function lqSumHTML() {
+  const L = Q.lq, px = Q.px || L.px, A = Q.atr || px * .003, W = whNow(), V = lqView();
+  const cell = (t, v, s, cls) => `<div class="${cls || ''}"><span>${t}</span><b>${v}</b>${s ? `<small>${s}</small>` : ''}</div>`;
+  const pnl = (v, long) => { const r = (long ? px - v : v - px) / v * 100; return `${r >= 0 ? 'profit' : 'floating loss'} ${r >= 0 ? '+' : ''}${r.toFixed(2)}%`; };
+  const wcell = (o, long) => { const lab = long ? 'Whale AVG LONG' : 'Whale AVG SHORT', cls = long ? 'wl' : 'ws'; if (!o) return cell(lab, '—', W ? 'tidak ada penambahan posisi pada jendela ini' : 'data top trader tidak tersedia', cls);
+    return cell(lab + (V.fol ? ' · searah tren' : ''), f2(o.avg), `${pctTxt(o.avg, px)} dari harga · ${pnl(o.avg, long)}<br>zona inti 50% posisi: ${f2(o.p25)}–${f2(o.p75)}<br>${o.adds} penambahan · keyakinan <b>${o.lvl}</b>`, cls); };
+  const lb = L.cl.filter(x => x.side === 'L' && x.p < px)[0], sa = L.cl.filter(x => x.side === 'S' && x.p > px)[0], cards = [];
+  if (V.showL) cards.push(wcell(W && W.long, true)); if (V.showS) cards.push(wcell(W && W.short, false));
+  cards.push(cell('Top trader (rasio posisi)', W && W.shL != null ? `${(W.shL * 100).toFixed(0)}% long · ${(W.shS * 100).toFixed(0)}% short` : '—', W && W.shL != null ? (W.shL > .55 ? 'condong long' : W.shL < .45 ? 'condong short' : 'seimbang') : 'rasio tidak tersedia'));
+  cards.push(cell('Cluster LONG terbesar (bawah)', lb ? f2(lb.p) : '—', lb ? `${usd(lb.v)} · ${pctTxt(lb.p, px)} · ${(Math.abs(lb.p - px) / A).toFixed(1)} ATR${V.fol ? (V.al === 'L' ? '<br>risiko untuk posisi searah tren' : '<br>target bila tren turun') : ''}` : 'tidak ada', 'lb'));
+  cards.push(cell('Cluster SHORT terbesar (atas)', sa ? f2(sa.p) : '—', sa ? `${usd(sa.v)} · ${pctTxt(sa.p, px)} · ${(Math.abs(sa.p - px) / A).toFixed(1)} ATR${V.fol ? (V.al === 'S' ? '<br>risiko untuk posisi searah tren' : '<br>target bila tren naik') : ''}` : 'tidak ada', 'sa'));
+  cards.push(cell('Total estimasi ±15%', `${usd(L.below)} ↓ · ${usd(L.above)} ↑`, 'long di bawah · short di atas'));
+  const rows = L.cum.map(r => `<tr><td>±${r.pc}%</td><td class="neg">${usd(r.dn)}</td><td class="pos">${usd(r.up)}</td></tr>`).join('');
+  const basis = Q.whBasis === 'run' ? `Basis <b>posisi berjalan</b> (riwayat 1 jam ≈ ${Q.lqRun && Q.lqRun.sym === Q.sym ? Q.lqRun.days + ' hari' : 'memuat…'}): stok whale dibangun dari awal riwayat, penutupan mengurangi stok secara proporsional.` : `Basis <b>arus jendela ${Q.lqWin.toUpperCase()}</b>: hanya penambahan posisi dalam jendela yang dihitung.`;
+  return `<div class="qd-lqk">${cards.join('')}</div>
+  <details class="qd-lqd"><summary>Skenario likuidasi jika harga bergerak &amp; cara hitung</summary><table class="qd-lqt"><thead><tr><th>Jika harga bergerak</th><th>Turun: long terlikuidasi</th><th>Naik: short terlikuidasi</th></tr></thead><tbody>${rows}</tbody></table>
+  <div class="qd-sub" style="margin-top:6px">Total berjalan dari harga ${f2(px)}. Likuidasi: kenaikan open interest per candle × campuran leverage 5–100×, level hilang saat wick menembusnya. Whale: nilai posisi top trader Binance (OI × rasio posisi, dihaluskan 3 periode) → tiap kenaikan di atas ambang noise 0,08% OI dicatat sebagai lot di harga VWAP candle itu; penurunan mengurangi semua lot proporsional. AVG = rata-rata tertimbang lot; zona inti = persentil 25–75. ${basis}</div></details>`;
+}
+function lqHead() {
+  const V = lqView(), m = $('qdLqMode'); if (!m) return;
+  m.className = 'qd-lqmode ' + (V.fol ? (Q.dir === 'buy' ? 'buy' : 'sell') : '');
+  m.textContent = V.fol ? `Follow ${Q.dir === 'buy' ? '▲ BUY' : '▼ SELL'} — hanya posisi whale ${Q.dir === 'buy' ? 'LONG' : 'SHORT'} · ${Q.dirWhy || ''}` : (Q.mode === 'follow' ? 'Follow: menunggu arah tren…' : 'Hybrid — posisi whale LONG & SHORT');
+}
+function paintLq() {
+  const st = $('qdLqSt'); if (!st || !Q.lqOpen) return; if (!Q.lq && !Q.lqBusy && !Q.lqErr) lqLoad(); lqHead();
+  let msg;
+  if (Q.lqBusy && !lqOk()) msg = '<div class="qd-spin" style="display:inline-block;vertical-align:middle;margin-right:8px"></div>Memuat open interest & rasio top trader Binance Futures…';
+  else if (!lqOk()) msg = `<b style="color:var(--red)">Data likuidasi tidak tersedia</b> — ${esc2(Q.lqErr || (Q.lq && Q.lq.msg) || 'simbol ini tidak ada di Binance Futures / diblokir jaringan')}. <button class="btn ghost" id="qdLqRetry" style="padding:3px 9px;font-size:10.5px">Coba lagi</button>`;
+  else { const L = Q.lq, ago = Math.round((Date.now() - L.t) / 1000); msg = `Pembaruan ${ago} dtk lalu (tiap 60 dtk)${L.proxy ? ' · <b style="color:var(--amber)">OI historis tidak tersedia → memakai proksi volume (kurang akurat)</b>' : ''}${L.noTr ? ' · <b style="color:var(--amber)">rasio top trader tidak tersedia → garis whale mati</b>' : ''}`; }
+  setH('qdLqSt', msg);
+  if (lqOk()) { drawLqMap(); setH('qdLqSum', lqSumHTML()); } else { const el = $('qdLqCv'); if (el) { const c = el.getContext('2d'); c && c.clearRect(0, 0, el.width, el.height); } setH('qdLqSum', ''); }
+}
+(function lqBind() {
+  const win = $('qdLqWin'), rng = $('qdLqRng'), con = $('qdLqCon'), wh = $('qdLqWh'), ref = $('qdLqRef'), box = $('qdLqBox'), bas = $('qdLqBasis'), tg = $('qdLqTg'), body = $('qdLq'); if (!win) return;
+  const syncWin = () => win.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === Q.lqWin)), syncOpen = () => { body.hidden = !Q.lqOpen; tg.textContent = Q.lqOpen ? 'Sembunyikan ▴' : 'Tampilkan ▾'; tg.setAttribute('aria-expanded', String(Q.lqOpen)); };
+  syncWin(); syncOpen();
+  tg.onclick = () => { Q.lqOpen = !Q.lqOpen; LSS('qd_lqopen', Q.lqOpen); syncOpen(); Q.lqImg = null; if (Q.lqOpen) { lqTick(); paintLq(); } };
+  win.onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.v === Q.lqWin) return; Q.lqWin = b.dataset.v; LSS('qd_lqwin', Q.lqWin); syncWin(); Q.lq = null; Q.lqImg = null; Q.lqT = 0; Q.lqErr = ''; lqLoad(); paintLq(); };
+  rng.value = Q.lqRng; rng.onchange = e => { Q.lqRng = +e.target.value; LSS('qd_lqrng', Q.lqRng); Q.lqImg = null; paintLq(); };
+  con.value = Q.lqCon; con.oninput = e => { Q.lqCon = +e.target.value; LSS('qd_lqcon', Q.lqCon); Q.lqImg = null; drawLqMap(); };
+  bas.value = Q.whBasis; bas.onchange = e => { Q.whBasis = e.target.value === 'run' ? 'run' : 'win'; LSS('qd_whbasis', Q.whBasis); Q.lqRun = null; Q.lqT = 0; Q.lqErr = ''; lqLoad(); paintLq(); Q.dirty = true; };
+  wh.checked = Q.fxWh; wh.onchange = e => setFlag('fxWh', e.target.checked);
+  ref.onclick = () => { Q.lqT = 0; Q.lqErr = ''; Q.lqImg = null; Q.lqRun = null; lqLoad(); paintLq(); };
+  $('qdLqSt').addEventListener('click', e => { if (e.target.id === 'qdLqRetry') { Q.lqT = 0; Q.lqErr = ''; lqLoad(); paintLq(); } });
+  box.addEventListener('pointermove', e => { const r = box.getBoundingClientRect(); Q.lqMy = e.clientY - r.top; if (lqOk()) drawLqMap(); });
+  box.addEventListener('pointerleave', () => { Q.lqMy = null; const hv = $('qdLqHv'); if (hv) hv.textContent = ''; if (lqOk()) drawLqMap(); });
+})();
+
 /* ===== Sinyal realtime: mesin skor konfluensi per instance (dibaca panel "Sinyal Realtime" di atas) ===== */
 let API = null; Q.sig = null; Q.sigRun = null; Q.sigPrev = null; Q.sigAt = 0;
 function sigPos() {
@@ -12513,6 +12773,14 @@ function sigCalc() {
     if (S.pos.side === side) F.push({ st: 'info', block: false, txt: `Sudah ada posisi EA searah: ${S.pos.side} ${lot3(S.pos.side === 'BUY' ? S.pos.buy : S.pos.sell)} lot (floating ${S.pos.pl >= 0 ? '+' : ''}${S.pos.pl.toFixed(2)} $) — hindari menumpuk berlebihan.` });
     else if (S.pos.side === 'BUY' || S.pos.side === 'SELL') F.push({ st: 'warn', block: false, txt: `Ada posisi EA ${S.pos.side} ${lot3(S.pos.side === 'BUY' ? S.pos.buy : S.pos.sell)} lot yang BERLAWANAN dengan sinyal ${side}.` });
   }
+  if (lqOk()) {
+    const LQ = Q.lq, WH = whNow(), wl = WH && WH.long, ws = WH && WH.short, nearW = o => o && Math.abs(px - o.avg) <= .6 * A, inBand = o => o && o.p25 != null && px >= o.p25 - .2 * A && px <= o.p75 + .2 * A;
+    if (D && wl && (nearW(wl) || inBand(wl))) F.push({ st: 'info', block: false, txt: `Harga di area entry whale LONG (rata-rata ${f2(wl.avg)}, zona inti ${f2(wl.p25)}–${f2(wl.p75)}) — area yang biasanya dipertahankan whale.` });
+    if (!D && ws && (nearW(ws) || inBand(ws))) F.push({ st: 'info', block: false, txt: `Harga di area entry whale SHORT (rata-rata ${f2(ws.avg)}, zona inti ${f2(ws.p25)}–${f2(ws.p75)}) — area yang biasanya dipertahankan whale.` });
+    if (WH && WH.shL != null && Math.abs(WH.shL - .5) >= .08) { const wl_ = WH.shL > .5; F.push({ st: (wl_ === D) ? 'info' : 'warn', block: false, txt: `Top trader Binance condong ${wl_ ? 'LONG' : 'SHORT'} (${(Math.max(WH.shL, WH.shS) * 100).toFixed(0)}%)${wl_ === D ? ' — searah sinyal.' : ' — berlawanan dengan sinyal ' + side + '.'}` }); }
+    const tg = LQ.cl.filter(x => D ? (x.side === 'S' && x.p > px) : (x.side === 'L' && x.p < px)).sort((a, b) => b.v - a.v)[0];
+    if (tg) F.push({ st: 'info', block: false, txt: `Cluster likuidasi ${D ? 'short' : 'long'} terbesar ${usd(tg.v)} di ${f2(tg.p)} (${(Math.abs(tg.p - px) / A).toFixed(1)} ATR) — magnet harga ke arah ${D ? 'atas' : 'bawah'}.` });
+  }
   // skor akhir & keputusan
   const total = Math.round(clamp(R.reduce((s, r) => s + r.pts, 0) - pen, 0, 100)), blockers = F.filter(f => f.block), near = z.inside || dA <= .35, MIN = S.min;
   S.rows = R; S.score = total; S.dA = dA;
@@ -12553,7 +12821,7 @@ setInterval(() => {
   const nT = Date.now(); if (nT - Q.wsTick > 5000 && nT - Q.lastPoll > 2000) { Q.lastPoll = nT; loadTrades(false); } if (nT - Q.wsKl > 6000 && nT - Q.lastKl > 3000) { Q.lastKl = nT; pollKl(); }
   if (Q.px) { Q.hHi = Math.max(Q.hHi, Q.px); Q.hLo = Math.min(Q.hLo, Q.px); } newsTick(); crTick();
   staleCheck(); waveTick(); rescore(); track(); if (Q.str) { Q.hist.push(Q.str.buyer); if (Q.hist.length > 300) Q.hist.shift(); } alertCheck();
-  if (on) { render(); try { sigUpdate(); } catch (e) { console.error('qdom sig', e); } }
+  if (on) { render(); try { sigUpdate(); } catch (e) { console.error('qdom sig', e); } try { lqTick(); } catch (e) { console.error('qdom lq', e); } }
 }, 1000);
 (function loop(ts) { if (act() && Q.dirty && ts - Q.lastDraw > (ML ? 130 : 80)) { Q.dirty = false; Q.lastDraw = ts; try { draw(); } catch (e) { console.error('qdom draw', e); } } if (act() && Q.domVis !== false && ts - (Q.lastCr || 0) > (ML ? 220 : 80)) { Q.lastCr = ts; try { drawCr(); } catch (e) { } } if (act() && Q.tab === 'arus' && ts - (Q.lastWave || 0) > 60) { Q.lastWave = ts; try { drawWave(); } catch (e) { } } requestAnimationFrame(loop); })(0);
 if (window.ResizeObserver) new ResizeObserver(() => { Q.dirty = true; }).observe($('qdBox'));
