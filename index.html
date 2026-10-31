@@ -3173,6 +3173,45 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
 .qs-pset label{display:inline-flex;align-items:center;gap:6px;font:600 10.5px var(--fm);color:var(--muted);white-space:nowrap}
 .qs-pset input[type=range]{width:110px;accent-color:var(--gold)}
 .qs-pset b{color:var(--text);min-width:22px;text-align:right}
+
+/* ---------- Cari setup & scalping ---------- */
+.qd-inst .qd-chartcard{position:relative}
+.qd-sbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:0 2px 8px}
+.qd-sbl{display:inline-flex;align-items:center;gap:6px;font:800 11px var(--fh);letter-spacing:.05em;color:var(--gold)}
+.qd-sbtn{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:9px;border:1px solid var(--line2);background:rgba(19,28,56,.7);color:var(--text);font:800 11px var(--fh);cursor:pointer;letter-spacing:.04em}
+.qd-sbtn i{font:700 9.5px var(--fm);font-style:normal;padding:1px 6px;border-radius:999px;background:var(--surface3);color:var(--muted)}
+.qd-sbtn.buy{border-color:rgba(45,245,163,.45);color:var(--green)}.qd-sbtn.sell{border-color:rgba(255,75,110,.45);color:var(--red)}
+.qd-sbtn.on{box-shadow:0 0 0 1px currentColor inset;background:rgba(255,255,255,.06)}
+.qd-sbtn[data-best="A+"] i{background:var(--gold);color:#1a1200}.qd-sbtn[data-best="MEDIUM"] i{background:var(--amber-soft);color:var(--amber)}.qd-sbtn[data-best="HIGH"] i{background:var(--red-soft);color:#ff9fb2}
+.qd-sbtn.pin{border-color:var(--line2);color:var(--muted);font-weight:700}
+.qd-scalp{margin-left:auto;display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border:1px solid var(--line2);border-radius:999px;font-size:10.5px;color:var(--muted)}
+.qd-scalp b{font:800 10.5px var(--fh);letter-spacing:.04em;color:var(--text)}.qd-scalp small{font:600 9.5px var(--fm)}
+.qd-scalp.on{border-color:#ff9f43;background:rgba(255,159,67,.12)}.qd-scalp.on b{color:#ff9f43}
+.qd-sres{margin:0 0 10px;border:1px solid var(--line2);border-radius:12px;background:rgba(7,12,26,.96);overflow:hidden}
+.qd-sres[hidden]{display:none}
+.qd-srh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:9px 12px;border-bottom:1px solid var(--line)}
+.qd-srh>b{font:800 12px var(--fh);letter-spacing:.04em}.qd-srh>span{font-size:10.5px;color:var(--muted)}
+.qd-sdr{display:flex;gap:4px;margin-left:auto}
+.qd-sdr button,.qd-srf button,.qd-sx{padding:4px 10px;border-radius:8px;border:1px solid var(--line2);background:rgba(19,28,56,.6);color:var(--muted);font:700 10.5px var(--fh);cursor:pointer}
+.qd-sdr button.on,.qd-srf button.on{border-color:var(--gold);color:var(--gold);background:rgba(255,201,74,.1)}
+.qd-srf{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px}
+.qd-srf i{font-style:normal;font-family:var(--fm);opacity:.8;margin-left:3px}
+.qd-srl{display:flex;flex-direction:column;gap:8px;padding:0 12px 10px;max-height:340px;overflow:auto}
+.qd-srr{border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:10px;padding:9px 11px;background:rgba(19,28,56,.45);display:flex;flex-direction:column;gap:5px;min-width:0}
+.qd-srr.gA{border-left-color:var(--gold)}.qd-srr.gM{border-left-color:var(--amber)}.qd-srr.gH{border-left-color:var(--red)}
+.qd-srt{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.qd-sg{font:800 10px var(--fh);letter-spacing:.06em;padding:2px 8px;border-radius:6px;background:var(--surface3)}
+.gA .qd-sg{background:var(--gold);color:#1a1200}.gM .qd-sg{background:var(--amber-soft);color:var(--amber)}.gH .qd-sg{background:var(--red-soft);color:#ff9fb2}
+.qd-srt b{font:800 12px var(--fh)}.qd-sst{font-size:10.5px;color:var(--muted);margin-left:auto}
+.qd-srp{font:600 11px var(--fm);line-height:1.6;overflow-wrap:anywhere}
+.qd-srp .neg{color:var(--red)}.qd-srp .pos{color:var(--green)}
+.qd-srw{font-size:10.5px;color:var(--muted)}.qd-srm{font-size:10.5px;color:#ffe2ad;line-height:1.45}
+.qd-sra{display:flex;flex-wrap:wrap;gap:6px}
+.qd-sra button{padding:4px 10px;border-radius:8px;border:1px solid var(--line2);background:rgba(19,28,56,.7);color:var(--text);font:700 10.5px var(--fh);cursor:pointer}
+.qd-srempty{padding:12px;font-size:11.5px;line-height:1.6;color:var(--muted)}
+.qd-srn{padding:8px 12px 10px;font-size:10px;color:var(--faint);line-height:1.5;border-top:1px solid var(--line)}
+.qd-sx{margin-left:6px}
+@media(max-width:560px){.qd-scalp{margin-left:0}.qd-sdr{margin-left:0}}
 </style>
 </head>
 <body>
@@ -3851,7 +3890,7 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
     <div class="qd-chips" id="qdChips"></div>
     <div class="qd-ctrls">
       <div class="qd-cg qd-cg-wide"><span class="qd-cl">Preset</span><div class="qd-seg" id="qdPreSeg" role="group" aria-label="Preset layout"><button data-v="scalp" title="Scalp: 5m · 100 candle · maks 3 zona · hanya zona ≤ 6 ATR · hold 4 · DOM + Wall aktif">⚡ Scalp</button><button data-v="intra" title="Intraday: 15m · 150 candle · maks 4 zona · zona ≤ 12 ATR · hold 6 · garis sesi aktif">◐ Intraday</button><button data-v="swing" title="Swing: 1h · 200 candle · maks 5 zona · semua jarak · hold 8 · DOM/Wall mati, zona tembus tampil">◎ Swing</button></div></div>
-      <div class="qd-cg"><span class="qd-cl">Timeframe</span><div class="qd-seg" id="qdTfSeg" role="group" aria-label="Timeframe"><button data-v="5m">5m</button><button data-v="15m">15m</button><button data-v="1h">1h</button><button data-v="4h">4h</button></div></div>
+      <div class="qd-cg"><span class="qd-cl">Timeframe</span><div class="qd-seg" id="qdTfSeg" role="group" aria-label="Timeframe"><button data-v="1m">1m</button><button data-v="5m">5m</button><button data-v="15m">15m</button><button data-v="1h">1h</button><button data-v="4h">4h</button></div></div>
       <div class="qd-cg"><span class="qd-cl">Mode zona</span><div class="qd-seg" id="qdModeSeg" role="group" aria-label="Mode"><button data-v="hybrid" title="Gambar Supply dan Demand">Hybrid</button><button data-v="follow" title="Hanya satu sisi, mengikuti tekanan / struktur">Follow</button></div></div>
       <div class="qd-cg qd-cg-ic"><span class="qd-cl">Alat</span><div class="qd-ibs"><button class="btn ghost qd-ib" id="qdAlertBtn" title="Alert zona (suara + notifikasi)">🔔</button><button class="btn ghost qd-ib" id="qdSetBtn" title="Pengaturan">⚙ <span>Pengaturan</span></button></div></div>
     </div>
@@ -3945,7 +3984,15 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
   </section>
   <div class="qd-main">
     <div class="card qd-chartcard">
-      <div class="qd-chartbox" id="qdBox">
+      <div class="qd-sbar" id="qdSBar">
+      <span class="qd-sbl"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="10" cy="10" r="6.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15 15l5.5 5.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>Cari setup</span>
+      <button type="button" class="qd-sbtn buy" id="qdSrBuy" title="Cari setup BUY (A+, medium, high risk)">BUY ▲ <i>0</i></button>
+      <button type="button" class="qd-sbtn sell" id="qdSrSell" title="Cari setup SELL (A+, medium, high risk)">SELL ▼ <i>0</i></button>
+      <button type="button" class="qd-sbtn pin" id="qdSrPin" hidden title="Hapus gambar hasil pencarian dari chart">✕ Lepas gambar</button>
+      <span class="qd-scalp" id="qdScalp" title="Membuka TF 1 menit untuk mencari setup scalping. Mematikan akan mengembalikan TF sebelumnya."><label class="qd-swt"><input type="checkbox" id="qdScalpCk"><i></i></label><b>⚡ Scalping agresif</b><small>TF 1m</small></span>
+    </div>
+    <div class="qd-sres" id="qdSRes" hidden></div>
+    <div class="qd-chartbox" id="qdBox">
         <canvas id="qdCv" aria-label="Chart candlestick dengan zona Supply dan Demand"></canvas>
         <button class="qd-livebtn" id="qdLiveBtn" hidden>⟳ ke live</button>
         <div class="qd-ov" id="qdOv" hidden></div>
@@ -11557,7 +11604,7 @@ function draw() {
   const px = Q.px || all[N - 1].c; let lo = Infinity, hi = -Infinity; vis.forEach(k => { if (k.l < lo) lo = k.l; if (k.h > hi) hi = k.h; });
   const A = Q.atr || (hi - lo) / 30;
   if (Q.optZ) Q.zones.forEach(z => { if (z.top > hi && z.bot < hi + 5 * A) hi = z.top; if (z.bot < lo && z.top > lo - 5 * A) lo = z.bot; });
-  if (fvOn()) { const fe = fvExtent(); if (fe) { if (fe.hi > hi && fe.hi < hi + 8 * A) hi = fe.hi; if (fe.lo < lo && fe.lo > lo - 8 * A) lo = fe.lo; } }
+  { const fe = fvExtent(); if (fe) { if (fe.hi > hi && fe.hi < hi + 8 * A) hi = fe.hi; if (fe.lo < lo && fe.lo > lo - 8 * A) lo = fe.lo; } }
   if (Q.pan === 0) { if (px > hi) hi = px; if (px < lo) lo = px; }
   const pad = (hi - lo) * .06 || 1; lo -= pad; hi += pad; const Y = p => pt + (hi - p) / (hi - lo) * ph, X = i => (i - start) * cw;
   // grid
@@ -12710,9 +12757,9 @@ function applyPreset(p, auto) {
   const hide = p === 'fvg' && auto !== false;
   if (hide) { if (!Q.preSaved) { Q.preSaved = {}; FV_PRE.forEach(k => { Q.preSaved[k] = !!Q[k]; }); LSS('qd_presaved', Q.preSaved); } FV_PRE.forEach(k => { if (Q[k]) setFlag(k, false); }); }
   else if (Q.preSaved) { const s = Q.preSaved; Q.preSaved = null; LSS('qd_presaved', null); FV_PRE.forEach(k => { if (k in s && !!Q[k] !== !!s[k]) setFlag(k, !!s[k]); }); }
-  Q.dirty = true; if (p === 'fvg') fvUpdate(); else Q.fv = null; render();
+  Q.dirty = true; fvUpdate(); render();
 }
-function fvUpdate() { if (!fvOn()) { Q.fv = null; return; } try { Q.fv = fvCalc(); } catch (e) { console.error('qdom fv', e); Q.fv = null; } Q.dirty = true; }
+function fvUpdate() { try { Q.fvFull = fvCalc(); } catch (e) { console.error('qdom fv', e); Q.fvFull = null; } Q.fv = fvOn() ? Q.fvFull : null; Q.dirty = true; }
 
 function fvCalc() {
   const P = fvSet(), A = Q.atr, c = Q.c.slice(0, -1), n = c.length; if (!A || n < 25) return null;
@@ -12765,10 +12812,13 @@ function fvCalc() {
       cands.push({ ...g, D, model: 'iFVG', inv: full ? 'full' : 'part', mi: m, fill: clamp(deep / g.size, 0, 1), ovl: ovl(g), cr: retr(g.ce) });
     });
     const cs = g => (g.ovl > 0 ? 2 + g.ovl : 0) + (g.cr >= .5 ? 1 : 0) + (g.model === 'iFVG' ? (g.inv === 'full' ? 2 : 1) : 0) + (g.size >= .5 * A_ ? 1 : 0) - g.fill * .5 + g.i * 1e-4;
-    cands.sort((a, b) => cs(b) - cs(a)); const ef = cands[0] || null;
+    const IFR = 3, fresh = cands.filter(g => g.model === 'iFVG' && g.mi >= n - IFR), std = cands.filter(g => g.model === 'FVG'), poolE = fresh.length ? fresh : (std.length ? std : cands);
+    poolE.sort((a, b) => cs(b) - cs(a)); const ef = poolE[0] || null, isI = !!ef && ef.model === 'iFVG', iAge = isI ? n - 1 - ef.mi : null;
     const structOk = !!mss || !!(ef && ef.model === 'iFVG');
     // ---- target likuiditas swing (SSL/BSL belum tersapu) ----
-    const entry = ef ? (P.entry === 'edge' ? (D ? ef.top : ef.bot) : ef.ce) : (D ? atLvl(.705) : atLvl(.705)), sl = D ? lo_ - buf : hi_ + buf, risk = Math.abs(entry - sl);
+    const entry = ef ? (isI ? c[ef.mi].c : (P.entry === 'edge' ? (D ? ef.top : ef.bot) : ef.ce)) : (structOk ? atLvl(.705) : px);
+    let sl = D ? lo_ - buf : hi_ + buf; if (isI) { const zs = D ? ef.bot - buf : ef.top + buf; if (Math.abs(entry - zs) >= .6 * A_) sl = zs; }
+    const risk = Math.abs(entry - sl);
     const pool = (D ? HI : LO).filter(x => x.brk < 0 && (D ? x.p > entry : x.p < entry)).sort((a, b) => D ? a.p - b.p : b.p - a.p);
     const tg = []; pool.forEach(x => { if (tg.length < 2 && Math.abs(x.p - entry) >= (tg.length ? 1.3 : 1) * risk) tg.push({ p: x.p, i: x.i, label: `${D ? 'BSL' : 'SSL'} swing${x.big || x.ext ? ' (HRL)' : x.eq ? ' (EQ)' : ' (LRL)'}`, kind: x.big || x.ext ? 'HRL' : 'LRL' }); });
     let fallback = false; if (!tg.length && risk > 0) { fallback = true; tg.push({ p: entry + want * 2 * risk, i: n - 1, label: '2R (tidak ada swing target)', kind: 'none' }); }
@@ -12779,7 +12829,8 @@ function fvCalc() {
     const run = obst <= 1 && legBr >= .45 ? 'LRLR' : 'HRLR';
     // ---- state ----
     const done = tps[0] && (D ? px >= tps[0].p : px <= tps[0].p), dist = ef ? (D ? (px > ef.top ? px - ef.top : px < ef.bot ? ef.bot - px : 0) : (px < ef.bot ? ef.bot - px : px > ef.top ? px - ef.top : 0)) : null;
-    let state = slBreak ? 'invalid' : done ? 'done' : !structOk ? 'sweep' : !ef ? 'mss' : dist <= .3 * A_ ? 'zone' : 'wait';
+    const slHit = D ? px <= sl : px >= sl, chase = isI ? Math.abs(px - entry) : 0;
+    let state = slBreak || slHit ? 'invalid' : done ? 'done' : !structOk ? 'sweep' : !ef ? 'mss' : isI ? (iAge <= IFR - 1 && chase <= .8 * A_ ? 'trigger' : 'late') : dist <= .3 * A_ ? 'zone' : 'wait';
     // ---- skor ----
     const R_ = [], add = (key, l, max, p, st, txt, need) => R_.push({ k: key, l, max, pts: clamp(p, 0, max), st, txt, need: need || '' });
     const sv = c[k].v, av = avgV(k - 20, k), volOk = av > 0 && sv / av >= Math.max(1.3, (Q.volTh || 2) * .7);
@@ -12788,9 +12839,9 @@ function fvCalc() {
     else add('target', 'Target likuiditas', 10, 0, 'na', 'Belum ada entry sehingga target belum dihitung', '');
     add('mss', 'MSS / CHoCH', 18, mss ? (mss.type === 'MSS' ? 18 : 11) : (ef && ef.model === 'iFVG' ? 14 : 0), mss ? (mss.type === 'MSS' ? 'ok' : 'warn') : (ef && ef.model === 'iFVG' ? 'ok' : 'bad'),
       mss ? `${mss.type} ${D ? 'naik' : 'turun'}: close ${f2(c[mss.i].c)} menembus ${D ? 'swing high' : 'swing low'} ${f2(ref.p)} ${mss.i - k} candle setelah sapuan${disp ? ' dengan displacement' : ' (tanpa displacement kuat)'}` : (ef && ef.model === 'iFVG' ? 'Struktur dikonfirmasi oleh inversi iFVG' : `Belum ada close yang menembus ${D ? 'swing high' : 'swing low'} ${f2(ref.p)}`), `Tunggu close ${D ? 'di atas' : 'di bawah'} ${f2(ref.p)} (MSS/CHoCH)`);
-    if (ef) add('fvg', ef.model === 'iFVG' ? 'iFVG entry' : 'FVG entry', 18, 10 + (ef.size >= .5 * A_ ? 4 : 0) + (ef.fill <= .5 ? 4 : 0), ef.fill <= .5 ? 'ok' : 'warn', `${ef.model} ${D ? 'bullish' : 'bearish'} ${f2(ef.bot)}–${f2(ef.top)} (CE ${f2(ef.ce)}, ${(ef.size / A_).toFixed(2)} ATR) · terisi ${(ef.fill * 100).toFixed(0)}%${ef.model === 'iFVG' ? ' · FVG ' + (D ? 'bearish' : 'bullish') + ' terinversi' : ''}`, 'Belum ada FVG belum-termitigasi di arah setup');
+    if (ef) add('fvg', ef.model === 'iFVG' ? 'iFVG entry' : 'FVG entry', 18, 10 + (ef.size >= .5 * A_ ? 4 : 0) + (ef.fill <= .5 ? 4 : 0), ef.fill <= .5 ? 'ok' : 'warn', `${ef.model} ${D ? 'bullish' : 'bearish'} ${f2(ef.bot)}–${f2(ef.top)} (CE ${f2(ef.ce)}, ${(ef.size / A_).toFixed(2)} ATR) · ${ef.model === 'iFVG' ? 'FVG ' + (D ? 'bearish' : 'bullish') + ' TERINVERSI — entry langsung di close ' + f2(entry) + ' (tanpa retest), SL ' + f2(sl) : 'terisi ' + (ef.fill * 100).toFixed(0) + '% — entry di retest zona'}`, 'Belum ada FVG belum-termitigasi di arah setup');
     else add('fvg', 'FVG entry', 18, 0, 'bad', 'Belum ada FVG searah yang belum termitigasi setelah sapuan', `Tunggu FVG ${D ? 'bullish' : 'bearish'} (min ${P.minFvg} ATR)`);
-    if (ef && ef.model === 'iFVG') add('ifvg', 'Inversi iFVG', 10, ef.inv === 'full' ? 10 : 6, ef.inv === 'full' ? 'ok' : 'warn', `Close body ${ef.inv === 'full' ? (D ? 'di atas' : 'di bawah') + ' seluruh zona' : 'masuk ke dalam zona'} lalu menembus high/low ${B} candle sebelumnya (candle ke-${ef.mi - k} setelah sapuan)`, '');
+    if (ef && ef.model === 'iFVG') add('ifvg', 'Inversi iFVG', 10, ef.inv === 'full' ? 10 : 6, ef.inv === 'full' ? 'ok' : 'warn', `Close body ${ef.inv === 'full' ? (D ? 'di atas' : 'di bawah') + ' seluruh zona' : 'masuk ke dalam zona'} lalu menembus high/low ${B} candle sebelumnya · ${iAge === 0 ? 'BARU terbentuk di candle yang baru close' : iAge + ' candle lalu'} (candle ke-${ef.mi - k} setelah sapuan)${state === 'late' ? ' · KEDALUWARSA / harga sudah menjauh' : ''}`, '');
     else add('ifvg', 'Inversi iFVG', 10, 0, 'na', 'Tidak ada inversi iFVG — memakai FVG standar (opsional)', '');
     if (ef) { const ok = ef.ovl >= .5 ? 12 : ef.ovl > 0 ? 9 : ef.cr >= .5 && ef.cr <= .9 ? 6 : ef.cr >= .5 ? 4 : 0; add('fib', 'Fibonacci', 12, ok, ef.ovl > 0 ? 'ok' : ef.cr >= .5 ? 'warn' : 'bad', `CE zona di retracement ${(ef.cr * 100).toFixed(1)}% dari leg ${f2(lo_)}→${f2(hi_)} · ${ef.ovl > 0 ? 'bertumpuk OTE 61,8–78,6% (' + (ef.ovl * 100).toFixed(0) + '% FVG)' : ef.cr >= .5 ? (D ? 'area discount' : 'area premium') + ', di luar OTE' : (D ? 'area premium' : 'area discount') + ' — kurang ideal'}`, `Fibo: zona belum di OTE / ${D ? 'discount' : 'premium'}`); }
     else add('fib', 'Fibonacci', 12, 0, 'na', `OTE ${f2(ote[0])}–${f2(ote[1])} (menunggu FVG)`, '');
@@ -12800,24 +12851,25 @@ function fvCalc() {
     const app = R_.filter(r => r.st !== 'na'), mx = app.reduce((s, r) => s + r.max, 0), score = Math.round(clamp(app.reduce((s, r) => s + r.pts, 0) / mx * 100, 0, 100));
     const flags = []; if (fallback) flags.push({ st: 'warn', block: false, txt: 'Tidak ada swing SSL/BSL belum-tersapu sebagai target — TP memakai 2R.' }); if (tps[0] && rr < Q.plRR) flags.push({ st: 'warn', block: true, txt: `RR TP1 ${rr.toFixed(1)}R < minimum ${Q.plRR}R.` }); if (fol === false) flags.push({ st: 'warn', block: false, txt: `Setup ${D ? 'BUY' : 'SELL'} berlawanan dengan arah Follow ${Q.dir === 'buy' ? 'BUY' : 'SELL'}.` });
     const aPlus = score >= 80 && ef && ef.ovl > 0 && rr >= 2 && ((mss && mss.type === 'MSS') || (ef.model === 'iFVG' && ef.inv === 'full'));
-    return { D, side: D ? 'BUY' : 'SELL', k, age, sw, mss, ref, ef, fib, entry, sl, risk, tps, rr, run, obst, state, score, rows: R_, flags, aPlus: !!aPlus, structOk, key: (D ? 'B' : 'S') + (ef ? ef.model : 'x') + k, dist, model: ef ? ef.model : 'FVG' };
+    const grade = aPlus ? 'A+' : (structOk && ef && score >= 60 && (!tps[0] || rr >= (Q.plRR || 1.5))) ? 'MEDIUM' : 'HIGH';
+    return { D, side: D ? 'BUY' : 'SELL', k, age, sw, mss, ref, ef, isI, iAge, chase, prov: !ef, grade, fib, entry, sl, risk, tps, rr, run, obst, state, score, rows: R_, flags, aPlus: !!aPlus, structOk, key: (D ? 'B' : 'S') + (ef ? ef.model : 'x') + k, dist, model: ef ? ef.model : 'FVG' };
   };
   const all = Object.values(uniq).map(build).filter(Boolean), alive = all.filter(s => s.state !== 'invalid' && s.state !== 'done');
-  const pr = { zone: 3, wait: 2, mss: 1, sweep: 0 }; alive.sort((a, b) => (pr[b.state] - pr[a.state]) || (b.score - a.score) || (b.k - a.k));
+  const pr = { trigger: 4, zone: 3, wait: 2, mss: 1, late: .5, sweep: 0 }; alive.sort((a, b) => (pr[b.state] - pr[a.state]) || (b.score - a.score) || (b.k - a.k));
   const fol = Q.mode === 'follow' && (Q.dir === 'buy' || Q.dir === 'sell'), pick = fol ? alive.filter(s => s.D === (Q.dir === 'buy')) : alive, show = []; [true, false].forEach(d => { const s = pick.find(x => x.D === d); if (s) show.push(s); });
   const best = [...pick][0] || null;
   const open = { H: HI.filter(x => x.brk < 0 && x.p > px).sort((a, b) => a.p - b.p)[0] || null, L: LO.filter(x => x.brk < 0 && x.p < px).sort((a, b) => b.p - a.p)[0] || null };
-  return { t: Date.now(), n: N, nCand: n, sweeps: Object.values(uniq).length, alive, show, best, dead: all.length - alive.length, open, fol, P };
+  return { t: Date.now(), n: N, nCand: n, tf: Q.tf, all, sweeps: Object.values(uniq).length, alive, show, best, dead: all.length - alive.length, open, fol, P };
 }
-function fvExtent() { const F = Q.fv; if (!F || !F.show.length) return null; let lo = Infinity, hi = -Infinity; F.show.forEach(s => { [s.sl, s.entry, s.tps[0] && s.tps[0].p, s.ef && s.ef.top, s.ef && s.ef.bot].forEach(v => { if (v == null || !isFinite(v)) return; lo = Math.min(lo, v); hi = Math.max(hi, v); }); }); return isFinite(lo) ? { lo, hi } : null; }
+function fvExtent() { const arr = (fvOn() && Q.fv ? Q.fv.show : []).slice(); if (Q.fvPinS) arr.push(Q.fvPinS); if (!arr.length) return null; let lo = Infinity, hi = -Infinity; arr.forEach(s => { [s.sl, s.entry, s.tps[0] && s.tps[0].p, s.ef && s.ef.top, s.ef && s.ef.bot].forEach(v => { if (v == null || !isFinite(v)) return; lo = Math.min(lo, v); hi = Math.max(hi, v); }); }); return isFinite(lo) ? { lo, hi } : null; }
 
 /* ---------- gambar di chart utama ---------- */
 function drawFv(c, g) {
-  const F = Q.fv; if (!fvOn() || !F || !F.show.length) return; const P = fvSet(), { X, Y, aw, lo, hi, cw, tag } = g, cx = i => Math.max(0, X(i) + cw / 2), vis = p => p >= lo - 1e-9 && p <= hi + 1e-9;
+  const F = Q.fv, arr = (fvOn() && F ? F.show : []).slice(); if (Q.fvPinS && !arr.some(x => x.key === Q.fvPinS.key)) arr.push(Q.fvPinS); if (!arr.length) return; const P = fvSet(), { X, Y, aw, lo, hi, cw, tag } = g, cx = i => Math.max(0, X(i) + cw / 2), vis = p => p >= lo - 1e-9 && p <= hi + 1e-9;
   const lbl = (txt, x, y, col, al) => { c.font = '700 9.5px sans-serif'; const w = c.measureText(txt).width + 6, xx = al === 'r' ? x - w : al === 'c' ? x - w / 2 : x; c.fillStyle = 'rgba(5,10,24,.85)'; c.fillRect(xx, y - 9, w, 12); c.fillStyle = col; c.textAlign = 'left'; c.fillText(txt, xx + 3, y); };
   const hl = (x1, x2, y, col, dash, w) => { c.strokeStyle = col; c.lineWidth = w || 1; c.setLineDash(dash || []); c.beginPath(); c.moveTo(x1, y); c.lineTo(x2, y); c.stroke(); c.setLineDash([]); };
-  F.show.forEach(s => {
-    const col = s.D ? '#2df5a3' : '#ff4b6e', gold = '#ffc94a', ef = s.ef, xs = cx(s.k);
+  arr.forEach(s => {
+    c.globalAlpha = ['late', 'invalid', 'done'].includes(s.state) ? .5 : 1; const col = s.D ? '#2df5a3' : '#ff4b6e', gold = '#ffc94a', ef = s.ef, xs = cx(s.k);
     // Fibonacci leg + OTE
     if (P.fib && s.fib) { const f = s.fib, x0 = Math.max(0, X(s.k)); if (vis(f.ote[0]) || vis(f.ote[1])) { const y1 = Y(Math.min(hi, f.ote[1])), y2 = Y(Math.max(lo, f.ote[0])); c.fillStyle = 'rgba(53,224,255,.08)'; c.fillRect(x0, y1, aw - x0, Math.max(1, y2 - y1)); }
       f.lv.forEach(v => { if (!vis(v.p)) return; hl(x0, aw, Y(v.p), 'rgba(53,224,255,.38)', [2, 3], 1); lbl(v.r === .5 ? 'EQ .5' : String(v.r), aw - 2, Y(v.p) - 2, 'rgba(124,232,255,.9)', 'r'); }); }
@@ -12831,12 +12883,14 @@ function drawFv(c, g) {
     // zona entry (FVG / iFVG)
     if (ef) { const y1 = Y(ef.top), y2 = Y(ef.bot), h = Math.max(3, y2 - y1), x0 = Math.max(0, X(ef.i - 1)), inv = ef.model === 'iFVG', ac = s.aPlus ? gold : (inv ? '#ff9f43' : col);
       c.fillStyle = s.D ? 'rgba(45,245,163,.15)' : 'rgba(255,75,110,.15)'; c.fillRect(x0, y1, aw - x0, h); c.strokeStyle = ac; c.lineWidth = s.aPlus ? 1.8 : 1.2; c.setLineDash(inv ? [2, 2] : [5, 3]); c.strokeRect(x0 + .5, y1 + .5, aw - x0 - 1, h - 1); c.setLineDash([]);
-      const yc = Y(ef.ce); hl(x0, aw, yc, ac, [1, 3], 1); lbl(`${ef.model} ${s.side} · ${s.aPlus ? 'A+' : 'MEDIUM'} · ${s.score}`, x0 + 4, y1 + 11, ac, 'l'); }
+      const yc = Y(ef.ce); hl(x0, aw, yc, ac, [1, 3], 1); lbl(`${ef.model} ${s.side} · ${s.aPlus ? 'A+' : 'MEDIUM'} · ${s.score}${s.state === 'trigger' ? ' · ENTRY SEKARANG' : s.state === 'late' ? ' · KEDALUWARSA' : s.state === 'invalid' ? ' · INVALID (SL kena)' : s.state === 'done' ? ' · TP1 TERCAPAI' : ''}`, x0 + 4, y1 + 11, ac, 'l');
+      if (inv) { const mx = cx(ef.mi), my = Y(s.entry); c.strokeStyle = gold; c.lineWidth = 1.6; c.beginPath(); c.arc(mx, my, 5, 0, 6.3); c.stroke(); lbl('iFVG ✓', mx + 8, my - 6, gold, 'l'); } }
     // entry & SL
-    if (ef || s.state === 'mss') { if (vis(s.entry)) { const y = Y(s.entry); hl(Math.max(0, X(ef ? ef.i - 1 : s.k)), aw, y, col, [], 1.4); tag(`ENTRY ${f2(s.entry)}`, y - 3, col, true, true); } }
+    if (ef || s.state === 'mss') { if (vis(s.entry)) { const y = Y(s.entry); hl(Math.max(0, X(ef ? ef.i - 1 : s.k)), aw, y, col, [], 1.4); tag(`ENTRY ${f2(s.entry)}${ef ? '' : (s.structOk ? ' · limit OTE' : ' · early')} · ${s.grade}`, y - 3, col, true, true); } }
     if (vis(s.sl)) { const y = Y(s.sl); hl(Math.max(0, X(s.k)), aw, y, '#ff4b6e', [3, 3], 1.1); tag(`SL ${f2(s.sl)}`, y + 11, '#ff4b6e', true, true); }
+    c.globalAlpha = 1;
   });
-  { const t = `${F.show.some(s => s.ef && s.ef.model === 'iFVG') ? 'iFVG/FVG' : 'FVG'} · lookback ${F.n} · ${F.fol ? 'Follow ' + (Q.dir === 'buy' ? '▲' : '▼') : 'Hybrid'}`; c.font = '700 10px sans-serif'; const w = c.measureText(t).width + 12; c.fillStyle = 'rgba(255,201,74,.14)'; c.fillRect(aw - w - 4, 4, w, 16); c.fillStyle = '#ffc94a'; c.textAlign = 'left'; c.fillText(t, aw - w + 2, 16); }
+  { const t = `${arr.some(s => s.ef && s.ef.model === 'iFVG') ? 'iFVG/FVG' : 'FVG'} · ${Q.tf} · lookback ${(F || Q.fvFull || { n: fvSet().n }).n}${Q.fvPinS && !(fvOn() && F && F.show.length) ? ' · hasil pencarian' : ''}`; c.font = '700 10px sans-serif'; const w = c.measureText(t).width + 12; c.fillStyle = 'rgba(255,201,74,.14)'; c.fillRect(aw - w - 4, 4, w, 16); c.fillStyle = '#ffc94a'; c.textAlign = 'left'; c.fillText(t, aw - w + 2, 16); }
 }
 
 /* ---------- rencana trade & sinyal untuk preset FVG ---------- */
@@ -12845,9 +12899,9 @@ function planFv(s) {
   const tps = s.tps.map(t => ({ label: t.label, p: t.p, r: Math.abs(t.p - entry) / risk })), mg = mgInfo(), bal = +Q.plBal > 0 ? +Q.plBal : mg.balance, lossPerLot = risk * Q.lot, warn = [], notes = [];
   let lots = 0, riskUsd = 0; if (bal > 0) { riskUsd = bal * Q.plRisk / 100; lots = Math.floor(riskUsd / lossPerLot * 100 + 1e-9) / 100; } else warn.push('Balance belum tersedia — isi “Balance manual” atau tunggu data EA.');
   let fin = lots, mgS = null; if (isGold() && mg.ok) { const nu = mg.used + lots * mg.perLot; mgS = { status: nu > mg.limit ? 'violation' : nu > mg.safeLimit ? 'warn' : 'ok', newUsed: nu }; if (lots > mg.addSafe) { fin = mg.addSafe; notes.push(`Lot dibatasi Margin Rule Guard: ${lots.toFixed(2)} → ${fin.toFixed(2)}`); } }
-  const ract = fin * lossPerLot; return { zkey: s.key, side: s.side, D, entry, sl, risk, tps, bal, lots, fin, riskUsd, ract, rpct: bal > 0 ? ract / bal * 100 : 0, mg, mgS, warn, notes, lossPerLot, src: 'fv', entryTxt: `entry ${fvSet().entry === 'edge' ? 'tepi' : 'CE 50%'} ${s.ef ? s.ef.model : 'FVG'} · SL di luar ekstrem sapuan + buffer ATR` };
+  const ract = fin * lossPerLot; return { zkey: s.key, side: s.side, D, entry, sl, risk, tps, bal, lots, fin, riskUsd, ract, rpct: bal > 0 ? ract / bal * 100 : 0, mg, mgS, warn, notes, lossPerLot, src: 'fv', entryTxt: !s.ef ? (s.structOk ? 'entry limit di retracement 70,5% leg (FVG belum terbentuk) · SL di luar ekstrem sapuan' : 'entry market early setelah sapuan (belum ada MSS) — HIGH RISK · SL di luar ekstrem sapuan') : s.isI ? `entry langsung di close candle inversi iFVG (tanpa retest) · SL di luar sisi jauh zona iFVG + buffer ATR` : `entry ${fvSet().entry === 'edge' ? 'tepi' : 'CE 50%'} FVG saat retest · SL di luar ekstrem sapuan + buffer ATR` };
 }
-function fvText(S) { const s = S.fv, p = S.plan; if (!s || !p) return ''; return `${p.side} ${Q.sym} ${Q.tf} · ${s.model} ${s.aPlus ? 'A+' : 'MEDIUM RISK'} (skor ${s.score})\nSapuan ${s.sw.side} ${f2(s.sw.p)} (${s.sw.kind}) · ${s.mss ? s.mss.type : 'iFVG'} · zona ${s.ef ? f2(s.ef.bot) + '–' + f2(s.ef.top) : '—'}\nEntry ${f2(p.entry)} · SL ${f2(p.sl)} (${f2(p.risk)} $)\n${p.tps.map((t, i) => `TP${i + 1} ${f2(t.p)} (${t.r.toFixed(1)}R · ${t.label})`).join('\n')}\nLot ${p.fin.toFixed(2)} · risiko ${p.rpct.toFixed(2)}% (${p.ract.toFixed(2)} USD)`; }
+function fvText(S) { const s = S.fv, p = S.plan; if (!s || !p) return ''; return `${p.side} ${Q.sym} ${Q.tf} · ${s.ef ? s.ef.model : 'FVG'} ${s.grade === 'A+' ? 'A+' : s.grade === 'MEDIUM' ? 'MEDIUM RISK' : 'HIGH RISK'} (skor ${s.score})\nSapuan ${s.sw.side} ${f2(s.sw.p)} (${s.sw.kind}) · ${s.mss ? s.mss.type : (s.isI ? 'iFVG' : 'tanpa MSS')} · zona ${s.ef ? f2(s.ef.bot) + '–' + f2(s.ef.top) : '—'}\nEntry ${f2(p.entry)} · SL ${f2(p.sl)} (${f2(p.risk)} $)\n${p.tps.map((t, i) => `TP${i + 1} ${f2(t.p)} (${t.r.toFixed(1)}R · ${t.label})`).join('\n')}\nLot ${p.fin.toFixed(2)} · risiko ${p.rpct.toFixed(2)}% (${p.ract.toFixed(2)} USD)`; }
 function sigCalcFv() {
   const now = Date.now(), px = Q.px, A = Q.atr, S = { sym: Q.sym, tf: Q.tf, px, atr: A, t: now, state: 'LOAD', side: null, score: 0, rows: [], flags: [], need: [], plan: null, zone: null, zinfo: null, pos: sigPos(), why: '', min: CFG.sigMin(), run: 0, preset: 'fvg', chips: [], fv: null };
   if (!px || !A || !Q.c.length) { S.why = 'Memuat data harga…'; return S; }
@@ -12856,24 +12910,88 @@ function sigCalcFv() {
   const s = F.best, modeTxt = F.fol ? `Follow ${Q.dir === 'buy' ? 'BUY' : 'SELL'} (${Q.dirWhy || 'tren'})` : 'Hybrid (long & short)';
   if (!s) { S.state = 'WAIT'; const o = F.open; S.why = `Belum ada sapuan likuiditas valid dalam ${F.n} candle terakhir — mode ${modeTxt}. ${o.H || o.L ? `Likuiditas terdekat: ${o.H ? 'BSL ' + f2(o.H.p) + ' (+' + ((o.H.p - px) / A).toFixed(1) + ' ATR)' : ''}${o.H && o.L ? ' · ' : ''}${o.L ? 'SSL ' + f2(o.L.p) + ' (−' + ((px - o.L.p) / A).toFixed(1) + ' ATR)' : ''}.` : ''}${F.dead ? ` (${F.dead} setup lama sudah invalid/selesai)` : ''}`; return S; }
   S.fv = s; S.side = s.side; S.model = s.model; S.rows = s.rows; S.score = s.score; S.key = s.key; S.zinfo = s.ef ? `${s.model} ${s.D ? 'bullish' : 'bearish'} ${f2(s.ef.bot)}–${f2(s.ef.top)}` : `${s.sw.side} grab ${f2(s.sw.p)} (${s.sw.kind})`; S.dA = s.dist != null ? s.dist / A : 99;
-  S.chips = [`Sapuan ${s.sw.side} ${s.sw.kind}`, s.mss ? s.mss.type : (s.ef && s.ef.model === 'iFVG' ? 'iFVG' : 'tanpa MSS'), `Fibo ${s.ef ? (s.ef.ovl > 0 ? 'OTE ✓' : (s.ef.cr * 100).toFixed(0) + '%') : '—'}`, s.run, modeTxt];
+  S.chips = [`Sapuan ${s.sw.side} ${s.sw.kind}`, s.isI ? `iFVG ${s.iAge === 0 ? 'BARU' : s.iAge + ' candle lalu'} · tanpa retest` : (s.mss ? s.mss.type : 'tanpa MSS'), `Fibo ${s.ef ? (s.ef.ovl > 0 ? 'OTE ✓' : (s.ef.cr * 100).toFixed(0) + '%') : '—'}`, s.run, modeTxt];
   const Fg = S.flags; s.flags.forEach(f => Fg.push(f));
   if (Q.fxNews && Q.nws && Q.nws.active && Q.nws.act[0]) { const e = Q.nws.act[0], d = Math.round((e.t - now) / 6e4); Fg.push({ st: 'bad', block: true, txt: `Jendela berita ${e.ccy} “${e.title}” ${d > 0 ? 'dalam ' + d + ' mnt' : d === 0 ? 'sekarang' : -d + ' mnt lalu'} — volatilitas tinggi, tunggu reda.` }); }
+  if (s.isI && s.state === 'trigger' && s.chase > .5 * A) Fg.push({ st: 'info', block: false, txt: `Harga sudah bergerak ${f2(s.chase)} dari close inversi (${f2(s.entry)}) — entry/SL dihitung dari close inversi.` });
   if (s.ef) { S.plan = planFv(s); const p = S.plan; if (p) { if (p.mgS && p.mgS.status === 'violation') Fg.push({ st: 'bad', block: true, txt: 'Lot rencana melanggar Margin Rule Guard — kurangi lot.' }); else if (p.mgS && p.mgS.status === 'warn') Fg.push({ st: 'warn', block: false, txt: 'Lot rencana mendekati batas Margin Rule Guard.' }); if (p.bal > 0 && p.lots < .01) Fg.push({ st: 'warn', block: false, txt: 'Risiko % terlalu kecil untuk lot minimum 0,01.' }); } }
   if (S.pos && S.pos.n) { const same = S.pos.side === s.side; Fg.push({ st: same ? 'info' : 'warn', block: false, txt: same ? `Sudah ada posisi EA searah: ${S.pos.side} ${lot3(S.pos.side === 'BUY' ? S.pos.buy : S.pos.sell)} lot (floating ${S.pos.pl >= 0 ? '+' : ''}${S.pos.pl.toFixed(2)} $) — hindari menumpuk berlebihan.` : (S.pos.side === 'BUY' || S.pos.side === 'SELL') ? `Ada posisi EA ${S.pos.side} yang BERLAWANAN dengan sinyal ${s.side}.` : 'Ada posisi EA hedge.' }); }
   if (lqOk()) { const WH = whNow(), o = s.D ? WH && WH.long : WH && WH.short; if (o && s.ef && s.ef.top >= o.p25 - .2 * A && s.ef.bot <= o.p75 + .2 * A) Fg.push({ st: 'info', block: false, txt: `Zona entry bertumpuk area entry whale ${s.D ? 'LONG' : 'SHORT'} (${f2(o.p25)}–${f2(o.p75)}).` }); }
-  const blockers = Fg.filter(f => f.block), MIN = S.min, key = s.key, pv = Q.sigPrev, near = s.state === 'zone';
-  const holdOn = pv && pv.state === 'READY' && pv.key === key && S.score >= MIN - 8 && (s.state === 'zone' || (s.dist != null && s.dist <= .5 * A)) && !blockers.length;
+  const blockers = Fg.filter(f => f.block), MIN = S.min, key = s.key, pv = Q.sigPrev, near = s.state === 'zone' || s.state === 'trigger';
+  const holdOn = pv && pv.state === 'READY' && pv.key === key && S.score >= MIN - 8 && (s.state === 'zone' || s.state === 'trigger' || (!s.isI && s.dist != null && s.dist <= .5 * A)) && !blockers.length;
   const cand = ((S.score >= MIN && near && s.structOk && !!s.ef) || holdOn) && !blockers.length;
   Q.sigRun = cand ? (Q.sigRun && Q.sigRun.key === key ? { key, n: Q.sigRun.n + 1 } : { key, n: 1 }) : null; S.run = Q.sigRun ? Q.sigRun.n : 0; S.grade = s.aPlus ? 'A+' : 'MEDIUM';
-  if (cand && (S.run >= 3 || holdOn)) S.state = 'READY'; else if (cand) { S.state = 'WATCH'; S.confirming = true; }
-  else if (s.state === 'wait' || s.state === 'zone') S.state = 'WATCH'; else S.state = s.state === 'mss' || s.state === 'sweep' ? 'APPROACH' : 'WAIT';
+  if (cand && (S.run >= 3 || holdOn || s.state === 'trigger')) S.state = 'READY'; else if (cand) { S.state = 'WATCH'; S.confirming = true; }
+  else if (s.state === 'wait' || s.state === 'zone' || s.state === 'trigger' || s.state === 'late') S.state = 'WATCH'; else S.state = s.state === 'mss' || s.state === 'sweep' ? 'APPROACH' : 'WAIT';
   const miss = s.rows.filter(r => (r.st === 'bad' || r.st === 'warn') && r.need).sort((a, b) => (b.max - b.pts) - (a.max - a.pts)).slice(0, 4); S.need = miss.map(r => r.need); blockers.forEach(b => S.need.unshift(b.txt));
-  if (s.state === 'wait' && s.ef) S.need.unshift(`Tunggu retrace ke ${s.ef.model} ${f2(s.ef.bot)}–${f2(s.ef.top)} (kini ${(s.dist / A).toFixed(2)} ATR)`);
-  const okN = s.rows.filter(r => r.st === 'ok').length, valid = s.rows.filter(r => r.st !== 'na').length, stTxt = { sweep: 'sapuan terjadi, menunggu MSS/CHoCH', mss: 'struktur bergeser, menunggu FVG/iFVG', wait: 'zona entry siap, menunggu retrace', zone: 'harga di zona entry' }[s.state];
+  if (s.state === 'late') S.need.unshift('iFVG sudah kedaluwarsa / harga menjauh dari close inversi — tidak dikejar, tunggu setup baru'); if (s.state === 'trigger' && S.score < MIN) S.need.unshift(`Skor ${S.score} < ${MIN} — iFVG terbentuk tapi konfluensi belum cukup`); if (s.state === 'wait' && s.ef) S.need.unshift(`Tunggu retrace ke ${s.ef.model} ${f2(s.ef.bot)}–${f2(s.ef.top)} (kini ${(s.dist / A).toFixed(2)} ATR)`);
+  const okN = s.rows.filter(r => r.st === 'ok').length, valid = s.rows.filter(r => r.st !== 'na').length, stTxt = { sweep: 'sapuan terjadi, menunggu MSS/CHoCH', mss: 'struktur bergeser, menunggu FVG/iFVG', wait: 'FVG valid (sweep + MSS) — menunggu retest ke zona', zone: 'harga di zona FVG (retest)', trigger: s.iAge === 0 ? 'iFVG BARU terbentuk di candle yang baru close — entry langsung, tanpa retest' : `iFVG terbentuk ${s.iAge} candle lalu — masih segar, entry langsung`, late: 'iFVG kedaluwarsa (lebih dari 3 candle / harga sudah menjauh)' }[s.state];
   S.why = S.state === 'READY' ? `${s.model} ${s.aPlus ? 'A+' : 'MEDIUM RISK'} ${s.side}: ${okN}/${valid} faktor mendukung · skor ${S.score} (min ${MIN}) · ${stTxt}.` : S.state === 'WATCH' && S.confirming ? `Syarat terpenuhi — mengonfirmasi ${S.run}/3 dtk agar tidak sinyal palsu sesaat…` : `${s.side} ${s.model}: ${stTxt} · skor ${S.score} (siap bila ≥ ${MIN}) · ${s.run}.`;
   return S;
 }
+
+/* ===== Cari setup manual (BUY / SELL) + Scalping agresif TF 1m ===== */
+Q.sres = { open: false, dir: 'BUY', grade: 'all' }; Q.fvPin = null; Q.fvPinS = null; Q.fvFull = Q.fvFull || null;
+Q.scalp = LSG('qd_scalp', false) === true; Q.scalpPrev = LSG('qd_scalpprev', '15m');
+const SGRD = { 'A+': 'A+', MEDIUM: 'MEDIUM', HIGH: 'HIGH RISK' }, SRK = { 'A+': 0, MEDIUM: 1, HIGH: 2 }, SPR = { trigger: 0, zone: 1, wait: 2, mss: 3, sweep: 4, late: 5 };
+const STX = { trigger: 'iFVG INSTAN — entry langsung', zone: 'harga di zona retest', wait: 'menunggu retest ke zona', mss: 'menunggu FVG (entry limit OTE)', sweep: 'early entry setelah sapuan (belum MSS)', late: 'iFVG kedaluwarsa' };
+const eh = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function srchList(dir) { const F = Q.fvFull; if (!F) return []; const D = dir === 'BUY'; const seen = {}; return F.alive.filter(s => s.D === D).sort((a, b) => SRK[a.grade] - SRK[b.grade] || SPR[a.state] - SPR[b.state] || b.score - a.score || b.k - a.k).filter(s => { const key = s.ef ? s.ef.model + s.ef.i : 'x' + s.k; if (seen[key]) return false; seen[key] = 1; return true; }); }
+function srchCnt(dir) { const l = srchList(dir), o = { 'A+': 0, MEDIUM: 0, HIGH: 0, n: l.length }; l.forEach(s => { o[s.grade]++; }); o.best = o['A+'] ? 'A+' : o.MEDIUM ? 'MEDIUM' : o.HIGH ? 'HIGH' : null; return o; }
+function srchRow(s) {
+  const p = planFv(s), f = f2, tp = p && p.tps[0] ? `TP1 ${f(p.tps[0].p)} (${p.tps[0].r.toFixed(1)}R)` : 'TP —', tp2 = p && p.tps[1] ? ` · TP2 ${f(p.tps[1].p)} (${p.tps[1].r.toFixed(1)}R)` : '';
+  const why = [`Sapuan ${s.sw.side} ${s.sw.kind}`, s.mss ? s.mss.type : (s.isI ? 'iFVG' : 'tanpa MSS'), s.ef ? (s.ef.ovl > 0 ? 'Fibo OTE ✓' : `Fibo ${(s.ef.cr * 100).toFixed(0)}%`) : 'tanpa FVG', s.run, `skor ${s.score}`].join(' · ');
+  const miss = s.rows.filter(r => (r.st === 'bad' || r.st === 'warn') && r.need).slice(0, 2).map(r => r.need).concat(s.flags.filter(x => x.st !== 'info').map(x => x.txt)).slice(0, 3);
+  const zone = s.ef ? ` · zona ${f(s.ef.bot)}–${f(s.ef.top)}` : '';
+  return `<div class="qd-srr g${s.grade === 'A+' ? 'A' : s.grade === 'MEDIUM' ? 'M' : 'H'}" data-k="${s.k}" data-d="${s.D ? 1 : 0}">
+    <div class="qd-srt"><span class="qd-sg">${SGRD[s.grade]}</span><b>${s.side} · ${s.ef ? s.ef.model : 'FVG'}${s.prov ? ' (awal)' : ''}</b><span class="qd-sst">${STX[s.state] || s.state}</span></div>
+    <div class="qd-srp">${p ? `Entry <b>${f(p.entry)}</b> · SL <b class="neg">${f(p.sl)}</b> · <b class="pos">${tp}</b>${tp2} · lot <b>${p.bal > 0 ? p.fin.toFixed(2) : '—'}</b>` : 'Rencana belum bisa dihitung'}${zone}</div>
+    <div class="qd-srw">${eh(why)}</div>${miss.length ? `<div class="qd-srm">⚠ ${miss.map(eh).join(' · ')}</div>` : ''}
+    <div class="qd-sra"><button type="button" data-a="pin">${Q.fvPin && Q.fvPin.k === s.k && Q.fvPin.D === s.D ? '✓ Tergambar' : 'Gambar di chart'}</button><button type="button" data-a="copy">Salin rencana</button></div></div>`;
+}
+function srchPanel() {
+  const box = $('qdSRes'); if (!box) return; box.hidden = !Q.sres.open; if (!Q.sres.open) return;
+  const F = Q.fvFull, dir = Q.sres.dir, list = srchList(dir), cnt = srchCnt(dir), sel = Q.sres.grade, shown = sel === 'all' ? list : list.filter(s => s.grade === sel);
+  let h = `<div class="qd-srh"><b>🔍 Hasil cari setup ${dir}</b><span>${Q.tf} · lookback ${F ? F.n : fvSet().n} candle · ${cnt.n} setup${Q.scalp ? ' · ⚡ scalping agresif' : ''}</span><div class="qd-sdr"><button type="button" data-dir="BUY" class="${dir === 'BUY' ? 'on' : ''}">BUY ▲</button><button type="button" data-dir="SELL" class="${dir === 'SELL' ? 'on' : ''}">SELL ▼</button></div><button type="button" data-a="close" class="qd-sx" aria-label="Tutup">✕</button></div>
+  <div class="qd-srf">${[['all', 'Semua', cnt.n], ['A+', 'A+', cnt['A+']], ['MEDIUM', 'Medium risk', cnt.MEDIUM], ['HIGH', 'High risk', cnt.HIGH]].map(([v, l, n]) => `<button type="button" data-g="${v}" class="${sel === v ? 'on' : ''}">${l} <i>${n}</i></button>`).join('')}</div>`;
+  if (!F) h += '<div class="qd-sub" style="padding:10px">Menunggu data candle…</div>';
+  else if (!shown.length) { const o = F.open; h += `<div class="qd-srempty">Belum ada setup ${dir} ${sel === 'all' ? '' : '(' + SGRD[sel] + ') '}dalam ${F.n} candle terakhir di ${Q.tf}.<br>${o.H || o.L ? 'Likuiditas terdekat yang belum tersapu: ' + (o.H ? `BSL ${f2(o.H.p)}` : '') + (o.H && o.L ? ' · ' : '') + (o.L ? `SSL ${f2(o.L.p)}` : '') + '. ' : ''}Setup muncul setelah harga <b>sweep</b> likuiditas${dir === 'BUY' ? ' SSL (swing low)' : ' BSL (swing high)'}. Coba perbesar lookback di bar preset${Q.tf !== '1m' ? ', atau aktifkan <b>⚡ Scalping agresif</b> untuk mencari di TF 1 menit' : ''}.</div>`; }
+  else h += `<div class="qd-srl">${shown.map(srchRow).join('')}</div>`;
+  h += '<div class="qd-srn">A+ = sweep + MSS/iFVG penuh + OTE + RR ≥ 2 · Medium = struktur &amp; entry lengkap, skor ≥ 60 · High risk = konfluensi kurang atau entry awal (sebelum MSS/FVG). Pencarian tidak mengikuti filter Follow/Hybrid dan tidak dibatasi skor minimum sinyal.</div>';
+  const sc0 = box.querySelector('.qd-srl'), top = sc0 ? sc0.scrollTop : 0; setH('qdSRes', h); const sc1 = box.querySelector('.qd-srl'); if (sc1 && top) sc1.scrollTop = top;
+}
+function srchPaint() {
+  const b = $('qdSrBuy'), s = $('qdSrSell'), pin = $('qdSrPin'), ck = $('qdScalpCk'), sc = $('qdScalp'); if (!b) return;
+  [[b, 'BUY'], [s, 'SELL']].forEach(([el, d]) => { const c = srchCnt(d), t = c.best ? ({ 'A+': 'A+', MEDIUM: 'M', HIGH: 'H' })[c.best] : ''; const i = el.querySelector('i'), txt = c.n ? `${t}·${c.n}` : '0'; if (i.textContent !== txt) i.textContent = txt; el.dataset.best = c.best || ''; el.classList.toggle('on', Q.sres.open && Q.sres.dir === d); });
+  if (pin) pin.hidden = !Q.fvPin; if (ck) ck.checked = Q.scalp; if (sc) sc.classList.toggle('on', Q.scalp);
+}
+function srchTick() {
+  if (Q.scalp && Q.tf !== '1m') { Q.scalp = false; LSS('qd_scalp', false); }
+  if (Q.fvPin) { if (Q.fvPin.tf !== Q.tf) { Q.fvPin = null; Q.fvPinS = null; } else { const F = Q.fvFull, s = F && F.all.find(x => x.D === Q.fvPin.D && x.k === Q.fvPin.k); Q.fvPinS = s || null; if (!s && F) { Q.fvPin = null; } } }
+  srchPaint(); srchPanel();
+}
+function scalpSet(on) {
+  if (on === Q.scalp) return;
+  if (on) { if (Q.tf !== '1m') { Q.scalpPrev = Q.tf; LSS('qd_scalpprev', Q.scalpPrev); Q.tf = '1m'; LSS('qd_tf', '1m'); reload(); } Q.scalp = true; }
+  else { Q.scalp = false; if (Q.tf === '1m' && Q.scalpPrev && Q.scalpPrev !== '1m') { Q.tf = Q.scalpPrev; LSS('qd_tf', Q.tf); reload(); } }
+  LSS('qd_scalp', Q.scalp); Q.fvPin = null; Q.fvPinS = null; Q.dirty = true; fvUpdate(); srchTick();
+}
+function srchOpen(dir) { if (Q.sres.open && Q.sres.dir === dir) Q.sres.open = false; else { Q.sres.open = true; Q.sres.dir = dir; } fvUpdate(); srchTick(); }
+(function srchBind() {
+  const b = $('qdSrBuy'), s = $('qdSrSell'), pin = $('qdSrPin'), ck = $('qdScalpCk'), box = $('qdSRes'); if (!b) return;
+  b.onclick = () => srchOpen('BUY'); s.onclick = () => srchOpen('SELL');
+  pin.onclick = () => { Q.fvPin = null; Q.fvPinS = null; Q.dirty = true; srchTick(); };
+  ck.onchange = e => scalpSet(e.target.checked);
+  box.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t) return;
+    if (t.dataset.dir) { Q.sres.dir = t.dataset.dir; srchTick(); return; }
+    if (t.dataset.g) { Q.sres.grade = t.dataset.g; srchTick(); return; }
+    if (t.dataset.a === 'close') { Q.sres.open = false; srchTick(); return; }
+    const row = t.closest('.qd-srr'); if (!row) return; const k = +row.dataset.k, D = row.dataset.d === '1', st = Q.fvFull && Q.fvFull.all.find(x => x.k === k && x.D === D); if (!st) return;
+    if (t.dataset.a === 'pin') { Q.fvPin = { k, D, tf: Q.tf }; Q.fvPinS = st; Q.pan = 0; Q.dirty = true; srchTick(); const cc = root.querySelector('#qdBox'); if (cc && cc.scrollIntoView) cc.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    else if (t.dataset.a === 'copy') { const txt = fvText({ fv: st, plan: planFv(st) }); (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Rencana trade disalin', 'info'), () => toast(txt, 'info')); }
+  });
+})();
 
 /* ===== Sinyal realtime: mesin skor konfluensi per instance (dibaca panel "Sinyal Realtime" di atas) ===== */
 let API = null; Q.sig = null; Q.sigRun = null; Q.sigPrev = null; Q.sigAt = 0;
@@ -13011,7 +13129,7 @@ function sigCalc() {
   return S;
 }
 function sigUpdate() {
-  if (fvOn()) fvUpdate(); else if (Q.fv) Q.fv = null;
+  fvUpdate(); try { srchTick(); } catch (e) { console.error('qdom srch', e); }
   const S = fvOn() ? sigCalcFv() : sigCalc(), pv = Q.sigPrev; Q.sig = S; Q.sigAt = Date.now();
   const rdy = S.state === 'READY', wasRdy = pv && pv.state === 'READY';
   if (rdy && (!wasRdy || pv.key !== S.key)) { if (CFG.onEvent) CFG.onEvent(API, 'ready', S); }
@@ -13078,7 +13196,7 @@ $q('qsGrid').addEventListener('toggle', e => { const d = e.target; if (d && d.cl
 window.__QDI = SIG.insts;
 const DESC = {
   default: '<b>Default</b> — model yang sekarang: zona Supply/Demand + konfirmasi breakout M15–H4 + volume/likuiditas (tekanan buyer-seller, order flow, sweep). Skor 8 faktor di tiap kartu sinyal.',
-  fvg: '<b>iFVG / FVG</b> — (1) harga <b>wajib sweep/grab likuiditas</b> dalam satu candle: wick menembus swing lalu close kembali (<b>HRL</b> = swing mayor/ekstrem, <b>LRL</b> = swing minor, EQH/EQL = bonus). (2) <b>Target</b> = swing SSL/BSL berikutnya yang belum tersapu. (3) <b>MSS/CHoCH</b> setelah sapuan. (4) <b>Entry di FVG</b>, atau <b>iFVG</b> bila FVG lawan di-close-body tembus dan menembus high/low beberapa candle sebelumnya. (5) <b>Fibonacci</b>: zona bertumpuk OTE 61,8–78,6% → <b>A+</b>, di discount/premium saja → <b>Medium risk</b>. Mesin menganalisa 20–100 candle ke belakang; chart menggambar sapuan, MSS/CHoCH, FVG/iFVG, Fibo, SL dan TP otomatis. <b>Hybrid</b> = long &amp; short, <b>Follow</b> = hanya searah tren (EMA / HH-LL / tekanan sesuai Sumber arah).'
+  fvg: '<b>iFVG / FVG</b> — (1) harga <b>wajib sweep/grab likuiditas</b> dalam satu candle: wick menembus swing lalu close kembali (<b>HRL</b> = swing mayor/ekstrem, <b>LRL</b> = swing minor, EQH/EQL = bonus). (2) <b>Target</b> = swing SSL/BSL berikutnya yang belum tersapu. (3) <b>MSS/CHoCH</b> setelah sapuan. (4) <b>FVG</b> valid (sweep + MSS) → entry saat <b>retest</b> ke zona. <b>iFVG</b> (FVG lawan di-close-body tembus + menembus high/low beberapa candle sebelumnya) → <b>sinyal instan</b> begitu candle inversi close: entry, SL, TP langsung dihitung, <b>tanpa menunggu retest</b>. (5) <b>Fibonacci</b>: zona bertumpuk OTE 61,8–78,6% → <b>A+</b>, di discount/premium saja → <b>Medium risk</b>. Mesin menganalisa 20–100 candle ke belakang; chart menggambar sapuan, MSS/CHoCH, FVG/iFVG, Fibo, SL dan TP otomatis. <b>Hybrid</b> = long &amp; short, <b>Follow</b> = hanya searah tren (EMA / HH-LL / tekanan sesuai Sumber arah).'
 };
 const pre = $q('qsPre'), pset = $q('qsPset'), modeB = $q('qsMode');
 function paintPreset() { pre.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.p === SIG.preset)); $q('qsPdesc').innerHTML = DESC[SIG.preset]; pset.hidden = SIG.preset !== 'fvg'; }
