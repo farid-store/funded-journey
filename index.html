@@ -3212,6 +3212,124 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
 .qd-srn{padding:8px 12px 10px;font-size:10px;color:var(--faint);line-height:1.5;border-top:1px solid var(--line)}
 .qd-sx{margin-left:6px}
 @media(max-width:560px){.qd-scalp{margin-left:0}.qd-sdr{margin-left:0}}
+
+/* ================= LAYOUT TENANG · tinggi tetap · mode fokus ================= */
+#view-qdom,.qd-fo{overflow-anchor:none}
+.qd-dualwrap [hidden],.qd-fo[hidden]{display:none!important}
+.qd-dualwrap{--qd-gap:14px;gap:var(--qd-gap)}
+.qs-preset,.qs-top,.qd-lqcard{padding:14px 16px}
+.qd-inst{gap:var(--qd-gap)}
+/* banner stale/berita: ruang tetap, tidak mendorong layout */
+.qd-banners{position:relative;height:34px;flex:none}
+.qd-banners>*{position:absolute;inset:0;margin:0!important;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;border-radius:10px}
+.qd-ok{padding:0 12px;font:600 10.5px var(--fm);color:var(--faint);border:1px dashed var(--line);background:rgba(4,6,13,.35)}
+.qd-banners:has(.qd-stale:not([hidden])) .qd-ok{display:none}
+/* kartu sinyal kompak: tinggi tetap */
+.qs-card{height:248px;overflow:hidden;gap:8px;padding:11px 13px}
+.qs-ch{height:30px;flex:none;flex-wrap:nowrap;overflow:hidden}
+.qs-badge{max-width:60%;overflow:hidden;text-overflow:ellipsis}
+.qs-sc{height:66px;flex:none;overflow:hidden}
+.qs-sw{flex:1;min-width:0;height:100%;overflow:hidden;gap:4px}
+.qs-why{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;line-height:1.45;max-height:52px}
+.qs-zn{flex-wrap:nowrap;overflow:hidden;white-space:nowrap;height:18px}
+.qs-chip{flex:none}
+.qs-pc{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;height:48px;flex:none}
+.qs-pc>div{background:rgba(4,6,13,.55);border:1px solid var(--line);border-radius:9px;padding:5px 7px;min-width:0;overflow:hidden}
+.qs-pc span{display:block;font-size:9px;color:var(--faint);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.qs-pc b{display:block;margin-top:2px;font:700 11.5px var(--fm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qs-pc .neg{color:var(--red)}.qs-pc .pos{color:var(--green)}
+.qs-card .qs-acts{height:32px;flex:none;flex-wrap:nowrap;overflow:hidden;margin-top:auto}
+.qs-card .qs-acts .btn{white-space:nowrap}
+.qs-card .qs-acts .btn[disabled]{opacity:.4;cursor:not-allowed}
+.qs-fb{border-color:rgba(255,201,74,.5)!important;color:var(--gold)!important}
+@media(max-width:640px){.qs-pc{grid-template-columns:repeat(3,minmax(0,1fr));height:96px}.qs-card{height:300px}}
+/* riwayat sinyal: tinggi tetap */
+.qs-feed{border:1px solid var(--line);border-radius:12px;background:rgba(4,6,13,.35);display:flex;flex-direction:column;height:150px}
+.qs-feed .qs-fh{display:flex;align-items:center;gap:8px;padding:8px 12px;font:700 11px var(--fh);letter-spacing:.06em;color:var(--muted);flex:none}
+.qs-feed .qs-fh .btn{margin-left:auto;padding:3px 9px;font-size:10px}
+#qsFeed{flex:1;min-height:0;max-height:none;overflow:auto}
+/* deskripsi preset: tinggi tetap */
+.qs-pdesc{height:54px;overflow:hidden;position:relative;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.qs-pset{min-height:42px;transition:opacity .15s}
+.qs-pset.off{opacity:.45;pointer-events:none}
+.qs-pset[hidden]{display:flex!important}
+/* panel hasil cari setup mengambang (tidak mendorong chart) */
+.qd-sbtn[hidden]{display:none!important}
+.qd-sbar{height:38px;flex-wrap:nowrap;overflow:hidden;padding-bottom:6px}
+.qd-sres{position:absolute;left:14px;right:14px;top:48px;z-index:30;margin:0;max-height:min(70%,440px);overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.6)}
+.qd-srl{max-height:none;overflow:visible}
+/* kartu Likuidasi: baris status satu baris, ringkasan 2×3 tetap */
+.qd-lqline{display:flex;justify-content:space-between;gap:12px;height:18px;overflow:hidden;white-space:nowrap;font-size:10.5px;color:var(--muted);flex:none}
+.qd-lqline #qdLqSt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.qd-lqline #qdLqHv{flex:none;font-family:var(--fm);color:var(--text)}
+.qd-lqbox{height:270px!important}
+.qd-lqk{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:92px}
+.qd-lqk>div{overflow:hidden}
+.qd-lqk .lx{display:none}
+.qd-fonly{display:none!important}
+/* ===== MODE FOKUS ===== */
+html.qd-lock,html.qd-lock body{overflow:hidden!important}
+.qd-fo{position:fixed;inset:0;z-index:3000;background:#04070f;display:flex;flex-direction:column}
+.qd-fotop{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line2);background:rgba(10,16,34,.98);flex:none}
+.qd-fotag{font:800 11px var(--fh);letter-spacing:.08em;color:var(--gold);padding:4px 10px;border-radius:8px;background:rgba(255,201,74,.12)}
+.qd-fot{display:flex;align-items:baseline;gap:10px}
+.qd-fot b{font:800 17px var(--fh);letter-spacing:.04em}.qd-fot span{font:700 11px var(--fm);padding:2px 8px;border-radius:6px;background:var(--surface3);color:var(--muted)}.qd-fot em{font:700 17px var(--fm);font-style:normal;color:var(--gold)}
+.qd-fohint{font-size:10.5px;color:var(--faint);margin-left:auto;text-align:right;line-height:1.4}
+.qd-fox{padding:8px 16px;border-radius:10px;border:1px solid rgba(255,75,110,.5);background:rgba(255,75,110,.12);color:#ff9fb2;font:800 12px var(--fh);cursor:pointer;letter-spacing:.04em}
+.qd-fox:hover{background:rgba(255,75,110,.25)}
+.qd-fobody{flex:1;overflow:auto;padding:16px 18px 60px}
+#qdFoHost{max-width:1840px;margin:0 auto}
+.qd-inst.qd-focus{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);grid-template-areas:"head head" "ban ban" "drawer drawer" "insight fsig" "lq fsig" "chart dom" "fgrid fgrid";gap:14px;align-items:start}
+.qd-focus .qd-head{grid-area:head}.qd-focus .qd-banners{grid-area:ban}.qd-focus .qd-drawer{grid-area:drawer}
+.qd-focus .qd-insight{grid-area:insight}.qd-focus .qd-lqcard{grid-area:lq}.qd-focus .qd-fsig{grid-area:fsig}.qd-focus .qd-fgrid{grid-area:fgrid}
+.qd-focus .qd-main{display:contents}.qd-focus .qd-chartcard{grid-area:chart}.qd-focus .qd-domside{grid-area:dom}.qd-focus .qd-below{display:none}
+.qd-focus .qd-fonly{display:block!important}.qd-focus .qd-lqk .lx{display:inline}
+.qd-focus .qd-lqk{grid-auto-rows:auto}
+.qd-focus .qd-lqbox{height:clamp(320px,42vh,520px)!important}
+.qd-focus .qd-chartbox{height:clamp(460px,66vh,860px)!important}
+.qd-focus .qd-insight,.qd-focus .qd-lqcard,.qd-focus .qd-domside{height:auto!important;max-height:none!important}
+.qd-fsig{padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0;align-self:stretch}
+.qd-fsb{display:flex;flex-direction:column;gap:10px;min-width:0}
+.qd-fh{font:800 12px var(--fh);letter-spacing:.06em;color:var(--gold);margin-bottom:2px}
+.qd-fh2{font:800 11px var(--fh);letter-spacing:.05em;color:var(--muted);margin:8px 0 6px}
+.qs-dh{font:800 11px var(--fh);letter-spacing:.05em;color:var(--muted);margin-top:4px}
+.qd-fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(540px,1fr));gap:14px;align-items:start}
+.qd-fc{padding:14px 16px;min-width:0}
+.qd-fpane{min-width:0;overflow:auto;max-height:640px}
+.qd-focus #qdPane,.qd-focus #qdArus,.qd-focus #qdAna{display:block!important;max-height:none;overflow:visible}
+.qd-focus .qd-fpane #qdAna:not([hidden]){display:flex!important}
+@media(max-width:1100px){.qd-inst.qd-focus{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "ban" "drawer" "insight" "fsig" "lq" "chart" "dom" "fgrid"}.qd-fohint{display:none}.qd-fgrid{grid-template-columns:minmax(0,1fr)}}
+
+/* ---- kestabilan: tinggi tetap pada bagian yang isinya berubah realtime ---- */
+html{scrollbar-gutter:stable}
+#view-qdom,.qd-fo{font-variant-numeric:tabular-nums}
+.qs-card{height:232px}
+.qs-card .qs-acts .btn{height:30px;padding:0 12px;line-height:1}
+.qs-pdesc{height:auto;min-height:96px;display:block;-webkit-line-clamp:unset;overflow:visible}
+.qd-inst .qd-chips{flex-wrap:nowrap;overflow:hidden;height:24px}
+.qd-inst .qd-pricebox{flex-wrap:nowrap}
+.qd-inst .qd-live{min-width:132px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qd-inst .qd-insight{height:342px;overflow:hidden}
+.qd-inst #qdDomList{height:220px;overflow:auto}
+.qd-inst #qdCrNote{min-height:46px}
+.qd-inst #qdPane{height:420px;overflow:auto}
+.qd-lqk{grid-auto-rows:100px}
+@media(max-width:560px){.qd-inst .qd-insight{height:469px}.qd-inst .qd-chips{height:48px;flex-wrap:wrap}}
+.qd-focus .qd-insight{height:auto!important;overflow:visible}
+.qd-focus #qdDomList{height:340px}
+.qd-focus .qd-chips{height:auto;flex-wrap:wrap;overflow:visible}
+@media(max-width:640px){.qs-card{height:300px}.qs-pc{grid-template-columns:repeat(3,minmax(0,1fr));height:96px}}
+.qd-lqt0{flex-wrap:nowrap;min-height:34px}
+.qd-lqt0>b{flex:none;white-space:nowrap}
+.qd-lqmode{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qd-lqt0 .btn{flex:none}
+.qd-focus .qd-lqmode{white-space:normal}
+.qs-pdesc{min-height:0;height:auto;display:grid;-webkit-line-clamp:unset;overflow:visible}
+.qs-pdesc>div{grid-area:1/1;min-width:0}
+.qs-pdesc>div:not(.on){visibility:hidden}
+html.qd-lock .qd-toasts{top:72px}
+.qd-lqk small .lx,.qd-lqk small .lx *{text-transform:none;letter-spacing:0;font-size:inherit;color:inherit;display:inline}
+.qd-fsig{align-self:start}
 </style>
 </head>
 <body>
@@ -3892,11 +4010,10 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
       <div class="qd-cg qd-cg-wide"><span class="qd-cl">Preset</span><div class="qd-seg" id="qdPreSeg" role="group" aria-label="Preset layout"><button data-v="scalp" title="Scalp: 5m · 100 candle · maks 3 zona · hanya zona ≤ 6 ATR · hold 4 · DOM + Wall aktif">⚡ Scalp</button><button data-v="intra" title="Intraday: 15m · 150 candle · maks 4 zona · zona ≤ 12 ATR · hold 6 · garis sesi aktif">◐ Intraday</button><button data-v="swing" title="Swing: 1h · 200 candle · maks 5 zona · semua jarak · hold 8 · DOM/Wall mati, zona tembus tampil">◎ Swing</button></div></div>
       <div class="qd-cg"><span class="qd-cl">Timeframe</span><div class="qd-seg" id="qdTfSeg" role="group" aria-label="Timeframe"><button data-v="1m">1m</button><button data-v="5m">5m</button><button data-v="15m">15m</button><button data-v="1h">1h</button><button data-v="4h">4h</button></div></div>
       <div class="qd-cg"><span class="qd-cl">Mode zona</span><div class="qd-seg" id="qdModeSeg" role="group" aria-label="Mode"><button data-v="hybrid" title="Gambar Supply dan Demand">Hybrid</button><button data-v="follow" title="Hanya satu sisi, mengikuti tekanan / struktur">Follow</button></div></div>
-      <div class="qd-cg qd-cg-ic"><span class="qd-cl">Alat</span><div class="qd-ibs"><button class="btn ghost qd-ib" id="qdAlertBtn" title="Alert zona (suara + notifikasi)">🔔</button><button class="btn ghost qd-ib" id="qdSetBtn" title="Pengaturan">⚙ <span>Pengaturan</span></button></div></div>
+      <div class="qd-cg qd-cg-ic"><span class="qd-cl">Alat</span><div class="qd-ibs"><button class="btn ghost qd-ib" id="qdAlertBtn" title="Alert zona (suara + notifikasi)">🔔</button><button class="btn ghost qd-ib qd-fbtn" id="qdFocusBtn" title="Mode fokus: tampilkan semua detail pair ini layar penuh (Esc untuk tutup)">⤢ <span>Fokus</span></button><button class="btn ghost qd-ib" id="qdSetBtn" title="Pengaturan">⚙ <span>Pengaturan</span></button></div></div>
     </div>
   </header>
-  <div class="qd-stale" id="qdStale" hidden></div>
-  <div class="qd-stale qd-newsb" id="qdNews" hidden></div>
+  <div class="qd-banners"><div class="qd-ok">● Feed normal · tidak ada peringatan</div><div class="qd-stale" id="qdStale" hidden></div><div class="qd-stale qd-newsb" id="qdNews" hidden></div></div>
 
   <section class="qd-drawer card" id="qdSet" hidden>
     <div class="qd-dg">
@@ -3974,12 +4091,11 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
         <label class="qd-ck"><input type="checkbox" id="qdLqWh"> Garis whale di chart</label>
         <button type="button" class="btn ghost" id="qdLqRef" style="padding:4px 10px;font-size:10.5px">Muat ulang</button>
       </div>
-      <div id="qdLqSt" class="qd-sub"></div>
-      <div class="qd-sub" id="qdLqScale"></div>
+      <div class="qd-lqline"><span id="qdLqSt"></span><span id="qdLqHv"></span></div>
+      <div class="qd-sub qd-fonly" id="qdLqScale"></div>
       <div class="qd-lqbox" id="qdLqBox"><canvas id="qdLqCv"></canvas></div>
-      <div class="qd-sub" id="qdLqHv" style="min-height:16px"></div>
       <div id="qdLqSum"></div>
-      <div class="note qd-note2">Estimasi: Binance tidak menyediakan data likuidasi atau entry akun whale secara publik, jadi dihitung dari open interest, harga, dan rasio posisi top trader. Mengikuti <b>Mode zona</b> di atas: Hybrid menampilkan whale long &amp; short, Follow hanya posisi searah tren (sesuai Sumber arah: EMA / HH-LL / tekanan buyer-seller). Peta menunjukkan di mana ukuran posisi berada, bukan ke mana harga akan pergi.</div>
+      <div class="note qd-note2 qd-fonly">Estimasi: Binance tidak menyediakan data likuidasi atau entry akun whale secara publik, jadi dihitung dari open interest, harga, dan rasio posisi top trader. Mengikuti <b>Mode zona</b> di atas: Hybrid menampilkan whale long &amp; short, Follow hanya posisi searah tren (sesuai Sumber arah: EMA / HH-LL / tekanan buyer-seller). Peta menunjukkan di mana ukuran posisi berada, bukan ke mana harga akan pergi.</div>
     </div>
   </section>
   <div class="qd-main">
@@ -4069,6 +4185,14 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
     </aside>
   </div>
 
+  <section class="card qd-fsig" id="qdFsig" hidden><div class="qd-fh">⚡ Sinyal &amp; rencana — detail lengkap</div><div class="qd-fsb"></div></section>
+  <section class="qd-fgrid" id="qdFgrid" hidden>
+    <div class="card qd-fc"><div class="qd-fh">Zona Supply / Demand</div><div id="qdFz" class="qd-fpane"></div></div>
+    <div class="card qd-fc"><div class="qd-fh">Arus &amp; order flow</div><div id="qdFa" class="qd-fpane"></div></div>
+    <div class="card qd-fc"><div class="qd-fh">Analisis lanjutan</div><div id="qdFn" class="qd-fpane"></div></div>
+    <div class="card qd-fc"><div class="qd-fh">Sesi trading</div><div id="qdFs" class="qd-fpane"></div></div>
+    <div class="card qd-fc"><div class="qd-fh">Log &amp; alert</div><div id="qdFl" class="qd-fpane"></div></div>
+  </section>
 </template>
 
     <section id="view-intel" class="view">
@@ -11223,37 +11347,76 @@ function planBlock(api, S) {
   return `<div class="qs-plan"><div class="qs-plh"><b>Rencana ${p.side}</b><span>${p.entryTxt || ((api.Q.plEntry === 'prox' ? 'entry tepi dekat zona' : 'entry tengah 50% zona') + ' · SL di luar sisi jauh + buffer ATR')}</span>${mg}</div>
     <div class="qs-pg"><div><span>Entry</span><b>${f2(p.entry)}</b></div><div><span>Stop loss</span><b class="neg">${f2(p.sl)}</b></div>${tps}<div><span>Lot akhir</span><b>${p.bal > 0 ? p.fin.toFixed(2) : '—'}</b></div><div><span>Risiko aktual</span><b>${p.bal > 0 ? p.rpct.toFixed(2) + '% · ' + p.ract.toFixed(2) + ' $' : 'isi balance'}</b></div></div></div>`;
 }
+function planCells(api, S) {
+  const p = S.plan, f2 = api.f2, c = (t, v, cls) => `<div><span>${t}</span><b class="${cls || ''}">${v}</b></div>`, show = p && (S.zone || S.fv) && ['READY', 'WATCH', 'APPROACH'].includes(S.state);
+  if (!show) return ['Entry', 'Stop loss', 'TP1', 'RR', 'Lot', 'Risiko'].map(t => c(t, '—')).join('');
+  const t1 = p.tps[0]; return c('Entry', f2(p.entry)) + c('Stop loss', f2(p.sl), 'neg') + c('TP1', t1 ? f2(t1.p) : '—', 'pos') + c('RR', t1 ? t1.r.toFixed(1) + 'R' : '—') + c('Lot', p.bal > 0 ? p.fin.toFixed(2) : '—') + c('Risiko', p.bal > 0 ? p.rpct.toFixed(2) + '%' : '—');
+}
+function headHTML(api, S) {
+  const Q = api.Q, f2 = api.f2;
+  return `<div class="qs-ch"><span class="qs-sym">${esc(Q.sym)}</span><span class="qs-tf">${esc(Q.tf)}</span><b class="qs-px" data-px>${Q.px ? f2(Q.px) : '—'}</b><span class="qs-badge ${S ? S.state : 'LOAD'} ${S && S.side ? S.side : ''}">${S ? BADGE(S) : '◌ MEMUAT…'}</span></div>`;
+}
+function scoreHTML(api, S) {
+  const f2 = api.f2;
+  return `<div class="qs-sc"><div class="qs-ring" style="--p:${S.score || 0}"><b>${S.state === 'LOAD' || S.state === 'PAUSE' || (!S.rows.length) ? '—' : S.score}</b><small>/100</small></div>
+    <div class="qs-sw"><div class="qs-why" title="${esc(S.why)}">${esc(S.why)}</div><div class="qs-zn">${S.zinfo ? `<span class="qs-chip ${S.side}">${esc(S.zinfo)}</span>` : ''}${S.atr ? `<span class="qs-chip">ATR ${f2(S.atr)}</span>` : ''}${(S.chips || []).map(x => `<span class="qs-chip">${esc(x)}</span>`).join('')}</div></div></div>`;
+}
+/* kartu kompak: tinggi TETAP — semua detail ada di Mode Fokus */
 function cardHTML(i, api) {
+  const Q = api.Q, S = Q.sig;
+  if (!S) return `${headHTML(api, null)}<div class="qs-sc"><div class="qs-ring" style="--p:0"><b>—</b><small>/100</small></div><div class="qs-sw"><div class="qs-why">Menunggu data pertama…</div><div class="qs-zn"></div></div></div><div class="qs-pc">${planCells(api, { state: 'LOAD' })}</div><div class="qs-acts"><button type="button" class="btn ghost" data-act="focus">⤢ Mode fokus</button></div>`;
+  const hasZ = (S.zone || S.fv) && (S.state === 'READY' || S.state === 'WATCH' || S.state === 'APPROACH');
+  return `${headHTML(api, S)}${scoreHTML(api, S)}<div class="qs-pc">${planCells(api, S)}</div>
+  <div class="qs-acts"><button type="button" class="btn ghost qs-fb" data-act="focus">⤢ Mode fokus · detail</button><button type="button" class="btn ghost" data-act="chart">Ke chart ↓</button><button type="button" class="btn ghost" data-act="copy" ${S.plan && hasZ ? '' : 'disabled'}>Salin</button></div>`;
+}
+/* detail lengkap (dipakai di Mode Fokus) */
+function detailHTML(i, api) {
   const Q = api.Q, S = Q.sig, f2 = api.f2;
-  if (!S) return `<div class="qs-ch"><span class="qs-sym">${esc(Q.sym)}</span><span class="qs-badge LOAD">◌ MEMUAT…</span></div><div class="qs-why">Menunggu data pertama…</div>`;
-  const op = SIG.open[i] != null ? SIG.open[i] : (S.state === 'READY' || S.state === 'WATCH');
+  if (!S) return '<div class="qd-sub">Menunggu data pertama…</div>';
   const rows = S.rows.map(r => `<li class="r ${r.st}"><i>${ICO[r.st]}</i><div class="rt"><b>${esc(r.l)}</b><span>${esc(r.txt)}</span></div><div class="rp"><em>${r.st === 'na' ? '–' : r.pts.toFixed(0) + '/' + r.max}</em><div class="qs-bar"><i style="width:${r.max ? r.pts / r.max * 100 : 0}%"></i></div></div></li>`).join('');
   const flags = S.flags.map(f => `<div class="qs-flag ${f.st}"><i>${f.st === 'bad' ? '⛔' : f.st === 'warn' ? '⚠' : 'ℹ'}</i><span>${esc(f.txt)}</span></div>`).join('');
   const need = S.need.length && S.state !== 'READY' ? `<div class="qs-need"><b>Yang masih kurang sebelum layak entry</b><ul>${S.need.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>` : '';
   const ready = S.state === 'READY' ? `<div class="qs-go">✔ Syarat utama terpenuhi. Ini alat bantu keputusan — validasi manual di chart, pastikan SL terpasang sebelum entry.</div>` : '';
   const pos = S.pos && S.pos.n ? `<div class="qs-pos">Posisi EA terbuka: <b>${S.pos.side}</b> · BUY ${S.pos.buy.toFixed(2)} / SELL ${S.pos.sell.toFixed(2)} lot · floating <b class="${S.pos.pl >= 0 ? 'pos' : 'neg'}">${S.pos.pl >= 0 ? '+' : ''}${S.pos.pl.toFixed(2)} $</b></div>` : '';
   const hasZ = (S.zone || S.fv) && (S.state === 'READY' || S.state === 'WATCH' || S.state === 'APPROACH');
-  return `<div class="qs-ch"><span class="qs-sym">${esc(Q.sym)}</span><span class="qs-tf">${esc(Q.tf)}</span><b class="qs-px" data-px>${Q.px ? f2(Q.px) : '—'}</b><span class="qs-badge ${S.state} ${S.side || ''}">${BADGE(S)}</span></div>
-  <div class="qs-sc"><div class="qs-ring" style="--p:${S.score || 0}"><b>${S.state === 'LOAD' || S.state === 'PAUSE' || (!S.rows.length) ? '—' : S.score}</b><small>/100</small></div>
-    <div class="qs-sw"><div class="qs-why">${esc(S.why)}</div>${S.zinfo ? `<div class="qs-zn"><span class="qs-chip ${S.side}">${esc(S.zinfo)}</span><span class="qs-chip">ATR ${f2(S.atr)}</span><span class="qs-chip">min siap ${S.min}</span>${(S.chips || []).map(x => `<span class="qs-chip">${esc(x)}</span>`).join('')}</div>` : ''}</div></div>
-  ${ready}${planBlock(api, S)}${pos}${need}
-  ${S.rows.length ? `<details class="qs-det" data-i="${i}" ${op ? 'open' : ''}><summary>Alasan lengkap · ${S.rows.filter(r => r.st === 'ok').length}/${S.rows.filter(r => r.st !== 'na').length} faktor mendukung</summary><ul class="qs-rows">${rows}</ul>${flags ? `<div class="qs-flags">${flags}</div>` : ''}</details>` : (flags ? `<div class="qs-flags">${flags}</div>` : '')}
-  <div class="qs-acts"><button type="button" class="btn ghost" data-act="chart">Ke chart ↓</button>${hasZ ? '<button type="button" class="btn ghost" data-act="zone">Tampilkan zona &amp; rencana di chart</button>' : ''}${S.plan && hasZ ? '<button type="button" class="btn ghost" data-act="copy">Salin rencana</button>' : ''}</div>`;
+  return `${scoreHTML(api, S)}${ready}${planBlock(api, S)}${pos}${need}
+  <div class="qs-dh">Alasan lengkap · ${S.rows.filter(r => r.st === 'ok').length}/${S.rows.filter(r => r.st !== 'na').length} faktor mendukung · preset ${S.preset === 'fvg' ? 'iFVG/FVG' : 'Default'}</div><ul class="qs-rows">${rows}</ul>${flags ? `<div class="qs-flags">${flags}</div>` : ''}
+  <div class="qs-acts">${hasZ ? '<button type="button" class="btn ghost" data-act="zone">Tampilkan zona &amp; rencana di chart</button>' : ''}${S.plan && hasZ ? '<button type="button" class="btn ghost" data-act="copy">Salin rencana</button>' : ''}</div>`;
 }
+const sigKeyOf = (api, S) => S ? [S.state, S.side, S.score, S.why, S.zinfo, S.plan ? S.plan.entry + ':' + S.plan.sl + ':' + S.plan.fin : '', (S.chips || []).join(','), api.Q.tf, api.Q.sym, S.atr && S.atr.toFixed(2)].join('~') : 'load';
 function paintTop() {
   SIG.dirty = false; try { syncMode(); } catch (e) { }
   const g = $q('qsGrid'); if (!g) return;
   SIG.insts.forEach((api, i) => {
-    let el = g.children[i]; if (!el) return;
+    const el = g.children[i]; if (!el) return;
     const S = api.Q.sig, cls = `qs-card ${S ? S.state : 'LOAD'} ${S && S.side ? S.side : ''}`, f2 = api.f2;
     if (el.className !== cls) el.className = cls;
-    const px = el.querySelector('[data-px]'), sigKey = S ? [S.state, S.side, S.score, S.why, S.rows.map(r => r.txt + r.pts).join('|'), S.flags.map(f => f.txt).join('|'), S.plan ? S.plan.entry + ':' + S.plan.sl + ':' + S.plan.fin : '', S.need.join('|'), api.Q.tf, api.Q.sym, S.pos ? S.pos.pl.toFixed(1) : ''].join('~') : 'load';
-    if (el.dataset.k !== sigKey) { el.dataset.k = sigKey; el.innerHTML = cardHTML(i, api); }
+    const px = el.querySelector('[data-px]'), key = sigKeyOf(api, S);
+    if (el.dataset.k !== key) { el.dataset.k = key; el.innerHTML = cardHTML(i, api); }
     else if (px && api.Q.px) { const t = f2(api.Q.px); if (px.textContent !== t) px.textContent = t; }
   });
+  paintFocusSig();
   const ev = SIG.ev.slice(0, 14), h = ev.length ? ev.map(e => `<div class="qs-ev ${e.k} ${e.side || ''}"><span class="qs-et">${wibT(e.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span><b>${esc(e.sym)} ${esc(e.tf)}</b><span class="qs-ek">${e.k === 'ready' ? (e.side === 'BUY' ? '▲ SIAP BUY' : '▼ SIAP SELL') : e.k === 'end' ? '✕ SINYAL SELESAI' : '◐ PANTAU ' + esc(e.side)}</span><span class="qs-etx">skor ${e.score} · ${esc(e.txt)}</span></div>`).join('') : '<div class="qd-sub">Belum ada kejadian sinyal. Panel mencatat setiap kali setup berubah menjadi PANTAU / SIAP / selesai (tersimpan di browser ini).</div>';
   const fe = $q('qsFeed'); if (fe && fe.dataset.h !== h) { fe.dataset.h = h; fe.innerHTML = h; }
   const n = $q('qsEvN'); if (n) n.textContent = SIG.ev.length ? `(${SIG.ev.length})` : '';
+}
+/* ---------- Mode Fokus: satu pair layar penuh ---------- */
+function paintFocusSig() {
+  if (SIG.focus == null) return; const api = SIG.insts[SIG.focus]; if (!api) return;
+  const S = api.Q.sig, box = api.root.querySelector('#qdFsig .qd-fsb'), t = $q('qdFoT'), bd = $q('qdFoB'); if (!box) return;
+  const key = sigKeyOf(api, S) + '|' + (S ? S.rows.map(r => r.pts + r.txt).join('') + S.flags.map(f => f.txt).join('') + S.need.join('') : '');
+  if (box.dataset.k !== key) { const st = box.scrollTop; box.dataset.k = key; box.innerHTML = detailHTML(SIG.focus, api); box.scrollTop = st; }
+  if (t) t.innerHTML = `<b>${esc(api.Q.sym)}</b><span>${esc(api.Q.tf)}</span><em>${api.Q.px ? api.f2(api.Q.px) : '—'}</em>`;
+  if (bd) { bd.className = `qs-badge ${S ? S.state : 'LOAD'} ${S && S.side ? S.side : ''}`; bd.textContent = S ? BADGE(S) : '◌ MEMUAT…'; }
+}
+function openFocus(i) {
+  const api = SIG.insts[i]; if (!api || SIG.focus != null) return; const fo = $q('qdFocus'); SIG.focus = i; SIG.scrollY = window.scrollY;
+  fo.hidden = false; document.documentElement.classList.add('qd-lock'); fo.querySelector('.qd-fobody').scrollTop = 0; api.focusEnter($q('qdFoHost'));
+  schedulePaint(); paintFocusSig(); setTimeout(() => { try { window.dispatchEvent(new Event('resize')); } catch (e) { } }, 30);
+}
+function closeFocus() {
+  if (SIG.focus == null) return; const api = SIG.insts[SIG.focus]; SIG.focus = null; if (api) api.focusExit(); $q('qdFocus').hidden = true; document.documentElement.classList.remove('qd-lock');
+  window.scrollTo(0, SIG.scrollY || 0); schedulePaint(); setTimeout(() => { try { window.dispatchEvent(new Event('resize')); } catch (e) { } }, 30);
 }
 function schedulePaint() { if (SIG.dirty) return; SIG.dirty = true; requestAnimationFrame(paintTop); }
 function pushEv(e) {
@@ -11864,6 +12027,7 @@ function paintHead() {
 }
 function paintPane() {
   if (Q.lqOpen) { try { paintLq(); } catch (e) { console.error('qdom lq', e); } }
+  if (Q.focus) { try { focusPaint(); } catch (e) { console.error('qdom focus', e); } }
   if (Q.domVis !== false) { setH('qdDomList', paneDom()); paintCr(); }
   if (Q.tab === 'arus') { paintArus(); return; }
   if (Q.tab === 'ana') { paintAna(); return; }
@@ -12705,23 +12869,24 @@ function lqSumHTML() {
   const cell = (t, v, s, cls) => `<div class="${cls || ''}"><span>${t}</span><b>${v}</b>${s ? `<small>${s}</small>` : ''}</div>`;
   const pnl = (v, long) => { const r = (long ? px - v : v - px) / v * 100; return `${r >= 0 ? 'profit' : 'floating loss'} ${r >= 0 ? '+' : ''}${r.toFixed(2)}%`; };
   const wcell = (o, long) => { const lab = long ? 'Whale AVG LONG' : 'Whale AVG SHORT', cls = long ? 'wl' : 'ws'; if (!o) return cell(lab, '—', W ? 'tidak ada penambahan posisi pada jendela ini' : 'data top trader tidak tersedia', cls);
-    return cell(lab + (V.fol ? ' · searah tren' : ''), f2(o.avg), `${pctTxt(o.avg, px)} dari harga · ${pnl(o.avg, long)}<br>zona inti 50% posisi: ${f2(o.p25)}–${f2(o.p75)}<br>${o.adds} penambahan · keyakinan <b>${o.lvl}</b>`, cls); };
+    return cell(lab + (V.fol ? ' · searah tren' : ''), f2(o.avg), `${pctTxt(o.avg, px)} · ${pnl(o.avg, long)}<span class="lx"><br>zona inti 50%: ${f2(o.p25)}–${f2(o.p75)}<br>${o.adds} penambahan</span> · keyakinan <b>${o.lvl}</b>`, cls); };
   const lb = L.cl.filter(x => x.side === 'L' && x.p < px)[0], sa = L.cl.filter(x => x.side === 'S' && x.p > px)[0], cards = [];
   if (V.showL) cards.push(wcell(W && W.long, true)); if (V.showS) cards.push(wcell(W && W.short, false));
   cards.push(cell('Top trader (rasio posisi)', W && W.shL != null ? `${(W.shL * 100).toFixed(0)}% long · ${(W.shS * 100).toFixed(0)}% short` : '—', W && W.shL != null ? (W.shL > .55 ? 'condong long' : W.shL < .45 ? 'condong short' : 'seimbang') : 'rasio tidak tersedia'));
-  cards.push(cell('Cluster LONG terbesar (bawah)', lb ? f2(lb.p) : '—', lb ? `${usd(lb.v)} · ${pctTxt(lb.p, px)} · ${(Math.abs(lb.p - px) / A).toFixed(1)} ATR${V.fol ? (V.al === 'L' ? '<br>risiko untuk posisi searah tren' : '<br>target bila tren turun') : ''}` : 'tidak ada', 'lb'));
-  cards.push(cell('Cluster SHORT terbesar (atas)', sa ? f2(sa.p) : '—', sa ? `${usd(sa.v)} · ${pctTxt(sa.p, px)} · ${(Math.abs(sa.p - px) / A).toFixed(1)} ATR${V.fol ? (V.al === 'S' ? '<br>risiko untuk posisi searah tren' : '<br>target bila tren naik') : ''}` : 'tidak ada', 'sa'));
+  cards.push(cell('Cluster LONG terbesar (bawah)', lb ? f2(lb.p) : '—', lb ? `${usd(lb.v)} · ${pctTxt(lb.p, px)} · ${(Math.abs(lb.p - px) / A).toFixed(1)} ATR${V.fol ? (V.al === 'L' ? '<span class="lx"><br>risiko untuk posisi searah tren</span>' : '<span class="lx"><br>target bila tren turun</span>') : ''}` : 'tidak ada', 'lb'));
+  cards.push(cell('Cluster SHORT terbesar (atas)', sa ? f2(sa.p) : '—', sa ? `${usd(sa.v)} · ${pctTxt(sa.p, px)} · ${(Math.abs(sa.p - px) / A).toFixed(1)} ATR${V.fol ? (V.al === 'S' ? '<span class="lx"><br>risiko untuk posisi searah tren</span>' : '<span class="lx"><br>target bila tren naik</span>') : ''}` : 'tidak ada', 'sa'));
   cards.push(cell('Total estimasi ±15%', `${usd(L.below)} ↓ · ${usd(L.above)} ↑`, 'long di bawah · short di atas'));
   const rows = L.cum.map(r => `<tr><td>±${r.pc}%</td><td class="neg">${usd(r.dn)}</td><td class="pos">${usd(r.up)}</td></tr>`).join('');
   const basis = Q.whBasis === 'run' ? `Basis <b>posisi berjalan</b> (riwayat 1 jam ≈ ${Q.lqRun && Q.lqRun.sym === Q.sym ? Q.lqRun.days + ' hari' : 'memuat…'}): stok whale dibangun dari awal riwayat, penutupan mengurangi stok secara proporsional.` : `Basis <b>arus jendela ${Q.lqWin.toUpperCase()}</b>: hanya penambahan posisi dalam jendela yang dihitung.`;
   return `<div class="qd-lqk">${cards.join('')}</div>
-  <details class="qd-lqd"><summary>Skenario likuidasi jika harga bergerak &amp; cara hitung</summary><table class="qd-lqt"><thead><tr><th>Jika harga bergerak</th><th>Turun: long terlikuidasi</th><th>Naik: short terlikuidasi</th></tr></thead><tbody>${rows}</tbody></table>
-  <div class="qd-sub" style="margin-top:6px">Total berjalan dari harga ${f2(px)}. Likuidasi: kenaikan open interest per candle × campuran leverage 5–100×, level hilang saat wick menembusnya. Whale: nilai posisi top trader Binance (OI × rasio posisi, dihaluskan 3 periode) → tiap kenaikan di atas ambang noise 0,08% OI dicatat sebagai lot di harga VWAP candle itu; penurunan mengurangi semua lot proporsional. AVG = rata-rata tertimbang lot; zona inti = persentil 25–75. ${basis}</div></details>`;
+  <div class="qd-lqd qd-fonly"><div class="qd-fh2">Skenario likuidasi jika harga bergerak &amp; cara hitung</div><table class="qd-lqt"><thead><tr><th>Jika harga bergerak</th><th>Turun: long terlikuidasi</th><th>Naik: short terlikuidasi</th></tr></thead><tbody>${rows}</tbody></table>
+  <div class="qd-sub" style="margin-top:6px">Total berjalan dari harga ${f2(px)}. Likuidasi: kenaikan open interest per candle × campuran leverage 5–100×, level hilang saat wick menembusnya. Whale: nilai posisi top trader Binance (OI × rasio posisi, dihaluskan 3 periode) → tiap kenaikan di atas ambang noise 0,08% OI dicatat sebagai lot di harga VWAP candle itu; penurunan mengurangi semua lot proporsional. AVG = rata-rata tertimbang lot; zona inti = persentil 25–75. ${basis}</div></div>`;
 }
 function lqHead() {
   const V = lqView(), m = $('qdLqMode'); if (!m) return;
   m.className = 'qd-lqmode ' + (V.fol ? (Q.dir === 'buy' ? 'buy' : 'sell') : '');
-  m.textContent = V.fol ? `Follow ${Q.dir === 'buy' ? '▲ BUY' : '▼ SELL'} — hanya posisi whale ${Q.dir === 'buy' ? 'LONG' : 'SHORT'} · ${Q.dirWhy || ''}` : (Q.mode === 'follow' ? 'Follow: menunggu arah tren…' : 'Hybrid — posisi whale LONG & SHORT');
+  m.title = '';
+  m.textContent = V.fol ? `Follow ${Q.dir === 'buy' ? '▲ BUY' : '▼ SELL'} — hanya posisi whale ${Q.dir === 'buy' ? 'LONG' : 'SHORT'} · ${Q.dirWhy || ''}` : (Q.mode === 'follow' ? 'Follow: menunggu arah tren…' : 'Hybrid — posisi whale LONG & SHORT'); m.title = m.textContent;
 }
 function paintLq() {
   const st = $('qdLqSt'); if (!st || !Q.lqOpen) return; if (!Q.lq && !Q.lqBusy && !Q.lqErr) lqLoad(); lqHead();
@@ -12729,7 +12894,7 @@ function paintLq() {
   if (Q.lqBusy && !lqOk()) msg = '<div class="qd-spin" style="display:inline-block;vertical-align:middle;margin-right:8px"></div>Memuat open interest & rasio top trader Binance Futures…';
   else if (!lqOk()) msg = `<b style="color:var(--red)">Data likuidasi tidak tersedia</b> — ${esc2(Q.lqErr || (Q.lq && Q.lq.msg) || 'simbol ini tidak ada di Binance Futures / diblokir jaringan')}. <button class="btn ghost" id="qdLqRetry" style="padding:3px 9px;font-size:10.5px">Coba lagi</button>`;
   else { const L = Q.lq, ago = Math.round((Date.now() - L.t) / 1000); msg = `Pembaruan ${ago} dtk lalu (tiap 60 dtk)${L.proxy ? ' · <b style="color:var(--amber)">OI historis tidak tersedia → memakai proksi volume (kurang akurat)</b>' : ''}${L.noTr ? ' · <b style="color:var(--amber)">rasio top trader tidak tersedia → garis whale mati</b>' : ''}`; }
-  setH('qdLqSt', msg);
+  setH('qdLqSt', msg); { const el = $('qdLqSt'); if (el) el.title = el.textContent; }
   if (lqOk()) { drawLqMap(); setH('qdLqSum', lqSumHTML()); } else { const el = $('qdLqCv'); if (el) { const c = el.getContext('2d'); c && c.clearRect(0, 0, el.width, el.height); } setH('qdLqSum', ''); }
 }
 (function lqBind() {
@@ -12993,6 +13158,27 @@ function srchOpen(dir) { if (Q.sres.open && Q.sres.dir === dir) Q.sres.open = fa
   });
 })();
 
+/* ===== Mode fokus (per instance): seluruh detail satu pair dalam layar penuh ===== */
+Q.focus = false; Q.fPh = null; Q.fTab = null; Q.lqWasClosed = false;
+function focusEnter(host) {
+  if (Q.focus) return; Q.focus = true; Q.fTab = Q.tab; Q.tab = 'zona';
+  const ph = document.createComment('qdfocus-root'); root.parentNode.insertBefore(ph, root); Q.fPh = ph; host.appendChild(root); root.classList.add('qd-focus');
+  const mv = (id, dest) => { const el = $(id), p = document.createComment('ph-' + id); el.parentNode.insertBefore(p, el); Q['ph_' + id] = p; $(dest).appendChild(el); el.hidden = false; };
+  mv('qdPane', 'qdFz'); mv('qdArus', 'qdFa'); mv('qdAna', 'qdFn');
+  $('qdFsig').hidden = false; $('qdFgrid').hidden = false; $('qdPane').dataset.h = '';
+  if (!Q.lqOpen) { Q.lqWasClosed = true; Q.lqOpen = true; $('qdLq').hidden = false; Q.lqImg = null; lqTick(); }
+  Q.dirty = true; render(); focusPaint();
+}
+function focusExit() {
+  if (!Q.focus) return; Q.focus = false; root.classList.remove('qd-focus');
+  ['qdPane', 'qdArus', 'qdAna'].forEach(id => { const el = $(id), p = Q['ph_' + id]; if (p && p.parentNode) { p.parentNode.insertBefore(el, p); p.remove(); } Q['ph_' + id] = null; });
+  $('qdFsig').hidden = true; $('qdFgrid').hidden = true; Q.tab = Q.fTab || 'zona'; syncTabs(); $('qdPane').dataset.h = '';
+  if (Q.fPh && Q.fPh.parentNode) { Q.fPh.parentNode.insertBefore(root, Q.fPh); Q.fPh.remove(); } Q.fPh = null;
+  if (Q.lqWasClosed) { Q.lqWasClosed = false; Q.lqOpen = LSG('qd_lqopen', !ML) !== false; $('qdLq').hidden = !Q.lqOpen; Q.lqImg = null; }
+  Q.dirty = true; render();
+}
+function focusPaint() { if (!Q.focus) return; setH('qdFs', paneSesi()); setH('qdFl', paneLog()); paintArus(); paintAna(); }
+
 /* ===== Sinyal realtime: mesin skor konfluensi per instance (dibaca panel "Sinyal Realtime" di atas) ===== */
 let API = null; Q.sig = null; Q.sigRun = null; Q.sigPrev = null; Q.sigAt = 0;
 function sigPos() {
@@ -13159,7 +13345,7 @@ document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () =>
 paintHead();
 API = {
   Q, cfg: CFG, root, f2, toast, beep,
-  applyPreset, refresh() { fvUpdate(); try { sigUpdate(); } catch (e) { } Q.dirty = true; },
+  focusEnter, focusExit, applyPreset, refresh() { fvUpdate(); try { sigUpdate(); } catch (e) { } Q.dirty = true; },
   focusZone() { const S = Q.sig; if (!S || !S.zone) return; if (Q.sel !== S.zone.key) select(S.zone.key, false); Q.pan = 0; Q.dirty = true; },
   copyPlan() { const S = Q.sig; if (!S || !S.plan || (!S.zone && !S.fv)) return; const t = S.fv ? fvText(S) : planText(S.plan, S.zone); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Rencana trade disalin', 'info'), () => toast(t, 'info')); }
 };
@@ -13186,7 +13372,8 @@ sEl.checked = SIG.snd; sEl.onchange = e => { SIG.snd = e.target.checked; SS('qs_
 $q('qsClr').onclick = e => { e.preventDefault(); e.stopPropagation(); SIG.ev = []; SS('qs_ev', SIG.ev); schedulePaint(); };
 $q('qsGrid').addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return; const c = b.closest('.qs-card'), api = SIG.insts[+c.dataset.i]; if (!api) return;
-  if (b.dataset.act === 'chart') api.root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (b.dataset.act === 'focus') openFocus(+c.dataset.i);
+  else if (b.dataset.act === 'chart') api.root.scrollIntoView({ behavior: 'smooth', block: 'start' });
   else if (b.dataset.act === 'zone') { api.focusZone(); const cc = api.root.querySelector('.qd-chartcard'); if (cc) cc.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   else if (b.dataset.act === 'copy') api.copyPlan();
 });
@@ -13195,11 +13382,11 @@ $q('qsGrid').addEventListener('toggle', e => { const d = e.target; if (d && d.cl
 /* ---------- Preset model entry & sinyal ---------- */
 window.__QDI = SIG.insts;
 const DESC = {
-  default: '<b>Default</b> — model yang sekarang: zona Supply/Demand + konfirmasi breakout M15–H4 + volume/likuiditas (tekanan buyer-seller, order flow, sweep). Skor 8 faktor di tiap kartu sinyal.',
+  default: '<b>Default</b> — model saat ini: zona Supply/Demand + konfirmasi breakout M15–H4 + volume/likuiditas. Skor 100 poin dari 8 faktor: kualitas zona (20), posisi harga (15), tekanan buyer/seller (12), order flow (12), sapuan likuiditas (10), breakout M15–H4 (15), struktur &amp; EMA (8), konfluensi HTF/Premium-Discount (8). <b>SIAP</b> bila skor ≥ batas, harga di/dekat zona (≤ 0,35 ATR), RR ≥ minimum, tanpa jendela berita, margin aman, bertahan ≥ 3 detik. <b>Hybrid</b> = zona kedua sisi, <b>Follow</b> = hanya searah tren.',
   fvg: '<b>iFVG / FVG</b> — (1) harga <b>wajib sweep/grab likuiditas</b> dalam satu candle: wick menembus swing lalu close kembali (<b>HRL</b> = swing mayor/ekstrem, <b>LRL</b> = swing minor, EQH/EQL = bonus). (2) <b>Target</b> = swing SSL/BSL berikutnya yang belum tersapu. (3) <b>MSS/CHoCH</b> setelah sapuan. (4) <b>FVG</b> valid (sweep + MSS) → entry saat <b>retest</b> ke zona. <b>iFVG</b> (FVG lawan di-close-body tembus + menembus high/low beberapa candle sebelumnya) → <b>sinyal instan</b> begitu candle inversi close: entry, SL, TP langsung dihitung, <b>tanpa menunggu retest</b>. (5) <b>Fibonacci</b>: zona bertumpuk OTE 61,8–78,6% → <b>A+</b>, di discount/premium saja → <b>Medium risk</b>. Mesin menganalisa 20–100 candle ke belakang; chart menggambar sapuan, MSS/CHoCH, FVG/iFVG, Fibo, SL dan TP otomatis. <b>Hybrid</b> = long &amp; short, <b>Follow</b> = hanya searah tren (EMA / HH-LL / tekanan sesuai Sumber arah).'
 };
 const pre = $q('qsPre'), pset = $q('qsPset'), modeB = $q('qsMode');
-function paintPreset() { pre.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.p === SIG.preset)); $q('qsPdesc').innerHTML = DESC[SIG.preset]; pset.hidden = SIG.preset !== 'fvg'; }
+function paintPreset() { pre.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.p === SIG.preset)); const pd = $q('qsPdesc'); if (!pd.children.length) pd.innerHTML = Object.keys(DESC).map(k => `<div data-p="${k}">${DESC[k]}</div>`).join(''); [...pd.children].forEach(d => d.classList.toggle('on', d.dataset.p === SIG.preset)); pset.classList.toggle('off', SIG.preset !== 'fvg'); }
 function setPreset(p) { SIG.preset = p; SS('qs_preset', p); paintPreset(); SIG.insts.forEach(a => { a.applyPreset(p, SIG.fv.auto); a.refresh(); }); schedulePaint(); }
 function fvChanged() { SS('qs_fv', SIG.fv); SIG.insts.forEach(a => a.refresh()); schedulePaint(); }
 pre.onclick = e => { const b = e.target.closest('button'); if (b && b.dataset.p !== SIG.preset) setPreset(b.dataset.p); };
@@ -13212,6 +13399,17 @@ fA.onchange = e => { SIG.fv.auto = e.target.checked; SS('qs_fv', SIG.fv); if (SI
 modeB.onclick = e => { const b = e.target.closest('button'); if (!b) return; SIG.insts.forEach(a => { const t = a.root.querySelector('#qdModeSeg button[data-v="' + b.dataset.v + '"]'); if (t) t.click(); a.refresh(); }); schedulePaint(); };
 function syncMode() { modeB.querySelectorAll('button').forEach(b => b.classList.toggle('on', SIG.insts.length && SIG.insts.every(a => a.Q.mode === b.dataset.v))); }
 paintPreset(); if (SIG.preset === 'fvg') SIG.insts.forEach(a => { a.applyPreset('fvg', SIG.fv.auto); });
+
+/* ---------- overlay Mode Fokus ---------- */
+(() => {
+  const fo = document.createElement('div'); fo.id = 'qdFocus'; fo.className = 'qd-fo'; fo.hidden = true; fo.setAttribute('role', 'dialog'); fo.setAttribute('aria-modal', 'true'); fo.setAttribute('aria-label', 'Mode fokus pair');
+  fo.innerHTML = '<div class="qd-fotop"><span class="qd-fotag">🎯 MODE FOKUS</span><div class="qd-fot" id="qdFoT"></div><span id="qdFoB" class="qs-badge LOAD">—</span><span class="qd-fohint">Layout dikunci — tampilan tidak bergeser saat sinyal/notifikasi baru masuk · tekan Esc untuk menutup</span><button type="button" class="qd-fox" id="qdFoX" aria-label="Tutup mode fokus">✕ Tutup</button></div><div class="qd-fobody"><div id="qdFoHost"></div></div>';
+  document.body.appendChild(fo);
+  $q('qdFoX').onclick = closeFocus;
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && SIG.focus != null) { const h = $q('qdHelp'); if (h && !h.hidden) return; closeFocus(); } });
+  SIG.insts.forEach((api, i) => { const b = api.root.querySelector('#qdFocusBtn'); if (b) b.onclick = () => (SIG.focus === i ? closeFocus() : openFocus(i)); });
+  SIG.insts.forEach(api => { const fs = api.root.querySelector('#qdFsig'); if (fs) fs.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (!b) return; if (b.dataset.act === 'zone') api.focusZone(); else if (b.dataset.act === 'copy') api.copyPlan(); }); });
+})();
 applyLay(); paintTop();
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { if (b.dataset.view === 'qdom') setTimeout(schedulePaint, 60); }));
 setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) schedulePaint(); }, 1000);
