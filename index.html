@@ -3330,6 +3330,68 @@ html{scrollbar-gutter:stable}
 html.qd-lock .qd-toasts{top:72px}
 .qd-lqk small .lx,.qd-lqk small .lx *{text-transform:none;letter-spacing:0;font-size:inherit;color:inherit;display:inline}
 .qd-fsig{align-self:start}
+
+/* ================= REVISI: tabel tidak keluar kolom · scroll hanya di dalam tabel · fokus proporsional ================= */
+/* --- Riwayat sinyal --- */
+.qs-feed{display:flex;flex-direction:column;height:204px;min-width:0;overflow:hidden}
+.qs-feed .qs-fh{display:flex;align-items:center;gap:8px;padding:8px 12px 4px;flex:none}
+.qs-feed .qs-fh>span{font:700 11px var(--fh);letter-spacing:.06em;color:var(--muted)}
+.qs-feed .qs-fh .btn{margin-left:auto;padding:3px 10px;font-size:10px}
+.qs-fcols,.qs-ev{display:grid;grid-template-columns:150px 128px 128px minmax(0,1fr);gap:0 12px;align-items:center}
+.qs-fcols{padding:3px 22px 3px 22px;font:700 9px var(--fm);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--line);flex:none}
+#qsFeed{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:3px;padding:6px 10px 8px}
+.qs-ev{padding:5px 12px;border-radius:8px;background:rgba(19,28,56,.4);min-width:0}
+.qs-ev>*{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qs-ev .qs-etx{color:var(--muted);font-size:10.5px}
+#qsFeed>.qd-sub{padding:10px 12px;white-space:normal}
+@media(max-width:760px){.qs-fcols{display:none}.qs-ev{grid-template-columns:auto minmax(0,1fr);gap:2px 10px}.qs-ev .qs-etx{grid-column:1/-1}}
+/* --- panel tab & pane: scroll hanya di dalam panel --- */
+.qd-inst .qd-below{display:block;overflow:hidden}
+.qd-inst #qdPane,.qd-inst #qdArus,.qd-inst #qdAna{height:420px!important;max-height:420px!important;overflow:auto!important;overscroll-behavior:contain;scrollbar-width:thin}
+.qd-inst #qdPane:not([hidden]),.qd-inst #qdArus:not([hidden]),.qd-inst #qdAna:not([hidden]){display:block!important}
+.qd-inst #qdAna:not([hidden]){display:flex!important;flex-direction:column;gap:12px}
+.qd-inst #qdPane>*,.qd-inst #qdArus>*,.qd-inst #qdAna>*{max-width:100%}
+.qd-inst #qdPane .qd-zc{min-width:0;overflow:visible}
+.qd-inst #qdDomList,.qd-inst #qdDomList *{max-width:100%}
+/* tabel di dalam panel: lebar proporsional, header menempel, scroll horizontal di dalam */
+.qd-inst table,.qd-fo table{width:100%;border-collapse:collapse;table-layout:auto}
+.qd-inst th,.qd-fo th{position:sticky;top:0;z-index:2;background:#0e1730;font:700 9.5px var(--fm);letter-spacing:.05em;text-transform:uppercase;color:var(--faint);text-align:left;white-space:nowrap}
+.qd-inst td,.qd-fo td{vertical-align:middle}
+/* --- Mode fokus: grid rapi, tinggi panel sama per baris, scroll di dalam panel --- */
+.qd-focus .qd-below{display:none!important}
+.qd-inst.qd-focus{grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:stretch}
+.qd-focus .qd-fsig{position:relative;align-self:stretch;min-height:540px;padding:14px 16px}
+.qd-focus .qd-fsig .qd-fh{position:relative}
+.qd-focus .qd-fsb{position:absolute;left:16px;right:12px;top:46px;bottom:14px;overflow:auto;padding-right:4px;scrollbar-width:thin}
+.qd-focus .qd-chartcard{display:flex;flex-direction:column;align-self:stretch}
+.qd-focus .qd-chartbox{flex:1 1 auto;height:auto!important;min-height:560px}
+.qd-focus .qd-domside{align-self:stretch}
+.qd-focus #qdDomList{height:300px}
+.qd-focus .qd-fgrid{grid-area:fgrid;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:auto;gap:14px;align-items:stretch}
+.qd-fc{display:flex;flex-direction:column;padding:12px 14px;min-width:0;min-height:0;overflow:hidden}
+.qd-fc .qd-fh{flex:none;padding-bottom:8px;margin:0 0 8px;border-bottom:1px solid var(--line)}
+.qd-fc .qd-fpane{flex:1 1 auto;min-height:0;max-height:none;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.qd-fc:nth-child(1){grid-column:span 7;height:560px}.qd-fc:nth-child(2){grid-column:span 5;height:560px}
+.qd-fc:nth-child(3){grid-column:span 7;height:700px}.qd-fc:nth-child(4){grid-column:span 5;height:700px}
+.qd-fc:nth-child(5){grid-column:span 12;height:240px}
+.qd-inst.qd-focus #qdPane,.qd-inst.qd-focus #qdArus,.qd-inst.qd-focus #qdAna{height:auto!important;max-height:none!important;overflow:visible!important}
+.qd-focus .qd-fpane #qdAna:not([hidden]){display:flex!important;flex-direction:column;gap:12px}
+.qd-focus .qd-fpane>*{min-width:0}
+@media(max-width:1180px){.qd-focus .qd-fgrid{grid-template-columns:minmax(0,1fr)}.qd-fc:nth-child(n){grid-column:auto}.qd-fc:nth-child(1),.qd-fc:nth-child(2){height:520px}.qd-fc:nth-child(3),.qd-fc:nth-child(4){height:600px}.qd-fc:nth-child(5){height:280px}.qd-inst.qd-focus{grid-template-columns:minmax(0,1fr)}.qd-focus .qd-fsig{min-height:620px}.qd-focus .qd-chartbox{min-height:420px}}
+/* ---- Analisis: akordeon, tidak terpotong ---- */
+.qd-inst #qdAna>*,.qd-focus #qdAna>*{flex:none!important}
+.qd-inst #qdAna .qd-as{overflow:visible!important;height:auto!important;min-height:0!important}
+.qd-as .qd-ash{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.qd-as .qd-ash>b{flex:1;min-width:0}
+.qd-as .qd-ash .qd-swt{flex:none;cursor:pointer}
+.qd-ach{flex:none;width:24px;height:24px;border-radius:7px;border:1px solid var(--line2);background:rgba(19,28,56,.7);color:var(--gold);font:700 12px var(--fm);line-height:1;cursor:pointer;padding:0}
+.qd-as:not(.open) .qd-asc,.qd-as:not(.open) .qd-asb{display:none!important}
+.qd-as:not(.open) .qd-ash{margin-bottom:0}
+.qd-as.open{border-color:rgba(255,201,74,.4)}
+.qd-as.open .qd-asc{display:flex!important;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:10px 0}
+.qd-as .qd-asc input.xin[type=number]{width:92px;min-width:92px}
+.qd-as .qd-asc #qdPlBal{width:140px;min-width:140px}
+.qd-as .qd-asc select.xin{min-width:130px}
 </style>
 </head>
 <body>
@@ -3982,7 +4044,7 @@ html.qd-lock .qd-toasts{top:72px}
       </div>
     </div>
     <div class="qs-grid" id="qsGrid"><div class="qs-card LOAD" data-i="0"></div><div class="qs-card LOAD" data-i="1"></div></div>
-    <details class="qs-feed" open><summary>Riwayat sinyal <b id="qsEvN"></b><button type="button" class="btn ghost" id="qsClr">Hapus</button></summary><div id="qsFeed"></div></details>
+    <div class="qs-feed"><div class="qs-fh"><span>Riwayat sinyal <b id="qsEvN"></b></span><button type="button" class="btn ghost" id="qsClr">Hapus</button></div><div class="qs-fcols"><span>Waktu (WIB)</span><span>Pair</span><span>Status</span><span>Detail</span></div><div id="qsFeed"></div></div>
     <div class="note qs-note">Sinyal adalah skor konfluensi dari data Binance publik (bukan rekomendasi pasti). <b>SIAP</b> = skor ≥ batas, harga di/dekat zona (≤ 0,35 ATR), RR ≥ minimum, tidak ada jendela berita, margin rule aman, dan bertahan ≥ 3 detik. <b>PANTAU</b> = sebagian syarat terpenuhi. Selalu validasi di chart dan pasang SL.</div>
   </section>
 
@@ -4131,7 +4193,7 @@ html.qd-lock .qd-toasts{top:72px}
         <div class="qd-as"><div class="qd-ash"><b>4 · Premium/Discount &amp; OTE <button type="button" class="qd-help" data-h="fxpd">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxPd"><i></i></label></div><div class="qd-asc"><label>Range (candle) <input id="qdPdN" class="xin" type="number" step="10"></label><label class="qd-ck"><input type="checkbox" id="qdPdF"> Saring zona kontra PD</label></div><div class="qd-asb" id="qaPd"></div></div>
         <div class="qd-as"><div class="qd-ash"><b>5 · Heatmap DOM historis <button type="button" class="qd-help" data-h="fxheat">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxHeat"><i></i></label></div><div class="qd-asc"><button type="button" class="btn ghost" id="qdHeatClr" style="padding:4px 10px">Hapus rekaman</button></div><div class="qd-asb" id="qaHeat"></div></div>
         <div class="qd-as"><div class="qd-ash"><b>6 · Peredam berita <button type="button" class="qd-help" data-h="fxnews">?</button></b><label class="qd-swt"><input type="checkbox" id="qd_fxNews"><i></i></label></div><div class="qd-asc"><label>Sebelum (mnt) <input id="qdNwPre" class="xin" type="number" step="5"></label><label>Sesudah (mnt) <input id="qdNwPost" class="xin" type="number" step="5"></label><label>Impact <select id="qdNwImp" class="xin"><option value="3">High</option><option value="2">Medium+</option></select></label><label>Mata uang <input id="qdNwCcy" class="xin" type="text" style="width:84px"></label><label class="qd-ck"><input type="checkbox" id="qdNwDamp"> Redam peluang tahan ×0,8</label></div><div class="qd-asb" id="qaNews"></div></div>
-        <div class="note qd-small">Saklar juga ada sebagai chip di atas chart (Liq, Plan, CVD, PD, Heat, News). Semua analisis adalah alat bantu, bukan sinyal.</div>
+        <div class="note qd-small">Klik judul kartu (▸) untuk membuka pengaturan &amp; detailnya; default tertutup. Saklar juga ada sebagai chip di atas chart (Liq, Plan, CVD, PD, Heat, News). Semua analisis adalah alat bantu, bukan sinyal.</div>
       
       </div>
       <div class="qd-pane" id="qdArus" hidden>
@@ -11396,7 +11458,7 @@ function paintTop() {
     else if (px && api.Q.px) { const t = f2(api.Q.px); if (px.textContent !== t) px.textContent = t; }
   });
   paintFocusSig();
-  const ev = SIG.ev.slice(0, 14), h = ev.length ? ev.map(e => `<div class="qs-ev ${e.k} ${e.side || ''}"><span class="qs-et">${wibT(e.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span><b>${esc(e.sym)} ${esc(e.tf)}</b><span class="qs-ek">${e.k === 'ready' ? (e.side === 'BUY' ? '▲ SIAP BUY' : '▼ SIAP SELL') : e.k === 'end' ? '✕ SINYAL SELESAI' : '◐ PANTAU ' + esc(e.side)}</span><span class="qs-etx">skor ${e.score} · ${esc(e.txt)}</span></div>`).join('') : '<div class="qd-sub">Belum ada kejadian sinyal. Panel mencatat setiap kali setup berubah menjadi PANTAU / SIAP / selesai (tersimpan di browser ini).</div>';
+  const ev = SIG.ev.slice(0, 14), h = ev.length ? ev.map(e => `<div class="qs-ev ${e.k} ${e.side || ''}"><span class="qs-et">${wibT(e.t, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span><b>${esc(e.sym)} ${esc(e.tf)}</b><span class="qs-ek">${e.k === 'ready' ? (e.side === 'BUY' ? '▲ SIAP BUY' : '▼ SIAP SELL') : e.k === 'end' ? '✕ SINYAL SELESAI' : '◐ PANTAU ' + esc(e.side)}</span><span class="qs-etx" title="skor ${e.score} · ${esc(e.txt)}">skor ${e.score} · ${esc(e.txt)}</span></div>`).join('') : '<div class="qd-sub">Belum ada kejadian sinyal. Panel mencatat setiap kali setup berubah menjadi PANTAU / SIAP / selesai (tersimpan di browser ini).</div>';
   const fe = $q('qsFeed'); if (fe && fe.dataset.h !== h) { fe.dataset.h = h; fe.innerHTML = h; }
   const n = $q('qsEvN'); if (n) n.textContent = SIG.ev.length ? `(${SIG.ev.length})` : '';
 }
@@ -13179,6 +13241,18 @@ function focusExit() {
 }
 function focusPaint() { if (!Q.focus) return; setH('qdFs', paneSesi()); setH('qdFl', paneLog()); paintArus(); paintAna(); }
 
+/* ===== Tab Analisis: kartu akordeon — default tertutup, klik judul untuk membuka pengaturan ===== */
+(function anaAcc() {
+  const pane = $('qdAna'); if (!pane) return; let saved = LSG('qd_anaacc', {}); if (!saved || typeof saved !== 'object') saved = {};
+  pane.querySelectorAll('.qd-as').forEach((card, i) => {
+    const head = card.querySelector('.qd-ash'); if (!head || head.querySelector('.qd-ach')) return;
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'qd-ach'; head.insertBefore(btn, head.firstChild);
+    const set = open => { card.classList.toggle('open', open); btn.setAttribute('aria-expanded', String(open)); btn.setAttribute('aria-label', open ? 'Tutup pengaturan' : 'Buka pengaturan'); btn.textContent = open ? '▾' : '▸'; };
+    set(!!saved[i]);
+    head.addEventListener('click', e => { if (e.target.closest('.qd-swt,.qd-help')) return; const o = !card.classList.contains('open'); set(o); saved[i] = o; LSS('qd_anaacc', saved); });
+  });
+})();
+
 /* ===== Sinyal realtime: mesin skor konfluensi per instance (dibaca panel "Sinyal Realtime" di atas) ===== */
 let API = null; Q.sig = null; Q.sigRun = null; Q.sigPrev = null; Q.sigAt = 0;
 function sigPos() {
@@ -13369,7 +13443,7 @@ lay.addEventListener('click', e => { const b = e.target.closest('button'); if (!
 minEl.value = SIG.min; minEl.onchange = e => { SIG.min = Math.min(95, Math.max(40, Math.round(+e.target.value || 70))); e.target.value = SIG.min; SS('qs_min', SIG.min); };
 nEl.checked = SIG.notif; nEl.onchange = e => { SIG.notif = e.target.checked; SS('qs_notif', SIG.notif); if (SIG.notif && window.Notification && Notification.permission === 'default') { try { Notification.requestPermission(); } catch (x) { } } };
 sEl.checked = SIG.snd; sEl.onchange = e => { SIG.snd = e.target.checked; SS('qs_snd', SIG.snd); if (SIG.snd && SIG.insts[0]) SIG.insts[0].beep(); };
-$q('qsClr').onclick = e => { e.preventDefault(); e.stopPropagation(); SIG.ev = []; SS('qs_ev', SIG.ev); schedulePaint(); };
+$q('qsClr').onclick = e => { SIG.ev = []; SS('qs_ev', SIG.ev); schedulePaint(); };
 $q('qsGrid').addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return; const c = b.closest('.qs-card'), api = SIG.insts[+c.dataset.i]; if (!api) return;
   if (b.dataset.act === 'focus') openFocus(+c.dataset.i);
