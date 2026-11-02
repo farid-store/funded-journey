@@ -29,6 +29,7 @@ small{color:var(--m)}
 <div class="pn"><h2>Koneksi</h2>
 <div class="grid">
 <label class="f">Mode<select id="mode"><option value="proxy">Proxy Vercel (aman, disarankan)</option><option value="direct">Langsung ke API (token di browser)</option></select></label>
+<label class="f" id="wu">URL proxy (kosongkan = /api/mt di Vercel; PC lokal: http://localhost:3000/api/mt)<input id="purl" type="text"></label>
 <label class="f" id="wa">Admin key (proxy)<input id="adm" type="password" autocomplete="off"></label>
 <label class="f" id="wt" style="display:none">Token Trader API<input id="tok" type="password" autocomplete="off"></label>
 <label class="f" id="wb" style="display:none">Base URL<input id="base" type="text"></label>
@@ -56,7 +57,7 @@ small{color:var(--m)}
 
 <script>
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),f=(v,d=2)=>Number.isFinite(+v)&&v!==null?(+v).toFixed(d):'-';
-const D={mode:'proxy',base:'https://trader-api.match-trader.com',dry:true,timeOn:true,sec:130,buf:3,tmode:'always',lot:0.01,maxLoss:0,autoSL:true,contract:100,posTP:0,layerBy:'sym',layerTP:0,layerSL:0,allTP:0,allSL:0,dayL:0,dayLP:0,ddL:0,ddLP:0,initBal:0,mlv:0,maxPos:0,maxLot:0,resetH:0,guardClose:true,poll:4,confirm:true};
+const D={mode:'proxy',purl:'/api/mt',base:'https://trader-api.match-trader.com',dry:true,timeOn:true,sec:130,buf:3,tmode:'always',lot:0.01,maxLoss:0,autoSL:true,contract:100,posTP:0,layerBy:'sym',layerTP:0,layerSL:0,allTP:0,allSL:0,dayL:0,dayLP:0,ddL:0,ddLP:0,initBal:0,mlv:0,maxPos:0,maxLot:0,resetH:0,guardClose:true,poll:4,confirm:true};
 const ld=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 let C={...D,...(ld('mtp_c')||{})},DAY=ld('mtp_day'),LOCK=ld('mtp_lock'),TOK='',ADM='',on=false,armed=false,POS=[],SUM=null,G={},off=0,hold=0,busy=false,lastOk=0,n=0,SYMS={},PEND={},LG=[];
 const np=p=>+(p.netProfit??p.profit??0),lk=p=>p.symbol+'|'+p.side+(C.layerBy==='tag'?'|'+((/L\d+/i.exec(p.comment||'')||['*'])[0].toUpperCase()):'');
@@ -72,7 +73,7 @@ const notify=t=>{try{new Notification('Match-Trader Guard',{body:t})}catch(e){}}
 // ---------- API ----------
 async function api(path,o={}){
   const h={Accept:'application/json'};let url;
-  if(C.mode==='proxy'){url='/api/mt?p='+encodeURIComponent(path);h['x-admin-key']=ADM}
+  if(C.mode==='proxy'){url=(C.purl||'/api/mt')+'?p='+encodeURIComponent(path);h['x-admin-key']=ADM}
   else{url=C.base.replace(/\/$/,'')+path;h.Authorization='Bearer '+TOK}
   if(o.body)h['Content-Type']='application/json';
   if(o.idem)h['Idempotency-Key']=crypto.randomUUID();
@@ -87,14 +88,14 @@ async function api(path,o={}){
 }
 
 async function connect(){
-  C.mode=$('mode').value;C.base=$('base').value.trim()||D.base;ADM=$('adm').value.trim();TOK=$('tok').value.trim();sv('mtp_c',C);
+  C.mode=$('mode').value;C.purl=$('purl').value.trim()||'/api/mt';C.base=$('base').value.trim()||D.base;ADM=$('adm').value.trim();TOK=$('tok').value.trim();sv('mtp_c',C);
   const st=$('rem').checked?localStorage:sessionStorage;try{st.setItem('mtp_adm',ADM);st.setItem('mtp_tok',TOK);if(!$('rem').checked){localStorage.removeItem('mtp_adm');localStorage.removeItem('mtp_tok')}}catch(e){}
   if(C.mode==='proxy'&&!ADM)return bn('Isi admin key.');if(C.mode==='direct'&&!TOK)return bn('Isi token.');
   try{
     SUM=await api('/v1/account-summary');on=true;log('Terhubung. Balance '+f(SUM.balance)+' · Equity '+f(SUM.equity),'g');
     try{const j=await api('/v1/symbols');(j.symbols||(Array.isArray(j)?j:[])).forEach(x=>SYMS[x.symbol]=x);$('sl').innerHTML=Object.keys(SYMS).map(s=>'<option value="'+esc(s)+'">').join('')}catch(e){log('Daftar symbol gagal: '+e.message+' (ketik manual)','w')}
     await poll(true);
-  }catch(e){on=false;bn('Gagal konek: '+e.message+(C.mode==='direct'?' — jika error CORS, pakai mode Proxy.':''));log('Koneksi gagal: '+e.message,'r')}
+  }catch(e){on=false;bn('Gagal konek: '+e.message+(C.mode==='direct'?' — jika error CORS, pakai mode Proxy.':/^http/.test(C.purl)?' — pastikan server.js jalan di PC dan ALLOW_ORIGIN berisi alamat web ini.':''));log('Koneksi gagal: '+e.message,'r')}
   setSt();
 }
 
@@ -202,8 +203,8 @@ document.querySelectorAll('[data-k]').forEach(el=>{const k=el.dataset.k;
   el.onchange=()=>{C[k]=el.type==='checkbox'?el.checked:el.tagName==='SELECT'?el.value:(parseFloat(el.value)||0);if(k==='poll'&&C.poll<3)C.poll=3;if(k==='sec'&&C.sec<121)bn('Perhatian: aturan 2 menit biasanya butuh >120 detik');sv('mtp_c',C);if(k==='lot')$('lot').value=C.lot}});
 
 // ---------- Tombol ----------
-$('mode').value=C.mode;$('base').value=C.base;$('lot').value=C.lot;
-const tg=()=>{$('wa').style.display=$('mode').value==='proxy'?'':'none';$('wt').style.display=$('wb').style.display=$('mode').value==='direct'?'':'none'};$('mode').onchange=tg;tg();
+$('mode').value=C.mode;$('purl').value=C.purl||'/api/mt';$('base').value=C.base;$('lot').value=C.lot;
+const tg=()=>{$('wa').style.display=$('wu').style.display=$('mode').value==='proxy'?'':'none';$('wt').style.display=$('wb').style.display=$('mode').value==='direct'?'':'none'};$('mode').onchange=tg;tg();
 try{const st=localStorage.getItem('mtp_adm')?localStorage:sessionStorage;$('adm').value=st.getItem('mtp_adm')||'';$('tok').value=st.getItem('mtp_tok')||'';$('rem').checked=st===localStorage&&!!(st.getItem('mtp_adm')||st.getItem('mtp_tok'))}catch(e){}
 $('bc').onclick=connect;
 $('bd').onclick=()=>{on=false;armed=false;POS=[];setSt();render();log('Diputus')};
