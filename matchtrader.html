@@ -81,8 +81,8 @@ async function api(path,o={}){
   if(g1!==null)$('rl').textContent='Sisa limit: global '+g1+' · endpoint '+e1+' · selisih jam server '+(off/1000).toFixed(1)+'s';
   const d=r.headers.get('x-upstream-date')||r.headers.get('date');if(d&&Date.parse(d))off=Date.parse(d)-Date.now()+500;
   if(r.status===204)return {};
-  let j=null;try{j=await r.json()}catch(e){}
-  if(!r.ok){const er=new Error((j&&(j.title||j.detail))||('HTTP '+r.status));er.status=r.status;er.retry=+r.headers.get('retry-after')||0;throw er}
+  let j=null,tx='';try{tx=await r.text();j=JSON.parse(tx)}catch(e){}
+  if(!r.ok){const er=new Error((j&&(j.title||j.detail))||('HTTP '+r.status+(r.headers.get('x-mt-proxy')?' dari server Match-Trader':C.mode==='proxy'?' dari Vercel/proxy (bukan dari Match-Trader)':'')+': '+tx.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,200)));er.status=r.status;er.retry=+r.headers.get('retry-after')||0;throw er}
   return j||{};
 }
 
