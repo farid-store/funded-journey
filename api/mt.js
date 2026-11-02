@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   const m = req.method;
   if (m !== 'GET' && m !== 'POST') return res.status(405).json({ title: 'Method tidak diizinkan' });
 
-  const h = { Authorization: 'Bearer ' + tok, Accept: 'application/json' };
+  const h = { Authorization: 'Bearer ' + tok, Accept: 'application/json', 'User-Agent': 'Mozilla/5.0 (compatible; FaridFX-Panel/1.0)' };
   let body;
   if (m === 'POST') {
     h['Content-Type'] = 'application/json';
@@ -27,6 +27,7 @@ module.exports = async (req, res) => {
     ['x-ratelimit-remaining-endpoint', 'x-ratelimit-remaining-global', 'retry-after', 'idempotent-replayed'].forEach(k => {
       const v = r.headers.get(k); if (v) res.setHeader(k, v);
     });
+    res.setHeader('x-mt-proxy', '1');
     const d = r.headers.get('date'); if (d) res.setHeader('x-upstream-date', d);
     res.setHeader('Content-Type', r.headers.get('content-type') || 'application/json');
     res.status(r.status).send(await r.text());
