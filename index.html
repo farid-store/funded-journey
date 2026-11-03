@@ -807,28 +807,7 @@ html.mr2-lock,html.mr2-lock body{overflow:hidden}
 @media(max-width:380px){#marketReplayShare .mr2-meta-i{padding:9px}#marketReplayShare .mr2-meta-i b{font-size:12px}}
 
 
-
-/* ===== Prop-firm certificate polish ===== */
-#marketReplayShare .mr2-cert{border-top:1px solid rgba(185,152,80,.32);padding-top:22px;margin-top:10px;gap:16px}
-#marketReplayShare .mr2-cert .mr2-eyebrow{color:#c5a45e;letter-spacing:.19em}
-#marketReplayShare .mr2-cert .mr2-head h3{font-family:var(--fh);font-weight:700;letter-spacing:-.015em}
-#marketReplayShare .mr2-cert .mr2-head p{max-width:680px}
-#marketReplayShare .mr2-cert .mr2-controls{padding:14px;border:1px solid var(--line2);border-radius:12px;background:linear-gradient(145deg,rgba(18,29,51,.55),rgba(7,12,23,.65))}
-#marketReplayShare .mr2-cert .mr2-controls label{font-size:10px;font-weight:700;letter-spacing:.045em;text-transform:uppercase}
-#marketReplayShare .mr2-cert .mr2-controls input,#marketReplayShare .mr2-cert .mr2-controls select{height:42px;background:rgba(4,9,18,.8);border-color:rgba(185,152,80,.28);border-radius:8px}
-#marketReplayShare .mr2-stage-cert{background:linear-gradient(145deg,#111b2c,#080d17);border-color:rgba(185,152,80,.35);padding:clamp(8px,1.5vw,18px);box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
-#marketReplayShare .mr2-stage-cert canvas{max-width:100%;height:auto;box-shadow:0 18px 48px rgba(0,0,0,.38);border-radius:3px}
-#marketReplayShare .mr2-cert .mr2-bar{padding:2px 0}
-#marketReplayShare .mr2-cert .mr2-bar-txt p{font-size:11px;color:var(--muted)}
-#marketReplayShare .mr2-cert .mr2-actions .btn{min-height:38px}
-#marketReplayShare .mr2-cert .mr2-target{border-color:rgba(185,152,80,.3);background:linear-gradient(145deg,rgba(20,31,52,.82),rgba(7,12,23,.9))}
-#marketReplayShare .mr2-cert .mr2-target small{letter-spacing:.16em;font-weight:800}
-@media(max-width:760px){
- #marketReplayShare .mr2-cert .mr2-controls{padding:11px}
- #marketReplayShare .mr2-cert .mr2-head{align-items:flex-start}
- #marketReplayShare .mr2-stage-cert{padding:5px}
-}
-\n/* ===== Mobile hardening v2 ===== */
+/* ===== Mobile hardening v2 ===== */
 html,body{max-width:100%;overflow-x:clip}
 img,canvas,svg,video{max-width:100%}
 @media(max-width:700px){
@@ -9406,7 +9385,7 @@ function certificateData(){
 }
 function bestTradeOf(hist){ let b = null, bv = 0; hist.forEach(t => { const v = n(t.netProfit ?? t.profit); if(v > bv){ bv = v; b = t; } }); return b; }
 function star(x, cx, cy, ro, ri, pts){ x.beginPath(); for(let i = 0; i < pts*2; i++){ const r = i % 2 ? ri : ro, ang = -Math.PI/2 + i*Math.PI/pts; x.lineTo(cx + Math.cos(ang)*r, cy + Math.sin(ang)*r); } x.closePath(); }
-function drawCert(fmtKey, d){
+function drawCert(fmtKey, d, best){
   const f = CERT_FORMATS[fmtKey] || CERT_FORMATS.landscape, W = f.w, H = f.h, wide = W/H > 1.2, square = Math.abs(W - H) < 2, u = wide ? H/900 : W/1200;
   const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'), { T, measure, wrap } = tools(x);
   const NAVY = '#10213c', GOLD = '#a17c2f', MUTED = '#5d6a82', cur = d.a.currency || 'USD';
@@ -9414,9 +9393,9 @@ function drawCert(fmtKey, d){
   x.strokeStyle = NAVY; x.lineWidth = 6*u; x.strokeRect(26*u, 26*u, W - 52*u, H - 52*u); x.strokeStyle = '#b99850'; x.lineWidth = 2*u; x.strokeRect(42*u, 42*u, W - 84*u, H - 84*u);
   [[42,42,1,1],[W/u - 42,42,-1,1],[42,H/u - 42,1,-1],[W/u - 42,H/u - 42,-1,-1]].forEach(([cx0, cy0, sx, sy]) => { x.strokeStyle = '#b99850'; x.lineWidth = 3*u; x.beginPath(); x.moveTo(cx0*u + sx*34*u, cy0*u + sy*10*u); x.lineTo(cx0*u + sx*10*u, cy0*u + sy*10*u); x.lineTo(cx0*u + sx*10*u, cy0*u + sy*34*u); x.stroke(); });
   const M = 84*u, L = wide
-    ? { cx:W/2, colX:M, colW:W-M*2, rx:M, rw:W-M*2, seal:[W-M-38*u,H*.075,33*u], eyebrow:.135, title:.235, title2:.292, orn:.33, recog:.385, name:.475, nameLine:.51, st1:.55, st2:.58, metrics:[.625,.755], details:[.775,.885], cols:4, fl:.902, f1:.928, f2:.953 }
-    : { cx:W/2, colX:M, colW:W-M*2, rx:M, rw:W-M*2, seal:[W/2,(square?.055:.065)*H,(square?30:38)*u], eyebrow:square?.115:.125, title:square?.18:.19, title2:square?.225:.235, orn:square?.25:.26, recog:square?.285:.295, name:square?.345:.35, nameLine:square?.37:.375, st1:square?.405:.41, st2:square?.43:.435,
-        metrics:square?[.465,.545]:[.475,.555], details:square?[.59,.855]:[.60,.875], cols:2, fl:square?.89:.905, f1:square?.917:.932, f2:square?.947:.958 };
+    ? { cx:M + (W*.5 - M - 10*u)/2, colX:M, colW:W*.5 - M - 10*u, rx:W*.54, rw:W - M - W*.54, seal:[W - M - 38*u, H*.092, 33*u], eyebrow:.15, title:.27, title2:.345, orn:.385, recog:.445, name:.545, nameLine:.575, st1:.63, st2:.668, metrics:[.72,.855], chart:[.15,.47], details:[.52,.83], cols:2, fl:.875, f1:.905, f2:.935 }
+    : { cx:W/2, colX:M, colW:W - M*2, rx:M, rw:W - M*2, seal:[W/2, (square ? .068 : .088)*H, (square ? 30 : 42)*u], eyebrow:square ? .122 : .155, title:square ? .192 : .207, title2:square ? .238 : .252, orn:square ? .262 : .277, recog:square ? .297 : .312, name:square ? .355 : .362, nameLine:square ? .376 : .384, st1:square ? .412 : .423, st2:square ? .437 : .448,
+        metrics:square ? [.465,.545] : [.48,.57], chart:square ? [.56,.765] : [.585,.725], details:square ? [.78,.865] : [.745,.885], cols:square ? 4 : 2, fl:square ? .89 : .905, f1:square ? .917 : .932, f2:square ? .947 : .958 };
   const sx = L.seal; x.beginPath(); x.arc(sx[0], sx[1], sx[2], 0, Math.PI*2); x.fillStyle = NAVY; x.fill(); x.strokeStyle = '#b99850'; x.lineWidth = 3*u; x.stroke(); x.beginPath(); x.arc(sx[0], sx[1], sx[2]*.82, 0, Math.PI*2); x.strokeStyle = 'rgba(232,198,109,.6)'; x.lineWidth = 1.5*u; x.stroke(); star(x, sx[0], sx[1], sx[2]*.52, sx[2]*.22, 5); x.fillStyle = '#e8c66d'; x.fill();
   T('GOLDEN BREAK TERMINAL  ·  PERFORMANCE SERIES', L.cx, L.eyebrow*H, { size:15*u, weight:700, color:GOLD, align:'center', ls:3*u, max:L.colW });
   T('CERTIFICATE', L.cx, L.title*H, { size:(wide ? 78 : 68)*u, weight:700, color:NAVY, align:'center', family:SERIF, ls:4*u, max:L.colW });
@@ -9435,8 +9414,11 @@ function drawCert(fmtKey, d){
     T(r[0], mx + mw/2, my0 + mh*.26, { size:12*u, weight:700, color:GOLD, align:'center', ls:1.5*u, max:mw - 20*u });
     T(r[1], mx + mw/2, my0 + mh*.62, { size:32*u, weight:700, color:r[3], align:'center', family:SERIF, max:mw - 22*u, minScale:.45 });
     T(r[2], mx + mw/2, my0 + mh*.88, { size:12*u, weight:500, color:MUTED, align:'center', max:mw - 20*u }); });
-  // Sertifikat pencapaian dibuat formal dan bersih: tanpa grafik Best Trade/OHLC/kurva saldo.
-  // Detail akun memakai lebar penuh agar mudah dibaca pada seluruh format.
+  // chart (OHLC trade terbaik, atau kurva saldo bila candle belum ada)
+  const cbox = { x:L.rx, y:L.chart[0]*H, w:L.rw, h:(L.chart[1] - L.chart[0])*H };
+  let drewCandle = false;
+  if(best){ const bm = model(best), sel = selectCandles(bm, barState.get(keyOf(best))?.bars); if(sel.candles.length >= 3){ drawCandleChart(x, cbox, bm, sel, { fs:13*u, radius:12*u, title:'BEST TRADE · OHLC' }); drewCandle = true; } }
+  if(!drewCandle) drawCurve(x, cbox, typeof d.fx.balanceCurve === 'function' ? d.fx.balanceCurve() : [], cur, { fs:13*u, radius:12*u });
   // detail akun
   const items = [['PROP FIRM', inferFirm(d.a, d.custom) || d.a.company || d.a.broker || 'Not specified'], ['ACCOUNT LOGIN', d.a.login ?? d.a.account ?? d.fx.accountId ?? '—'], ['BROKER / COMPANY', d.a.company || d.a.broker || '—'], ['SERVER', d.a.server || '—'], ['ACCOUNT CURRENCY', cur], ['STARTING BALANCE', fmtMoney(d.start, cur)], ['CURRENT EQUITY', fmtMoney(d.equity, cur)], ['PROFIT TARGET', `${d.target}%`]];
   const dy0 = L.details[0]*H, rows = Math.ceil(items.length/L.cols), rh = (L.details[1]*H - dy0)/rows, cw = L.rw/L.cols;
@@ -9450,7 +9432,7 @@ function drawCert(fmtKey, d){
   T('CERTIFICATE ID', M, L.f1*H, { size:11*u, weight:700, color:GOLD, ls:1*u, max:fw }); T(certId, M, L.f2*H, { size:14*u, weight:600, color:NAVY, family:MONO, max:fw });
   T('ACHIEVEMENT BASED ON DASHBOARD RECORDS', W/2, L.f1*H, { size:11*u, weight:700, color:MUTED, align:'center', max:fw + 60*u, ls:.5*u }); T('Not an official prop-firm payout confirmation', W/2, L.f2*H, { size:12*u, weight:500, color:MUTED, align:'center', max:fw + 60*u });
   T('ISSUED', W - M, L.f1*H, { size:11*u, weight:700, color:GOLD, ls:1*u, align:'right', max:fw }); T(dtFull(Math.floor(Date.now()/1000)), W - M, L.f2*H, { size:13*u, weight:600, color:NAVY, align:'right', max:fw });
-  c._certId = certId; return c;
+  c._chartKind = drewCandle ? 'ohlc' : 'curve'; c._certId = certId; return c;
 }
 
 /* ---------- UI ---------- */
@@ -9480,7 +9462,7 @@ function build(host){
   <div class="mr2-meta" id="mr2Meta"></div>
   <div class="mr2-bar"><div class="mr2-bar-txt"><h4>Kartu P/L</h4><p id="mr2Status">Menyiapkan kartu…</p></div><div class="mr2-actions"><button class="btn primary" id="mr2Dl" type="button">↓ Unduh PNG</button><button class="btn" id="mr2Share" type="button">⇪ Bagikan</button><button class="btn ghost" id="mr2Full" type="button">⛶ Layar penuh</button></div></div>
   <div class="mr2-stage" id="mr2Stage"></div>
-  <section class="mr2-cert"><div class="mr2-head"><div><div class="mr2-eyebrow">PROP FIRM · PERFORMANCE MILESTONE</div><h3>Prop Firm Achievement Certificate</h3><p>Sertifikat pencapaian target trading dengan tata letak formal dan siap dibagikan.</p></div><span class="intel-status warn" id="mr2CertPill">IN PROGRESS</span></div>
+  <section class="mr2-cert"><div class="mr2-head"><div><div class="mr2-eyebrow">CHALLENGE MILESTONE</div><h3>Achievement Certificate</h3><p>Sertifikat pencapaian target berdasarkan data akun yang tercatat.</p></div><span class="intel-status warn" id="mr2CertPill">IN PROGRESS</span></div>
   <div class="mr2-controls"><label>Format sertifikat<select id="mrCertFormat">${Object.entries(CERT_FORMATS).map(([k, v]) => `<option value="${k}">${v.label} · ${v.w}×${v.h}</option>`).join('')}</select></label><label>Nama trader<input id="mrTraderName" maxlength="64" autocomplete="off" placeholder="Nama trader"></label><label>Nama prop firm<input id="mrFirmName" maxlength="80" autocomplete="off" placeholder="Nama prop firm"></label></div>
   <div id="mr2CertBody"></div></section></div>`;
   if(!$('mr2Viewer')){
@@ -9499,7 +9481,7 @@ function build(host){
   $('mr2Share').onclick = () => { const m = cardCanvas?._m; share(cardCanvas, `GoldenBreak-PnL-${String(m?.sym || 'trade').replace(/[^a-z0-9_-]/gi, '_')}-${m?.ticket ?? 'record'}.png`, 'Golden Break Terminal — Trade Performance'); };
   $('mr2Full').onclick = () => { const m = cardCanvas?._m; openViewer(cardCanvas, 'Kartu P/L', `GoldenBreak-PnL-${String(m?.sym || 'trade').replace(/[^a-z0-9_-]/gi, '_')}-${m?.ticket ?? 'record'}.png`); };
 }
-function paint(t, d){
+function paint(t, d, best){
   const meta = $('mr2Meta'), stage = $('mr2Stage'), status = $('mr2Status'); if(!meta) return;
   const m = t ? model(t) : null, a = account();
   const items = [['TRADE TERPILIH', m ? `${m.sym} · ${m.side}` : 'Belum ada trade'], ['AKUN', a.accountLabel || a.login || a.account || 'Menunggu akun'], ['NET P/L', m ? fmtMoney(m.net, m.cur, true) : '—'], ['DITUTUP', m ? dtFull(m.closeS) : '—']];
@@ -9521,8 +9503,8 @@ function paint(t, d){
   const pill = $('mr2CertPill'); pill.className = 'intel-status ' + (d.reached ? 'ok' : 'warn'); pill.textContent = d.reached ? 'TARGET ACHIEVED' : 'IN PROGRESS';
   const body = $('mr2CertBody');
   if(d.reached){
-    certCanvas = drawCert(certFmt, d); const fname = `GoldenBreak-Certificate-${certFmt}.png`;
-    body.innerHTML = `<div class="mr2-bar"><div class="mr2-bar-txt"><p>Dokumen pencapaian berdasarkan catatan akun pada dashboard. Bukan konfirmasi payout resmi dari prop firm.</p></div><div class="mr2-actions"><button class="btn primary" id="mr2CDl" type="button">↓ Unduh PNG</button><button class="btn" id="mr2CShare" type="button">⇪ Bagikan</button><button class="btn ghost" id="mr2CFull" type="button">⛶ Layar penuh</button></div></div><div class="mr2-stage mr2-stage-cert" id="mr2CStage"></div>`;
+    certCanvas = drawCert(certFmt, d, best); const fname = `GoldenBreak-Certificate-${certFmt}.png`;
+    body.innerHTML = `<div class="mr2-bar"><div class="mr2-bar-txt"><p>${certCanvas._chartKind === 'ohlc' ? 'Grafik: OHLC trade terbaik.' : 'Grafik: kurva saldo (candle trade terbaik belum tersedia).'} Sertifikat internal, bukan bukti payout resmi.</p></div><div class="mr2-actions"><button class="btn primary" id="mr2CDl" type="button">↓ Unduh PNG</button><button class="btn" id="mr2CShare" type="button">⇪ Bagikan</button><button class="btn ghost" id="mr2CFull" type="button">⛶ Layar penuh</button></div></div><div class="mr2-stage mr2-stage-cert" id="mr2CStage"></div>`;
     $('mr2CStage').appendChild(certCanvas);
     $('mr2CDl').onclick = () => download(certCanvas, fname); $('mr2CShare').onclick = () => share(certCanvas, fname, 'Golden Break Terminal — Achievement Certificate'); $('mr2CFull').onclick = () => openViewer(certCanvas, 'Sertifikat', fname);
   } else {
@@ -9533,11 +9515,12 @@ function paint(t, d){
 function tick(){
   const host = $('marketReplayShare'); if(!host || !$('view-intel')?.classList.contains('active')) return;
   build(host);
-  const t = pickedTrade(), d = certificateData();
+  const t = pickedTrade(), d = certificateData(); let best = null;
   if(t) ensureBars(model(t));
+  if(d.reached){ best = bestTradeOf(d.hist); if(best) ensureBars(model(best)); }
   const a = d.a, tn = $('mrTraderName'), fn = $('mrFirmName');
   const sig = [t ? keyOf(t) : '-', t ? (t.netProfit ?? t.profit) : '', a.login, a.balance, a.equity, a.startingBalance, d.reached ? 1 : 0, d.hist.length, barEpoch.v, (fxData().marketBars || []).length, certFmt, tn?.value, fn?.value, profileFor].join('|');
-  if(sig === lastSig) return; lastSig = sig; paint(t, d);
+  if(sig === lastSig) return; lastSig = sig; paint(t, d, best);
 }
 // pastikan chart tersimpan untuk status UI
 const _chartFor = chartFor;
