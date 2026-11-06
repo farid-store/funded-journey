@@ -386,6 +386,91 @@ input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--cyan); c
   </div>
 </div>
 
+<!-- Quick Visual SL/TP Modify Modal (No Manual Typing Needed) -->
+<div id="sltp-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="panel max-w-lg w-full p-4 border border-slate-700 shadow-2xl">
+    <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-slate-800">
+      <div>
+        <h3 id="sltp-title" class="text-sm font-extrabold text-white m-0">⚡ Atur Cepat SL &amp; TP Posisi</h3>
+        <p id="sltp-sub" class="text-[11px] text-slate-400 mono m-0 mt-0.5"></p>
+      </div>
+      <button onclick="closeSltpModal()" class="text-xs px-2 py-1 text-slate-400 hover:text-white">✕</button>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <!-- Interactive Chart Pick Mode Button -->
+      <div class="p-2.5 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-between gap-2">
+        <div class="text-xs text-sky-200">
+          <b>🎯 Mode Klik / Drag di Chart:</b> Langsung klik titik harga di chart untuk pasang SL/TP posisi ini.
+        </div>
+        <div class="flex gap-1.5 shrink-0">
+          <button id="sltp-pick-sl-btn" class="text-xs px-2.5 py-1 bg-rose-500/20 border-rose-500/50 text-rose-300 font-bold">🎯 Klik Chart = SL</button>
+          <button id="sltp-pick-tp-btn" class="text-xs px-2.5 py-1 bg-emerald-500/20 border-emerald-500/50 text-emerald-300 font-bold">🎯 Klik Chart = TP</button>
+        </div>
+      </div>
+
+      <!-- 1-Click Stop Loss Presets by Dollar Risk -->
+      <div>
+        <div class="flex justify-between text-[11px] text-slate-400 font-semibold mb-1.5">
+          <span>🛑 Preset Stop Loss Cepat (Berdasarkan Risiko $)</span>
+          <span id="sltp-cur-sl" class="mono text-rose-400">SL: -</span>
+        </div>
+        <div class="grid grid-cols-6 gap-1.5">
+          <button type="button" class="chip sl-preset-btn justify-center py-1.5 text-rose-300 border-rose-500/30" data-usd="10">-$10</button>
+          <button type="button" class="chip sl-preset-btn justify-center py-1.5 text-rose-300 border-rose-500/30" data-usd="25">-$25</button>
+          <button type="button" class="chip sl-preset-btn justify-center py-1.5 text-rose-300 border-rose-500/30" data-usd="50">-$50</button>
+          <button type="button" class="chip sl-preset-btn justify-center py-1.5 text-rose-300 border-rose-500/30" data-usd="100">-$100</button>
+          <button type="button" class="chip sl-preset-btn justify-center py-1.5 text-sky-300 border-sky-500/40" data-bep="1">🛡 BEP</button>
+          <button type="button" class="chip sl-preset-btn justify-center py-1.5 text-slate-400" data-clr="1">Hapus SL</button>
+        </div>
+      </div>
+
+      <!-- 1-Click Take Profit Presets by Dollar Target -->
+      <div>
+        <div class="flex justify-between text-[11px] text-slate-400 font-semibold mb-1.5">
+          <span>🎯 Preset Take Profit Cepat (Berdasarkan Target $)</span>
+          <span id="sltp-cur-tp" class="mono text-emerald-400">TP: -</span>
+        </div>
+        <div class="grid grid-cols-6 gap-1.5">
+          <button type="button" class="chip tp-preset-btn justify-center py-1.5 text-emerald-300 border-emerald-500/30" data-usd="15">+$15</button>
+          <button type="button" class="chip tp-preset-btn justify-center py-1.5 text-emerald-300 border-emerald-500/30" data-usd="30">+$30</button>
+          <button type="button" class="chip tp-preset-btn justify-center py-1.5 text-emerald-300 border-emerald-500/30" data-usd="50">+$50</button>
+          <button type="button" class="chip tp-preset-btn justify-center py-1.5 text-emerald-300 border-emerald-500/30" data-usd="100">+$100</button>
+          <button type="button" class="chip tp-preset-btn justify-center py-1.5 text-amber-300 border-amber-500/40" data-rr="2">RR 1:2</button>
+          <button type="button" class="chip tp-preset-btn justify-center py-1.5 text-slate-400" data-clr="1">Hapus TP</button>
+        </div>
+      </div>
+
+      <!-- Fine Tune Stepper (+/- Pips) & Optional Input -->
+      <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+        <div class="bg-slate-950/90 p-2.5 rounded-lg border border-slate-800">
+          <div class="text-[11px] text-rose-400 font-bold mb-1">Harga Stop Loss (SL)</div>
+          <div class="flex items-center gap-1">
+            <button type="button" id="sl-step-dn" class="px-2.5 py-1 text-xs mono">-10p</button>
+            <input id="sltp-inp-sl" type="number" step="any" placeholder="Kosong = Off" class="mono text-xs text-center font-bold">
+            <button type="button" id="sl-step-up" class="px-2.5 py-1 text-xs mono">+10p</button>
+          </div>
+          <div id="sltp-est-sl" class="text-[10.5px] mono text-slate-400 mt-1 text-center">Est: -</div>
+        </div>
+        <div class="bg-slate-950/90 p-2.5 rounded-lg border border-slate-800">
+          <div class="text-[11px] text-emerald-400 font-bold mb-1">Harga Take Profit (TP)</div>
+          <div class="flex items-center gap-1">
+            <button type="button" id="tp-step-dn" class="px-2.5 py-1 text-xs mono">-10p</button>
+            <input id="sltp-inp-tp" type="number" step="any" placeholder="Kosong = Off" class="mono text-xs text-center font-bold">
+            <button type="button" id="tp-step-up" class="px-2.5 py-1 text-xs mono">+10p</button>
+          </div>
+          <div id="sltp-est-tp" class="text-[10.5px] mono text-slate-400 mt-1 text-center">Est: -</div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" onclick="closeSltpModal()" class="text-xs px-3 py-1.5">Tutup</button>
+        <button type="button" id="sltp-save-btn" class="btn-buy text-xs px-4 py-1.5">✓ Simpan SL / TP</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ==================== LIVE MARKET WATCH TICKER STRIP ==================== -->
 <div class="bg-slate-950/90 border-b border-slate-800/80 px-3 py-1.5 overflow-x-auto">
   <div class="flex items-center justify-between gap-4 min-w-max">
@@ -548,8 +633,8 @@ input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--cyan); c
             <div id="canvas-wrap" class="relative" style="height:370px;background:#050811">
               <canvas id="ch" style="width:100%;height:370px;display:block;cursor:crosshair"></canvas>
               <div id="ch-tip" class="mono" style="position:absolute;top:10px;left:12px;font-size:11px;background:rgba(6,8,15,0.92);padding:5px 10px;border-radius:6px;border:1px solid var(--border-hi);pointer-events:none;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.6)"></div>
-              <div id="ch-mode-hint" class="mono text-[10.5px] text-slate-400" style="position:absolute;bottom:8px;left:12px;pointer-events:none;background:rgba(6,8,15,0.75);padding:2px 7px;border-radius:4px">
-                ⚡ Live Stream: Garis Biru/Oranye = Entry Posisi · Merah = SL · Hijau = TP · Ungu = Pending Order
+              <div id="ch-mode-hint" class="mono text-[10.5px] text-sky-300" style="position:absolute;bottom:8px;left:12px;pointer-events:none;background:rgba(6,8,15,0.88);padding:3px 9px;border-radius:5px;border:1px solid rgba(56,189,248,0.3)">
+                🖐 <b> INTERAKTIF:</b> Tarik (Drag) garis <b>Entry Posisi</b> ke atas/bawah untuk buat <b>SL / TP</b> · Tarik garis <b>SL / TP / Pending</b> untuk geser harga · Klik <b>[✕]</b> di chart untuk hapus
               </div>
             </div>
           </div>
@@ -916,7 +1001,13 @@ let DOCK_OPEN = true;
 let CHART_MODE = 'split';
 let CUR_TF = '1m';
 let PICK_MODE = null;
+let PICK_POS_ID = null;
 let LAST_CHART_BOUNDS = null;
+
+// Interactive Chart Drag & Click State for Positions / SL / TP / Pending Orders
+let CHART_HIT_ZONES = [];
+let CHART_DRAG = null; // { kind: 'SL'|'TP'|'ENTRY'|'PEND', posId, ordId, startPx, curPx, side, openPrice, volume, symbol }
+let ACTIVE_SLTP_POS_ID = null;
 
 // Live Sandbox Simulator State
 let SIM_ON = false;
@@ -2098,9 +2189,13 @@ function render() {
         ${hasBep ? '<span class="ml-1 px-1 py-0.2 rounded text-[9.5px] bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold">BEP</span>' : ''}
       </td>
       <td>
-        <button data-a="mod" data-i="${esc(p.id)}" class="text-[11px] px-2 py-0.5 rounded bg-slate-900 hover:border-sky-400 mono" title="Klik untuk ubah Stop Loss & Take Profit">
-          <span class="text-rose-400">${p.slPrice ?? 'SL:-'}</span> / <span class="text-emerald-400">${p.tpPrice ?? 'TP:-'}</span> ✎
-        </button>
+        <div class="flex items-center justify-end gap-1">
+          <button data-a="mod" data-i="${esc(p.id)}" class="text-[11px] px-2 py-0.5 rounded bg-slate-900 hover:border-sky-400 mono" title="Buka Preset Cepat SL/TP ($10, $25, RR 1:2, Stepper)">
+            <span class="text-rose-400">${p.slPrice ?? 'SL:-'}</span> / <span class="text-emerald-400">${p.tpPrice ?? 'TP:-'}</span> ⚡
+          </button>
+          <button data-a="pick-sl" data-i="${esc(p.id)}" class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30" title="Klik lalu klik di Chart untuk pasang SL posisi ini">🎯SL</button>
+          <button data-a="pick-tp" data-i="${esc(p.id)}" class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30" title="Klik lalu klik di Chart untuk pasang TP posisi ini">🎯TP</button>
+        </div>
       </td>
       <td>
         <div class="flex items-center justify-end gap-1.5 text-[11px]">
@@ -2199,8 +2294,15 @@ function render() {
 }
 
 // ============================================================================
-// INTERACTIVE DUAL-MODE CHART (LIVE OHLC CANDLESTICKS + ORDER LINES OR 24H EQUITY)
+// INTERACTIVE DUAL-MODE CHART (LIVE OHLC CANDLESTICKS + DRAG & CLICK SL/TP)
 // ============================================================================
+function calcEstPlUsd(sym, side, openPx, targetPx, vol) {
+  const q = SIM_QUOTES[sym] || { contractSize: 100 };
+  const cs = +q.contractSize || (/XAU/.test(sym) ? C.contract : 100);
+  const diff = side === 'BUY' ? (targetPx - openPx) : (openPx - targetPx);
+  return +(diff * vol * cs).toFixed(2);
+}
+
 function draw() {
   const c = $('ch');
   if (!c || !c.clientWidth || CHART_MODE === 'tv') return;
@@ -2230,14 +2332,15 @@ function draw() {
       mx = Math.max(mx, o.price);
     });
 
-    const pad = (mx - mn) * 0.12 || (q.spread * 5);
+    const pad = (mx - mn) * 0.14 || (q.spread * 6);
     mn -= pad;
     mx += pad;
     const rg = mx - mn || 1;
-    const rightAxisW = 135;
+    const rightAxisW = 140;
     const chartW = w - rightAxisW;
     const Y = y => h - 32 - ((y - mn) / rg) * (h - 64);
-    LAST_CHART_BOUNDS = { mn, mx, h, sym, digits: dg };
+    LAST_CHART_BOUNDS = { mn, mx, h, w, chartW, sym, digits: dg };
+    CHART_HIT_ZONES = [];
 
     x.strokeStyle = 'rgba(30, 41, 59, 0.55)';
     x.fillStyle = '#94A3B8';
@@ -2293,54 +2396,199 @@ function draw() {
     x.font = 'bold 19px "JetBrains Mono", monospace';
     x.fillText(q.bid.toFixed(dg), chartW + 8, yBid + 6);
 
+    // Draw Open Positions with Draggable Entry, [+SL], [+TP], [✕], and Draggable SL/TP Lines
     POS.filter(p => p.symbol === sym).forEach(p => {
       const yEntry = Y(p.openPrice);
       const isBuy = p.side === 'BUY';
       const pl = np(p);
+      const isPicked = PICK_POS_ID && String(PICK_POS_ID) === String(p.id);
+
       x.strokeStyle = isBuy ? '#38BDF8' : '#F59E0B';
-      x.lineWidth = 2.5;
+      x.lineWidth = isPicked ? 3.5 : 2.5;
       x.setLineDash([10, 6]);
       x.beginPath(); x.moveTo(0, yEntry); x.lineTo(chartW, yEntry); x.stroke();
-
-      const lbl = `${p.side} ${p.volume} #${p.id} (${pl >= 0 ? '+$' : '-$'}${f(Math.abs(pl))})`;
-      x.fillStyle = 'rgba(11, 15, 25, 0.92)';
-      x.fillRect(14, yEntry - 16, 290, 28);
-      x.strokeStyle = isBuy ? '#38BDF8' : '#F59E0B';
       x.setLineDash([]);
-      x.strokeRect(14, yEntry - 16, 290, 28);
+
+      // Price tag on right axis for Entry
+      x.fillStyle = isBuy ? '#0369A1' : '#B45309';
+      x.fillRect(chartW + 2, yEntry - 13, rightAxisW - 6, 26);
+      x.fillStyle = '#FFFFFF';
+      x.font = 'bold 17px "JetBrains Mono", monospace';
+      x.fillText(Number(p.openPrice).toFixed(dg), chartW + 8, yEntry + 5);
+
+      // Interactive Entry Pill + Drag Handle + Quick [+SL] [+TP] [✕]
+      const lbl = `⇅ ${p.side} ${p.volume} #${p.id} (${pl >= 0 ? '+$' : '-$'}${f(Math.abs(pl))})`;
+      const pillX = 14, pillY = yEntry - 17, pillW = 305, pillH = 34;
+      x.fillStyle = 'rgba(11, 15, 25, 0.94)';
+      x.fillRect(pillX, pillY, pillW, pillH);
+      x.strokeStyle = isBuy ? '#38BDF8' : '#F59E0B';
+      x.lineWidth = 2;
+      x.strokeRect(pillX, pillY, pillW, pillH);
       x.fillStyle = pl >= 0 ? '#10B981' : '#F43F5E';
       x.font = 'bold 18px "JetBrains Mono", monospace';
-      x.fillText(lbl, 22, yEntry + 4);
+      x.fillText(lbl, pillX + 10, yEntry + 5);
 
-      if (p.slPrice) {
-        const ySl = Y(p.slPrice);
+      // Button [+SL] next to Entry pill
+      const bSlX = pillX + pillW + 6, bSlW = 64;
+      x.fillStyle = 'rgba(244, 63, 94, 0.22)';
+      x.fillRect(bSlX, pillY, bSlW, pillH);
+      x.strokeStyle = '#F43F5E';
+      x.strokeRect(bSlX, pillY, bSlW, pillH);
+      x.fillStyle = '#FDA4AF';
+      x.font = 'bold 16px "JetBrains Mono", monospace';
+      x.fillText('+SL', bSlX + 14, yEntry + 5);
+
+      // Button [+TP] next to [+SL]
+      const bTpX = bSlX + bSlW + 6, bTpW = 64;
+      x.fillStyle = 'rgba(16, 185, 129, 0.22)';
+      x.fillRect(bTpX, pillY, bTpW, pillH);
+      x.strokeStyle = '#10B981';
+      x.strokeRect(bTpX, pillY, bTpW, pillH);
+      x.fillStyle = '#6EE7B7';
+      x.fillText('+TP', bTpX + 14, yEntry + 5);
+
+      // Button [✕] Close Position directly on chart
+      const bClX = bTpX + bTpW + 6, bClW = 42;
+      x.fillStyle = 'rgba(225, 29, 72, 0.85)';
+      x.fillRect(bClX, pillY, bClW, pillH);
+      x.fillStyle = '#FFFFFF';
+      x.fillText('✕', bClX + 14, yEntry + 5);
+
+      // Register Hit Zones (in canvas 2x coordinates)
+      CHART_HIT_ZONES.push({ type: 'BTN_QUICK_SL', posId: p.id, x1: bSlX, x2: bSlX + bSlW, y1: pillY, y2: pillY + pillH });
+      CHART_HIT_ZONES.push({ type: 'BTN_QUICK_TP', posId: p.id, x1: bTpX, x2: bTpX + bTpW, y1: pillY, y2: pillY + pillH });
+      CHART_HIT_ZONES.push({ type: 'BTN_CLOSE_POS', posId: p.id, x1: bClX, x2: bClX + bClW, y1: pillY, y2: pillY + pillH });
+      CHART_HIT_ZONES.push({ type: 'DRAG_ENTRY', posId: p.id, x1: 0, x2: chartW, y1: yEntry - 18, y2: yEntry + 18 });
+
+      // Draw SL Line (or live dragged SL position)
+      const activeDragSl = CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'SL' ? CHART_DRAG.curPx : p.slPrice;
+      if (activeDragSl) {
+        const ySl = Y(activeDragSl);
+        const estSlUsd = calcEstPlUsd(sym, p.side, p.openPrice, activeDragSl, p.volume);
         x.strokeStyle = '#F43F5E';
-        x.lineWidth = 2;
-        x.setLineDash([4, 5]);
+        x.lineWidth = (CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'SL') ? 3.5 : 2.2;
+        x.setLineDash([6, 5]);
         x.beginPath(); x.moveTo(0, ySl); x.lineTo(chartW, ySl); x.stroke();
-        x.fillStyle = '#F43F5E';
-        x.fillText(`SL #${p.id}: ${p.slPrice}`, chartW - 210, ySl - 6);
+        x.setLineDash([]);
+
+        // Right Axis SL Price Badge
+        x.fillStyle = '#BE123C';
+        x.fillRect(chartW + 2, ySl - 13, rightAxisW - 6, 26);
+        x.fillStyle = '#FFFFFF';
+        x.font = 'bold 17px "JetBrains Mono", monospace';
+        x.fillText(Number(activeDragSl).toFixed(dg), chartW + 8, ySl + 5);
+
+        // Draggable SL Handle Pill on Right Side of Chart
+        const slTxt = `⇅ SL #${p.id}: ${Number(activeDragSl).toFixed(dg)} (${estSlUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estSlUsd))})`;
+        const slBoxW = 330, slBoxH = 30, slBoxX = Math.max(20, chartW - slBoxW - 52), slBoxY = ySl - 15;
+        x.fillStyle = 'rgba(76, 5, 25, 0.94)';
+        x.fillRect(slBoxX, slBoxY, slBoxW, slBoxH);
+        x.strokeStyle = '#F43F5E';
+        x.lineWidth = 1.8;
+        x.strokeRect(slBoxX, slBoxY, slBoxW, slBoxH);
+        x.fillStyle = '#FECDD3';
+        x.font = 'bold 17px "JetBrains Mono", monospace';
+        x.fillText(slTxt, slBoxX + 10, ySl + 5);
+
+        // Clear SL [✕] button
+        const clrSlX = slBoxX + slBoxW + 4, clrSlW = 34;
+        x.fillStyle = 'rgba(159, 18, 57, 0.95)';
+        x.fillRect(clrSlX, slBoxY, clrSlW, slBoxH);
+        x.strokeRect(clrSlX, slBoxY, clrSlW, slBoxH);
+        x.fillStyle = '#FFFFFF';
+        x.fillText('✕', clrSlX + 10, ySl + 5);
+
+        CHART_HIT_ZONES.push({ type: 'BTN_CLR_SL', posId: p.id, x1: clrSlX, x2: clrSlX + clrSlW, y1: slBoxY, y2: slBoxY + slBoxH });
+        CHART_HIT_ZONES.push({ type: 'DRAG_SL', posId: p.id, x1: 0, x2: chartW, y1: ySl - 18, y2: ySl + 18 });
       }
-      if (p.tpPrice) {
-        const yTp = Y(p.tpPrice);
+
+      // Draw TP Line (or live dragged TP position)
+      const activeDragTp = CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'TP' ? CHART_DRAG.curPx : p.tpPrice;
+      if (activeDragTp) {
+        const yTp = Y(activeDragTp);
+        const estTpUsd = calcEstPlUsd(sym, p.side, p.openPrice, activeDragTp, p.volume);
         x.strokeStyle = '#10B981';
-        x.lineWidth = 2;
-        x.setLineDash([4, 5]);
+        x.lineWidth = (CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'TP') ? 3.5 : 2.2;
+        x.setLineDash([6, 5]);
         x.beginPath(); x.moveTo(0, yTp); x.lineTo(chartW, yTp); x.stroke();
-        x.fillStyle = '#10B981';
-        x.fillText(`TP #${p.id}: ${p.tpPrice}`, chartW - 210, yTp - 6);
+        x.setLineDash([]);
+
+        // Right Axis TP Price Badge
+        x.fillStyle = '#047857';
+        x.fillRect(chartW + 2, yTp - 13, rightAxisW - 6, 26);
+        x.fillStyle = '#FFFFFF';
+        x.font = 'bold 17px "JetBrains Mono", monospace';
+        x.fillText(Number(activeDragTp).toFixed(dg), chartW + 8, yTp + 5);
+
+        // Draggable TP Handle Pill on Right Side of Chart
+        const tpTxt = `⇅ TP #${p.id}: ${Number(activeDragTp).toFixed(dg)} (${estTpUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estTpUsd))})`;
+        const tpBoxW = 330, tpBoxH = 30, tpBoxX = Math.max(20, chartW - tpBoxW - 52), tpBoxY = yTp - 15;
+        x.fillStyle = 'rgba(6, 78, 59, 0.94)';
+        x.fillRect(tpBoxX, tpBoxY, tpBoxW, tpBoxH);
+        x.strokeStyle = '#10B981';
+        x.lineWidth = 1.8;
+        x.strokeRect(tpBoxX, tpBoxY, tpBoxW, tpBoxH);
+        x.fillStyle = '#A7F3D0';
+        x.font = 'bold 17px "JetBrains Mono", monospace';
+        x.fillText(tpTxt, tpBoxX + 10, yTp + 5);
+
+        // Clear TP [✕] button
+        const clrTpX = tpBoxX + tpBoxW + 4, clrTpW = 34;
+        x.fillStyle = 'rgba(6, 95, 70, 0.95)';
+        x.fillRect(clrTpX, tpBoxY, clrTpW, tpBoxH);
+        x.strokeRect(clrTpX, tpBoxY, clrTpW, tpBoxH);
+        x.fillStyle = '#FFFFFF';
+        x.fillText('✕', clrTpX + 10, yTp + 5);
+
+        CHART_HIT_ZONES.push({ type: 'BTN_CLR_TP', posId: p.id, x1: clrTpX, x2: clrTpX + clrTpW, y1: tpBoxY, y2: tpBoxY + tpBoxH });
+        CHART_HIT_ZONES.push({ type: 'DRAG_TP', posId: p.id, x1: 0, x2: chartW, y1: yTp - 18, y2: yTp + 18 });
+      }
+
+      // If user is currently dragging from ENTRY line to spawn a new SL or TP
+      if (CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'ENTRY') {
+        const dragPx = CHART_DRAG.curPx;
+        const yDrag = Y(dragPx);
+        const estUsd = calcEstPlUsd(sym, p.side, p.openPrice, dragPx, p.volume);
+        const isTpZone = estUsd >= 0;
+        const col = isTpZone ? '#10B981' : '#F43F5E';
+
+        x.strokeStyle = col;
+        x.lineWidth = 3;
+        x.setLineDash([8, 4]);
+        x.beginPath(); x.moveTo(0, yDrag); x.lineTo(chartW, yDrag); x.stroke();
+        x.setLineDash([]);
+
+        const tag = `⚡ Lepas untuk Pasang ${isTpZone ? 'TAKE PROFIT (TP)' : 'STOP LOSS (SL)'} @ ${dragPx.toFixed(dg)} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`;
+        x.fillStyle = 'rgba(6, 8, 15, 0.95)';
+        x.fillRect(chartW / 2 - 260, yDrag - 36, 520, 32);
+        x.strokeStyle = col;
+        x.strokeRect(chartW / 2 - 260, yDrag - 36, 520, 32);
+        x.fillStyle = col;
+        x.font = 'bold 18px "JetBrains Mono", monospace';
+        x.fillText(tag, chartW / 2 - 245, yDrag - 14);
       }
     });
 
+    // Draw Draggable Pending Orders
     SIM_PENDING.filter(o => o.symbol === sym).forEach(o => {
-      const yOrd = Y(o.price);
+      const activePx = (CHART_DRAG && CHART_DRAG.ordId === o.id && CHART_DRAG.kind === 'PEND') ? CHART_DRAG.curPx : o.price;
+      const yOrd = Y(activePx);
       x.strokeStyle = '#8B5CF6';
-      x.lineWidth = 2;
+      x.lineWidth = 2.4;
       x.setLineDash([6, 6]);
       x.beginPath(); x.moveTo(0, yOrd); x.lineTo(chartW, yOrd); x.stroke();
-      x.fillStyle = '#C4B5FD';
-      x.font = 'bold 18px "JetBrains Mono", monospace';
-      x.fillText(`⏳ ${o.type} ${o.volume} @ ${o.price.toFixed(dg)}`, 22, yOrd - 6);
+      x.setLineDash([]);
+
+      const pBoxX = 20, pBoxY = yOrd - 15, pBoxW = 310, pBoxH = 30;
+      x.fillStyle = 'rgba(46, 16, 101, 0.92)';
+      x.fillRect(pBoxX, pBoxY, pBoxW, pBoxH);
+      x.strokeStyle = '#8B5CF6';
+      x.strokeRect(pBoxX, pBoxY, pBoxW, pBoxH);
+      x.fillStyle = '#DDD6FE';
+      x.font = 'bold 17px "JetBrains Mono", monospace';
+      x.fillText(`⇅ ⏳ ${o.type} ${o.volume} @ ${Number(activePx).toFixed(dg)}`, pBoxX + 10, yOrd + 5);
+
+      CHART_HIT_ZONES.push({ type: 'DRAG_PEND', ordId: o.id, x1: 0, x2: chartW, y1: yOrd - 18, y2: yOrd + 18 });
     });
 
     x.setLineDash([]);
@@ -2481,51 +2729,207 @@ $('b-cal-price').onclick = async () => {
 };
 
 $('b-pick-sl').onclick = () => {
+  PICK_POS_ID = null;
   PICK_MODE = PICK_MODE === 'sl' ? null : 'sl';
   $('b-pick-sl').classList.toggle('warn-pill', PICK_MODE === 'sl');
   $('b-pick-tp').classList.remove('on-pill');
-  if (PICK_MODE === 'sl') toast('Klik titik harga mana pun pada Candlestick Chart untuk mengisi SL.', 'w');
+  if (PICK_MODE === 'sl') {
+    const sym = ($('sym').value || 'XAUUSD').toUpperCase();
+    const openOnSym = POS.filter(p => p.symbol === sym);
+    if (openOnSym.length === 1) {
+      PICK_POS_ID = openOnSym[0].id;
+      toast(`Klik di Candlestick Chart untuk pasang SL pada posisi ${sym} #${PICK_POS_ID} (atau mengisi form Tiket Order).`, 'w');
+    } else {
+      toast('Klik titik harga mana pun pada Candlestick Chart untuk mengisi SL.', 'w');
+    }
+  }
 };
 $('b-pick-tp').onclick = () => {
+  PICK_POS_ID = null;
   PICK_MODE = PICK_MODE === 'tp' ? null : 'tp';
   $('b-pick-tp').classList.toggle('on-pill', PICK_MODE === 'tp');
   $('b-pick-sl').classList.remove('warn-pill');
-  if (PICK_MODE === 'tp') toast('Klik titik harga mana pun pada Candlestick Chart untuk mengisi TP.', 'g');
+  if (PICK_MODE === 'tp') {
+    const sym = ($('sym').value || 'XAUUSD').toUpperCase();
+    const openOnSym = POS.filter(p => p.symbol === sym);
+    if (openOnSym.length === 1) {
+      PICK_POS_ID = openOnSym[0].id;
+      toast(`Klik di Candlestick Chart untuk pasang TP pada posisi ${sym} #${PICK_POS_ID} (atau mengisi form Tiket Order).`, 'g');
+    } else {
+      toast('Klik titik harga mana pun pada Candlestick Chart untuk mengisi TP.', 'g');
+    }
+  }
 };
 
-$('ch').addEventListener('click', e => {
-  if (!PICK_MODE || CHART_MODE === 'eq' || !LAST_CHART_BOUNDS) return;
-  const rect = $('ch').getBoundingClientRect();
-  const ratioY = (e.clientY - rect.top) / rect.height;
-  const { mn, mx, digits } = LAST_CHART_BOUNDS;
-  const clickedPrice = +(mx - ratioY * (mx - mn)).toFixed(digits);
-  if (PICK_MODE === 'sl') {
-    $('ord-sl').value = clickedPrice;
-    toast(`Stop Loss diset dari Chart: ${clickedPrice}`, 'w');
-  } else if (PICK_MODE === 'tp') {
-    $('ord-tp').value = clickedPrice;
-    toast(`Take Profit diset dari Chart: ${clickedPrice}`, 'g');
+// ============================================================================
+// INTERACTIVE CANVAS DRAG & CLICK FOR POSITION SL / TP / PENDING ORDERS
+// ============================================================================
+function getCanvasCoordsAndPrice(e) {
+  const c = $('ch');
+  const rect = c.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const cx = (clientX - rect.left) * (c.width / rect.width);
+  const cy = (clientY - rect.top) * (c.height / rect.height);
+  if (!LAST_CHART_BOUNDS) return { cx, cy, price: 0 };
+  const { mn, mx, h, digits } = LAST_CHART_BOUNDS;
+  const clampedY = Math.max(32, Math.min(h - 32, cy));
+  const price = +(mx - ((clampedY - 32) / (h - 64)) * (mx - mn)).toFixed(digits);
+  return { cx, cy, price };
+}
+
+function findHitZone(cx, cy) {
+  // Prioritize buttons first, then drag lines
+  for (let i = 0; i < CHART_HIT_ZONES.length; i++) {
+    const z = CHART_HIT_ZONES[i];
+    if (z.type.startsWith('BTN_') && cx >= z.x1 && cx <= z.x2 && cy >= z.y1 && cy <= z.y2) return z;
   }
-  PICK_MODE = null;
-  $('b-pick-sl').classList.remove('warn-pill');
-  $('b-pick-tp').classList.remove('on-pill');
+  for (let i = 0; i < CHART_HIT_ZONES.length; i++) {
+    const z = CHART_HIT_ZONES[i];
+    if (z.type.startsWith('DRAG_') && cx >= z.x1 && cx <= z.x2 && cy >= z.y1 && cy <= z.y2) return z;
+  }
+  return null;
+}
+
+$('ch').addEventListener('mousedown', e => {
+  if (CHART_MODE === 'eq' || !LAST_CHART_BOUNDS) return;
+  const { cx, cy, price } = getCanvasCoordsAndPrice(e);
+
+  // If user is in Pick Mode (from table 🎯SL / 🎯TP or top button), apply on click
+  if (PICK_MODE) {
+    if (PICK_POS_ID) {
+      const p = POS.find(x => String(x.id) === String(PICK_POS_ID));
+      if (p) {
+        if (PICK_MODE === 'sl') {
+          p.slPrice = price;
+          log(`🎯 SL #${p.id} ${p.symbol} dipasang via Klik Chart @ ${price}`, 'g');
+          toast(`SL #${p.id} diset ke ${price}`, 'w');
+        } else {
+          p.tpPrice = price;
+          log(`🎯 TP #${p.id} ${p.symbol} dipasang via Klik Chart @ ${price}`, 'g');
+          toast(`TP #${p.id} diset ke ${price}`, 'g');
+        }
+        saveSimState();
+        render();
+      }
+    } else {
+      if (PICK_MODE === 'sl') {
+        $('ord-sl').value = price;
+        toast(`Stop Loss Tiket Order diset dari Chart: ${price}`, 'w');
+      } else {
+        $('ord-tp').value = price;
+        toast(`Take Profit Tiket Order diset dari Chart: ${price}`, 'g');
+      }
+    }
+    PICK_MODE = null;
+    PICK_POS_ID = null;
+    $('b-pick-sl').classList.remove('warn-pill');
+    $('b-pick-tp').classList.remove('on-pill');
+    return;
+  }
+
+  const hit = findHitZone(cx, cy);
+  if (!hit) return;
+
+  const p = hit.posId ? POS.find(x => String(x.id) === String(hit.posId)) : null;
+
+  // Handle Direct On-Chart Buttons
+  if (hit.type === 'BTN_CLR_SL' && p) {
+    p.slPrice = null;
+    saveSimState();
+    log(`SL dihapus pada ${p.symbol} #${p.id}`, 'w');
+    toast(`SL #${p.id} dihapus`, 'w');
+    render();
+    return;
+  }
+  if (hit.type === 'BTN_CLR_TP' && p) {
+    p.tpPrice = null;
+    saveSimState();
+    log(`TP dihapus pada ${p.symbol} #${p.id}`, 'w');
+    toast(`TP #${p.id} dihapus`, 'w');
+    render();
+    return;
+  }
+  if (hit.type === 'BTN_CLOSE_POS' && p) {
+    cl(p, 'Klik [✕] di Chart', 0, true);
+    return;
+  }
+  if (hit.type === 'BTN_QUICK_SL' && p) {
+    const q = SIM_QUOTES[p.symbol] || { digits: 2, contractSize: 100 };
+    const lossUsd = C.maxLoss > 0 ? C.maxLoss : 25;
+    const dist = lossUsd / (p.volume * (q.contractSize || 100));
+    p.slPrice = +(p.side === 'BUY' ? p.openPrice - dist : p.openPrice + dist).toFixed(q.digits);
+    saveSimState();
+    log(`⚡ Quick SL (-$${f(lossUsd)}) dipasang pada ${p.symbol} #${p.id} @ ${p.slPrice}`, 'g');
+    toast(`SL #${p.id} dipasang @ ${p.slPrice} (Tarik garisnya untuk geser)`, 'w');
+    render();
+    return;
+  }
+  if (hit.type === 'BTN_QUICK_TP' && p) {
+    const q = SIM_QUOTES[p.symbol] || { digits: 2, contractSize: 100 };
+    const tpUsd = C.posTP > 0 ? C.posTP : (C.maxLoss > 0 ? C.maxLoss * 2 : 50);
+    const dist = tpUsd / (p.volume * (q.contractSize || 100));
+    p.tpPrice = +(p.side === 'BUY' ? p.openPrice + dist : p.openPrice - dist).toFixed(q.digits);
+    saveSimState();
+    log(`⚡ Quick TP (+$${f(tpUsd)}) dipasang pada ${p.symbol} #${p.id} @ ${p.tpPrice}`, 'g');
+    toast(`TP #${p.id} dipasang @ ${p.tpPrice} (Tarik garisnya untuk geser)`, 'g');
+    render();
+    return;
+  }
+
+  // Handle Drag Start for SL / TP / Entry / Pending
+  if (hit.type === 'DRAG_SL' && p) {
+    CHART_DRAG = { kind: 'SL', posId: p.id, startPx: p.slPrice, curPx: p.slPrice };
+  } else if (hit.type === 'DRAG_TP' && p) {
+    CHART_DRAG = { kind: 'TP', posId: p.id, startPx: p.tpPrice, curPx: p.tpPrice };
+  } else if (hit.type === 'DRAG_ENTRY' && p) {
+    CHART_DRAG = { kind: 'ENTRY', posId: p.id, startPx: p.openPrice, curPx: p.openPrice };
+  } else if (hit.type === 'DRAG_PEND') {
+    const ord = SIM_PENDING.find(x => String(x.id) === String(hit.ordId));
+    if (ord) CHART_DRAG = { kind: 'PEND', ordId: ord.id, startPx: ord.price, curPx: ord.price };
+  }
 });
 
 $('ch').addEventListener('mousemove', e => {
   const c = $('ch'), tip = $('ch-tip');
   const sym = ($('sym').value || 'XAUUSD').toUpperCase();
+
   if (CHART_MODE !== 'eq' && LAST_CHART_BOUNDS) {
-    const rect = c.getBoundingClientRect();
-    const ratioY = (e.clientY - rect.top) / rect.height;
-    const { mn, mx, digits } = LAST_CHART_BOUNDS;
-    const hoverPx = +(mx - ratioY * (mx - mn)).toFixed(digits);
+    const { cx, cy, price: hoverPx } = getCanvasCoordsAndPrice(e);
+    const { digits } = LAST_CHART_BOUNDS;
+
+    // Active Dragging Update
+    if (CHART_DRAG) {
+      CHART_DRAG.curPx = hoverPx;
+      c.style.cursor = 'ns-resize';
+      draw();
+      return;
+    }
+
+    // Cursor change when hovering interactive lines or buttons
+    const hit = findHitZone(cx, cy);
+    if (PICK_MODE) {
+      c.style.cursor = 'crosshair';
+    } else if (hit) {
+      c.style.cursor = hit.type.startsWith('BTN_') ? 'pointer' : 'ns-resize';
+    } else {
+      c.style.cursor = 'crosshair';
+    }
+
     const q = SIM_QUOTES[sym] || { bid: hoverPx, ask: hoverPx, contractSize: 100 };
     const lot = parseFloat($('lot').value) || 0.01;
     const estBuyPl = ((hoverPx - q.ask) * lot * (q.contractSize || 100)).toFixed(2);
     tip.style.display = 'block';
-    tip.textContent = `${sym} Crosshair: ${hoverPx.toFixed(digits)} · Est P/L (${lot} lot BUY): ${estBuyPl >= 0 ? '+$' : '-$'}${Math.abs(estBuyPl).toFixed(2)}`;
+    if (PICK_MODE && PICK_POS_ID) {
+      const p = POS.find(x => String(x.id) === String(PICK_POS_ID));
+      const estP = p ? calcEstPlUsd(sym, p.side, p.openPrice, hoverPx, p.volume) : 0;
+      tip.textContent = `🎯 Klik untuk Pasang ${PICK_MODE.toUpperCase()} #${PICK_POS_ID} @ ${hoverPx.toFixed(digits)} (${estP >= 0 ? '+$' : '-$'}${f(Math.abs(estP))})`;
+    } else {
+      tip.textContent = `${sym} Crosshair: ${hoverPx.toFixed(digits)} · Est P/L (${lot} lot BUY): ${estBuyPl >= 0 ? '+$' : '-$'}${Math.abs(estBuyPl).toFixed(2)}`;
+    }
     return;
   }
+
   const d = EQS;
   if (!d.length) return;
   const rect = c.getBoundingClientRect();
@@ -2537,6 +2941,57 @@ $('ch').addEventListener('mousemove', e => {
     tip.textContent = `${new Date(pt[0]).toLocaleTimeString('id-ID')} · Equity: $${f(pt[1])} (${diff >= 0 ? '+' : ''}$${f(diff)})`;
   }
 });
+
+window.addEventListener('mouseup', () => {
+  if (!CHART_DRAG) return;
+  const d = CHART_DRAG;
+  CHART_DRAG = null;
+  $('ch').style.cursor = 'crosshair';
+
+  if (Math.abs(d.curPx - d.startPx) < 1e-7) {
+    draw();
+    return;
+  }
+
+  if (d.kind === 'PEND') {
+    const ord = SIM_PENDING.find(x => String(x.id) === String(d.ordId));
+    if (ord) {
+      ord.price = d.curPx;
+      saveSimState();
+      log(`⏳ Harga Pending ${ord.type} #${ord.id} digeser ke ${d.curPx}`, 'g');
+      toast(`Pending #${ord.id} digeser ke ${d.curPx}`, 'c');
+    }
+    render();
+    return;
+  }
+
+  const p = POS.find(x => String(x.id) === String(d.posId));
+  if (!p) return;
+  const estUsd = calcEstPlUsd(p.symbol, p.side, p.openPrice, d.curPx, p.volume);
+
+  if (d.kind === 'SL') {
+    p.slPrice = d.curPx;
+    log(`🛑 SL #${p.id} ${p.symbol} digeser di Chart → ${d.curPx} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
+    toast(`SL #${p.id} diperbarui ke ${d.curPx} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'w');
+  } else if (d.kind === 'TP') {
+    p.tpPrice = d.curPx;
+    log(`🎯 TP #${p.id} ${p.symbol} digeser di Chart → ${d.curPx} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
+    toast(`TP #${p.id} diperbarui ke ${d.curPx} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
+  } else if (d.kind === 'ENTRY') {
+    if (estUsd >= 0) {
+      p.tpPrice = d.curPx;
+      log(`🎯 TP baru ditarik dari Entry #${p.id} ${p.symbol} → ${d.curPx} (+$${f(estUsd)})`, 'g');
+      toast(`TP #${p.id} dipasang @ ${d.curPx} (+$${f(estUsd)})`, 'g');
+    } else {
+      p.slPrice = d.curPx;
+      log(`🛑 SL baru ditarik dari Entry #${p.id} ${p.symbol} → ${d.curPx} (-$${f(Math.abs(estUsd))})`, 'g');
+      toast(`SL #${p.id} dipasang @ ${d.curPx} (-$${f(Math.abs(estUsd))})`, 'w');
+    }
+  }
+  saveSimState();
+  render();
+});
+
 $('ch').addEventListener('mouseleave', () => $('ch-tip').style.display = 'none');
 
 $('ch-lot-quick').oninput = () => {
@@ -2553,8 +3008,154 @@ $('ch-quick-sell').onclick = () => {
 };
 
 // ============================================================================
-// TABLE & QUICK ACTION HANDLERS
+// TABLE & QUICK ACTION HANDLERS + VISUAL SL/TP POPOVER MODAL
 // ============================================================================
+window.closeSltpModal = function() {
+  const m = $('sltp-modal');
+  if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+  ACTIVE_SLTP_POS_ID = null;
+};
+
+function updateSltpModalEstimates() {
+  const p = POS.find(x => String(x.id) === String(ACTIVE_SLTP_POS_ID));
+  if (!p) return;
+  const slVal = parseFloat($('sltp-inp-sl').value);
+  const tpVal = parseFloat($('sltp-inp-tp').value);
+  $('sltp-cur-sl').textContent = Number.isFinite(slVal) && slVal > 0 ? `SL: ${slVal}` : 'SL: Off';
+  $('sltp-cur-tp').textContent = Number.isFinite(tpVal) && tpVal > 0 ? `TP: ${tpVal}` : 'TP: Off';
+
+  if (Number.isFinite(slVal) && slVal > 0) {
+    const u = calcEstPlUsd(p.symbol, p.side, p.openPrice, slVal, p.volume);
+    $('sltp-est-sl').textContent = `Estimasi P/L: ${u >= 0 ? '+$' : '-$'}${f(Math.abs(u))}`;
+    $('sltp-est-sl').className = 'text-[10.5px] mono mt-1 text-center ' + (u >= 0 ? 'pos' : 'neg');
+  } else {
+    $('sltp-est-sl').textContent = 'Est: Tidak ada SL';
+    $('sltp-est-sl').className = 'text-[10.5px] mono text-slate-500 mt-1 text-center';
+  }
+
+  if (Number.isFinite(tpVal) && tpVal > 0) {
+    const u = calcEstPlUsd(p.symbol, p.side, p.openPrice, tpVal, p.volume);
+    $('sltp-est-tp').textContent = `Estimasi P/L: ${u >= 0 ? '+$' : '-$'}${f(Math.abs(u))}`;
+    $('sltp-est-tp').className = 'text-[10.5px] mono mt-1 text-center ' + (u >= 0 ? 'pos' : 'neg');
+  } else {
+    $('sltp-est-tp').textContent = 'Est: Tidak ada TP';
+    $('sltp-est-tp').textContent = 'Est: Tidak ada TP';
+    $('sltp-est-tp').className = 'text-[10.5px] mono text-slate-500 mt-1 text-center';
+  }
+}
+
+function openSltpModal(p) {
+  ACTIVE_SLTP_POS_ID = p.id;
+  $('sltp-title').textContent = `⚡ Atur Cepat SL & TP — ${p.symbol} ${p.side} #${p.id}`;
+  $('sltp-sub').textContent = `Volume: ${f(p.volume)} lot · Harga Entry: ${p.openPrice} · Harga Kini: ${p.currentPrice} · P/L: $${f(np(p))}`;
+  $('sltp-inp-sl').value = p.slPrice || '';
+  $('sltp-inp-tp').value = p.tpPrice || '';
+  updateSltpModalEstimates();
+  const m = $('sltp-modal');
+  m.classList.remove('hidden');
+  m.classList.add('flex');
+}
+
+$('sltp-inp-sl').oninput = updateSltpModalEstimates;
+$('sltp-inp-tp').oninput = updateSltpModalEstimates;
+
+document.querySelectorAll('.sl-preset-btn').forEach(btn => {
+  btn.onclick = () => {
+    const p = POS.find(x => String(x.id) === String(ACTIVE_SLTP_POS_ID));
+    if (!p) return;
+    const q = SIM_QUOTES[p.symbol] || { digits: 2, contractSize: 100 };
+    const dg = q.digits ?? 2;
+    const cs = +q.contractSize || 100;
+    if (btn.dataset.clr) {
+      $('sltp-inp-sl').value = '';
+    } else if (btn.dataset.bep) {
+      const pip = dg === 5 ? 0.00010 : dg === 2 ? 0.15 : 1.0;
+      $('sltp-inp-sl').value = (p.side === 'BUY' ? p.openPrice + pip : p.openPrice - pip).toFixed(dg);
+    } else if (btn.dataset.usd) {
+      const usd = parseFloat(btn.dataset.usd);
+      const dist = usd / (p.volume * cs);
+      $('sltp-inp-sl').value = (p.side === 'BUY' ? p.openPrice - dist : p.openPrice + dist).toFixed(dg);
+    }
+    updateSltpModalEstimates();
+  };
+});
+
+document.querySelectorAll('.tp-preset-btn').forEach(btn => {
+  btn.onclick = () => {
+    const p = POS.find(x => String(x.id) === String(ACTIVE_SLTP_POS_ID));
+    if (!p) return;
+    const q = SIM_QUOTES[p.symbol] || { digits: 2, contractSize: 100 };
+    const dg = q.digits ?? 2;
+    const cs = +q.contractSize || 100;
+    if (btn.dataset.clr) {
+      $('sltp-inp-tp').value = '';
+    } else if (btn.dataset.rr) {
+      const slVal = parseFloat($('sltp-inp-sl').value);
+      const baseDist = (Number.isFinite(slVal) && slVal > 0) ? Math.abs(p.openPrice - slVal) : ((C.maxLoss || 25) / (p.volume * cs));
+      const tpDist = baseDist * parseFloat(btn.dataset.rr);
+      $('sltp-inp-tp').value = (p.side === 'BUY' ? p.openPrice + tpDist : p.openPrice - tpDist).toFixed(dg);
+    } else if (btn.dataset.usd) {
+      const usd = parseFloat(btn.dataset.usd);
+      const dist = usd / (p.volume * cs);
+      $('sltp-inp-tp').value = (p.side === 'BUY' ? p.openPrice + dist : p.openPrice - dist).toFixed(dg);
+    }
+    updateSltpModalEstimates();
+  };
+});
+
+function stepModalInput(inpId, dir) {
+  const p = POS.find(x => String(x.id) === String(ACTIVE_SLTP_POS_ID));
+  if (!p) return;
+  const q = SIM_QUOTES[p.symbol] || { digits: 2 };
+  const dg = q.digits ?? 2;
+  const stepUnit = dg === 5 ? 0.00100 : dg === 2 ? 1.00 : 10.0;
+  const cur = parseFloat($(inpId).value) || p.openPrice;
+  $(inpId).value = (cur + dir * stepUnit).toFixed(dg);
+  updateSltpModalEstimates();
+}
+$('sl-step-dn').onclick = () => stepModalInput('sltp-inp-sl', -1);
+$('sl-step-up').onclick = () => stepModalInput('sltp-inp-sl', +1);
+$('tp-step-dn').onclick = () => stepModalInput('sltp-inp-tp', -1);
+$('tp-step-up').onclick = () => stepModalInput('sltp-inp-tp', +1);
+
+$('sltp-pick-sl-btn').onclick = () => {
+  const p = POS.find(x => String(x.id) === String(ACTIVE_SLTP_POS_ID));
+  if (!p) return;
+  closeSltpModal();
+  selectSymbol(p.symbol);
+  if (CHART_MODE === 'tv' || CHART_MODE === 'eq') setChartViewMode('split');
+  PICK_POS_ID = p.id;
+  PICK_MODE = 'sl';
+  $('b-pick-sl').classList.add('warn-pill');
+  toast(`🎯 Klik titik harga di Candlestick Chart untuk pasang SL #${p.id}!`, 'w');
+};
+
+$('sltp-pick-tp-btn').onclick = () => {
+  const p = POS.find(x => String(x.id) === String(ACTIVE_SLTP_POS_ID));
+  if (!p) return;
+  closeSltpModal();
+  selectSymbol(p.symbol);
+  if (CHART_MODE === 'tv' || CHART_MODE === 'eq') setChartViewMode('split');
+  PICK_POS_ID = p.id;
+  PICK_MODE = 'tp';
+  $('b-pick-tp').classList.add('on-pill');
+  toast(`🎯 Klik titik harga di Candlestick Chart untuk pasang TP #${p.id}!`, 'g');
+};
+
+$('sltp-save-btn').onclick = () => {
+  const p = POS.find(x => String(x.id) === String(ACTIVE_SLTP_POS_ID));
+  if (!p) return;
+  const vSl = parseFloat($('sltp-inp-sl').value);
+  const vTp = parseFloat($('sltp-inp-tp').value);
+  p.slPrice = (Number.isFinite(vSl) && vSl > 0) ? vSl : null;
+  p.tpPrice = (Number.isFinite(vTp) && vTp > 0) ? vTp : null;
+  saveSimState();
+  log(`⚡ SL/TP #${p.id} ${p.symbol} disimpan → SL: ${p.slPrice ?? '-'} · TP: ${p.tpPrice ?? '-'}`, 'g');
+  toast(`SL/TP #${p.id} berhasil diperbarui!`, 'g');
+  closeSltpModal();
+  render();
+};
+
 $('ly').onclick = e => {
   const b = e.target.closest('button');
   if (b) POS.filter(p => lk(p) === b.dataset.l).forEach(p => cl(p, 'Manual Layer', 0, true));
@@ -2582,20 +3183,23 @@ $('tb').onclick = async e => {
     toast(`BEP dikunci untuk ${p.symbol} #${p.id}`, 'g');
     render();
   } else if (b.dataset.a === 'mod') {
-    const slIn = await askPrompt(`Ubah Stop Loss (SL) ${p.symbol} #${p.id}`, `Harga Buka: ${p.openPrice} · Harga Kini: ${p.currentPrice}. Masukkan harga SL baru (0 untuk hapus):`, p.slPrice || '');
-    if (slIn !== null) {
-      const vSl = parseFloat(slIn);
-      p.slPrice = (Number.isFinite(vSl) && vSl > 0) ? vSl : null;
-    }
-    const tpIn = await askPrompt(`Ubah Take Profit (TP) ${p.symbol} #${p.id}`, `Masukkan harga TP baru untuk ${p.symbol} #${p.id} (0 untuk hapus):`, p.tpPrice || '');
-    if (tpIn !== null) {
-      const vTp = parseFloat(tpIn);
-      p.tpPrice = (Number.isFinite(vTp) && vTp > 0) ? vTp : null;
-    }
-    saveSimState();
-    log(`✎ Modifikasi #${p.id} ${p.symbol} → SL: ${p.slPrice ?? '-'} · TP: ${p.tpPrice ?? '-'}`, 'g');
-    toast(`SL/TP #${p.id} diperbarui`, 'g');
-    render();
+    openSltpModal(p);
+  } else if (b.dataset.a === 'pick-sl') {
+    selectSymbol(p.symbol);
+    if (CHART_MODE === 'tv' || CHART_MODE === 'eq') setChartViewMode('split');
+    PICK_POS_ID = p.id;
+    PICK_MODE = 'sl';
+    $('b-pick-sl').classList.add('warn-pill');
+    toast(`🎯 Klik di Candlestick Chart untuk pasang SL pada ${p.symbol} #${p.id}`, 'w');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (b.dataset.a === 'pick-tp') {
+    selectSymbol(p.symbol);
+    if (CHART_MODE === 'tv' || CHART_MODE === 'eq') setChartViewMode('split');
+    PICK_POS_ID = p.id;
+    PICK_MODE = 'tp';
+    $('b-pick-tp').classList.add('on-pill');
+    toast(`🎯 Klik di Candlestick Chart untuk pasang TP pada ${p.symbol} #${p.id}`, 'g');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } else if (b.dataset.a === 'rev') {
     const newSide = p.side === 'BUY' ? 'SELL' : 'BUY';
     const vol = p.volume;
