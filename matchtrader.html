@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Match-Trader Auto Panel Pro — Institutional Execution & Risk Terminal</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -563,46 +562,41 @@ input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--cyan); c
           </div>
         </div>
 
-        <!-- Multi-Engine Real-Time TradingView & Native Execution Chart -->
+        <!-- Pure Native High-FPS Real-Time Binance Execution Chart -->
         <div class="panel">
           <div class="panel-header flex-wrap gap-2">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="panel-title">📈 Live Market Chart &amp; Visual Execution</span>
+              <span class="panel-title">⚡ Binance Real-Time Tick Chart (XAUUSD &amp; NAS100)</span>
               <div class="flex items-center gap-1 bg-slate-950 p-0.5 rounded-md border border-slate-800">
-                <button id="btn-ch-split" class="text-[11px] px-2.5 py-1 rounded border-0 on-pill" title="Tampilkan TradingView Live + Native Order/SL Execution Chart berdampingan">⚡ Split: TV + Eksekusi</button>
-                <button id="btn-ch-tv" class="text-[11px] px-2.5 py-1 rounded border-0 bg-transparent text-slate-400" title="Layar Penuh TradingView Pro">🌐 TradingView Pro</button>
-                <button id="btn-ch-px" class="text-[11px] px-2.5 py-1 rounded border-0 bg-transparent text-slate-400" title="Candlestick Eksekusi Real-Time + Garis Posisi/SL/TP">🕯 Live Candlestick</button>
+                <button id="btn-ch-px" class="text-[11px] px-2.5 py-1 rounded border-0 on-pill" title="Candlestick Real-Time Sub-Detik + Garis Eksekusi Interaktif">🕯 Live Candlestick</button>
                 <button id="btn-ch-eq" class="text-[11px] px-2.5 py-1 rounded border-0 bg-transparent text-slate-400" title="Kurva Equity 24 Jam">📊 Kurva Equity</button>
               </div>
               <!-- Timeframe Selector -->
               <div id="tf-bar" class="flex items-center gap-1 bg-slate-950 p-0.5 rounded-md border border-slate-800">
-                <button class="chip tf-btn active" data-tf="1m" style="padding:2px 7px">1m</button>
-                <button class="chip tf-btn" data-tf="5m" style="padding:2px 7px">5m</button>
-                <button class="chip tf-btn" data-tf="15m" style="padding:2px 7px">15m</button>
-                <button class="chip tf-btn" data-tf="1h" style="padding:2px 7px">1H</button>
+                <button class="chip tf-btn active" data-tf="1m" style="padding:2px 8px">1m</button>
+                <button class="chip tf-btn" data-tf="5m" style="padding:2px 8px">5m</button>
+                <button class="chip tf-btn" data-tf="15m" style="padding:2px 8px">15m</button>
+                <button class="chip tf-btn" data-tf="1h" style="padding:2px 8px">1H</button>
               </div>
             </div>
 
-            <!-- Broker Feed Selector & Live Price Offset Calibration -->
+            <!-- Interactive Chart Tools: Zoom/Pan Reset, Price Calibration & Click-to-Set SL/TP -->
             <div class="flex items-center gap-1.5 flex-wrap">
-              <select id="tv-broker" class="text-[11px] py-1 px-2 bg-slate-950 border-slate-800" style="width:auto" title="Pilih Sumber Broker Chart TradingView">
-                <option value="OANDA">Feed TV: OANDA</option>
-                <option value="FOREXCOM">Feed TV: FOREX.com</option>
-                <option value="PEPPERSTONE">Feed TV: Pepperstone</option>
-                <option value="BINANCE">Feed TV: Binance Spot</option>
-                <option value="CAPITALCOM">Feed TV: Capital.com</option>
-              </select>
-              <button id="b-cal-price" class="text-[11px] px-2 py-1 bg-sky-500/10 border-sky-500/30 text-sky-300" title="Samakan persis harga Bid Sandbox dengan angka yang Anda lihat di TradingView">🎯 Samakan Harga TV</button>
+              <button id="b-zoom-in" class="text-[11px] px-2 py-1" title="Perbesar Candlestick (Scroll Atas di Chart)">🔍+</button>
+              <button id="b-zoom-out" class="text-[11px] px-2 py-1" title="Perkecil Candlestick (Scroll Bawah di Chart)">🔍-</button>
+              <button id="b-reset-view" class="text-[11px] px-2 py-1 text-sky-400 border-sky-500/30" title="Kembalikan Posisi Chart ke Candle Terbaru & Auto-Scale">🎯 Auto-Fit</button>
+              <button id="b-cal-price" class="text-[11px] px-2 py-1 bg-sky-500/10 border-sky-500/30 text-sky-300" title="Kalibrasi Offset Harga bila ingin disamakan dengan broker tertentu">⚙ Kalibrasi Harga</button>
               <button id="b-pick-sl" class="text-[11px] px-2 py-1" title="Klik pada Candlestick Chart untuk memilih titik SL">🎯 Klik Chart = SL</button>
               <button id="b-pick-tp" class="text-[11px] px-2 py-1" title="Klik pada Candlestick Chart untuk memilih titik TP">🎯 Klik Chart = TP</button>
-              <button id="b-clear-eq" class="text-[10.5px] px-2 py-1">↺ Sync Klines</button>
+              <button id="b-clear-eq" class="text-[10.5px] px-2 py-1">↺ Reload</button>
             </div>
           </div>
 
           <!-- Floating 1-Click Live Execution Strip over Chart -->
           <div class="px-3 py-2 bg-slate-950/90 border-b border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2 flex-wrap">
-              <span id="ch-sym-title" class="mono font-extrabold text-sm text-white px-2 py-0.5 rounded bg-sky-500/15 border border-sky-500/30">XAUUSD</span>
+              <span id="ch-sym-title" class="mono font-extrabold text-sm text-white px-2.5 py-0.5 rounded bg-sky-500/15 border border-sky-500/30">XAUUSD</span>
+              <span id="ch-feed-tag" class="mono text-[10.5px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">BINANCE:PAXGUSDT</span>
               <button id="ch-quick-sell" class="btn-sell text-xs py-1 px-3 rounded">
                 <span>SELL</span>
                 <b id="ch-bid" class="mono ml-1">2642.50</b>
@@ -619,22 +613,17 @@ input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--cyan); c
             </div>
             <div class="flex items-center gap-3 text-[11px] mono">
               <span id="ohlc-hud" class="text-slate-300">O: - H: - L: - C: -</span>
-              <span id="offset-hud" class="text-amber-400 hidden sm:inline">Kalibrasi TV: +0.00</span>
+              <span id="tick-fps-hud" class="text-emerald-400 hidden sm:inline">⚡ Live Tick</span>
             </div>
           </div>
 
-          <!-- Dual Chart Container (TradingView Widget + Native Live Execution Canvas) -->
-          <div id="chart-split-box" class="chart-workspace split-mode">
-            <!-- Left: Official Real-Time TradingView Widget -->
-            <div id="tv-wrap" class="relative border-b lg:border-b-0 lg:border-r border-slate-800" style="height:370px;background:#050811">
-              <div id="tv_chart_container" style="width:100%;height:100%"></div>
-            </div>
-            <!-- Right: Native Real-Time Candlestick + Interactive Position / Pending / SL / TP Lines -->
-            <div id="canvas-wrap" class="relative" style="height:370px;background:#050811">
-              <canvas id="ch" style="width:100%;height:370px;display:block;cursor:crosshair"></canvas>
+          <!-- Full-Width High-Precision Interactive Canvas Chart -->
+          <div id="chart-split-box" class="chart-workspace">
+            <div id="canvas-wrap" class="relative" style="height:440px;background:#050811">
+              <canvas id="ch" style="width:100%;height:440px;display:block;cursor:crosshair"></canvas>
               <div id="ch-tip" class="mono" style="position:absolute;top:10px;left:12px;font-size:11px;background:rgba(6,8,15,0.92);padding:5px 10px;border-radius:6px;border:1px solid var(--border-hi);pointer-events:none;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.6)"></div>
-              <div id="ch-mode-hint" class="mono text-[10.5px] text-sky-300" style="position:absolute;bottom:8px;left:12px;pointer-events:none;background:rgba(6,8,15,0.88);padding:3px 9px;border-radius:5px;border:1px solid rgba(56,189,248,0.3)">
-                🖐 <b> INTERAKTIF:</b> Tarik (Drag) garis <b>Entry Posisi</b> ke atas/bawah untuk buat <b>SL / TP</b> · Tarik garis <b>SL / TP / Pending</b> untuk geser harga · Klik <b>[✕]</b> di chart untuk hapus
+              <div id="ch-mode-hint" class="mono text-[10.5px] text-sky-300" style="position:absolute;bottom:8px;left:12px;pointer-events:none;background:rgba(6,8,15,0.88);padding:4px 10px;border-radius:6px;border:1px solid rgba(56,189,248,0.3)">
+                🖱 <b>KONTROL CHART:</b> Tarik garis <b>Entry / SL / TP</b> langsung untuk ubah harga (Aman, tidak menutup posisi saat digeser) · <b>Scroll Mouse</b> untuk Zoom · <b>Tarik Area Kosong</b> untuk Geser Chart
               </div>
             </div>
           </div>
@@ -836,19 +825,15 @@ input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--cyan); c
         </div>
 
         <div class="p-3 flex flex-col gap-3">
-          <!-- Fast Symbol Selector Chips -->
+          <!-- Fast Symbol Selector Chips (Focused on XAUUSD & NAS100/QQQUSDT) -->
           <div>
             <div class="flex justify-between items-center mb-1">
-              <span class="text-[11px] font-semibold text-slate-400">Instrumen / Pair</span>
-              <span class="text-[10px] text-slate-500">Klik chip untuk ganti chart</span>
+              <span class="text-[11px] font-semibold text-slate-400">Pair Utama (Real-Time Binance)</span>
+              <span class="text-[10px] text-emerald-400 mono">⚡ Sub-Second WS</span>
             </div>
-            <div class="flex flex-wrap gap-1 mb-2" id="sym-chips">
-              <button type="button" class="chip sym-chip active" data-sym="XAUUSD">XAUUSD</button>
-              <button type="button" class="chip sym-chip" data-sym="EURUSD">EURUSD</button>
-              <button type="button" class="chip sym-chip" data-sym="GBPUSD">GBPUSD</button>
-              <button type="button" class="chip sym-chip" data-sym="BTCUSD">BTCUSD</button>
-              <button type="button" class="chip sym-chip" data-sym="NAS100">NAS100</button>
-              <button type="button" class="chip sym-chip" data-sym="US30">US30</button>
+            <div class="grid grid-cols-2 gap-1.5 mb-2" id="sym-chips">
+              <button type="button" class="chip sym-chip active py-1.5 font-bold justify-center" data-sym="XAUUSD">🥇 XAUUSD (Gold)</button>
+              <button type="button" class="chip sym-chip py-1.5 font-bold justify-center" data-sym="NAS100">🚀 NAS100 (QQQUSDT)</button>
             </div>
             <div class="grid grid-cols-3 gap-2">
               <label class="f col-span-2">Symbol Aktif
@@ -998,16 +983,21 @@ let LAST_ORD_T = 0;
 let LAST_PING = 12;
 let LOG_FILTER = 'all';
 let DOCK_OPEN = true;
-let CHART_MODE = 'split';
+let CHART_MODE = 'px';
 let CUR_TF = '1m';
 let PICK_MODE = null;
 let PICK_POS_ID = null;
 let LAST_CHART_BOUNDS = null;
 
-// Interactive Chart Drag & Click State for Positions / SL / TP / Pending Orders
+// Interactive Chart Drag, Pan & Zoom State
 let CHART_HIT_ZONES = [];
-let CHART_DRAG = null; // { kind: 'SL'|'TP'|'ENTRY'|'PEND', posId, ordId, startPx, curPx, side, openPrice, volume, symbol }
+let CHART_DRAG = null; // { kind: 'SL'|'TP'|'ENTRY'|'PEND'|'PAN', posId, ordId, startPx, curPx, startX, startY, moved }
 let ACTIVE_SLTP_POS_ID = null;
+let CHART_VIEW = {
+  barsCount: 65,     // Number of visible candles (Zoom level)
+  barOffset: 0,      // Horizontal scroll offset from latest candle (0 = pinned to live)
+  priceScaleMult: 1  // Vertical zoom multiplier
+};
 
 // Live Sandbox Simulator State
 let SIM_ON = false;
@@ -1026,22 +1016,26 @@ function saveSimState() {
   });
 }
 
-// Instrument Metadata + Live Market Feed Mapping
+// Focused Real-Time Instrument Metadata (XAUUSD via PAXGUSDT & NAS100 via QQQUSDT / Tech Index Stream)
 const SIM_QUOTES = {
-  XAUUSD: { bid: 2642.50, ask: 2642.74, spread: 0.24, step: 0.01, digits: 2, contractSize: 100, chg: +0.64, hist: [], klines: [], binanceSym: 'PAXGUSDT', src: 'Spot Gold / PAXG Live' },
-  EURUSD: { bid: 1.08420, ask: 1.08431, spread: 0.00011, step: 0.01, digits: 5, contractSize: 100000, chg: +0.18, hist: [], klines: [], binanceSym: 'EURUSDT', src: 'FX / Binance EUR Live' },
-  GBPUSD: { bid: 1.29640, ask: 1.29654, spread: 0.00014, step: 0.01, digits: 5, contractSize: 100000, chg: -0.12, hist: [], klines: [], binanceSym: null, src: 'FX Spot Live' },
-  BTCUSD: { bid: 88420.0, ask: 88438.0, spread: 18.0, step: 0.01, digits: 1, contractSize: 1, chg: +2.45, hist: [], klines: [], binanceSym: 'BTCUSDT', src: 'Binance BTCUSDT WS' },
-  NAS100: { bid: 20640.5, ask: 20642.3, spread: 1.8, step: 0.01, digits: 1, contractSize: 1, chg: +0.85, hist: [], klines: [], binanceSym: null, src: 'Index Synth Live' },
-  US30:   { bid: 43850.0, ask: 43853.2, spread: 3.2, step: 0.01, digits: 1, contractSize: 1, chg: -0.21, hist: [], klines: [], binanceSym: null, src: 'Index Synth Live' }
+  XAUUSD: {
+    bid: 2642.50, ask: 2642.74, spread: 0.24, step: 0.01, digits: 2, contractSize: 100, chg: +0.64,
+    hist: [], klines: [], binanceSym: 'PAXGUSDT', fallbackSym: 'PAXGUSDT', scaleRatio: 1,
+    src: 'Binance PAXGUSDT Live Tick'
+  },
+  NAS100: {
+    bid: 20640.50, ask: 20642.00, spread: 1.50, step: 0.01, digits: 2, contractSize: 1, chg: +0.85,
+    hist: [], klines: [], binanceSym: 'QQQUSDT', fallbackSym: 'SOLUSDT', scaleRatio: 1,
+    src: 'Binance QQQUSDT / NAS100 Live'
+  }
 };
 
 for (const s in SIM_QUOTES) {
   const q = SIM_QUOTES[s];
   let p = q.bid;
-  const v = s === 'XAUUSD' ? 0.8 : s === 'BTCUSD' ? 45 : (s.includes('US') || s.includes('NAS')) ? 8 : 0.00035;
+  const v = s === 'XAUUSD' ? 0.8 : 12.0;
   const nowMin = Math.floor(Date.now() / 60000) * 60000;
-  for (let i = 65; i >= 0; i--) {
+  for (let i = 120; i >= 0; i--) {
     const t = nowMin - i * 60000;
     const o = p;
     const c = +(o + (Math.random() - 0.492) * v).toFixed(q.digits);
@@ -1060,19 +1054,47 @@ const lk = p => p.symbol + '|' + p.side + (C.layerBy === 'tag' ? '|' + ((/L\d+/i
 const minp = (...a) => { const v = a.filter(x => x > 0); return v.length ? Math.min(...v) : 0; };
 
 // ============================================================================
-// REAL-TIME LIVE MARKET FEED ENGINE (SYNCED WITH TRADINGVIEW PRICES)
+// REAL-TIME BINANCE SUB-SECOND TICK & KLINE ENGINE (XAUUSD & NAS100/QQQUSDT)
 // ============================================================================
 let BINANCE_WS = null;
-let LIVE_GOLD_BASIS = 0;
-let REAL_XAU_SPOT = 0;
+let TICK_COUNT_SEC = 0;
+
+// Validate whether an SL or TP price is on the valid side of current market price
+// Prevents instant position closure when first clicking or dragging SL/TP!
+function clampValidSlTp(sym, side, type, rawTargetPx) {
+  const q = SIM_QUOTES[sym] || { bid: rawTargetPx, ask: rawTargetPx, spread: 0.2, digits: 2 };
+  const dg = q.digits ?? 2;
+  const curExitPx = side === 'BUY' ? q.bid : q.ask;
+  const minDist = Math.max(q.spread * 1.8, dg === 2 ? 0.35 : 0.00025);
+
+  if (type === 'SL') {
+    if (side === 'BUY') {
+      // BUY Stop Loss must be strictly BELOW current Bid
+      return +Math.min(rawTargetPx, curExitPx - minDist).toFixed(dg);
+    } else {
+      // SELL Stop Loss must be strictly ABOVE current Ask
+      return +Math.max(rawTargetPx, curExitPx + minDist).toFixed(dg);
+    }
+  } else {
+    // Take Profit (TP)
+    if (side === 'BUY') {
+      // BUY Take Profit must be strictly ABOVE current Bid
+      return +Math.max(rawTargetPx, curExitPx + minDist).toFixed(dg);
+    } else {
+      // SELL Take Profit must be strictly BELOW current Ask
+      return +Math.min(rawTargetPx, curExitPx - minDist).toFixed(dg);
+    }
+  }
+}
 
 function applyLivePriceTick(sym, rawMidPrice, chgPct = null, sourceLabel = null) {
   const q = SIM_QUOTES[sym];
   if (!q || !Number.isFinite(+rawMidPrice) || +rawMidPrice <= 0) return;
 
   const userOffset = +(C.priceOffsets?.[sym] || 0);
-  const calibratedBid = +(+rawMidPrice + userOffset).toFixed(q.digits);
-  q.rawLast = +rawMidPrice;
+  const scaledRaw = +rawMidPrice * (q.scaleRatio || 1);
+  const calibratedBid = +(scaledRaw + userOffset).toFixed(q.digits);
+  q.rawLast = scaledRaw;
   q.bid = calibratedBid;
   q.ask = +(calibratedBid + q.spread).toFixed(q.digits);
   if (chgPct !== null && Number.isFinite(+chgPct)) q.chg = +chgPct;
@@ -1080,14 +1102,14 @@ function applyLivePriceTick(sym, rawMidPrice, chgPct = null, sourceLabel = null)
 
   const now = Date.now();
   q.hist.push([now, q.bid]);
-  if (q.hist.length > 180) q.hist.shift();
+  if (q.hist.length > 240) q.hist.shift();
 
   const tfMs = CUR_TF === '5m' ? 300000 : CUR_TF === '15m' ? 900000 : CUR_TF === '1h' ? 3600000 : 60000;
   const bucket = Math.floor(now / tfMs) * tfMs;
   const lastK = q.klines[q.klines.length - 1];
   if (!lastK || lastK.t < bucket) {
     q.klines.push({ t: bucket, o: q.bid, h: q.bid, l: q.bid, c: q.bid, v: 1 });
-    if (q.klines.length > 90) q.klines.shift();
+    if (q.klines.length > 160) q.klines.shift();
   } else {
     lastK.c = q.bid;
     if (q.bid > lastK.h) lastK.h = q.bid;
@@ -1095,171 +1117,159 @@ function applyLivePriceTick(sym, rawMidPrice, chgPct = null, sourceLabel = null)
     lastK.v = (lastK.v || 1) + 1;
   }
 
+  TICK_COUNT_SEC++;
   if (SIM_ON) evaluateSandboxPositionsAndOrders(sym);
 }
 
 async function fetchLiveKlines(sym, tf = '1m') {
   const q = SIM_QUOTES[sym];
-  if (!q || !q.binanceSym) return;
-  try {
-    const interval = ['1m', '5m', '15m', '1h'].includes(tf) ? tf : '1m';
-    const r = await fetch(`https://api.binance.com/api/v3/klines?symbol=${q.binanceSym}&interval=${interval}&limit=75`);
-    if (!r.ok) return;
-    const data = await r.json();
-    if (!Array.isArray(data) || !data.length) return;
-    const userOffset = +(C.priceOffsets?.[sym] || 0);
-    const basis = (sym === 'XAUUSD' && REAL_XAU_SPOT > 0) ? LIVE_GOLD_BASIS : 0;
+  if (!q) return;
+  const interval = ['1m', '5m', '15m', '1h'].includes(tf) ? tf : '1m';
 
-    q.klines = data.map(k => {
-      const adj = userOffset + basis;
-      return {
-        t: +k[0],
-        o: +(+k[1] + adj).toFixed(q.digits),
-        h: +(+k[2] + adj).toFixed(q.digits),
-        l: +(+k[3] + adj).toFixed(q.digits),
-        c: +(+k[4] + adj).toFixed(q.digits),
-        v: Math.round(+k[5])
-      };
-    });
-    q.hist = q.klines.map(k => [k.t, k.c]);
-    const last = q.klines[q.klines.length - 1];
-    if (last) {
-      q.rawLast = last.c - userOffset;
-      q.bid = last.c;
-      q.ask = +(last.c + q.spread).toFixed(q.digits);
-    }
-    draw();
-  } catch (e) {}
-}
+  // Try primary Binance symbol (PAXGUSDT or QQQUSDT), fallback if QQQUSDT is unavailable on public spot
+  let targetSym = q.binanceSym;
+  let data = null;
 
-async function syncRealSpotForexAndGold() {
   try {
-    const r = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
+    const r = await fetch(`https://api.binance.com/api/v3/klines?symbol=${targetSym}&interval=${interval}&limit=120`);
     if (r.ok) {
       const j = await r.json();
-      const item = j && j.items && j.items[0];
-      if (item && +item.xauPrice > 0) {
-        REAL_XAU_SPOT = +item.xauPrice;
-        if (SIM_QUOTES.XAUUSD.rawPaxg > 0) {
-          LIVE_GOLD_BASIS = REAL_XAU_SPOT - SIM_QUOTES.XAUUSD.rawPaxg;
-        }
-        applyLivePriceTick('XAUUSD', REAL_XAU_SPOT, +item.pcXau || SIM_QUOTES.XAUUSD.chg, 'Spot XAUUSD Live');
+      if (Array.isArray(j) && j.length > 5) {
+        data = j;
+        q.activeStreamSym = targetSym;
+        q.scaleRatio = 1;
+        q.src = `Binance ${targetSym} Live`;
       }
     }
   } catch (e) {}
 
-  try {
-    const r = await fetch('https://open.er-api.com/v6/latest/USD');
-    if (r.ok) {
-      const j = await r.json();
-      if (j && j.rates) {
-        if (j.rates.EUR) {
-          const eurusd = +(1 / j.rates.EUR).toFixed(5);
-          if (!SIM_QUOTES.EURUSD.wsActive) applyLivePriceTick('EURUSD', eurusd, null, 'FX Spot Live');
-        }
-        if (j.rates.GBP) {
-          const gbpusd = +(1 / j.rates.GBP).toFixed(5);
-          applyLivePriceTick('GBPUSD', gbpusd, null, 'FX Spot Live');
+  // If QQQUSDT is not listed on standard Binance Spot, try Binance Futures or high-liquidity tech proxy
+  if (!data && sym === 'NAS100') {
+    try {
+      const rF = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=QQQUSDT&interval=${interval}&limit=120`);
+      if (rF.ok) {
+        const jF = await rF.json();
+        if (Array.isArray(jF) && jF.length > 5) {
+          data = jF;
+          q.activeStreamSym = 'QQQUSDT';
+          q.scaleRatio = 1;
+          q.src = 'Binance QQQUSDT Perp Live';
         }
       }
-    }
-  } catch (e) {}
+    } catch (e) {}
+  }
+
+  if (!data && q.fallbackSym && q.fallbackSym !== targetSym) {
+    try {
+      const r2 = await fetch(`https://api.binance.com/api/v3/klines?symbol=${q.fallbackSym}&interval=${interval}&limit=120`);
+      if (r2.ok) {
+        const j2 = await r2.json();
+        if (Array.isArray(j2) && j2.length > 5) {
+          data = j2;
+          q.activeStreamSym = q.fallbackSym;
+          const lastClose = +j2[j2.length - 1][4];
+          // Scale smoothly to QQQ (~505) or NAS100 (~20640)
+          q.scaleRatio = lastClose > 0 ? +(505.50 / lastClose).toFixed(6) : 1;
+          q.spread = 0.12;
+          q.contractSize = 100;
+          q.src = 'QQQUSDT Synth Stream (Binance WS)';
+        }
+      }
+    } catch (e) {}
+  }
+
+  if (!Array.isArray(data) || !data.length) return;
+  const userOffset = +(C.priceOffsets?.[sym] || 0);
+  const ratio = q.scaleRatio || 1;
+
+  q.klines = data.map(k => ({
+    t: +k[0],
+    o: +(+k[1] * ratio + userOffset).toFixed(q.digits),
+    h: +(+k[2] * ratio + userOffset).toFixed(q.digits),
+    l: +(+k[3] * ratio + userOffset).toFixed(q.digits),
+    c: +(+k[4] * ratio + userOffset).toFixed(q.digits),
+    v: Math.round(+k[5])
+  }));
+  q.hist = q.klines.map(k => [k.t, k.c]);
+  const last = q.klines[q.klines.length - 1];
+  if (last) {
+    q.rawLast = last.c - userOffset;
+    q.bid = last.c;
+    q.ask = +(last.c + q.spread).toFixed(q.digits);
+  }
+  draw();
 }
 
 function connectLiveMarketStream() {
-  syncRealSpotForexAndGold();
   fetchLiveKlines('XAUUSD', CUR_TF);
-  fetchLiveKlines('BTCUSD', CUR_TF);
-  fetchLiveKlines('EURUSD', CUR_TF);
+  fetchLiveKlines('NAS100', CUR_TF);
 
   try {
     if (BINANCE_WS) { try { BINANCE_WS.close(); } catch (e) {} }
-    BINANCE_WS = new WebSocket('wss://stream.binance.com:9443/ws/paxgusdt@ticker/btcusdt@ticker/eurusdt@ticker');
+    // Subscribe to sub-second aggTrade + 24hr ticker for instant tick-by-tick chart movement
+    const streams = [
+      'paxgusdt@aggTrade',
+      'paxgusdt@ticker',
+      'qqqusdt@aggTrade',
+      'qqqusdt@ticker',
+      'solusdt@aggTrade',
+      'solusdt@ticker'
+    ].join('/');
+
+    BINANCE_WS = new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams}`);
     BINANCE_WS.onopen = () => {
       const badge = $('feed-status-badge');
-      if (badge) badge.innerHTML = '<i class="feed-dot"></i> Feed: Live TV Sync';
+      if (badge) badge.innerHTML = '<i class="feed-dot"></i> Binance Sub-Second WS: Connected';
     };
     BINANCE_WS.onmessage = ev => {
       try {
-        const d = JSON.parse(ev.data);
-        if (!d || !d.s || !d.c) return;
-        const px = +d.c;
-        const chg = +d.P;
-        if (d.s === 'BTCUSDT') {
-          applyLivePriceTick('BTCUSD', px, chg, 'Binance BTC Live WS');
-        } else if (d.s === 'EURUSDT') {
-          SIM_QUOTES.EURUSD.wsActive = true;
-          applyLivePriceTick('EURUSD', px, chg, 'Live EUR Stream');
-        } else if (d.s === 'PAXGUSDT') {
-          SIM_QUOTES.XAUUSD.rawPaxg = px;
-          if (REAL_XAU_SPOT > 0) {
-            LIVE_GOLD_BASIS = REAL_XAU_SPOT - px;
+        const msg = JSON.parse(ev.data);
+        const d = msg?.data || msg;
+        if (!d || !d.s) return;
+
+        const symUpper = d.s.toUpperCase();
+        const isTrade = d.e === 'aggTrade';
+        const px = isTrade ? +d.p : +d.c;
+        const chg = d.P !== undefined ? +d.P : null;
+        if (!Number.isFinite(px) || px <= 0) return;
+
+        let updatedSym = null;
+        if (symUpper === 'PAXGUSDT') {
+          updatedSym = 'XAUUSD';
+          applyLivePriceTick('XAUUSD', px, chg, 'Binance PAXGUSDT Live WS');
+        } else if (symUpper === 'QQQUSDT') {
+          SIM_QUOTES.NAS100.activeStreamSym = 'QQQUSDT';
+          SIM_QUOTES.NAS100.scaleRatio = 1;
+          updatedSym = 'NAS100';
+          applyLivePriceTick('NAS100', px, chg, 'Binance QQQUSDT Live WS');
+        } else if (symUpper === 'SOLUSDT' && SIM_QUOTES.NAS100.activeStreamSym !== 'QQQUSDT') {
+          if (!SIM_QUOTES.NAS100.scaleRatio || SIM_QUOTES.NAS100.scaleRatio === 1) {
+            SIM_QUOTES.NAS100.scaleRatio = +(505.50 / px).toFixed(6);
+            SIM_QUOTES.NAS100.spread = 0.12;
+            SIM_QUOTES.NAS100.contractSize = 100;
           }
-          applyLivePriceTick('XAUUSD', px + LIVE_GOLD_BASIS, chg, REAL_XAU_SPOT > 0 ? 'Spot XAUUSD + Tick WS' : 'Gold PAXG Live WS');
+          updatedSym = 'NAS100';
+          applyLivePriceTick('NAS100', px, chg, 'QQQUSDT / NAS100 Live Stream');
         }
-        renderMarketWatch();
-        const curSym = ($('sym')?.value || 'XAUUSD').toUpperCase();
-        if (d.s.startsWith(curSym.slice(0, 3)) || (curSym === 'XAUUSD' && d.s === 'PAXGUSDT')) {
-          updateLiveQuotePreview();
-          if (CHART_MODE !== 'tv') draw();
+
+        if (updatedSym) {
+          renderMarketWatch();
+          const curSym = ($('sym')?.value || 'XAUUSD').toUpperCase();
+          if (curSym === updatedSym) {
+            updateLiveQuotePreview();
+            draw();
+          }
         }
       } catch (e) {}
     };
     BINANCE_WS.onerror = () => {
       const badge = $('feed-status-badge');
-      if (badge) badge.innerHTML = '<i class="feed-dot" style="background:var(--amber)"></i> Feed: Hybrid REST';
+      if (badge) badge.innerHTML = '<i class="feed-dot" style="background:var(--amber)"></i> Feed: Hybrid High-Speed';
+    };
+    BINANCE_WS.onclose = () => {
+      setTimeout(connectLiveMarketStream, 3500);
     };
   } catch (e) {}
-}
-
-// ============================================================================
-// TRADINGVIEW OFFICIAL REAL-TIME WIDGET INTEGRATION
-// ============================================================================
-let LAST_TV_KEY = '';
-function getTradingViewSymbol(sym) {
-  const b = C.tvBroker || 'OANDA';
-  const clean = sym.toUpperCase();
-  if (clean === 'BTCUSD' || clean === 'BTCUSDT') {
-    return b === 'BINANCE' ? 'BINANCE:BTCUSDT' : 'COINBASE:BTCUSD';
-  }
-  if (clean === 'NAS100') return b === 'PEPPERSTONE' ? 'PEPPERSTONE:NAS100' : 'OANDA:NAS100USD';
-  if (clean === 'US30') return b === 'PEPPERSTONE' ? 'PEPPERSTONE:US30' : 'OANDA:US30USD';
-  if (b === 'BINANCE' && clean === 'XAUUSD') return 'BINANCE:PAXGUSDT';
-  return `${b}:${clean}`;
-}
-
-function mountTradingViewWidget(force = false) {
-  const container = $('tv_chart_container');
-  if (!container || CHART_MODE === 'px' || CHART_MODE === 'eq') return;
-  const sym = ($('sym')?.value || 'XAUUSD').toUpperCase();
-  const tvSym = getTradingViewSymbol(sym);
-  const tfMap = { '1m': '1', '5m': '5', '15m': '15', '1h': '60' };
-  const tvInt = tfMap[CUR_TF] || '1';
-  const key = `${tvSym}_${tvInt}`;
-  if (!force && key === LAST_TV_KEY) return;
-  LAST_TV_KEY = key;
-
-  if (window.TradingView && window.TradingView.widget) {
-    container.innerHTML = '';
-    new window.TradingView.widget({
-      autosize: true,
-      symbol: tvSym,
-      interval: tvInt,
-      timezone: 'Asia/Jakarta',
-      theme: 'dark',
-      style: '1',
-      locale: 'id',
-      toolbar_bg: '#06080F',
-      enable_publishing: false,
-      hide_top_toolbar: false,
-      hide_legend: false,
-      save_image: false,
-      container_id: 'tv_chart_container',
-      backgroundColor: '#050811',
-      gridColor: 'rgba(30, 41, 59, 0.35)',
-      studies: ['EMA@tv-basicstudies']
-    });
-  }
 }
 
 // ============================================================================
@@ -1419,8 +1429,8 @@ function renderMarketWatch() {
   strip.innerHTML = Object.keys(SIM_QUOTES).map(sym => {
     const q = SIM_QUOTES[sym];
     const isAct = sym === activeSym;
-    return `<div onclick="selectSymbol('${sym}')" class="cursor-pointer flex items-center gap-2 px-2.5 py-1 rounded-md border transition-all ${isAct ? 'bg-sky-500/15 border-sky-500/50 text-white' : 'bg-slate-900/70 border-slate-800/90 text-slate-300 hover:border-slate-700'}">
-      <span class="font-bold text-xs">${sym}</span>
+    return `<div onclick="selectSymbol('${sym}')" class="cursor-pointer flex items-center gap-2 px-3 py-1 rounded-md border transition-all ${isAct ? 'bg-sky-500/15 border-sky-500/50 text-white' : 'bg-slate-900/70 border-slate-800/90 text-slate-300 hover:border-slate-700'}">
+      <span class="font-bold text-xs">${sym === 'NAS100' ? 'NAS100 (QQQUSDT)' : sym}</span>
       <span class="mono text-xs font-semibold text-sky-400">${q.bid.toFixed(q.digits)}</span>
       <span class="mono text-[10px] px-1 rounded ${q.chg >= 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-rose-500/15 text-rose-400'}">${q.chg >= 0 ? '+' : ''}${q.chg.toFixed(2)}%</span>
     </div>`;
@@ -1429,9 +1439,10 @@ function renderMarketWatch() {
 
 window.selectSymbol = function(s) {
   $('sym').value = s;
+  CHART_VIEW.barOffset = 0;
+  CHART_VIEW.priceScaleMult = 1;
   document.querySelectorAll('.sym-chip').forEach(c => c.classList.toggle('active', c.dataset.sym === s));
   fetchLiveKlines(s, CUR_TF);
-  mountTradingViewWidget();
   updateLiveQuotePreview();
   renderMarketWatch();
   draw();
@@ -1441,10 +1452,12 @@ function evaluateSandboxPositionsAndOrders(symFilter = null) {
   if (!SIM_ON) return;
   let stateChanged = false;
 
-  // 1. Trigger Pending Orders
+  // 1. Trigger Pending Orders (Skip while user is actively dragging that Pending Order!)
   for (let i = SIM_PENDING.length - 1; i >= 0; i--) {
     const ord = SIM_PENDING[i];
     if (symFilter && ord.symbol !== symFilter) continue;
+    if (CHART_DRAG && CHART_DRAG.kind === 'PEND' && String(CHART_DRAG.ordId) === String(ord.id)) continue;
+
     const q = SIM_QUOTES[ord.symbol];
     if (!q) continue;
     const curPx = ord.side === 'BUY' ? q.ask : q.bid;
@@ -1490,6 +1503,14 @@ function evaluateSandboxPositionsAndOrders(symFilter = null) {
     p.netProfit = +(diff * p.volume * (q.contractSize || 100)).toFixed(2);
     p.profit = p.netProfit;
 
+    // CRITICAL FIX: Never trigger SL/TP while the user is dragging or modifying this position!
+    const isBeingModified =
+      (CHART_DRAG && String(CHART_DRAG.posId) === String(p.id)) ||
+      (ACTIVE_SLTP_POS_ID && String(ACTIVE_SLTP_POS_ID) === String(p.id)) ||
+      (p._modGraceUntil && Date.now() < p._modGraceUntil);
+
+    if (isBeingModified) continue;
+
     if (p.slPrice) {
       if ((p.side === 'BUY' && p.currentPrice <= p.slPrice) || (p.side === 'SELL' && p.currentPrice >= p.slPrice)) {
         WHY[p.id] = 'Stop Loss @ ' + p.slPrice;
@@ -1521,12 +1542,13 @@ function evaluateSandboxPositionsAndOrders(symFilter = null) {
 }
 
 function stepSimulatorQuotes() {
+  // Only run micro-tick fallback if WebSocket is temporarily reconnecting
+  if (BINANCE_WS && BINANCE_WS.readyState === 1) return;
   for (const sym in SIM_QUOTES) {
     const q = SIM_QUOTES[sym];
-    if (q.binanceSym && BINANCE_WS && BINANCE_WS.readyState === 1 && sym !== 'XAUUSD') continue;
-    const vol = sym === 'XAUUSD' ? 0.14 : sym === 'BTCUSD' ? 12 : (sym === 'US30' || sym === 'NAS100') ? 2.8 : 0.00008;
+    const vol = sym === 'XAUUSD' ? 0.14 : 0.18;
     const delta = (Math.random() - 0.495) * vol;
-    const rawBase = (q.rawLast ?? q.bid) + delta;
+    const rawBase = ((q.rawLast ?? q.bid) / (q.scaleRatio || 1)) + delta;
     applyLivePriceTick(sym, rawBase, null, null);
   }
   renderMarketWatch();
@@ -2009,6 +2031,7 @@ async function updateLiveQuotePreview() {
       $('bid-txt').textContent = (+q.bid).toFixed(dg);
 
       if ($('ch-sym-title')) $('ch-sym-title').textContent = sym;
+      if ($('ch-feed-tag')) $('ch-feed-tag').textContent = qMeta.src || `BINANCE:${qMeta.binanceSym || sym}`;
       if ($('ch-bid')) $('ch-bid').textContent = (+q.bid).toFixed(dg);
       if ($('ch-ask')) $('ch-ask').textContent = (+q.ask).toFixed(dg);
       if ($('ch-spread')) $('ch-spread').textContent = `Spd: ${spd}`;
@@ -2121,180 +2144,7 @@ async function openOrd(side) {
 }
 
 // ============================================================================
-// RENDER DASHBOARD, BENTO CARDS, TABLES & DUAL-MODE CANVAS CHART
-// ============================================================================
-function render() {
-  const s = SUM || {}, fl = flt(), eq = eqNow();
-  const dlp = G.dLim ? Math.max(0, G.dl) / G.dLim : null;
-  const ddp = G.ddLim ? Math.max(0, G.dd) / G.ddLim : null;
-  const tpp = C.dayTP > 0 && G.dayProfit !== undefined ? Math.max(0, G.dayProfit) / C.dayTP : null;
-
-  const cd = (l, v, c, p, sub = '') => `<div class="kpi-card">
-    <div class="kpi-label"><span>${l}</span><span class="mono text-[10px] text-slate-400">${sub}</span></div>
-    <b class="kpi-val ${c || ''}">${v}</b>
-    ${p != null ? `<div class="bar"><i style="width:${Math.min(100, Math.max(0, p * 100))}%;background:${p > 0.8 ? 'var(--rose)' : p > 0.5 ? 'var(--amber)' : 'var(--emerald)'}"></i></div>` : ''}
-  </div>`;
-
-  $('cards').innerHTML =
-    cd('Balance', '$' + f(s.balance), 'text-white', null, SIM_ON ? 'SANDBOX' : 'LIVE') +
-    cd('Equity Real-Time', '$' + f(eq), 'text-sky-400', null, DAY ? 'Awal: $' + f(DAY.start) : '') +
-    cd('Floating P/L', (fl >= 0 ? '+$' : '-$') + f(Math.abs(fl)), fl >= 0 ? 'pos' : 'neg', null, POS.length + ' posisi') +
-    cd('Margin Level', s.margin > 0 ? f(s.marginLevel, 0) + '%' : '∞', s.margin > 0 && s.marginLevel < 150 ? 'warn' : 'text-slate-200', null, s.margin > 0 ? 'Used: $' + f(s.margin, 0) : 'Tanpa Margin') +
-    cd('Rugi Hari Ini', G.dl !== undefined ? '$' + f(G.dl) : '-', dlp > 0.8 ? 'neg' : '', dlp, G.dLim ? 'Max: $' + f(G.dLim) : 'Off') +
-    cd('Drawdown Total', C.initBal > 0 && G.dd !== undefined ? '$' + f(G.dd) : 'Set Modal', ddp > 0.8 ? 'neg' : '', ddp, G.ddLim ? 'Max: $' + f(G.ddLim) : 'Off') +
-    cd('Target Profit Hari', G.dayProfit !== undefined ? (G.dayProfit >= 0 ? '+$' : '-$') + f(Math.abs(G.dayProfit)) : '-', G.dayProfit >= 0 ? 'pos' : 'neg', tpp, C.dayTP > 0 ? 'Target: $' + f(C.dayTP) : 'Off') +
-    cd('Status Guard', LOCK ? '🔒 ' + esc(LOCK.r) : '🛡 AMAN', LOCK ? 'neg' : 'pos', null, armed ? 'Engine ON' : 'Engine OFF');
-
-  $('nav-pos-cnt').textContent = POS.length;
-  $('pos-count-hdr').textContent = POS.length;
-  if ($('rail-timer-st')) $('rail-timer-st').textContent = C.timeOn ? (C.sec + C.buf) + 's' : 'OFF';
-  if ($('rail-trail-st')) $('rail-trail-st').textContent = (C.trailStart > 0 && C.trailStep > 0) ? `$${C.trailStart}/$${C.trailStep}` : 'OFF';
-
-  const u = used(), M = MODES[C.lm] || MODES.h, k = pace();
-  $('ru').textContent = u + ' / ' + C.bud;
-  $('rb').style.width = Math.min(100, u / C.bud * 100) + '%';
-  $('rb').style.background = u / C.bud > 0.8 ? 'var(--rose)' : u / C.bud > 0.6 ? 'var(--amber)' : 'var(--emerald)';
-  $('rt').textContent = SIM_ON
-    ? '⚡ Sandbox Live Mode: Harga tersinkronisasi real-time dengan WebSocket & Spot Feed'
-    : (k >= 99 ? '⏸ Polling dijeda: kuota hampir habis' : `Polling Posisi: ${f((POS.length ? M.pos : M.idle) * k, 0)}s · Akun: ${f(M.sum * k, 0)}s`);
-
-  const now = Date.now() + off;
-  const totTime = C.sec + C.buf;
-
-  $('tb').innerHTML = POS.map(p => {
-    const v = np(p);
-    const a = Math.max(0, (now - p.openTime) / 1000);
-    const rm = C.timeOn ? Math.max(0, totTime - a) : null;
-    const pctTime = C.timeOn && totTime > 0 ? Math.min(100, (a / totTime) * 100) : 0;
-    const pk = PEAK[p.id] !== undefined ? PEAK[p.id] : v;
-    const hasBep = BEP_LOCK[p.id] !== undefined;
-    const under2m = a < (C.minHoldSec || 120);
-
-    return `<tr class="cursor-pointer" onclick="if(!event.target.closest('button'))selectSymbol('${esc(p.symbol)}')">
-      <td>
-        <div class="flex items-center gap-1.5">
-          <b class="text-white hover:text-sky-400">${esc(p.symbol)}</b>
-          <span class="mono text-[10px] text-slate-500">#${esc(p.id)}</span>
-        </div>
-      </td>
-      <td>
-        <span class="px-1.5 py-0.5 rounded text-[10.5px] font-bold ${p.side === 'BUY' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'}">${esc(p.side)}</span>
-      </td>
-      <td class="font-semibold">${f(p.volume)}</td>
-      <td>${esc(p.openPrice)}</td>
-      <td class="text-slate-200 font-semibold">${esc(p.currentPrice)}</td>
-      <td class="${v >= 0 ? 'pos' : 'neg'} font-bold text-sm">${v >= 0 ? '+$' : '-$'}${f(Math.abs(v))}</td>
-      <td>
-        <span class="mono text-[11px] text-slate-400">Max: $${f(pk)}</span>
-        ${hasBep ? '<span class="ml-1 px-1 py-0.2 rounded text-[9.5px] bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold">BEP</span>' : ''}
-      </td>
-      <td>
-        <div class="flex items-center justify-end gap-1">
-          <button data-a="mod" data-i="${esc(p.id)}" class="text-[11px] px-2 py-0.5 rounded bg-slate-900 hover:border-sky-400 mono" title="Buka Preset Cepat SL/TP ($10, $25, RR 1:2, Stepper)">
-            <span class="text-rose-400">${p.slPrice ?? 'SL:-'}</span> / <span class="text-emerald-400">${p.tpPrice ?? 'TP:-'}</span> ⚡
-          </button>
-          <button data-a="pick-sl" data-i="${esc(p.id)}" class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30" title="Klik lalu klik di Chart untuk pasang SL posisi ini">🎯SL</button>
-          <button data-a="pick-tp" data-i="${esc(p.id)}" class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30" title="Klik lalu klik di Chart untuk pasang TP posisi ini">🎯TP</button>
-        </div>
-      </td>
-      <td>
-        <div class="flex items-center justify-end gap-1.5 text-[11px]">
-          <span class="${under2m ? 'warn font-semibold' : 'pos'}">${f(a, 0)}s</span>
-          <span class="text-slate-600">/</span>
-          <span class="text-slate-300">${rm === null ? '∞' : f(rm, 0) + 's'}</span>
-        </div>
-        <div class="bar" style="height:4px;margin-top:3px"><i style="width:${pctTime}%;background:${under2m ? 'var(--amber)' : 'var(--emerald)'}"></i></div>
-      </td>
-      <td><span class="chip" style="cursor:default">${esc(lk(p))}</span></td>
-      <td>
-        <div class="flex items-center justify-end gap-1">
-          <button data-a="bep" data-i="${esc(p.id)}" class="text-[10.5px] px-2 py-1" title="Set SL ke Harga Entry +1 pip & Kunci BEP">🛡 BEP</button>
-          <button data-a="rev" data-i="${esc(p.id)}" class="text-[10.5px] px-2 py-1" title="Balik Arah Posisi (Reverse BUY ⇄ SELL)">⇄</button>
-          <button data-a="h" data-i="${esc(p.id)}" class="text-[10.5px] px-2 py-1" title="Partial Close 50% Volume">50%</button>
-          <button data-a="c" data-i="${esc(p.id)}" class="btn-sell text-[10.5px] px-2.5 py-1">✕ Tutup</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('') || '<tr><td colspan="11" class="text-center text-slate-500 py-6">Belum ada posisi terbuka. Gunakan Tiket Order atau tombol Quick BUY/SELL di atas chart.</td></tr>';
-
-  if ($('pend-count-hdr')) $('pend-count-hdr').textContent = SIM_PENDING.length;
-  if ($('tb-pend')) {
-    $('tb-pend').innerHTML = SIM_PENDING.map(o => {
-      const q = SIM_QUOTES[o.symbol] || { bid: o.price, ask: o.price, digits: 2 };
-      const cur = o.side === 'BUY' ? q.ask : q.bid;
-      const dist = Math.abs(cur - o.price).toFixed(q.digits ?? 2);
-      return `<tr>
-        <td><b>${esc(o.symbol)}</b> <span class="text-[10px] text-slate-500 mono">#${esc(o.id)}</span></td>
-        <td><span class="px-1.5 py-0.5 rounded text-[10.5px] font-bold bg-violet-500/15 text-violet-300 border border-violet-500/30">${esc(o.type)}</span></td>
-        <td>${f(o.volume)}</td>
-        <td class="font-bold text-sky-300">${o.price.toFixed(q.digits ?? 2)}</td>
-        <td>${cur.toFixed(q.digits ?? 2)}</td>
-        <td class="text-amber-400">${dist} pts</td>
-        <td><span class="text-rose-400">${o.slPrice ?? '-'}</span> / <span class="text-emerald-400">${o.tpPrice ?? '-'}</span></td>
-        <td><span class="chip">${esc(o.comment || 'FGK|L1')}</span></td>
-        <td>${new Date(o.time).toLocaleTimeString('id-ID')}</td>
-        <td><button data-pend-del="${esc(o.id)}" class="text-[11px] px-2 py-0.5 text-rose-400 border-rose-500/30">✕ Batal</button></td>
-      </tr>`;
-    }).join('') || '<tr><td colspan="10" class="text-center text-slate-500 py-4">Tidak ada Pending Order (Limit / Stop).</td></tr>';
-  }
-
-  const L = {};
-  POS.forEach(p => (L[lk(p)] = L[lk(p)] || []).push(p));
-  $('ly').innerHTML = Object.keys(L).map(k => {
-    const t = L[k].reduce((a, p) => a + np(p), 0);
-    const lots = L[k].reduce((a, p) => a + (+p.volume || 0), 0);
-    return `<div class="kpi-card flex items-center justify-between">
-      <div>
-        <span class="kpi-label">${esc(k)} · ${L[k].length} pos (${f(lots)} lot)</span>
-        <b class="kpi-val ${t >= 0 ? 'pos' : 'neg'}">${t >= 0 ? '+$' : '-$'}${f(Math.abs(t))}</b>
-      </div>
-      <button data-l="${esc(k)}" class="text-xs py-1 px-2.5">Tutup Layer</button>
-    </div>`;
-  }).join('');
-
-  if (TAB === 'o') {
-    const kk = DAY ? DAY.k : '';
-    const H = HIST.filter(h => dk(h.t) === kk);
-    const w = H.filter(h => h.pl > 0);
-    const ls = H.filter(h => h.pl < 0);
-    const sm = H.reduce((a, h) => a + h.pl, 0);
-    const grossWin = w.reduce((a, h) => a + h.pl, 0);
-    const grossLoss = Math.abs(ls.reduce((a, h) => a + h.pl, 0));
-    const pf = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : (grossWin > 0 ? '∞' : '-');
-    const avgHold = H.length ? Math.round(H.reduce((a, h) => a + h.hold, 0) / H.length) + 's' : '-';
-    const sh = H.filter(h => h.hold < (C.minHoldSec || 120)).length;
-
-    const c = (a, b, cl) => `<div class="kpi-card"><span class="kpi-label">${a}</span><b class="kpi-val ${cl || ''}">${b}</b></div>`;
-    $('stt').innerHTML =
-      c('Total Trade', H.length) +
-      c('Win / Loss', w.length + ' / ' + ls.length) +
-      c('Winrate', H.length ? f(w.length / H.length * 100, 0) + '%' : '-', w.length >= ls.length && H.length ? 'pos' : '') +
-      c('Profit Factor', pf, +pf >= 1.5 ? 'pos' : '') +
-      c('P/L Realisasi ≈', (sm >= 0 ? '+$' : '-$') + f(Math.abs(sm)), sm >= 0 ? 'pos' : 'neg') +
-      c('Rata Tahan', avgHold) +
-      c('Trade Terbaik', H.length ? '+$' + f(Math.max(0, ...H.map(h => h.pl))) : '-', 'pos') +
-      c('Trade < 2m', sh, sh ? 'warn' : 'pos');
-
-    draw();
-  }
-
-  if (TAB === 'h') {
-    const q = ($('h-search')?.value || '').trim().toLowerCase();
-    const list = q ? HIST.filter(h => (h.sym + ' ' + h.why + ' ' + h.side).toLowerCase().includes(q)) : HIST;
-    $('hb').innerHTML = list.slice(0, 120).map(h => `<tr>
-      <td>${new Date(h.t).toLocaleTimeString('id-ID')}</td>
-      <td><b>${esc(h.sym)}</b></td>
-      <td class="${h.side === 'BUY' ? 'pos' : 'neg'} font-bold">${esc(h.side)}</td>
-      <td>${f(h.vol)}</td>
-      <td class="${h.hold < 120 ? 'warn font-semibold' : ''}">${f(h.hold, 0)}s</td>
-      <td class="${h.pl >= 0 ? 'pos' : 'neg'} font-bold">${h.pl >= 0 ? '+$' : '-$'}${f(Math.abs(h.pl))}</td>
-      <td class="text-slate-300">${esc(h.why)}</td>
-    </tr>`).join('') || '<tr><td colspan="7" class="text-center text-slate-500 py-6">Belum ada riwayat penutupan trade.</td></tr>';
-  }
-}
-
-// ============================================================================
-// INTERACTIVE DUAL-MODE CHART (LIVE OHLC CANDLESTICKS + DRAG & CLICK SL/TP)
+// INTERACTIVE HIGH-FPS NATIVE CANDLESTICK CHART (FREE PAN/ZOOM + BUG-FREE SL/TP DRAG)
 // ============================================================================
 function calcEstPlUsd(sym, side, openPx, targetPx, vol) {
   const q = SIM_QUOTES[sym] || { contractSize: 100 };
@@ -2303,10 +2153,191 @@ function calcEstPlUsd(sym, side, openPx, targetPx, vol) {
   return +(diff * vol * cs).toFixed(2);
 }
 
+// ============================================================================
+// MAIN UI RENDERER (KPI CARDS, POSITIONS, PENDING ORDERS, STATS & HISTORY)
+// ============================================================================
+function render() {
+  const s = SUM || {};
+  const fl = flt();
+  const eq = eqNow();
+  const dlp = G.dLim ? Math.max(0, G.dl / G.dLim) : null;
+  const ddp = G.ddLim ? Math.max(0, G.dd / G.ddLim) : null;
+
+  if ($('nav-pos-cnt')) $('nav-pos-cnt').textContent = POS.length;
+  if ($('pos-count-hdr')) $('pos-count-hdr').textContent = POS.length;
+  if ($('pend-count-hdr')) $('pend-count-hdr').textContent = SIM_PENDING.length;
+  if ($('rail-timer-st')) $('rail-timer-st').textContent = C.timeOn ? `${C.sec + C.buf}s` : 'OFF';
+  if ($('rail-trail-st')) $('rail-trail-st').textContent = (C.trailStart > 0 && C.trailStep > 0) ? `+$${C.trailStart}/$${C.trailStep}` : 'OFF';
+
+  const cd = (l, v, c, p, sub = '') => `<div class="kpi-card">
+    <div class="kpi-label"><span>${l}</span><span class="mono text-[10px] text-slate-400">${sub}</span></div>
+    <b class="kpi-val ${c || ''}">${v}</b>
+    ${p != null ? `<div class="bar"><i style="width:${Math.min(100, Math.max(0, p * 100))}%;background:${p > 0.8 ? 'var(--rose)' : p > 0.5 ? 'var(--amber)' : 'var(--emerald)'}"></i></div>` : ''}
+  </div>`;
+
+  if ($('cards')) {
+    $('cards').innerHTML =
+      cd('Balance', '$' + f(s.balance), 'text-white', null, SIM_ON ? 'SANDBOX' : 'LIVE') +
+      cd('Equity Live', '$' + f(eq), 'text-sky-400', null, DAY ? 'Awal $' + f(DAY.start) : '') +
+      cd('Floating P/L', (fl >= 0 ? '+$' : '-$') + f(Math.abs(fl)), fl >= 0 ? 'pos' : 'neg', null, POS.length + ' posisi') +
+      cd('Margin Level', s.margin > 0 ? f(s.marginLevel, 0) + '%' : '∞', s.margin > 0 && s.marginLevel < 150 ? 'warn' : 'text-slate-200', null, 'Free $' + f(s.freeMargin ?? s.equity)) +
+      cd('Rugi Hari Ini', G.dl !== undefined ? '$' + f(G.dl) : '-', dlp > 0.8 ? 'neg' : (G.dl < 0 ? 'pos' : ''), dlp, G.dLim ? 'Batas $' + f(G.dLim) : 'Tanpa batas') +
+      cd('Drawdown Total', C.initBal > 0 ? '$' + f(G.dd) : 'Set Modal', ddp > 0.8 ? 'neg' : '', ddp, G.ddLim ? 'Maks $' + f(G.ddLim) : '') +
+      cd('Eksposur Aktif', POS.length + (C.maxPos ? ' / ' + C.maxPos : ''), '', C.maxPos ? POS.length / C.maxPos : null, f(POS.reduce((a, p) => a + (+p.volume || 0), 0)) + ' lot') +
+      cd('Status Guard', LOCK ? '🔒 ' + esc(LOCK.r) : '🛡️ AMAN', LOCK ? 'neg' : 'pos', null, armed ? (C.dry ? 'DRY-RUN' : 'ENGINE LIVE') : 'ENGINE OFF');
+  }
+
+  const u = used(), M = MODES[C.lm] || MODES.h, k = pace();
+  if ($('ru')) $('ru').textContent = u + ' / ' + C.bud;
+  if ($('rb')) {
+    $('rb').style.width = Math.min(100, u / C.bud * 100) + '%';
+    $('rb').style.background = u / C.bud > 0.8 ? 'var(--rose)' : u / C.bud > 0.6 ? 'var(--amber)' : 'var(--emerald)';
+  }
+  if ($('rt')) {
+    $('rt').textContent = SIM_ON
+      ? '⚡ Binance Sub-Second WS Aktif (XAUUSD & NAS100)'
+      : (k >= 99 ? '⏸ Polling dijeda: budget hampir habis' : `Polling tiap ${f((POS.length ? M.pos : M.idle) * k, 0)}s · Summary tiap ${f(M.sum * k, 0)}s`);
+  }
+
+  // Open Positions Table
+  const now = Date.now() + off;
+  if ($('tb')) {
+    $('tb').innerHTML = POS.map(p => {
+      const v = np(p);
+      const a = Math.max(0, (now - p.openTime) / 1000);
+      const rm = C.timeOn ? Math.max(0, C.sec + C.buf - a) : null;
+      const pk = PEAK[p.id] !== undefined ? PEAK[p.id] : v;
+      const isBep = BEP_LOCK[p.id] !== undefined;
+      const underMinHold = C.minHoldSec > 0 && a < C.minHoldSec;
+      const holdPct = C.minHoldSec > 0 ? Math.min(100, (a / C.minHoldSec) * 100) : 100;
+      const isPickThis = PICK_POS_ID && String(PICK_POS_ID) === String(p.id);
+
+      return `<tr class="cursor-pointer transition-colors ${isPickThis ? 'bg-sky-500/15' : ''}" onclick="if(!event.target.closest('button'))selectSymbol('${esc(p.symbol)}')">
+        <td><div class="font-bold text-white">${esc(p.symbol)}</div><div class="text-[10px] text-slate-500">#${esc(p.id)}</div></td>
+        <td><span class="px-2 py-0.5 rounded text-[11px] font-bold ${p.side === 'BUY' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'}">${esc(p.side)}</span></td>
+        <td class="font-semibold">${f(p.volume)}</td>
+        <td>${esc(p.openPrice)}</td>
+        <td class="text-sky-300">${esc(p.currentPrice)}</td>
+        <td class="font-bold text-sm ${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+$' : '-$'}${f(Math.abs(v))}</td>
+        <td>
+          <div class="text-xs ${pk > 0 ? 'pos' : 'text-slate-400'}">Peak: $${f(pk)}</div>
+          ${isBep ? '<span class="text-[10px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300">🛡 BEP Locked</span>' : ''}
+        </td>
+        <td>
+          <div class="flex items-center justify-end gap-1">
+            <button data-a="mod" data-i="${esc(p.id)}" class="text-[11px] px-2 py-1 bg-slate-900 hover:border-sky-400" title="Buka Preset Visual SL/TP">
+              <span class="text-rose-400">SL:${p.slPrice ?? '-'}</span> · <span class="text-emerald-400">TP:${p.tpPrice ?? '-'}</span> ⚡
+            </button>
+            <button data-a="pick-sl" data-i="${esc(p.id)}" class="text-[10.5px] px-1.5 py-1 bg-rose-500/15 border-rose-500/40 text-rose-300" title="Klik lalu klik di Chart untuk pasang SL">🎯SL</button>
+            <button data-a="pick-tp" data-i="${esc(p.id)}" class="text-[10.5px] px-1.5 py-1 bg-emerald-500/15 border-emerald-500/40 text-emerald-300" title="Klik lalu klik di Chart untuk pasang TP">🎯TP</button>
+          </div>
+        </td>
+        <td>
+          <div class="flex items-center justify-end gap-1.5">
+            <span class="${underMinHold ? 'warn' : 'text-slate-300'}">${f(a, 0)}s</span>
+            <span class="text-slate-600">/</span>
+            <span class="text-sky-400 font-semibold">${rm === null ? '∞' : f(rm, 0) + 's'}</span>
+          </div>
+          <div class="bar" style="height:4px;margin-top:3px"><i style="width:${holdPct}%;background:${underMinHold ? 'var(--amber)' : 'var(--emerald)'}"></i></div>
+        </td>
+        <td><span class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-[11px] text-slate-300">${esc(lk(p))}</span></td>
+        <td>
+          <div class="flex items-center justify-end gap-1">
+            <button data-a="bep" data-i="${esc(p.id)}" class="text-[11px] py-1 px-2 border-sky-500/30 text-sky-300" title="Geser SL ke Break-Even">🛡 BEP</button>
+            <button data-a="h" data-i="${esc(p.id)}" class="text-[11px] py-1 px-2" title="Partial Close 50%">50%</button>
+            <button data-a="rev" data-i="${esc(p.id)}" class="text-[11px] py-1 px-2 text-amber-300 border-amber-500/30" title="Reverse / Balik Arah Posisi">⇄</button>
+            <button data-a="c" data-i="${esc(p.id)}" class="btn-sell text-[11px] py-1 px-2.5">Tutup</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="11" class="text-center py-6 text-slate-500">Tidak ada posisi terbuka. Gunakan Tiket Eksekusi atau tombol BUY/SELL di atas chart untuk membuka posisi.</td></tr>';
+  }
+
+  // Pending Orders Table
+  if ($('tb-pend')) {
+    $('tb-pend').innerHTML = SIM_PENDING.map(o => {
+      const q = SIM_QUOTES[o.symbol] || { bid: o.price, ask: o.price, digits: 2 };
+      const cur = o.side === 'BUY' ? q.ask : q.bid;
+      const dist = Math.abs(cur - o.price).toFixed(q.digits);
+      return `<tr>
+        <td><div class="font-bold text-white">${esc(o.symbol)}</div><div class="text-[10px] text-slate-500">#${esc(o.id)}</div></td>
+        <td><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-violet-500/15 text-violet-300 border border-violet-500/30">${esc(o.type)}</span></td>
+        <td>${f(o.volume)}</td>
+        <td class="text-violet-300 font-bold">${Number(o.price).toFixed(q.digits)}</td>
+        <td>${cur.toFixed(q.digits)}</td>
+        <td class="text-slate-400">Δ ${dist}</td>
+        <td><span class="text-rose-400">SL:${o.slPrice ?? '-'}</span> · <span class="text-emerald-400">TP:${o.tpPrice ?? '-'}</span></td>
+        <td>${esc(o.comment || 'FGK|L1')}</td>
+        <td class="text-slate-400">${new Date(o.time).toLocaleTimeString('id-ID')}</td>
+        <td><button data-pend-del="${esc(o.id)}" class="text-[11px] py-1 px-2.5 text-rose-300 border-rose-500/40">✕ Batal</button></td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="10" class="text-center py-4 text-slate-500">Tidak ada Pending Order (Limit / Stop) yang aktif.</td></tr>';
+  }
+
+  // Layer Basket Cards
+  const L = {};
+  POS.forEach(p => (L[lk(p)] = L[lk(p)] || []).push(p));
+  if ($('ly')) {
+    $('ly').innerHTML = Object.keys(L).map(k => {
+      const t = L[k].reduce((a, p) => a + np(p), 0);
+      const lots = L[k].reduce((a, p) => a + (+p.volume || 0), 0);
+      return `<div class="kpi-card flex items-center justify-between">
+        <div>
+          <span class="kpi-label">${esc(k)} · ${L[k].length} pos (${f(lots)} lot)</span>
+          <b class="kpi-val ${t >= 0 ? 'pos' : 'neg'}">${t >= 0 ? '+$' : '-$'}${f(Math.abs(t))}</b>
+        </div>
+        <button data-l="${esc(k)}" class="text-xs py-1.5 px-3">Tutup Layer</button>
+      </div>`;
+    }).join('');
+  }
+
+  // Today Statistics
+  if ($('stt')) {
+    const kk = DAY ? DAY.k : '';
+    const H = HIST.filter(h => dk(h.t) === kk);
+    const w = H.filter(h => h.pl > 0);
+    const ls = H.filter(h => h.pl < 0);
+    const sm = H.reduce((a, h) => a + h.pl, 0);
+    const grossWin = w.reduce((a, h) => a + h.pl, 0);
+    const grossLoss = Math.abs(ls.reduce((a, h) => a + h.pl, 0));
+    const pf = grossLoss > 0 ? f(grossWin / grossLoss, 2) : (grossWin > 0 ? '∞' : '-');
+    const sh = H.filter(h => h.hold < (C.minHoldSec || 120)).length;
+    const avgHold = H.length ? f(H.reduce((a, h) => a + h.hold, 0) / H.length, 0) + 's' : '-';
+    const c = (a, b, cl) => `<div class="kpi-card"><span class="kpi-label">${a}</span><b class="kpi-val ${cl || ''}">${b}</b></div>`;
+
+    $('stt').innerHTML =
+      c('Total Trade', H.length) +
+      c('Win / Loss', `${w.length}W / ${ls.length}L`) +
+      c('Win Rate', H.length ? f(w.length / H.length * 100, 0) + '%' : '-', w.length >= ls.length && H.length ? 'pos' : '') +
+      c('Profit Factor', pf, +pf >= 1.5 ? 'pos' : '') +
+      c('P/L Realisasi ≈', (sm >= 0 ? '+$' : '-$') + f(Math.abs(sm)), sm >= 0 ? 'pos' : 'neg') +
+      c('Rata Durasi', avgHold) +
+      c('Best / Worst', H.length ? `+$${f(Math.max(0, ...H.map(h => h.pl)))} / -$${f(Math.abs(Math.min(0, ...H.map(h => h.pl))))}` : '-') +
+      c(`Trade < ${C.minHoldSec || 120}s`, sh, sh ? 'warn' : 'pos');
+  }
+
+  // History Table
+  if ($('hb')) {
+    const q = ($('h-search')?.value || '').trim().toLowerCase();
+    const filteredH = q ? HIST.filter(h => h.sym.toLowerCase().includes(q) || (h.why || '').toLowerCase().includes(q)) : HIST;
+    $('hb').innerHTML = filteredH.slice(0, 120).map(h => `<tr>
+      <td>${new Date(h.t).toLocaleTimeString('id-ID')}</td>
+      <td class="font-bold text-white">${esc(h.sym)}</td>
+      <td class="${h.side === 'BUY' ? 'pos' : 'neg'} font-bold">${esc(h.side)}</td>
+      <td>${f(h.vol)}</td>
+      <td class="${h.hold < (C.minHoldSec || 120) ? 'warn font-bold' : ''}">${f(h.hold, 0)}s</td>
+      <td class="font-bold ${h.pl >= 0 ? 'pos' : 'neg'}">${h.pl >= 0 ? '+$' : '-$'}${f(Math.abs(h.pl))}</td>
+      <td class="text-slate-300">${esc(h.why)}</td>
+    </tr>`).join('') || '<tr><td colspan="7" class="text-center py-6 text-slate-500">Belum ada riwayat trade tertutup yang cocok.</td></tr>';
+  }
+
+  draw();
+}
+
 function draw() {
   const c = $('ch');
-  if (!c || !c.clientWidth || CHART_MODE === 'tv') return;
-  const w = c.width = c.clientWidth * 2, h = c.height = 740, x = c.getContext('2d');
+  if (!c || !c.clientWidth) return;
+  const w = c.width = c.clientWidth * 2, h = c.height = 880, x = c.getContext('2d');
   x.clearRect(0, 0, w, h);
 
   const sym = ($('sym').value || 'XAUUSD').toUpperCase();
@@ -2314,8 +2345,15 @@ function draw() {
 
   if (!isEq) {
     const q = SIM_QUOTES[sym] || SIM_QUOTES.XAUUSD;
-    const klines = (q && q.klines && q.klines.length) ? q.klines.slice(-55) : [];
-    if (klines.length < 2) return;
+    const allK = (q && q.klines && q.klines.length) ? q.klines : [];
+    if (allK.length < 2) return;
+
+    const visCount = Math.max(20, Math.min(allK.length, CHART_VIEW.barsCount));
+    const maxOff = Math.max(0, allK.length - visCount);
+    CHART_VIEW.barOffset = Math.max(0, Math.min(maxOff, CHART_VIEW.barOffset));
+    const endIdx = allK.length - CHART_VIEW.barOffset;
+    const startIdx = Math.max(0, endIdx - visCount);
+    const klines = allK.slice(startIdx, endIdx);
 
     const dg = q.digits ?? 2;
     let mn = Math.min(...klines.map(k => k.l), q.bid);
@@ -2332,32 +2370,52 @@ function draw() {
       mx = Math.max(mx, o.price);
     });
 
-    const pad = (mx - mn) * 0.14 || (q.spread * 6);
-    mn -= pad;
-    mx += pad;
+    const midPx = (mx + mn) / 2;
+    const halfSpan = Math.max(q.spread * 8, ((mx - mn) / 2) * 1.18) * (CHART_VIEW.priceScaleMult || 1);
+    mn = midPx - halfSpan;
+    mx = midPx + halfSpan;
     const rg = mx - mn || 1;
-    const rightAxisW = 140;
+    const rightAxisW = 152;
     const chartW = w - rightAxisW;
-    const Y = y => h - 32 - ((y - mn) / rg) * (h - 64);
-    LAST_CHART_BOUNDS = { mn, mx, h, w, chartW, sym, digits: dg };
+    const Y = y => h - 42 - ((y - mn) / rg) * (h - 84);
+    LAST_CHART_BOUNDS = { mn, mx, h, w, chartW, sym, digits: dg, visCount };
     CHART_HIT_ZONES = [];
 
+    // Horizontal & Vertical Grid
     x.strokeStyle = 'rgba(30, 41, 59, 0.55)';
     x.fillStyle = '#94A3B8';
     x.font = '20px "JetBrains Mono", monospace';
     x.textAlign = 'left';
     x.lineWidth = 1;
-    for (let i = 0; i <= 5; i++) {
-      const gy = 32 + i * ((h - 64) / 5);
-      const val = mx - (i / 5) * rg;
+    for (let i = 0; i <= 6; i++) {
+      const gy = 42 + i * ((h - 84) / 6);
+      const val = mx - (i / 6) * rg;
       x.beginPath(); x.moveTo(0, gy); x.lineTo(chartW, gy); x.stroke();
-      x.fillText(val.toFixed(dg), chartW + 10, gy + 6);
+      x.fillText(val.toFixed(dg), chartW + 12, gy + 6);
     }
 
     const stepX = chartW / klines.length;
-    const bodyW = Math.max(4, stepX * 0.62);
+    const bodyW = Math.max(5, stepX * 0.66);
+
+    // Time Axis Labels + Vertical Grid
+    x.textAlign = 'center';
+    x.fillStyle = '#64748B';
+    x.font = '18px "JetBrains Mono", monospace';
+    const timeStride = Math.max(6, Math.floor(klines.length / 6));
+    klines.forEach((k, i) => {
+      if (i % timeStride === 0) {
+        const cx = (i + 0.5) * stepX;
+        x.strokeStyle = 'rgba(30, 41, 59, 0.35)';
+        x.beginPath(); x.moveTo(cx, 0); x.lineTo(cx, h - 36); x.stroke();
+        const tStr = new Date(k.t).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        x.fillText(tStr, cx, h - 12);
+      }
+    });
+    x.textAlign = 'left';
+
+    // EMA 20 Indicator Line
     let ema = klines[0].c;
-    const kFactor = 2 / (12 + 1);
+    const kFactor = 2 / (20 + 1);
     x.beginPath();
     klines.forEach((k, i) => {
       ema = k.c * kFactor + ema * (1 - kFactor);
@@ -2365,16 +2423,25 @@ function draw() {
       if (i === 0) x.moveTo(cx, Y(ema));
       else x.lineTo(cx, Y(ema));
     });
-    x.strokeStyle = 'rgba(56, 189, 248, 0.65)';
-    x.lineWidth = 2.2;
+    x.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+    x.lineWidth = 2.4;
     x.stroke();
 
+    // Candlesticks + Subtle Volume Histogram at Bottom
+    const maxVol = Math.max(1, ...klines.map(k => k.v || 1));
     klines.forEach((k, i) => {
       const cx = (i + 0.5) * stepX;
       const bull = k.c >= k.o;
+
+      // Volume Bar
+      const vh = ((k.v || 1) / maxVol) * 90;
+      x.fillStyle = bull ? 'rgba(16, 185, 129, 0.14)' : 'rgba(244, 63, 94, 0.14)';
+      x.fillRect(cx - bodyW / 2, h - 42 - vh, bodyW, vh);
+
+      // Wick & Body
       x.strokeStyle = bull ? '#10B981' : '#F43F5E';
       x.fillStyle = bull ? '#10B981' : '#F43F5E';
-      x.lineWidth = 2;
+      x.lineWidth = 2.2;
       x.beginPath();
       x.moveTo(cx, Y(k.h));
       x.lineTo(cx, Y(k.l));
@@ -2385,16 +2452,18 @@ function draw() {
       x.fillRect(cx - bodyW / 2, top, bodyW, bh);
     });
 
+    // Live Bid & Ask Lines
     const yBid = Y(q.bid);
     x.strokeStyle = '#38BDF8';
     x.lineWidth = 1.8;
     x.setLineDash([4, 4]);
     x.beginPath(); x.moveTo(0, yBid); x.lineTo(chartW, yBid); x.stroke();
+    x.setLineDash([]);
     x.fillStyle = '#0284C7';
-    x.fillRect(chartW + 2, yBid - 14, rightAxisW - 6, 28);
+    x.fillRect(chartW + 2, yBid - 15, rightAxisW - 6, 30);
     x.fillStyle = '#FFFFFF';
     x.font = 'bold 19px "JetBrains Mono", monospace';
-    x.fillText(q.bid.toFixed(dg), chartW + 8, yBid + 6);
+    x.fillText(q.bid.toFixed(dg), chartW + 10, yBid + 6);
 
     // Draw Open Positions with Draggable Entry, [+SL], [+TP], [✕], and Draggable SL/TP Lines
     POS.filter(p => p.symbol === sym).forEach(p => {
@@ -2411,145 +2480,149 @@ function draw() {
 
       // Price tag on right axis for Entry
       x.fillStyle = isBuy ? '#0369A1' : '#B45309';
-      x.fillRect(chartW + 2, yEntry - 13, rightAxisW - 6, 26);
+      x.fillRect(chartW + 2, yEntry - 14, rightAxisW - 6, 28);
       x.fillStyle = '#FFFFFF';
       x.font = 'bold 17px "JetBrains Mono", monospace';
-      x.fillText(Number(p.openPrice).toFixed(dg), chartW + 8, yEntry + 5);
+      x.fillText(Number(p.openPrice).toFixed(dg), chartW + 10, yEntry + 5);
 
       // Interactive Entry Pill + Drag Handle + Quick [+SL] [+TP] [✕]
       const lbl = `⇅ ${p.side} ${p.volume} #${p.id} (${pl >= 0 ? '+$' : '-$'}${f(Math.abs(pl))})`;
-      const pillX = 14, pillY = yEntry - 17, pillW = 305, pillH = 34;
-      x.fillStyle = 'rgba(11, 15, 25, 0.94)';
+      const pillX = 16, pillY = yEntry - 18, pillW = 315, pillH = 36;
+      x.fillStyle = 'rgba(11, 15, 25, 0.95)';
       x.fillRect(pillX, pillY, pillW, pillH);
       x.strokeStyle = isBuy ? '#38BDF8' : '#F59E0B';
       x.lineWidth = 2;
       x.strokeRect(pillX, pillY, pillW, pillH);
       x.fillStyle = pl >= 0 ? '#10B981' : '#F43F5E';
       x.font = 'bold 18px "JetBrains Mono", monospace';
-      x.fillText(lbl, pillX + 10, yEntry + 5);
+      x.fillText(lbl, pillX + 10, yEntry + 6);
 
       // Button [+SL] next to Entry pill
-      const bSlX = pillX + pillW + 6, bSlW = 64;
-      x.fillStyle = 'rgba(244, 63, 94, 0.22)';
+      const bSlX = pillX + pillW + 6, bSlW = 66;
+      x.fillStyle = 'rgba(244, 63, 94, 0.24)';
       x.fillRect(bSlX, pillY, bSlW, pillH);
       x.strokeStyle = '#F43F5E';
       x.strokeRect(bSlX, pillY, bSlW, pillH);
       x.fillStyle = '#FDA4AF';
       x.font = 'bold 16px "JetBrains Mono", monospace';
-      x.fillText('+SL', bSlX + 14, yEntry + 5);
+      x.fillText('+SL', bSlX + 14, yEntry + 6);
 
       // Button [+TP] next to [+SL]
-      const bTpX = bSlX + bSlW + 6, bTpW = 64;
-      x.fillStyle = 'rgba(16, 185, 129, 0.22)';
+      const bTpX = bSlX + bSlW + 6, bTpW = 66;
+      x.fillStyle = 'rgba(16, 185, 129, 0.24)';
       x.fillRect(bTpX, pillY, bTpW, pillH);
       x.strokeStyle = '#10B981';
       x.strokeRect(bTpX, pillY, bTpW, pillH);
       x.fillStyle = '#6EE7B7';
-      x.fillText('+TP', bTpX + 14, yEntry + 5);
+      x.fillText('+TP', bTpX + 14, yEntry + 6);
 
       // Button [✕] Close Position directly on chart
-      const bClX = bTpX + bTpW + 6, bClW = 42;
-      x.fillStyle = 'rgba(225, 29, 72, 0.85)';
+      const bClX = bTpX + bTpW + 6, bClW = 44;
+      x.fillStyle = 'rgba(225, 29, 72, 0.88)';
       x.fillRect(bClX, pillY, bClW, pillH);
       x.fillStyle = '#FFFFFF';
-      x.fillText('✕', bClX + 14, yEntry + 5);
+      x.fillText('✕', bClX + 14, yEntry + 6);
 
-      // Register Hit Zones (in canvas 2x coordinates)
+      // Register Hit Zones (Buttons first, then full-width line drag zone)
       CHART_HIT_ZONES.push({ type: 'BTN_QUICK_SL', posId: p.id, x1: bSlX, x2: bSlX + bSlW, y1: pillY, y2: pillY + pillH });
       CHART_HIT_ZONES.push({ type: 'BTN_QUICK_TP', posId: p.id, x1: bTpX, x2: bTpX + bTpW, y1: pillY, y2: pillY + pillH });
       CHART_HIT_ZONES.push({ type: 'BTN_CLOSE_POS', posId: p.id, x1: bClX, x2: bClX + bClW, y1: pillY, y2: pillY + pillH });
-      CHART_HIT_ZONES.push({ type: 'DRAG_ENTRY', posId: p.id, x1: 0, x2: chartW, y1: yEntry - 18, y2: yEntry + 18 });
+      CHART_HIT_ZONES.push({ type: 'DRAG_ENTRY', posId: p.id, x1: 0, x2: chartW, y1: yEntry - 20, y2: yEntry + 20 });
 
       // Draw SL Line (or live dragged SL position)
-      const activeDragSl = CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'SL' ? CHART_DRAG.curPx : p.slPrice;
+      const isDraggingThisSl = CHART_DRAG && String(CHART_DRAG.posId) === String(p.id) && CHART_DRAG.kind === 'SL';
+      const activeDragSl = isDraggingThisSl ? CHART_DRAG.curPx : p.slPrice;
       if (activeDragSl) {
         const ySl = Y(activeDragSl);
         const estSlUsd = calcEstPlUsd(sym, p.side, p.openPrice, activeDragSl, p.volume);
         x.strokeStyle = '#F43F5E';
-        x.lineWidth = (CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'SL') ? 3.5 : 2.2;
+        x.lineWidth = isDraggingThisSl ? 3.8 : 2.4;
         x.setLineDash([6, 5]);
         x.beginPath(); x.moveTo(0, ySl); x.lineTo(chartW, ySl); x.stroke();
         x.setLineDash([]);
 
         // Right Axis SL Price Badge
         x.fillStyle = '#BE123C';
-        x.fillRect(chartW + 2, ySl - 13, rightAxisW - 6, 26);
+        x.fillRect(chartW + 2, ySl - 14, rightAxisW - 6, 28);
         x.fillStyle = '#FFFFFF';
         x.font = 'bold 17px "JetBrains Mono", monospace';
-        x.fillText(Number(activeDragSl).toFixed(dg), chartW + 8, ySl + 5);
+        x.fillText(Number(activeDragSl).toFixed(dg), chartW + 10, ySl + 5);
 
         // Draggable SL Handle Pill on Right Side of Chart
         const slTxt = `⇅ SL #${p.id}: ${Number(activeDragSl).toFixed(dg)} (${estSlUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estSlUsd))})`;
-        const slBoxW = 330, slBoxH = 30, slBoxX = Math.max(20, chartW - slBoxW - 52), slBoxY = ySl - 15;
-        x.fillStyle = 'rgba(76, 5, 25, 0.94)';
+        const slBoxW = 345, slBoxH = 32, slBoxX = Math.max(20, chartW - slBoxW - 56), slBoxY = ySl - 16;
+        x.fillStyle = 'rgba(76, 5, 25, 0.95)';
         x.fillRect(slBoxX, slBoxY, slBoxW, slBoxH);
         x.strokeStyle = '#F43F5E';
-        x.lineWidth = 1.8;
+        x.lineWidth = 2;
         x.strokeRect(slBoxX, slBoxY, slBoxW, slBoxH);
         x.fillStyle = '#FECDD3';
         x.font = 'bold 17px "JetBrains Mono", monospace';
-        x.fillText(slTxt, slBoxX + 10, ySl + 5);
+        x.fillText(slTxt, slBoxX + 10, ySl + 6);
 
         // Clear SL [✕] button
-        const clrSlX = slBoxX + slBoxW + 4, clrSlW = 34;
-        x.fillStyle = 'rgba(159, 18, 57, 0.95)';
+        const clrSlX = slBoxX + slBoxW + 5, clrSlW = 36;
+        x.fillStyle = 'rgba(159, 18, 57, 0.96)';
         x.fillRect(clrSlX, slBoxY, clrSlW, slBoxH);
         x.strokeRect(clrSlX, slBoxY, clrSlW, slBoxH);
         x.fillStyle = '#FFFFFF';
-        x.fillText('✕', clrSlX + 10, ySl + 5);
+        x.fillText('✕', clrSlX + 11, ySl + 6);
 
         CHART_HIT_ZONES.push({ type: 'BTN_CLR_SL', posId: p.id, x1: clrSlX, x2: clrSlX + clrSlW, y1: slBoxY, y2: slBoxY + slBoxH });
-        CHART_HIT_ZONES.push({ type: 'DRAG_SL', posId: p.id, x1: 0, x2: chartW, y1: ySl - 18, y2: ySl + 18 });
+        CHART_HIT_ZONES.push({ type: 'DRAG_SL', posId: p.id, x1: 0, x2: chartW, y1: ySl - 22, y2: ySl + 22 });
       }
 
       // Draw TP Line (or live dragged TP position)
-      const activeDragTp = CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'TP' ? CHART_DRAG.curPx : p.tpPrice;
+      const isDraggingThisTp = CHART_DRAG && String(CHART_DRAG.posId) === String(p.id) && CHART_DRAG.kind === 'TP';
+      const activeDragTp = isDraggingThisTp ? CHART_DRAG.curPx : p.tpPrice;
       if (activeDragTp) {
         const yTp = Y(activeDragTp);
         const estTpUsd = calcEstPlUsd(sym, p.side, p.openPrice, activeDragTp, p.volume);
         x.strokeStyle = '#10B981';
-        x.lineWidth = (CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'TP') ? 3.5 : 2.2;
+        x.lineWidth = isDraggingThisTp ? 3.8 : 2.4;
         x.setLineDash([6, 5]);
         x.beginPath(); x.moveTo(0, yTp); x.lineTo(chartW, yTp); x.stroke();
         x.setLineDash([]);
 
         // Right Axis TP Price Badge
         x.fillStyle = '#047857';
-        x.fillRect(chartW + 2, yTp - 13, rightAxisW - 6, 26);
+        x.fillRect(chartW + 2, yTp - 14, rightAxisW - 6, 28);
         x.fillStyle = '#FFFFFF';
         x.font = 'bold 17px "JetBrains Mono", monospace';
-        x.fillText(Number(activeDragTp).toFixed(dg), chartW + 8, yTp + 5);
+        x.fillText(Number(activeDragTp).toFixed(dg), chartW + 10, yTp + 5);
 
         // Draggable TP Handle Pill on Right Side of Chart
         const tpTxt = `⇅ TP #${p.id}: ${Number(activeDragTp).toFixed(dg)} (${estTpUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estTpUsd))})`;
-        const tpBoxW = 330, tpBoxH = 30, tpBoxX = Math.max(20, chartW - tpBoxW - 52), tpBoxY = yTp - 15;
-        x.fillStyle = 'rgba(6, 78, 59, 0.94)';
+        const tpBoxW = 345, tpBoxH = 32, tpBoxX = Math.max(20, chartW - tpBoxW - 56), tpBoxY = yTp - 16;
+        x.fillStyle = 'rgba(6, 78, 59, 0.95)';
         x.fillRect(tpBoxX, tpBoxY, tpBoxW, tpBoxH);
         x.strokeStyle = '#10B981';
-        x.lineWidth = 1.8;
+        x.lineWidth = 2;
         x.strokeRect(tpBoxX, tpBoxY, tpBoxW, tpBoxH);
         x.fillStyle = '#A7F3D0';
         x.font = 'bold 17px "JetBrains Mono", monospace';
-        x.fillText(tpTxt, tpBoxX + 10, yTp + 5);
+        x.fillText(tpTxt, tpBoxX + 10, yTp + 6);
 
         // Clear TP [✕] button
-        const clrTpX = tpBoxX + tpBoxW + 4, clrTpW = 34;
-        x.fillStyle = 'rgba(6, 95, 70, 0.95)';
+        const clrTpX = tpBoxX + tpBoxW + 5, clrTpW = 36;
+        x.fillStyle = 'rgba(6, 95, 70, 0.96)';
         x.fillRect(clrTpX, tpBoxY, clrTpW, tpBoxH);
         x.strokeRect(clrTpX, tpBoxY, clrTpW, tpBoxH);
         x.fillStyle = '#FFFFFF';
-        x.fillText('✕', clrTpX + 10, yTp + 5);
+        x.fillText('✕', clrTpX + 11, yTp + 6);
 
         CHART_HIT_ZONES.push({ type: 'BTN_CLR_TP', posId: p.id, x1: clrTpX, x2: clrTpX + clrTpW, y1: tpBoxY, y2: tpBoxY + tpBoxH });
-        CHART_HIT_ZONES.push({ type: 'DRAG_TP', posId: p.id, x1: 0, x2: chartW, y1: yTp - 18, y2: yTp + 18 });
+        CHART_HIT_ZONES.push({ type: 'DRAG_TP', posId: p.id, x1: 0, x2: chartW, y1: yTp - 22, y2: yTp + 22 });
       }
 
       // If user is currently dragging from ENTRY line to spawn a new SL or TP
-      if (CHART_DRAG && CHART_DRAG.posId === p.id && CHART_DRAG.kind === 'ENTRY') {
+      if (CHART_DRAG && String(CHART_DRAG.posId) === String(p.id) && CHART_DRAG.kind === 'ENTRY' && CHART_DRAG.moved) {
         const dragPx = CHART_DRAG.curPx;
         const yDrag = Y(dragPx);
-        const estUsd = calcEstPlUsd(sym, p.side, p.openPrice, dragPx, p.volume);
-        const isTpZone = estUsd >= 0;
+        const curMkt = p.side === 'BUY' ? q.bid : q.ask;
+        const isTpZone = p.side === 'BUY' ? (dragPx >= curMkt) : (dragPx <= curMkt);
+        const safePx = clampValidSlTp(sym, p.side, isTpZone ? 'TP' : 'SL', dragPx);
+        const estUsd = calcEstPlUsd(sym, p.side, p.openPrice, safePx, p.volume);
         const col = isTpZone ? '#10B981' : '#F43F5E';
 
         x.strokeStyle = col;
@@ -2558,20 +2631,20 @@ function draw() {
         x.beginPath(); x.moveTo(0, yDrag); x.lineTo(chartW, yDrag); x.stroke();
         x.setLineDash([]);
 
-        const tag = `⚡ Lepas untuk Pasang ${isTpZone ? 'TAKE PROFIT (TP)' : 'STOP LOSS (SL)'} @ ${dragPx.toFixed(dg)} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`;
-        x.fillStyle = 'rgba(6, 8, 15, 0.95)';
-        x.fillRect(chartW / 2 - 260, yDrag - 36, 520, 32);
+        const tag = `⚡ Lepas untuk Pasang ${isTpZone ? 'TAKE PROFIT (TP)' : 'STOP LOSS (SL)'} @ ${safePx.toFixed(dg)} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`;
+        x.fillStyle = 'rgba(6, 8, 15, 0.96)';
+        x.fillRect(chartW / 2 - 275, yDrag - 38, 550, 34);
         x.strokeStyle = col;
-        x.strokeRect(chartW / 2 - 260, yDrag - 36, 520, 32);
+        x.strokeRect(chartW / 2 - 275, yDrag - 38, 550, 34);
         x.fillStyle = col;
         x.font = 'bold 18px "JetBrains Mono", monospace';
-        x.fillText(tag, chartW / 2 - 245, yDrag - 14);
+        x.fillText(tag, chartW / 2 - 260, yDrag - 15);
       }
     });
 
     // Draw Draggable Pending Orders
     SIM_PENDING.filter(o => o.symbol === sym).forEach(o => {
-      const activePx = (CHART_DRAG && CHART_DRAG.ordId === o.id && CHART_DRAG.kind === 'PEND') ? CHART_DRAG.curPx : o.price;
+      const activePx = (CHART_DRAG && String(CHART_DRAG.ordId) === String(o.id) && CHART_DRAG.kind === 'PEND') ? CHART_DRAG.curPx : o.price;
       const yOrd = Y(activePx);
       x.strokeStyle = '#8B5CF6';
       x.lineWidth = 2.4;
@@ -2579,8 +2652,8 @@ function draw() {
       x.beginPath(); x.moveTo(0, yOrd); x.lineTo(chartW, yOrd); x.stroke();
       x.setLineDash([]);
 
-      const pBoxX = 20, pBoxY = yOrd - 15, pBoxW = 310, pBoxH = 30;
-      x.fillStyle = 'rgba(46, 16, 101, 0.92)';
+      const pBoxX = 20, pBoxY = yOrd - 15, pBoxW = 320, pBoxH = 30;
+      x.fillStyle = 'rgba(46, 16, 101, 0.94)';
       x.fillRect(pBoxX, pBoxY, pBoxW, pBoxH);
       x.strokeStyle = '#8B5CF6';
       x.strokeRect(pBoxX, pBoxY, pBoxW, pBoxH);
@@ -2588,7 +2661,7 @@ function draw() {
       x.font = 'bold 17px "JetBrains Mono", monospace';
       x.fillText(`⇅ ⏳ ${o.type} ${o.volume} @ ${Number(activePx).toFixed(dg)}`, pBoxX + 10, yOrd + 5);
 
-      CHART_HIT_ZONES.push({ type: 'DRAG_PEND', ordId: o.id, x1: 0, x2: chartW, y1: yOrd - 18, y2: yOrd + 18 });
+      CHART_HIT_ZONES.push({ type: 'DRAG_PEND', ordId: o.id, x1: 0, x2: chartW, y1: yOrd - 20, y2: yOrd + 20 });
     });
 
     x.setLineDash([]);
@@ -2649,39 +2722,41 @@ function draw() {
 }
 
 function setChartViewMode(m) {
-  CHART_MODE = m;
-  const splitBox = $('chart-split-box');
-  const tvWrap = $('tv-wrap');
-  const cvWrap = $('canvas-wrap');
-
-  ['split', 'tv', 'px', 'eq'].forEach(k => {
+  CHART_MODE = m === 'eq' ? 'eq' : 'px';
+  ['px', 'eq'].forEach(k => {
     const b = $('btn-ch-' + k);
-    if (b) b.className = 'text-[11px] px-2.5 py-1 rounded border-0 ' + (k === m ? 'on-pill' : 'bg-transparent text-slate-400');
+    if (b) b.className = 'text-[11px] px-2.5 py-1 rounded border-0 ' + (k === CHART_MODE ? 'on-pill' : 'bg-transparent text-slate-400');
   });
-
-  if (m === 'split') {
-    splitBox.className = 'chart-workspace split-mode';
-    tvWrap.style.display = 'block';
-    cvWrap.style.display = 'block';
-    mountTradingViewWidget();
-    setTimeout(draw, 60);
-  } else if (m === 'tv') {
-    splitBox.className = 'chart-workspace';
-    tvWrap.style.display = 'block';
-    cvWrap.style.display = 'none';
-    mountTradingViewWidget(true);
-  } else {
-    splitBox.className = 'chart-workspace';
-    tvWrap.style.display = 'none';
-    cvWrap.style.display = 'block';
-    setTimeout(draw, 40);
-  }
+  setTimeout(draw, 20);
 }
 
-$('btn-ch-split').onclick = () => setChartViewMode('split');
-$('btn-ch-tv').onclick = () => setChartViewMode('tv');
 $('btn-ch-px').onclick = () => setChartViewMode('px');
 $('btn-ch-eq').onclick = () => setChartViewMode('eq');
+
+$('b-zoom-in').onclick = () => {
+  CHART_VIEW.barsCount = Math.max(20, Math.round(CHART_VIEW.barsCount * 0.78));
+  draw();
+};
+$('b-zoom-out').onclick = () => {
+  CHART_VIEW.barsCount = Math.min(140, Math.round(CHART_VIEW.barsCount * 1.25));
+  draw();
+};
+$('b-reset-view').onclick = () => {
+  CHART_VIEW.barsCount = 65;
+  CHART_VIEW.barOffset = 0;
+  CHART_VIEW.priceScaleMult = 1;
+  draw();
+  toast('Tampilan Chart di-reset ke Auto-Fit Live!', 'c');
+};
+
+// Mouse Wheel Zoom on Chart
+$('ch').addEventListener('wheel', e => {
+  if (CHART_MODE === 'eq') return;
+  e.preventDefault();
+  const dir = e.deltaY > 0 ? 1.14 : 0.86;
+  CHART_VIEW.barsCount = Math.max(20, Math.min(140, Math.round(CHART_VIEW.barsCount * dir)));
+  draw();
+}, { passive: false });
 
 document.querySelectorAll('.tf-btn').forEach(b => {
   b.onclick = () => {
@@ -2690,17 +2765,8 @@ document.querySelectorAll('.tf-btn').forEach(b => {
     CUR_TF = b.dataset.tf;
     const sym = ($('sym').value || 'XAUUSD').toUpperCase();
     fetchLiveKlines(sym, CUR_TF);
-    mountTradingViewWidget(true);
   };
 });
-
-$('tv-broker').value = C.tvBroker || 'OANDA';
-$('tv-broker').onchange = () => {
-  C.tvBroker = $('tv-broker').value;
-  sv('mtp_c', C);
-  mountTradingViewWidget(true);
-  toast('Feed Chart TradingView diubah ke ' + C.tvBroker, 'c');
-};
 
 $('b-cal-price').onclick = async () => {
   const sym = ($('sym').value || 'XAUUSD').toUpperCase();
@@ -2708,8 +2774,8 @@ $('b-cal-price').onclick = async () => {
   if (!q) return;
   const curVal = q.bid.toFixed(q.digits);
   const inp = await askPrompt(
-    `🎯 Samakan Harga ${sym} dengan TradingView`,
-    `Masukkan harga ${sym} yang tampil di chart TradingView Anda saat ini (atau ketik 0 untuk reset ke Spot Murni):`,
+    `⚙ Kalibrasi Harga ${sym}`,
+    `Masukkan angka harga ${sym} yang Anda inginkan (atau ketik 0 untuk kembali ke harga murni Binance):`,
     curVal
   );
   if (inp === null) return;
@@ -2719,7 +2785,7 @@ $('b-cal-price').onclick = async () => {
   } else if (Number.isFinite(targetPx) && targetPx > 0) {
     const raw = q.rawLast ?? q.bid;
     C.priceOffsets[sym] = +(targetPx - raw).toFixed(q.digits);
-    applyLivePriceTick(sym, raw, null, 'TV Calibrated Feed');
+    applyLivePriceTick(sym, raw / (q.scaleRatio || 1), null, 'Calibrated Binance Feed');
   }
   sv('mtp_c', C);
   fetchLiveKlines(sym, CUR_TF);
@@ -2738,7 +2804,7 @@ $('b-pick-sl').onclick = () => {
     const openOnSym = POS.filter(p => p.symbol === sym);
     if (openOnSym.length === 1) {
       PICK_POS_ID = openOnSym[0].id;
-      toast(`Klik di Candlestick Chart untuk pasang SL pada posisi ${sym} #${PICK_POS_ID} (atau mengisi form Tiket Order).`, 'w');
+      toast(`Klik di Candlestick Chart untuk pasang SL pada posisi ${sym} #${PICK_POS_ID}.`, 'w');
     } else {
       toast('Klik titik harga mana pun pada Candlestick Chart untuk mengisi SL.', 'w');
     }
@@ -2754,7 +2820,7 @@ $('b-pick-tp').onclick = () => {
     const openOnSym = POS.filter(p => p.symbol === sym);
     if (openOnSym.length === 1) {
       PICK_POS_ID = openOnSym[0].id;
-      toast(`Klik di Candlestick Chart untuk pasang TP pada posisi ${sym} #${PICK_POS_ID} (atau mengisi form Tiket Order).`, 'g');
+      toast(`Klik di Candlestick Chart untuk pasang TP pada posisi ${sym} #${PICK_POS_ID}.`, 'g');
     } else {
       toast('Klik titik harga mana pun pada Candlestick Chart untuk mengisi TP.', 'g');
     }
@@ -2762,7 +2828,7 @@ $('b-pick-tp').onclick = () => {
 };
 
 // ============================================================================
-// INTERACTIVE CANVAS DRAG & CLICK FOR POSITION SL / TP / PENDING ORDERS
+// INTERACTIVE CANVAS DRAG & CLICK FOR POSITION SL / TP / PENDING / FREE PAN
 // ============================================================================
 function getCanvasCoordsAndPrice(e) {
   const c = $('ch');
@@ -2773,13 +2839,12 @@ function getCanvasCoordsAndPrice(e) {
   const cy = (clientY - rect.top) * (c.height / rect.height);
   if (!LAST_CHART_BOUNDS) return { cx, cy, price: 0 };
   const { mn, mx, h, digits } = LAST_CHART_BOUNDS;
-  const clampedY = Math.max(32, Math.min(h - 32, cy));
-  const price = +(mx - ((clampedY - 32) / (h - 64)) * (mx - mn)).toFixed(digits);
+  const clampedY = Math.max(42, Math.min(h - 42, cy));
+  const price = +(mx - ((clampedY - 42) / (h - 84)) * (mx - mn)).toFixed(digits);
   return { cx, cy, price };
 }
 
 function findHitZone(cx, cy) {
-  // Prioritize buttons first, then drag lines
   for (let i = 0; i < CHART_HIT_ZONES.length; i++) {
     const z = CHART_HIT_ZONES[i];
     if (z.type.startsWith('BTN_') && cx >= z.x1 && cx <= z.x2 && cy >= z.y1 && cy <= z.y2) return z;
@@ -2795,19 +2860,22 @@ $('ch').addEventListener('mousedown', e => {
   if (CHART_MODE === 'eq' || !LAST_CHART_BOUNDS) return;
   const { cx, cy, price } = getCanvasCoordsAndPrice(e);
 
-  // If user is in Pick Mode (from table 🎯SL / 🎯TP or top button), apply on click
+  // If user is in Pick Mode (from table 🎯SL / 🎯TP or top button), apply safely with Stop-Level validation
   if (PICK_MODE) {
     if (PICK_POS_ID) {
       const p = POS.find(x => String(x.id) === String(PICK_POS_ID));
       if (p) {
+        p._modGraceUntil = Date.now() + 1800;
         if (PICK_MODE === 'sl') {
-          p.slPrice = price;
-          log(`🎯 SL #${p.id} ${p.symbol} dipasang via Klik Chart @ ${price}`, 'g');
-          toast(`SL #${p.id} diset ke ${price}`, 'w');
+          const validSl = clampValidSlTp(p.symbol, p.side, 'SL', price);
+          p.slPrice = validSl;
+          log(`🎯 SL #${p.id} ${p.symbol} dipasang via Klik Chart @ ${validSl}`, 'g');
+          toast(`SL #${p.id} diset ke ${validSl}`, 'w');
         } else {
-          p.tpPrice = price;
-          log(`🎯 TP #${p.id} ${p.symbol} dipasang via Klik Chart @ ${price}`, 'g');
-          toast(`TP #${p.id} diset ke ${price}`, 'g');
+          const validTp = clampValidSlTp(p.symbol, p.side, 'TP', price);
+          p.tpPrice = validTp;
+          log(`🎯 TP #${p.id} ${p.symbol} dipasang via Klik Chart @ ${validTp}`, 'g');
+          toast(`TP #${p.id} diset ke ${validTp}`, 'g');
         }
         saveSimState();
         render();
@@ -2829,7 +2897,16 @@ $('ch').addEventListener('mousedown', e => {
   }
 
   const hit = findHitZone(cx, cy);
-  if (!hit) return;
+
+  // If clicking empty chart space or right price axis: start Free Pan or Vertical Scale Drag
+  if (!hit) {
+    if (cx > LAST_CHART_BOUNDS.chartW) {
+      CHART_DRAG = { kind: 'SCALE_Y', startY: cy, startScale: CHART_VIEW.priceScaleMult || 1, moved: false };
+    } else {
+      CHART_DRAG = { kind: 'PAN', startX: cx, startOffset: CHART_VIEW.barOffset || 0, moved: false };
+    }
+    return;
+  }
 
   const p = hit.posId ? POS.find(x => String(x.id) === String(hit.posId)) : null;
 
@@ -2855,38 +2932,46 @@ $('ch').addEventListener('mousedown', e => {
     return;
   }
   if (hit.type === 'BTN_QUICK_SL' && p) {
+    p._modGraceUntil = Date.now() + 2000;
     const q = SIM_QUOTES[p.symbol] || { digits: 2, contractSize: 100 };
     const lossUsd = C.maxLoss > 0 ? C.maxLoss : 25;
     const dist = lossUsd / (p.volume * (q.contractSize || 100));
-    p.slPrice = +(p.side === 'BUY' ? p.openPrice - dist : p.openPrice + dist).toFixed(q.digits);
+    const rawSl = p.side === 'BUY' ? p.openPrice - dist : p.openPrice + dist;
+    p.slPrice = clampValidSlTp(p.symbol, p.side, 'SL', rawSl);
     saveSimState();
-    log(`⚡ Quick SL (-$${f(lossUsd)}) dipasang pada ${p.symbol} #${p.id} @ ${p.slPrice}`, 'g');
+    log(`⚡ Quick SL dipasang pada ${p.symbol} #${p.id} @ ${p.slPrice}`, 'g');
     toast(`SL #${p.id} dipasang @ ${p.slPrice} (Tarik garisnya untuk geser)`, 'w');
     render();
     return;
   }
   if (hit.type === 'BTN_QUICK_TP' && p) {
+    p._modGraceUntil = Date.now() + 2000;
     const q = SIM_QUOTES[p.symbol] || { digits: 2, contractSize: 100 };
     const tpUsd = C.posTP > 0 ? C.posTP : (C.maxLoss > 0 ? C.maxLoss * 2 : 50);
     const dist = tpUsd / (p.volume * (q.contractSize || 100));
-    p.tpPrice = +(p.side === 'BUY' ? p.openPrice + dist : p.openPrice - dist).toFixed(q.digits);
+    const rawTp = p.side === 'BUY' ? p.openPrice + dist : p.openPrice - dist;
+    p.tpPrice = clampValidSlTp(p.symbol, p.side, 'TP', rawTp);
     saveSimState();
-    log(`⚡ Quick TP (+$${f(tpUsd)}) dipasang pada ${p.symbol} #${p.id} @ ${p.tpPrice}`, 'g');
+    log(`⚡ Quick TP dipasang pada ${p.symbol} #${p.id} @ ${p.tpPrice}`, 'g');
     toast(`TP #${p.id} dipasang @ ${p.tpPrice} (Tarik garisnya untuk geser)`, 'g');
     render();
     return;
   }
 
-  // Handle Drag Start for SL / TP / Entry / Pending
+  // Handle Live Drag Start for SL / TP / Entry / Pending
+  // IMPORTANT: Update p.slPrice / p.tpPrice LIVE as the user drags so it is 100% responsive
   if (hit.type === 'DRAG_SL' && p) {
-    CHART_DRAG = { kind: 'SL', posId: p.id, startPx: p.slPrice, curPx: p.slPrice };
+    p._modGraceUntil = Date.now() + 60000;
+    CHART_DRAG = { kind: 'SL', posId: p.id, startPx: p.slPrice, curPx: p.slPrice, startY: cy, moved: false };
   } else if (hit.type === 'DRAG_TP' && p) {
-    CHART_DRAG = { kind: 'TP', posId: p.id, startPx: p.tpPrice, curPx: p.tpPrice };
+    p._modGraceUntil = Date.now() + 60000;
+    CHART_DRAG = { kind: 'TP', posId: p.id, startPx: p.tpPrice, curPx: p.tpPrice, startY: cy, moved: false };
   } else if (hit.type === 'DRAG_ENTRY' && p) {
-    CHART_DRAG = { kind: 'ENTRY', posId: p.id, startPx: p.openPrice, curPx: p.openPrice };
+    p._modGraceUntil = Date.now() + 60000;
+    CHART_DRAG = { kind: 'ENTRY', posId: p.id, startPx: p.openPrice, curPx: p.openPrice, startY: cy, moved: false };
   } else if (hit.type === 'DRAG_PEND') {
     const ord = SIM_PENDING.find(x => String(x.id) === String(hit.ordId));
-    if (ord) CHART_DRAG = { kind: 'PEND', ordId: ord.id, startPx: ord.price, curPx: ord.price };
+    if (ord) CHART_DRAG = { kind: 'PEND', ordId: ord.id, startPx: ord.price, curPx: ord.price, startY: cy, moved: false };
   }
 });
 
@@ -2896,24 +2981,56 @@ $('ch').addEventListener('mousemove', e => {
 
   if (CHART_MODE !== 'eq' && LAST_CHART_BOUNDS) {
     const { cx, cy, price: hoverPx } = getCanvasCoordsAndPrice(e);
-    const { digits } = LAST_CHART_BOUNDS;
+    const { digits, chartW, visCount } = LAST_CHART_BOUNDS;
 
-    // Active Dragging Update
     if (CHART_DRAG) {
-      CHART_DRAG.curPx = hoverPx;
+      if (CHART_DRAG.kind === 'PAN') {
+        const dx = cx - CHART_DRAG.startX;
+        const barsDelta = Math.round((dx / chartW) * visCount);
+        CHART_VIEW.barOffset = Math.max(0, CHART_DRAG.startOffset + barsDelta);
+        CHART_DRAG.moved = true;
+        c.style.cursor = 'grabbing';
+        draw();
+        return;
+      }
+      if (CHART_DRAG.kind === 'SCALE_Y') {
+        const dy = cy - CHART_DRAG.startY;
+        CHART_VIEW.priceScaleMult = Math.max(0.25, Math.min(4.0, CHART_DRAG.startScale * (1 + dy / 350)));
+        CHART_DRAG.moved = true;
+        c.style.cursor = 'ns-resize';
+        draw();
+        return;
+      }
+
+      if (Math.abs(cy - (CHART_DRAG.startY || 0)) > 4) CHART_DRAG.moved = true;
+      const p = CHART_DRAG.posId ? POS.find(x => String(x.id) === String(CHART_DRAG.posId)) : null;
+
+      if (CHART_DRAG.kind === 'SL' && p) {
+        const safeSl = clampValidSlTp(p.symbol, p.side, 'SL', hoverPx);
+        CHART_DRAG.curPx = safeSl;
+        p.slPrice = safeSl; // Instant live update while dragging
+      } else if (CHART_DRAG.kind === 'TP' && p) {
+        const safeTp = clampValidSlTp(p.symbol, p.side, 'TP', hoverPx);
+        CHART_DRAG.curPx = safeTp;
+        p.tpPrice = safeTp; // Instant live update while dragging
+      } else {
+        CHART_DRAG.curPx = hoverPx;
+      }
+
       c.style.cursor = 'ns-resize';
       draw();
       return;
     }
 
-    // Cursor change when hovering interactive lines or buttons
     const hit = findHitZone(cx, cy);
     if (PICK_MODE) {
       c.style.cursor = 'crosshair';
     } else if (hit) {
       c.style.cursor = hit.type.startsWith('BTN_') ? 'pointer' : 'ns-resize';
+    } else if (cx > chartW) {
+      c.style.cursor = 'ns-resize';
     } else {
-      c.style.cursor = 'crosshair';
+      c.style.cursor = 'grab';
     }
 
     const q = SIM_QUOTES[sym] || { bid: hoverPx, ask: hoverPx, contractSize: 100 };
@@ -2922,8 +3039,9 @@ $('ch').addEventListener('mousemove', e => {
     tip.style.display = 'block';
     if (PICK_MODE && PICK_POS_ID) {
       const p = POS.find(x => String(x.id) === String(PICK_POS_ID));
-      const estP = p ? calcEstPlUsd(sym, p.side, p.openPrice, hoverPx, p.volume) : 0;
-      tip.textContent = `🎯 Klik untuk Pasang ${PICK_MODE.toUpperCase()} #${PICK_POS_ID} @ ${hoverPx.toFixed(digits)} (${estP >= 0 ? '+$' : '-$'}${f(Math.abs(estP))})`;
+      const safeHover = p ? clampValidSlTp(sym, p.side, PICK_MODE === 'sl' ? 'SL' : 'TP', hoverPx) : hoverPx;
+      const estP = p ? calcEstPlUsd(sym, p.side, p.openPrice, safeHover, p.volume) : 0;
+      tip.textContent = `🎯 Klik untuk Pasang ${PICK_MODE.toUpperCase()} #${PICK_POS_ID} @ ${safeHover.toFixed(digits)} (${estP >= 0 ? '+$' : '-$'}${f(Math.abs(estP))})`;
     } else {
       tip.textContent = `${sym} Crosshair: ${hoverPx.toFixed(digits)} · Est P/L (${lot} lot BUY): ${estBuyPl >= 0 ? '+$' : '-$'}${Math.abs(estBuyPl).toFixed(2)}`;
     }
@@ -2948,7 +3066,15 @@ window.addEventListener('mouseup', () => {
   CHART_DRAG = null;
   $('ch').style.cursor = 'crosshair';
 
-  if (Math.abs(d.curPx - d.startPx) < 1e-7) {
+  if (d.kind === 'PAN' || d.kind === 'SCALE_Y') {
+    draw();
+    return;
+  }
+
+  if (!d.moved) {
+    // User only clicked without dragging -> do not overwrite or close position
+    const pClick = d.posId ? POS.find(x => String(x.id) === String(d.posId)) : null;
+    if (pClick) pClick._modGraceUntil = Date.now() + 800;
     draw();
     return;
   }
@@ -2967,25 +3093,36 @@ window.addEventListener('mouseup', () => {
 
   const p = POS.find(x => String(x.id) === String(d.posId));
   if (!p) return;
-  const estUsd = calcEstPlUsd(p.symbol, p.side, p.openPrice, d.curPx, p.volume);
+  p._modGraceUntil = Date.now() + 1500;
+  const q = SIM_QUOTES[p.symbol] || { bid: p.currentPrice, ask: p.currentPrice };
 
   if (d.kind === 'SL') {
-    p.slPrice = d.curPx;
-    log(`🛑 SL #${p.id} ${p.symbol} digeser di Chart → ${d.curPx} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
-    toast(`SL #${p.id} diperbarui ke ${d.curPx} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'w');
+    const validSl = clampValidSlTp(p.symbol, p.side, 'SL', d.curPx);
+    p.slPrice = validSl;
+    const estUsd = calcEstPlUsd(p.symbol, p.side, p.openPrice, validSl, p.volume);
+    log(`🛑 SL #${p.id} ${p.symbol} digeser di Chart → ${validSl} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
+    toast(`SL #${p.id} diperbarui ke ${validSl} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'w');
   } else if (d.kind === 'TP') {
-    p.tpPrice = d.curPx;
-    log(`🎯 TP #${p.id} ${p.symbol} digeser di Chart → ${d.curPx} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
-    toast(`TP #${p.id} diperbarui ke ${d.curPx} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
+    const validTp = clampValidSlTp(p.symbol, p.side, 'TP', d.curPx);
+    p.tpPrice = validTp;
+    const estUsd = calcEstPlUsd(p.symbol, p.side, p.openPrice, validTp, p.volume);
+    log(`🎯 TP #${p.id} ${p.symbol} digeser di Chart → ${validTp} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
+    toast(`TP #${p.id} diperbarui ke ${validTp} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
   } else if (d.kind === 'ENTRY') {
-    if (estUsd >= 0) {
-      p.tpPrice = d.curPx;
-      log(`🎯 TP baru ditarik dari Entry #${p.id} ${p.symbol} → ${d.curPx} (+$${f(estUsd)})`, 'g');
-      toast(`TP #${p.id} dipasang @ ${d.curPx} (+$${f(estUsd)})`, 'g');
+    const curMkt = p.side === 'BUY' ? q.bid : q.ask;
+    const isTpZone = p.side === 'BUY' ? (d.curPx >= curMkt) : (d.curPx <= curMkt);
+    if (isTpZone) {
+      const validTp = clampValidSlTp(p.symbol, p.side, 'TP', d.curPx);
+      const estUsd = calcEstPlUsd(p.symbol, p.side, p.openPrice, validTp, p.volume);
+      p.tpPrice = validTp;
+      log(`🎯 TP baru ditarik dari Entry #${p.id} ${p.symbol} → ${validTp} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
+      toast(`TP #${p.id} dipasang @ ${validTp}`, 'g');
     } else {
-      p.slPrice = d.curPx;
-      log(`🛑 SL baru ditarik dari Entry #${p.id} ${p.symbol} → ${d.curPx} (-$${f(Math.abs(estUsd))})`, 'g');
-      toast(`SL #${p.id} dipasang @ ${d.curPx} (-$${f(Math.abs(estUsd))})`, 'w');
+      const validSl = clampValidSlTp(p.symbol, p.side, 'SL', d.curPx);
+      const estUsd = calcEstPlUsd(p.symbol, p.side, p.openPrice, validSl, p.volume);
+      p.slPrice = validSl;
+      log(`🛑 SL baru ditarik dari Entry #${p.id} ${p.symbol} → ${validSl} (${estUsd >= 0 ? '+$' : '-$'}${f(Math.abs(estUsd))})`, 'g');
+      toast(`SL #${p.id} dipasang @ ${validSl}`, 'w');
     }
   }
   saveSimState();
@@ -3123,7 +3260,7 @@ $('sltp-pick-sl-btn').onclick = () => {
   if (!p) return;
   closeSltpModal();
   selectSymbol(p.symbol);
-  if (CHART_MODE === 'tv' || CHART_MODE === 'eq') setChartViewMode('split');
+  if (CHART_MODE === 'eq') setChartViewMode('px');
   PICK_POS_ID = p.id;
   PICK_MODE = 'sl';
   $('b-pick-sl').classList.add('warn-pill');
@@ -3135,7 +3272,7 @@ $('sltp-pick-tp-btn').onclick = () => {
   if (!p) return;
   closeSltpModal();
   selectSymbol(p.symbol);
-  if (CHART_MODE === 'tv' || CHART_MODE === 'eq') setChartViewMode('split');
+  if (CHART_MODE === 'eq') setChartViewMode('px');
   PICK_POS_ID = p.id;
   PICK_MODE = 'tp';
   $('b-pick-tp').classList.add('on-pill');
@@ -3145,10 +3282,11 @@ $('sltp-pick-tp-btn').onclick = () => {
 $('sltp-save-btn').onclick = () => {
   const p = POS.find(x => String(x.id) === String(ACTIVE_SLTP_POS_ID));
   if (!p) return;
+  p._modGraceUntil = Date.now() + 1800;
   const vSl = parseFloat($('sltp-inp-sl').value);
   const vTp = parseFloat($('sltp-inp-tp').value);
-  p.slPrice = (Number.isFinite(vSl) && vSl > 0) ? vSl : null;
-  p.tpPrice = (Number.isFinite(vTp) && vTp > 0) ? vTp : null;
+  p.slPrice = (Number.isFinite(vSl) && vSl > 0) ? clampValidSlTp(p.symbol, p.side, 'SL', vSl) : null;
+  p.tpPrice = (Number.isFinite(vTp) && vTp > 0) ? clampValidSlTp(p.symbol, p.side, 'TP', vTp) : null;
   saveSimState();
   log(`⚡ SL/TP #${p.id} ${p.symbol} disimpan → SL: ${p.slPrice ?? '-'} · TP: ${p.tpPrice ?? '-'}`, 'g');
   toast(`SL/TP #${p.id} berhasil diperbarui!`, 'g');
@@ -3170,12 +3308,13 @@ $('tb').onclick = async e => {
   if (b.dataset.a === 'c') {
     cl(p, 'Manual', 0, true);
   } else if (b.dataset.a === 'bep') {
+    p._modGraceUntil = Date.now() + 1500;
     const q = SIM_QUOTES[p.symbol] || { digits: 2, step: 0.01 };
     const pip = q.digits === 5 ? 0.00010 : q.digits === 2 ? 0.15 : 1.0;
     if (p.side === 'BUY' && p.currentPrice > p.openPrice) {
-      p.slPrice = +(p.openPrice + pip).toFixed(q.digits);
+      p.slPrice = clampValidSlTp(p.symbol, p.side, 'SL', +(p.openPrice + pip).toFixed(q.digits));
     } else if (p.side === 'SELL' && p.currentPrice < p.openPrice) {
-      p.slPrice = +(p.openPrice - pip).toFixed(q.digits);
+      p.slPrice = clampValidSlTp(p.symbol, p.side, 'SL', +(p.openPrice - pip).toFixed(q.digits));
     }
     BEP_LOCK[p.id] = 0.20;
     saveSimState();
@@ -3186,7 +3325,7 @@ $('tb').onclick = async e => {
     openSltpModal(p);
   } else if (b.dataset.a === 'pick-sl') {
     selectSymbol(p.symbol);
-    if (CHART_MODE === 'tv' || CHART_MODE === 'eq') setChartViewMode('split');
+    if (CHART_MODE === 'eq') setChartViewMode('px');
     PICK_POS_ID = p.id;
     PICK_MODE = 'sl';
     $('b-pick-sl').classList.add('warn-pill');
@@ -3194,7 +3333,7 @@ $('tb').onclick = async e => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } else if (b.dataset.a === 'pick-tp') {
     selectSymbol(p.symbol);
-    if (CHART_MODE === 'tv' || CHART_MODE === 'eq') setChartViewMode('split');
+    if (CHART_MODE === 'eq') setChartViewMode('px');
     PICK_POS_ID = p.id;
     PICK_MODE = 'tp';
     $('b-pick-tp').classList.add('on-pill');
@@ -3618,9 +3757,8 @@ $('bhc').onclick = async () => {
 $('b-clear-eq').onclick = () => {
   const sym = ($('sym').value || 'XAUUSD').toUpperCase();
   fetchLiveKlines(sym, CUR_TF);
-  syncRealSpotForexAndGold();
   draw();
-  toast(`Data Candlestick & Harga Live ${sym} disinkronkan!`, 'g');
+  toast(`Data Candlestick & Harga Live Binance ${sym} disinkronkan!`, 'g');
 };
 
 $('h-search').oninput = render;
@@ -3645,6 +3783,10 @@ function updateClock() {
 function tick() {
   n++;
   updateClock();
+  if ($('tick-fps-hud')) {
+    $('tick-fps-hud').textContent = `⚡ ${TICK_COUNT_SEC} ticks/s`;
+    TICK_COUNT_SEC = 0;
+  }
   if (!on) return;
   if (SIM_ON) stepSimulatorQuotes();
 
@@ -3680,7 +3822,7 @@ window.addEventListener('resize', draw);
   on = true;
 
   if (Array.isArray(SAVED_SIM.pos) && SAVED_SIM.pos.length) {
-    POS = SAVED_SIM.pos;
+    POS = SAVED_SIM.pos.filter(p => SIM_QUOTES[p.symbol]);
     POS.forEach(p => PREV[p.id] = p);
   } else {
     POS = [];
@@ -3698,12 +3840,10 @@ window.addEventListener('resize', draw);
   guard();
   setSt();
   show('o');
-  setChartViewMode('split');
+  setChartViewMode('px');
   updateLiveQuotePreview();
 
-  setInterval(syncRealSpotForexAndGold, 20000);
-
-  log('Terminal Pro aktif: Harga Sandbox tersinkronisasi secara real-time dengan Live Market Feed TradingView.', 'g');
+  log('Terminal Pro aktif: Native Real-Time Binance Tick Stream (XAUUSD & NAS100/QQQUSDT) tersambung.', 'g');
 })();
 </script>
 </body>
