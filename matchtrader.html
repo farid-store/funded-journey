@@ -3,291 +3,432 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Match-Trader Auto Panel Pro — Institutional Risk & Execution Terminal</title>
+<title>Match-Trader Auto Panel Pro — Institutional Execution & Risk Terminal</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #060913;
-  --p: #0c1222;
-  --p2: #111a30;
-  --p3: #172340;
-  --b: #1e2d4f;
-  --b-hi: #2d4475;
-  --t: #eef3ff;
-  --m: #8fa0cc;
-  --c: #35e0ff;
-  --a: #ffc94a;
-  --g: #2ee59d;
-  --r: #ff4b6e;
+  --bg: #06080F;
+  --s1: #0B0F19;
+  --s2: #111827;
+  --s3: #172136;
+  --border: #1E293B;
+  --border-hi: #334155;
+  --text: #F1F5F9;
+  --muted: #64748B;
+  --muted-hi: #94A3B8;
+  --cyan: #38BDF8;
+  --cyan-glow: rgba(56, 189, 248, 0.25);
+  --emerald: #10B981;
+  --emerald-glow: rgba(16, 185, 129, 0.25);
+  --rose: #F43F5E;
+  --rose-glow: rgba(244, 63, 94, 0.25);
+  --amber: #F59E0B;
+  --violet: #8B5CF6;
 }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: #1E293B #06080F; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #06080F; }
+::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
+
 body {
-  margin: 0 auto;
-  background: var(--bg);
-  background-image: 
-    radial-gradient(circle at 12% 0%, rgba(53, 224, 255, 0.06), transparent 32%),
-    radial-gradient(circle at 88% 5%, rgba(46, 229, 157, 0.05), transparent 30%);
-  color: var(--t);
-  font: 13px/1.45 'Inter', system-ui, -apple-system, sans-serif;
-  padding: 10px 14px 40px;
-  max-width: 1560px;
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.05), transparent 35%),
+    radial-gradient(circle at 90% 0%, rgba(16, 185, 129, 0.04), transparent 30%),
+    linear-gradient(rgba(30, 41, 59, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 41, 59, 0.18) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.45;
+  overflow-x: hidden;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
-.mono, table td, .num, input[type="number"], #log, #clock {
+
+.mono, .num, table td, input[type="number"], #log, #clock {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
   font-variant-numeric: tabular-nums;
 }
-h1 { font-size: 16px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
-h2 {
-  font-size: 11px;
-  font-weight: 700;
-  margin: 0 0 10px;
-  color: var(--c);
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
+
+/* Institutional Surfaces */
+.glass-bar {
+  background: rgba(11, 15, 25, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.panel {
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.75) 0%, rgba(11, 15, 25, 0.92) 100%);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+.panel-header {
+  padding: 9px 13px;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+  background: rgba(15, 23, 42, 0.55);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+}
+.panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-hi);
+  display: flex;
+  align-items: center;
   gap: 6px;
 }
-.pn {
-  background: rgba(12, 18, 34, 0.92);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--b);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 12px;
-  box-shadow: 0 8px 28px -8px rgba(0, 0, 0, 0.55);
-}
-.pn-sub {
-  background: var(--p2);
-  border: 1px solid var(--b);
-  border-radius: 9px;
-  padding: 10px;
-}
-.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.grid-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); gap: 9px; }
-.grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 10px; }
-.card {
-  background: linear-gradient(180deg, rgba(19, 28, 56, 0.85) 0%, rgba(13, 20, 40, 0.95) 100%);
-  border: 1px solid var(--b);
+.panel-body { padding: 12px; }
+
+/* KPI Bento Cards */
+.kpi-card {
+  background: linear-gradient(160deg, rgba(19, 28, 46, 0.88) 0%, rgba(11, 15, 25, 0.95) 100%);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 11px 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   position: relative;
-  overflow: hidden;
   transition: border-color 0.2s, transform 0.15s;
 }
-.card:hover { border-color: var(--b-hi); }
-.card b {
-  display: block;
-  font-size: 17px;
-  font-weight: 700;
-  margin-top: 2px;
+.kpi-card:hover { border-color: var(--border-hi); }
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--kpi-accent, var(--cyan));
+  opacity: 0.75;
+}
+.kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-hi);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kpi-val {
   font-family: 'JetBrains Mono', monospace;
   font-variant-numeric: tabular-nums;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 4px 0 2px;
 }
-.card span { color: var(--m); font-size: 11px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
-.card small { font-size: 10.5px; color: var(--m); display: block; margin-top: 3px; }
+.kpi-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
 
+/* Inputs & Controls */
 input, select, button {
   font: inherit;
-  background: #070b17;
-  color: var(--t);
-  border: 1px solid var(--b);
-  border-radius: 7px;
+  color: var(--text);
+  background: #070A12;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   padding: 6px 10px;
   transition: all 0.15s ease;
 }
 input:focus, select:focus {
   outline: none;
-  border-color: var(--c);
-  box-shadow: 0 0 0 2px rgba(53, 224, 255, 0.15);
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
 }
-input[type=number], input[type=text], input[type=password], select { width: 100%; }
-input[type=checkbox] {
-  width: 15px;
-  height: 15px;
-  accent-color: var(--c);
+input[type="number"], input[type="text"], input[type="password"], select { width: 100%; }
+input[type="checkbox"] {
+  width: 15px; height: 15px;
+  accent-color: var(--cyan);
   cursor: pointer;
 }
+
 button {
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 6px;
   user-select: none;
+  white-space: nowrap;
 }
-button:hover { border-color: var(--c); background: #0e172e; }
+button:hover { border-color: var(--border-hi); background: #111827; }
 button:active { transform: translateY(1px); }
 
-.buy {
-  background: linear-gradient(135deg, #0d5c43 0%, #093d2d 100%);
-  border-color: var(--g);
-  color: #eafff6;
+.btn-primary {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  border-color: #38BDF8;
+  color: #fff;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+}
+.btn-buy {
+  background: linear-gradient(145deg, #059669 0%, #047857 100%);
+  border: 1px solid #34D399;
+  color: #ECFDF5;
   font-weight: 700;
 }
-.buy:hover { background: linear-gradient(135deg, #137a59 0%, #0d5c43 100%); border-color: #6bffc6; box-shadow: 0 0 14px rgba(46, 229, 157, 0.28); }
-.sell {
-  background: linear-gradient(135deg, #731832 0%, #4d0f21 100%);
-  border-color: var(--r);
-  color: #ffeef2;
+.btn-buy:hover {
+  background: linear-gradient(145deg, #10B981 0%, #059669 100%);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.35);
+}
+.btn-sell {
+  background: linear-gradient(145deg, #E11D48 0%, #BE123C 100%);
+  border: 1px solid #FB7185;
+  color: #FFF1F2;
   font-weight: 700;
 }
-.sell:hover { background: linear-gradient(135deg, #961e40 0%, #731832 100%); border-color: #ff8099; box-shadow: 0 0 14px rgba(255, 75, 110, 0.28); }
-.kill {
-  background: linear-gradient(135deg, #e0244a 0%, #9e112e 100%);
-  border-color: #ff6b88;
+.btn-sell:hover {
+  background: linear-gradient(145deg, #F43F5E 0%, #E11D48 100%);
+  box-shadow: 0 0 18px rgba(244, 63, 94, 0.35);
+}
+.btn-kill {
+  background: linear-gradient(135deg, #E11D48 0%, #9F1239 100%);
+  border: 1px solid #FDA4AF;
   color: #fff;
   font-weight: 700;
 }
-.kill:hover { background: #ff2e58; border-color: #fff; box-shadow: 0 0 16px rgba(255, 75, 110, 0.5); }
-
-.on {
-  border-color: var(--g) !important;
-  color: var(--g) !important;
-  background: rgba(46, 229, 157, 0.1) !important;
-}
-.warn-btn {
-  border-color: var(--a) !important;
-  color: var(--a) !important;
-  background: rgba(255, 201, 74, 0.1) !important;
-}
-.sim-btn {
-  border-color: #b77bff !important;
-  color: #d6b4ff !important;
-  background: rgba(164, 92, 255, 0.14) !important;
+.btn-kill:hover {
+  background: #F43F5E;
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.6);
 }
 
-label.f { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--m); font-weight: 500; }
-label.k {
+/* Status & State Pills */
+.on-pill {
+  border-color: var(--emerald) !important;
+  color: #34D399 !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+}
+.warn-pill {
+  border-color: var(--amber) !important;
+  color: #FBBF24 !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+}
+.sim-pill {
+  border-color: var(--violet) !important;
+  color: #C4B5FD !important;
+  background: rgba(139, 92, 246, 0.15) !important;
+}
+
+/* Market Watch Ribbon */
+.mw-strip {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 6px 12px;
+  background: #080C15;
+  border-bottom: 1px solid var(--border);
   align-items: center;
-  font-size: 12px;
-  color: var(--t);
-  background: rgba(8, 13, 28, 0.65);
-  border: 1px solid rgba(37, 52, 95, 0.6);
-  padding: 6px 10px;
-  border-radius: 7px;
-  cursor: pointer;
 }
-label.k:hover { border-color: var(--b-hi); }
+.mw-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.mw-item:hover, .mw-item.active {
+  border-color: var(--cyan);
+  background: rgba(56, 189, 248, 0.08);
+}
 
-.tw { overflow-x: auto; border-radius: 8px; border: 1px solid #162240; }
+/* Layout Architecture */
+.app-shell {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  flex: 1;
+  min-height: 0;
+}
+@media (min-width: 1280px) {
+  .app-shell { grid-template-columns: 190px 1fr; }
+}
+@media (max-width: 768px) {
+  .app-shell { grid-template-columns: 1fr; }
+}
+
+.nav-rail {
+  background: #080C14;
+  border-right: 1px solid var(--border);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+@media (max-width: 768px) {
+  .nav-rail {
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    padding: 6px 10px;
+  }
+}
+.nav-btn {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted-hi);
+  font-weight: 600;
+  font-size: 12px;
+  gap: 10px;
+}
+.nav-btn:hover {
+  background: rgba(30, 41, 59, 0.5);
+  color: var(--text);
+  border-color: transparent;
+}
+.nav-btn.act {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.16), rgba(56, 189, 248, 0.03));
+  color: var(--cyan);
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: inset 3px 0 0 var(--cyan);
+}
+@media (max-width: 1279px) and (min-width: 769px) {
+  .nav-btn span.nav-lbl { display: none; }
+  .nav-btn { justify-content: center; padding: 10px; }
+}
+
+/* Terminal Main Grid (Workspace + Right Order Dock) */
+.terminal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 12px;
+  align-items: start;
+}
+@media (min-width: 1120px) {
+  .terminal-grid.with-dock {
+    grid-template-columns: 1fr 345px;
+  }
+}
+
+/* Institutional Data Table */
+.tw { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th, td {
-  padding: 7px 9px;
+  padding: 8px 10px;
   text-align: right;
-  border-bottom: 1px solid #162240;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.65);
   white-space: nowrap;
 }
 th:nth-child(-n+2), td:nth-child(-n+2) { text-align: left; }
 th {
-  color: var(--m);
-  font-weight: 600;
-  background: #090f1f;
-  font-size: 11px;
+  color: var(--muted);
+  font-weight: 700;
+  background: rgba(9, 13, 22, 0.9);
+  font-size: 10.5px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
-tbody tr:hover { background: rgba(53, 224, 255, 0.04); }
+tbody tr { transition: background 0.12s; }
+tbody tr:hover { background: rgba(56, 189, 248, 0.05); }
 
-.pos { color: var(--g) !important; }
-.neg { color: var(--r) !important; }
-.warn { color: var(--a) !important; }
-.cyan { color: var(--c) !important; }
-
-#log {
-  height: 220px;
-  overflow: auto;
-  font: 11.5px/1.55 'JetBrains Mono', ui-monospace, monospace;
-  color: var(--m);
-  background: #050811;
-  border: 1px solid #15203b;
-  border-radius: 8px;
-  padding: 8px 10px;
-}
-#st {
-  padding: 4px 11px;
-  border-radius: 99px;
-  border: 1px solid var(--b);
-  font-size: 11.5px;
-  font-weight: 600;
-  background: #091021;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-#bn {
-  background: linear-gradient(90deg, #421022, #2b0b17);
-  border: 1px solid var(--r);
-  color: #ffc2ce;
-  padding: 10px 14px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  display: none;
-  font-weight: 500;
-  box-shadow: 0 6px 20px rgba(255, 75, 110, 0.25);
-}
-small { color: var(--m); }
-
-#tabs {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  background: rgba(6, 9, 19, 0.88);
-  backdrop-filter: blur(12px);
-  padding: 8px 0;
-  margin-bottom: 12px;
-  border-bottom: 1px solid #15203b;
-  justify-content: space-between;
-}
-#tabs button.act {
-  border-color: var(--c);
-  color: var(--c);
-  background: rgba(53, 224, 255, 0.12);
-  box-shadow: 0 0 12px rgba(53, 224, 255, 0.15);
-}
+/* Progress Bars */
 .bar {
-  height: 6px;
-  background: #172342;
-  border-radius: 4px;
-  margin-top: 6px;
+  height: 5px;
+  background: #162033;
+  border-radius: 99px;
   overflow: hidden;
+  margin-top: 5px;
 }
 .bar i {
   display: block;
   height: 100%;
   width: 0;
-  background: var(--g);
+  background: var(--emerald);
+  border-radius: 99px;
   transition: width 0.35s ease;
 }
+
+/* Semantic Text Colors */
+.pos { color: var(--emerald) !important; }
+.neg { color: var(--rose) !important; }
+.warn { color: var(--amber) !important; }
+.cyan { color: var(--cyan) !important; }
+
 .chip {
   font-size: 11px;
+  font-weight: 600;
   padding: 3px 8px;
-  border-radius: 6px;
-  background: #0b1326;
-  border: 1px solid #1e2d4f;
-  color: var(--m);
+  border-radius: 5px;
+  background: #0D1424;
+  border: 1px solid var(--border);
+  color: var(--muted-hi);
   cursor: pointer;
+  transition: all 0.15s;
 }
 .chip:hover, .chip.active {
-  border-color: var(--c);
-  color: var(--t);
-  background: rgba(53, 224, 255, 0.12);
+  border-color: var(--cyan);
+  color: var(--text);
+  background: rgba(56, 189, 248, 0.14);
 }
 
-/* Toast Stack */
+label.f {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--muted-hi);
+  font-weight: 600;
+}
+label.k {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text);
+  background: rgba(11, 15, 25, 0.75);
+  border: 1px solid var(--border);
+  padding: 7px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+label.k:hover { border-color: var(--border-hi); }
+
+/* Pulse dot */
+.pulse-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* Toast & Modal */
 #toast-box {
   position: fixed;
-  bottom: 16px;
+  bottom: 42px;
   right: 16px;
-  z-index: 90;
+  z-index: 95;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -296,94 +437,110 @@ small { color: var(--m); }
 }
 .toast-item {
   pointer-events: auto;
-  background: rgba(14, 22, 42, 0.96);
-  border-left: 4px solid var(--c);
-  border-top: 1px solid var(--b);
-  border-right: 1px solid var(--b);
-  border-bottom: 1px solid var(--b);
-  padding: 9px 12px;
+  background: rgba(11, 15, 25, 0.96);
+  backdrop-filter: blur(12px);
+  border-left: 4px solid var(--cyan);
+  border-top: 1px solid var(--border-hi);
+  border-right: 1px solid var(--border-hi);
+  border-bottom: 1px solid var(--border-hi);
+  padding: 10px 13px;
   border-radius: 8px;
   font-size: 12px;
-  color: var(--t);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-  animation: slideIn 0.2s ease-out;
+  color: var(--text);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.75);
+  animation: toastSlide 0.2s ease-out;
 }
-@keyframes slideIn {
-  from { transform: translateX(30px); opacity: 0; }
+@keyframes toastSlide {
+  from { transform: translateX(24px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* Custom Modal */
 #modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(3, 5, 12, 0.78);
-  backdrop-filter: blur(4px);
-  z-index: 100;
+  background: rgba(3, 6, 12, 0.8);
+  backdrop-filter: blur(6px);
+  z-index: 120;
   display: none;
   align-items: center;
   justify-content: center;
   padding: 16px;
 }
 .modal-card {
-  background: var(--p);
-  border: 1px solid var(--b-hi);
+  background: var(--s1);
+  border: 1px solid var(--border-hi);
   border-radius: 12px;
-  max-width: 430px;
+  max-width: 440px;
   width: 100%;
-  padding: 18px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.75);
+  padding: 20px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.85);
 }
 
-/* Pro Split Grid when All-in-One view is active */
-.pro-grid-active {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-@media (min-width: 1120px) {
-  .pro-grid-active {
-    grid-template-columns: 380px 1fr;
-    align-items: start;
-  }
-}
-@media (max-width: 640px) {
-  button { min-height: 36px; }
-  body { padding: 8px; }
+#bn {
+  background: linear-gradient(90deg, rgba(159, 18, 57, 0.9), rgba(80, 7, 36, 0.95));
+  border-bottom: 1px solid var(--rose);
+  color: #FFE4E6;
+  padding: 8px 16px;
+  font-weight: 600;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>
 </head>
 <body>
 
-<!-- Top Institutional Command Header -->
-<header class="pn" style="margin-bottom:10px;padding:10px 14px">
-  <div class="row" style="justify-content:space-between">
-    <div class="row" style="gap:10px">
-      <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#0ea5e9,#10b981);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#041019;box-shadow:0 0 16px rgba(53,224,255,0.3)">⚡</div>
-      <div>
-        <div class="row" style="gap:7px">
-          <h1>Match-Trader Auto Panel</h1>
-          <span style="font-size:10px;padding:1px 6px;border-radius:4px;background:#132347;color:var(--c);border:1px solid #254585;font-weight:700">PRO v3.5</span>
-          <span id="sim-badge" style="display:none;font-size:10px;padding:1px 7px;border-radius:4px;background:#2e1654;color:#d8b4fe;border:1px solid #7e22ce;font-weight:700">🛠 SANDBOX SIMULATOR</span>
+<!-- ==================== TOP INSTITUTIONAL TELEMETRY BAR ==================== -->
+<header class="glass-bar sticky top-0 z-40 px-3 py-2">
+  <div class="flex flex-wrap items-center justify-between gap-2">
+    <!-- Brand & System Clock -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center font-extrabold text-slate-950 shadow-lg" style="background:linear-gradient(135deg,#38BDF8,#10B981);box-shadow:0 0 16px rgba(56,189,248,0.35)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
-        <div class="row" style="gap:10px;margin-top:2px;font-size:11px;color:var(--m)">
-          <span id="clock" class="mono">WIB --:--:--</span>
-          <span>•</span>
-          <span id="ping-badge" class="mono">Ping: -</span>
-          <span>•</span>
-          <span id="hdr-day-key" class="mono">Hari: -</span>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-sm font-extrabold tracking-tight text-white m-0">MATCH-TRADER</h1>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-500/15 text-sky-400 border border-sky-500/30">QUANT PRO</span>
+            <span id="sim-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-500/20 text-violet-300 border border-violet-500/40">SANDBOX DEMO</span>
+          </div>
+          <div class="flex items-center gap-2 text-[11px] text-slate-400 mono">
+            <span id="clock">WIB --:--:--</span>
+            <span>•</span>
+            <span id="ping-badge" class="text-emerald-400">12ms</span>
+            <span>•</span>
+            <span id="hdr-day-key">Hari: -</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Right Quick Controls -->
-    <div class="row" style="gap:6px">
-      <button id="bsim-top" title="Aktifkan/Matikan Simulasi Offline Tanpa Token">🧪 Simulasi: OFF</button>
-      <button id="ba" title="Aktifkan/Matikan Auto-Close & Risk Engine">ENGINE: OFF</button>
-      <button id="bdry" title="Mode Latihan: Hanya catat di log tanpa eksekusi close">DRY-RUN: ON</button>
-      <button id="bsnd" title="Suara Peringatan Audio">🔔 Suara: ON</button>
-      <button id="bk2" class="kill" title="Darurat: Tutup semua posisi & kunci akun">⛔ KILL SWITCH</button>
-      <span id="st">● Terputus</span>
+    <!-- Center Telemetry: API Quota Bar & Connection Status Pill -->
+    <div class="hidden md:flex items-center gap-3 bg-slate-950/80 border border-slate-800 rounded-lg px-3 py-1.5">
+      <div class="flex items-center gap-2">
+        <span id="st" class="text-xs font-bold flex items-center gap-1.5">● Terputus</span>
+      </div>
+      <div class="h-4 w-[1px] bg-slate-800"></div>
+      <div class="flex items-center gap-2" title="Pemakaian Kuota Request API 60 Detik Terakhir">
+        <span class="text-[11px] text-slate-400">API Pool:</span>
+        <span id="ru" class="mono text-xs font-bold text-sky-400">0 / 280</span>
+        <div class="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <i id="rb" class="block h-full bg-emerald-400" style="width:2%"></i>
+        </div>
+        <span id="pace-badge" class="mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">1.0x</span>
+      </div>
+      <button onclick="show('k')" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">🔌 API / Proxy</button>
+    </div>
+
+    <!-- Right Master Execution Switches -->
+    <div class="flex items-center gap-1.5 flex-wrap">
+      <button id="bsim-top" class="text-xs px-2.5 py-1.5" title="Beralih antara Simulasi Sandbox & Akun API">🧪 Sandbox: ON</button>
+      <button id="ba" class="text-xs px-2.5 py-1.5" title="Saklar Utama Auto-Close & Loss Guard Engine">ENGINE: OFF</button>
+      <button id="bdry" class="text-xs px-2.5 py-1.5" title="Mode Latihan: Hanya catat di log tanpa eksekusi close">DRY-RUN: ON</button>
+      <button id="bsnd" class="text-xs px-2 py-1.5" title="Toggle Suara Notifikasi">🔔</button>
+      <button id="bview" class="text-xs px-2.5 py-1.5 hidden lg:inline-flex on-pill" title="Tampilkan / Sembunyikan Panel Eksekusi Order di Kanan">⚡ Dock Order</button>
+      <button id="bk2" class="btn-kill text-xs px-3 py-1.5" title="Darurat: Tutup Semua Posisi & Kunci Order">⛔ KILL</button>
     </div>
   </div>
 </header>
@@ -391,367 +548,449 @@ small { color: var(--m); }
 <!-- Alert Banner -->
 <div id="bn" role="alert"></div>
 
-<!-- Navigation Bar -->
-<nav id="tabs" class="row">
-  <div class="row" style="gap:6px">
-    <button data-go="o">📊 Overview <small class="mono" style="opacity:.6">[Alt+1]</small></button>
-    <button data-go="p">⚔ Posisi & Order <small class="mono" style="opacity:.6">[Alt+2]</small></button>
-    <button data-go="a">🛡 Aturan & Guard <small class="mono" style="opacity:.6">[Alt+3]</small></button>
-    <button data-go="h">📜 Analitik & Log <small class="mono" style="opacity:.6">[Alt+4]</small></button>
-    <button data-go="k">🔌 Koneksi <small class="mono" style="opacity:.6">[Alt+5]</small></button>
-  </div>
-  <div class="row" style="gap:6px">
-    <button id="bview" title="Tampilkan Overview + Order + Posisi sekaligus dalam 1 layar">🖥 Mode Terminal: Tab</button>
-  </div>
-</nav>
-
-<!-- ==================== TAB K: KONEKSI ==================== -->
-<section class="pn" data-t="k">
-  <h2>
-    <span>🔌 Koneksi & Mode Operasi</span>
-    <span class="mono" style="font-size:11px;color:var(--m);font-weight:400" id="rl">Belum ada trafik API</span>
-  </h2>
-  <div class="grid-form">
-    <label class="f">Mode Koneksi
-      <select id="mode">
-        <option value="proxy">Proxy Vercel (Aman, Disarankan)</option>
-        <option value="direct">Langsung ke API (Token di Browser)</option>
-        <option value="sim">Simulasi / Sandbox Lokal (Tanpa API)</option>
-      </select>
-    </label>
-    <label class="f" id="wu">URL Proxy (Default `/api/mt` atau `http://localhost:3000/api/mt`)
-      <input id="purl" type="text" placeholder="/api/mt">
-    </label>
-    <label class="f" id="wa">Admin Key (Proxy)
-      <input id="adm" type="password" autocomplete="off" placeholder="Masukkan x-admin-key...">
-    </label>
-    <label class="f" id="wt" style="display:none">Token Trader API (Bearer)
-      <input id="tok" type="password" autocomplete="off" placeholder="Masukkan Bearer Token...">
-    </label>
-    <label class="f" id="wb" style="display:none">Base URL Match-Trader
-      <input id="base" type="text" placeholder="https://trader-api.match-trader.com">
-    </label>
-    <label class="f" id="wsim" style="display:none">Saldo Awal Simulasi ($)
-      <input id="simbal" type="number" step="100" value="10000">
-    </label>
-  </div>
-
-  <div class="row" style="margin-top:12px;justify-content:space-between">
-    <div class="row">
-      <button id="bc" class="on" style="padding:7px 16px;font-weight:700">⚡ Hubungkan Sekarang</button>
-      <button id="bd">Putus Koneksi</button>
-      <button id="bsim-quick" class="sim-btn">🚀 Coba Mode Sandbox (Demo Instan)</button>
-      <label class="k"><input type="checkbox" id="rem"> Ingat kredensial di perangkat ini</label>
-    </div>
-    <small>Tips: Gunakan <b>Mode Sandbox</b> untuk menguji seluruh fitur auto-close, SL/TP, dan Loss Guard tanpa akun live.</small>
-  </div>
-</section>
-
-<!-- ==================== TAB O: OVERVIEW ==================== -->
-<div id="overview-wrap" data-t="o">
-  <!-- Engine Control & Prop-Firm Status Bar -->
-  <div class="pn">
-    <h2>
-      <span>🎛 Kontrol Engine & Status Guard</span>
-      <span id="cooldown-status" class="mono" style="font-size:11px;color:var(--g)">Siap Eksekusi</span>
-    </h2>
-    <div class="row" style="justify-content:space-between">
-      <div class="row">
-        <button id="ba2" onclick="$('ba').click()">ENGINE: OFF</button>
-        <button id="bdry2" onclick="$('bdry').click()">DRY-RUN: ON</button>
-        <button id="bs">📅 Set Saldo Awal Hari</button>
-        <button id="bu">🔓 Buka Kunci Guard</button>
-        <button id="bk" class="kill">⛔ KILL: Tutup Semua + Kunci</button>
-      </div>
-      <div class="row" style="gap:6px">
-        <span class="chip" id="preset-prop" title="Atur otomatis: Auto-Close 130s, Buffer 3s, Min Hold 122s, Daily Loss 4%">🛡 Preset Prop-Firm 2m</span>
-        <span class="chip" id="preset-scalp" title="Atur otomatis: Auto-Close 180s, Trailing aktif">⚡ Preset Scalping</span>
-      </div>
-    </div>
-    <small style="display:block;margin-top:8px">
-      Engine selalu <b>OFF</b> saat halaman dibuka demi keamanan. Saat <b>DRY-RUN: ON</b>, aturan penutupan otomatis hanya dicatat di log tanpa menutup posisi asli. Order & tutup manual selalu dieksekusi langsung.
-    </small>
-  </div>
-
-  <!-- 8 KPI Cards -->
-  <div class="grid-kpi" id="cards" style="margin-bottom:12px"></div>
-
-  <!-- Two Columns: API Budget + Prop Firm Compliance HUD -->
-  <div class="grid-form" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-bottom:12px">
-    <!-- Mode Hemat API -->
-    <div class="pn" style="margin-bottom:0">
-      <h2><span>📡 Mode Hemat API & Kuota</span><span id="pace-badge" class="mono" style="color:var(--g)">1.0x Normal</span></h2>
-      <div class="grid-form">
-        <label class="f">Mode Polling
-          <select id="lm">
-            <option value="n">Normal (Cepat - 4s)</option>
-            <option value="h">Hemat (Disarankan - 6s)</option>
-            <option value="u">Ultra Hemat (10s)</option>
-          </select>
-        </label>
-        <label class="f">Batas Request / Menit (Global)
-          <input id="bud" type="number" min="20">
-        </label>
-        <div class="card">
-          <span>Terpakai 60 dtk terakhir</span>
-          <b id="ru">0 / 280</b>
-          <div class="bar"><i id="rb"></i></div>
-        </div>
-      </div>
-      <small id="rt" style="display:block;margin-top:8px"></small>
-      <small style="display:block;margin-top:2px;opacity:.8">Auto-close waktu dihitung dari jam buka posisi tanpa boros kuota API. Pool 280 req/menit dibagi otomatis.</small>
-    </div>
-
-    <!-- Prop Firm Rule Compliance Radar -->
-    <div class="pn" style="margin-bottom:0">
-      <h2><span>🛡 Radar Kepatuhan Prop-Firm</span><span id="comp-badge" class="pos">✓ PATUH</span></h2>
-      <div class="grid-form" id="compliance-hud">
-        <div class="pn-sub">
-          <div class="row" style="justify-content:space-between;font-size:11px"><span style="color:var(--m)">Batas Rugi Harian</span><b id="hud-dl" class="mono">-</b></div>
-          <div class="bar"><i id="hud-dl-bar"></i></div>
-        </div>
-        <div class="pn-sub">
-          <div class="row" style="justify-content:space-between;font-size:11px"><span style="color:var(--m)">Max Total Drawdown</span><b id="hud-dd" class="mono">-</b></div>
-          <div class="bar"><i id="hud-dd-bar"></i></div>
-        </div>
-        <div class="pn-sub">
-          <div class="row" style="justify-content:space-between;font-size:11px"><span style="color:var(--m)">Target Profit Harian</span><b id="hud-tp" class="mono">-</b></div>
-          <div class="bar"><i id="hud-tp-bar" style="background:var(--c)"></i></div>
-        </div>
-        <div class="pn-sub">
-          <div class="row" style="justify-content:space-between;font-size:11px"><span style="color:var(--m)">Pelanggaran &lt; 2 Menit</span><b id="hud-short" class="mono">0 Trade</b></div>
-          <small id="hud-hold-note">Guard Durasi Min: Aktif</small>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Equity Curve Chart -->
-  <div class="pn">
-    <h2>
-      <span>📈 Kurva Equity Interaktif (24 Jam Terakhir)</span>
-      <div class="row" style="gap:12px;font-size:11px;font-weight:400;text-transform:none">
-        <span style="color:var(--c)">● Equity</span>
-        <span style="color:var(--a)">--- Awal Hari</span>
-        <span style="color:var(--r)">⋯ Batas Loss Harian</span>
-        <button id="b-clear-eq" style="padding:2px 7px;font-size:10.5px">Reset Grafik</button>
-      </div>
-    </h2>
-    <div style="position:relative">
-      <canvas id="ch" style="width:100%;height:135px;display:block;cursor:crosshair"></canvas>
-      <div id="ch-tip" class="mono" style="position:absolute;top:6px;left:10px;font-size:11px;background:rgba(6,9,19,0.85);padding:3px 8px;border-radius:5px;border:1px solid var(--b);pointer-events:none;display:none"></div>
-    </div>
-  </div>
-
-  <!-- Today Statistics -->
-  <div class="pn">
-    <h2><span>📊 Statistik Performa Hari Ini (Terdeteksi Panel)</span></h2>
-    <div class="grid-kpi" id="stt"></div>
-  </div>
+<!-- ==================== LIVE MARKET WATCH TICKER RIBBON ==================== -->
+<div class="mw-strip" id="mw-ribbon">
+  <!-- Populated dynamically by JS -->
 </div>
 
-<!-- ==================== TAB P: POSISI & ORDER ==================== -->
-<div id="pos-wrap" data-t="p">
-  <div id="pro-split-container">
-    <!-- Order Execution Ticket -->
-    <div class="pn">
-      <h2>
-        <span>⚡ Tiket Eksekusi Order Cepat</span>
-        <span id="live-quote-badge" class="mono" style="font-size:11px;color:var(--c)">Pilih Symbol</span>
-      </h2>
+<!-- ==================== MAIN APPLICATION SHELL ==================== -->
+<div class="app-shell">
 
-      <!-- Quick Symbol Chips -->
-      <div class="row" style="margin-bottom:10px;gap:5px">
-        <small style="margin-right:4px">Favorit:</small>
-        <span class="chip sym-chip" data-sym="XAUUSD">XAUUSD</span>
-        <span class="chip sym-chip" data-sym="EURUSD">EURUSD</span>
-        <span class="chip sym-chip" data-sym="GBPUSD">GBPUSD</span>
-        <span class="chip sym-chip" data-sym="BTCUSD">BTCUSD</span>
-        <span class="chip sym-chip" data-sym="US30">US30</span>
-        <span class="chip sym-chip" data-sym="NAS100">NAS100</span>
-      </div>
-
-      <div class="grid-form">
-        <label class="f">Symbol Instrumen
-          <input id="sym" type="text" list="sl" value="XAUUSD" class="mono" style="font-weight:700">
-          <datalist id="sl"></datalist>
-        </label>
-        <label class="f">Volume (Lot)
-          <input id="lot" type="number" step="0.01" min="0.01" value="0.01" class="mono" style="font-weight:700">
-        </label>
-        <label class="f">Layer (Tag Komentar)
-          <select id="layer">
-            <option value="L1">L1 — Layer Utama</option>
-            <option value="L2">L2 — Layer Kedua</option>
-            <option value="L3">L3 — Layer Ketiga</option>
-            <option value="L4">L4 — Recovery</option>
-            <option value="L5">L5 — Scalping</option>
-          </select>
-        </label>
-        <label class="f">SL Manual (Harga, Opsional)
-          <input id="ord-sl" type="number" step="any" placeholder="Kosong = Auto dari Maks Loss">
-        </label>
-        <label class="f">TP Manual (Harga, Opsional)
-          <input id="ord-tp" type="number" step="any" placeholder="Kosong = Dijaga Engine">
-        </label>
-      </div>
-
-      <!-- Quick Lot Buttons & Risk Calculator -->
-      <div class="row" style="margin-top:9px;justify-content:space-between">
-        <div class="row" style="gap:4px">
-          <small>Lot Cepat:</small>
-          <button type="button" class="chip lot-btn" data-v="0.01">0.01</button>
-          <button type="button" class="chip lot-btn" data-v="0.05">0.05</button>
-          <button type="button" class="chip lot-btn" data-v="0.10">0.10</button>
-          <button type="button" class="chip lot-btn" data-v="0.50">0.50</button>
-          <button type="button" class="chip lot-btn" data-v="1.00">1.00</button>
-          <button type="button" class="chip lot-mult" data-m="0.5">½×</button>
-          <button type="button" class="chip lot-mult" data-m="2">2×</button>
-        </div>
-        <div class="row" style="gap:6px">
-          <button type="button" id="b-calc-lot" class="chip" title="Hitung lot otomatis dari % risiko equity dan jarak SL">🧮 Auto-Lot 0.5% Risiko</button>
-        </div>
-      </div>
-
-      <!-- Big BUY / SELL Execution Buttons -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
-        <button class="buy" id="bb" style="padding:12px;font-size:14px">
-          <span>▲ BUY / LONG</span>
-          <span id="ask-txt" class="mono" style="font-size:12px;opacity:.9"></span>
-        </button>
-        <button class="sell" id="bsell" style="padding:12px;font-size:14px">
-          <span>▼ SELL / SHORT</span>
-          <span id="bid-txt" class="mono" style="font-size:12px;opacity:.9"></span>
-        </button>
-      </div>
-      <div class="row" style="justify-content:space-between;margin-top:8px">
-        <small id="sl-preview">SL otomatis dihitung dari “Maks loss/posisi” jika diaktifkan.</small>
-        <small class="mono" style="color:var(--m)">Shortcut: Klik tombol untuk eksekusi</small>
-      </div>
+  <!-- LEFT NAVIGATION RAIL -->
+  <aside class="nav-rail">
+    <div class="flex md:flex-col gap-1.5 w-full" id="tabs">
+      <button class="nav-btn act" data-go="o">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span class="nav-lbl">Terminal Utama</span>
+      </button>
+      <button class="nav-btn" data-go="p">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span class="nav-lbl">Posisi & Layer</span>
+        <span id="nav-pos-badge" class="mono text-[10px] ml-auto px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300">0</span>
+      </button>
+      <button class="nav-btn" data-go="a">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="nav-lbl">Aturan & Guard</span>
+      </button>
+      <button class="nav-btn" data-go="h">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+        <span class="nav-lbl">Analitik & Log</span>
+      </button>
+      <button class="nav-btn" data-go="k">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <span class="nav-lbl">Koneksi API</span>
+      </button>
     </div>
 
-    <!-- Right Column in Split Mode: Layer Summary + Open Positions -->
-    <div>
-      <!-- Layer Basket Cards -->
-      <div class="grid-kpi" id="ly" style="margin-bottom:12px"></div>
+    <!-- Bottom Rail Quick Presets (Desktop) -->
+    <div class="hidden xl:flex flex-col gap-2 p-2.5 rounded-lg bg-slate-900/70 border border-slate-800/90">
+      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Preset Cepat</div>
+      <button id="preset-prop" class="text-[11px] py-1.5 px-2 justify-start bg-slate-950 hover:border-sky-400">🛡 Prop-Firm &gt;2m Safe</button>
+      <button id="preset-scalp" class="text-[11px] py-1.5 px-2 justify-start bg-slate-950 hover:border-emerald-400">⚡ Scalper Trailing</button>
+      <div class="text-[10px] text-slate-500 leading-tight mt-1">Shortcut: <span class="mono text-slate-300">Alt+1..5</span></div>
+    </div>
+  </aside>
 
-      <!-- Open Positions Table Panel -->
-      <div class="pn">
-        <h2>
-          <span>⚔ Posisi Terbuka (<span id="pos-count-hdr">0</span>)</span>
-          <div class="row" style="gap:5px;text-transform:none;font-weight:500">
-            <button id="qa-bep" style="font-size:11px;padding:4px 8px" title="Kunci BEP Virtual untuk semua posisi yang sedang profit">🛡 Lock BEP Profit</button>
-            <button id="qa-win" style="font-size:11px;padding:4px 8px;border-color:var(--g);color:var(--g)">✓ Tutup Profit</button>
-            <button id="qa-los" style="font-size:11px;padding:4px 8px;border-color:var(--r);color:var(--r)">✕ Tutup Loss</button>
-            <button id="qa-buy" style="font-size:11px;padding:4px 8px">Tutup BUY</button>
-            <button id="qa-sell" style="font-size:11px;padding:4px 8px">Tutup SELL</button>
-            <button id="qa-all" class="kill" style="font-size:11px;padding:4px 9px">Tutup Semua</button>
+  <!-- CENTER & RIGHT WORKSPACE CONTAINER -->
+  <main class="terminal-grid with-dock" id="main-grid">
+
+    <!-- LEFT/CENTER COLUMN: ACTIVE WORKSPACE -->
+    <div class="flex flex-col gap-3 min-w-0">
+
+      <!-- ==================== WORKSPACE O: OVERVIEW & BENTO ==================== -->
+      <div data-t="o" class="flex flex-col gap-3">
+
+        <!-- 8 Institutional KPI Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-4 gap-2.5" id="cards"></div>
+
+        <!-- Quick Command & Prop-Firm Radar Bar -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-sky-400"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              Komando Cepat & Radar Kepatuhan Prop-Firm
+            </span>
+            <div class="flex items-center gap-2">
+              <span id="cooldown-status" class="mono text-[11px] text-emerald-400">✓ Siap Eksekusi</span>
+              <span id="comp-badge" class="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400">✓ PATUH</span>
+            </div>
           </div>
-        </h2>
+          <div class="panel-body">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-2.5 mb-3">
+              <div class="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/80">
+                <div class="flex justify-between text-[11px]"><span class="text-slate-400">Rugi Harian vs Batas</span><b id="hud-dl" class="mono text-slate-200">-</b></div>
+                <div class="bar"><i id="hud-dl-bar"></i></div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/80">
+                <div class="flex justify-between text-[11px]"><span class="text-slate-400">Total Drawdown Akun</span><b id="hud-dd" class="mono text-slate-200">-</b></div>
+                <div class="bar"><i id="hud-dd-bar"></i></div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/80">
+                <div class="flex justify-between text-[11px]"><span class="text-slate-400">Target Profit Harian</span><b id="hud-tp" class="mono text-sky-400">-</b></div>
+                <div class="bar"><i id="hud-tp-bar" style="background:var(--cyan)"></i></div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/80">
+                <div class="flex justify-between text-[11px]"><span class="text-slate-400">Trade &lt; 2 Menit Hari Ini</span><b id="hud-short" class="mono text-emerald-400">0 Trade</b></div>
+                <div id="hud-hold-note" class="text-[10px] text-slate-500 mt-1">Min Hold Guard: 120s</div>
+              </div>
+            </div>
 
-        <div class="tw">
-          <table>
-            <thead>
-              <tr>
-                <th>Symbol</th>
-                <th>Sisi</th>
-                <th>Lot</th>
-                <th>Harga Buka</th>
-                <th>Harga Kini</th>
-                <th>Net P/L ($)</th>
-                <th>Puncak / Trail</th>
-                <th>SL</th>
-                <th>Durasi / Sisa Waktu</th>
-                <th>Layer</th>
-                <th>Aksi Cepat</th>
-              </tr>
-            </thead>
-            <tbody id="tb"></tbody>
-          </table>
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-800/70">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button id="ba2" onclick="$('ba').click()" class="text-xs">ENGINE: OFF</button>
+                <button id="bdry2" onclick="$('bdry').click()" class="text-xs">DRY-RUN: ON</button>
+                <button id="bs" class="text-xs">📅 Set Saldo Awal Hari</button>
+                <button id="bu" class="text-xs">🔓 Buka Kunci Guard</button>
+                <button id="bk" class="btn-kill text-xs">⛔ KILL: Tutup Semua + Kunci</button>
+              </div>
+              <span id="rt" class="text-[11px] text-slate-400 mono"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dual-Mode Interactive Canvas Chart (Equity Curve & Live Symbol Price Action) -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="flex items-center gap-2">
+              <span class="panel-title">📈 Visualisasi Real-Time</span>
+              <div class="flex items-center gap-1 bg-slate-950 p-0.5 rounded-md border border-slate-800">
+                <button id="btn-ch-eq" class="text-[11px] px-2.5 py-1 rounded border-0 on-pill">Kurva Equity (24J)</button>
+                <button id="btn-ch-px" class="text-[11px] px-2.5 py-1 rounded border-0 bg-transparent text-slate-400">Chart Harga Symbol</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 text-[11px]">
+              <span class="hidden sm:inline-flex items-center gap-1 text-sky-400">● Equity / Harga</span>
+              <span class="hidden sm:inline-flex items-center gap-1 text-amber-400">--- Awal Hari / Entry</span>
+              <span class="hidden sm:inline-flex items-center gap-1 text-rose-400">⋯ Batas Guard / SL</span>
+              <button id="b-clear-eq" class="text-[10.5px] px-2 py-0.5">Reset Grafik</button>
+            </div>
+          </div>
+          <div class="p-2 relative bg-slate-950/60">
+            <canvas id="ch" style="width:100%;height:175px;display:block;cursor:crosshair"></canvas>
+            <div id="ch-tip" class="mono" style="position:absolute;top:10px;left:14px;font-size:11px;background:rgba(6,8,15,0.92);padding:4px 9px;border-radius:6px;border:1px solid var(--border-hi);pointer-events:none;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.5)"></div>
+          </div>
+        </div>
+
+        <!-- Today Performance Metrics Grid -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">📊 Metrik Performa Sesi Hari Ini</span>
+            <span class="text-[11px] text-slate-400">Dihitung otomatis dari eksekusi sesi berjalan</span>
+          </div>
+          <div class="panel-body">
+            <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2" id="stt"></div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<!-- ==================== TAB A: ATURAN & GUARD ==================== -->
-<div data-t="a">
-  <div class="pn" style="margin-bottom:12px">
-    <h2>
-      <span>💾 Manajemen Profil & Backup Konfigurasi</span>
-      <span style="font-size:11px;color:var(--m);font-weight:400;text-transform:none">Tersimpan otomatis di browser (`mtp_c`)</span>
-    </h2>
-    <div class="row" style="justify-content:space-between">
-      <div class="row">
-        <button id="b-exp-cfg">⬇ Export Config (.json)</button>
-        <button id="b-imp-cfg">⬆ Import Config (.json)</button>
-        <input type="file" id="f-imp-cfg" accept=".json" style="display:none">
-        <button id="b-rst-cfg" style="color:var(--a)">↺ Reset ke Default</button>
-      </div>
-      <small>Gunakan fitur Export untuk mem-backup aturan *Loss Guard* dan *Auto-Close* Anda.</small>
-    </div>
-  </div>
-  <div id="set"></div>
-</div>
+      <!-- ==================== WORKSPACE P: POSISI TERBUKA & LAYER MATRIX ==================== -->
+      <div data-t="p" class="flex flex-col gap-3">
+        <!-- Layer Basket Strip -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5" id="ly"></div>
 
-<!-- ==================== TAB H: RIWAYAT & LOG ==================== -->
-<div data-t="h">
-  <div class="pn">
-    <h2>
-      <span>📜 Riwayat Trade Tertutup (Nilai P/L ≈ Terakhir Terlihat)</span>
-      <div class="row" style="gap:6px;text-transform:none">
-        <input id="h-search" type="text" placeholder="Cari symbol / alasan..." style="width:170px;padding:4px 8px;font-size:11.5px">
-        <button id="bx" style="padding:4px 10px;font-size:11.5px">📥 Export CSV</button>
-        <button id="bhc" style="padding:4px 10px;font-size:11.5px;color:var(--r)">🗑 Hapus Riwayat</button>
+        <!-- Open Positions Institutional DataGrid -->
+        <div class="panel">
+          <div class="panel-header flex-wrap">
+            <div class="flex items-center gap-2">
+              <span class="panel-title">⚔ Posisi Terbuka Aktif (<span id="pos-count-hdr" class="text-sky-400 mono">0</span>)</span>
+              <span class="text-[11px] text-slate-400 hidden sm:inline">• Bar kuning = &lt;120 dtk (Zona Prop-Firm)</span>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button id="qa-bep" class="text-[11px] px-2.5 py-1 border-sky-500/40 text-sky-300" title="Pasang kunci BEP Virtual (+$0.20) pada semua posisi profit">🛡 Lock BEP Profit</button>
+              <button id="qa-win" class="text-[11px] px-2.5 py-1 border-emerald-500/40 text-emerald-400">✓ Tutup Profit</button>
+              <button id="qa-los" class="text-[11px] px-2.5 py-1 border-rose-500/40 text-rose-400">✕ Tutup Loss</button>
+              <button id="qa-buy" class="text-[11px] px-2 py-1">Tutup BUY</button>
+              <button id="qa-sell" class="text-[11px] px-2 py-1">Tutup SELL</button>
+              <button id="qa-all" class="btn-kill text-[11px] px-2.5 py-1">Tutup Semua</button>
+            </div>
+          </div>
+          <div class="tw">
+            <table>
+              <thead>
+                <tr>
+                  <th>Symbol / ID</th>
+                  <th>Sisi</th>
+                  <th>Lot</th>
+                  <th>Harga Buka</th>
+                  <th>Harga Kini</th>
+                  <th>Net P/L ($)</th>
+                  <th>Puncak / Trail</th>
+                  <th>SL Harga</th>
+                  <th>Durasi &amp; Sisa Waktu</th>
+                  <th>Layer</th>
+                  <th>Aksi Eksekusi</th>
+                </tr>
+              </thead>
+              <tbody id="tb"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    </h2>
-    <div class="tw">
-      <table>
-        <thead>
-          <tr>
-            <th>Waktu Tutup</th>
-            <th>Symbol</th>
-            <th>Sisi</th>
-            <th>Lot</th>
-            <th>Durasi Tahan</th>
-            <th>P/L Realisasi ≈</th>
-            <th>Alasan Penutupan</th>
-          </tr>
-        </thead>
-        <tbody id="hb"></tbody>
-      </table>
-    </div>
-  </div>
 
-  <div class="pn">
-    <h2>
-      <span>🖥 Terminal Aktivitas & Sistem Log</span>
-      <div class="row" style="gap:5px;text-transform:none">
-        <button class="chip log-flt active" data-lf="all">Semua</button>
-        <button class="chip log-flt" data-lf="g">Eksekusi / Profit</button>
-        <button class="chip log-flt" data-lf="w">Peringatan</button>
-        <button class="chip log-flt" data-lf="r">Error / Guard</button>
-        <button id="b-clr-log" class="chip">Bersihkan Log</button>
+      <!-- ==================== WORKSPACE A: ATURAN, GUARD & RATE-LIMIT ==================== -->
+      <div data-t="a" style="display:none" class="flex flex-col gap-3">
+        <!-- API Rate Limit & Profile Manager -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">📡 Konfigurasi Mode Hemat API & Kuota</span>
+            </div>
+            <div class="panel-body grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="f">Mode Kecepatan Polling
+                <select id="lm">
+                  <option value="n">Normal (Cepat - Posisi 4s)</option>
+                  <option value="h">Hemat (Disarankan - Posisi 6s)</option>
+                  <option value="u">Ultra Hemat (Posisi 10s)</option>
+                </select>
+              </label>
+              <label class="f">Batas Request / Menit (Global Pool)
+                <input id="bud" type="number" min="20">
+              </label>
+              <div class="sm:col-span-2 text-[11px] text-slate-400">
+                Auto-close waktu bekerja menggunakan jam internal posisi tanpa memakan request API tambahan. Slot request selalu dicadangkan untuk eksekusi order & penutupan darurat.
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">💾 Backup & Preset Konfigurasi</span>
+              <span class="text-[11px] text-slate-400 mono">localStorage: mtp_c</span>
+            </div>
+            <div class="panel-body flex flex-col justify-between gap-3">
+              <div class="flex flex-wrap gap-2">
+                <button id="b-exp-cfg" class="text-xs">⬇ Export JSON</button>
+                <button id="b-imp-cfg" class="text-xs">⬆ Import JSON</button>
+                <input type="file" id="f-imp-cfg" accept=".json" style="display:none">
+                <button id="b-rst-cfg" class="text-xs text-amber-400 border-amber-500/40">↺ Reset Default</button>
+              </div>
+              <div class="text-[11px] text-slate-400">
+                Simpan aturan Loss Guard, Auto-Close waktu, dan Trailing Profit Anda ke file JSON agar dapat dipindahkan antar perangkat.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Rule Builder Cards -->
+        <div id="set" class="flex flex-col gap-3"></div>
       </div>
-    </h2>
-    <div id="log"></div>
-  </div>
+
+      <!-- ==================== WORKSPACE H: ANALITIK & LOG ==================== -->
+      <div data-t="h" style="display:none" class="flex flex-col gap-3">
+        <div class="panel">
+          <div class="panel-header flex-wrap">
+            <span class="panel-title">📜 Jurnal Riwayat Trade Tertutup (P/L ≈ Terakhir Terlihat)</span>
+            <div class="flex items-center gap-2">
+              <input id="h-search" type="text" placeholder="Filter symbol / alasan..." style="width:180px;padding:4px 9px;font-size:11.5px">
+              <button id="bx" class="text-xs py-1 px-2.5">📥 Export CSV</button>
+              <button id="bhc" class="text-xs py-1 px-2.5 text-rose-400 border-rose-500/30">🗑 Hapus</button>
+            </div>
+          </div>
+          <div class="tw">
+            <table>
+              <thead>
+                <tr>
+                  <th>Waktu Tutup</th>
+                  <th>Symbol</th>
+                  <th>Sisi</th>
+                  <th>Volume (Lot)</th>
+                  <th>Durasi Tahan</th>
+                  <th>P/L Realisasi ≈</th>
+                  <th>Alasan Penutupan</th>
+                </tr>
+              </thead>
+              <tbody id="hb"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header flex-wrap">
+            <span class="panel-title">🖥 Sistem Telemetry & Log Eksekusi</span>
+            <div class="flex items-center gap-1.5">
+              <button class="chip log-flt active" data-lf="all">Semua</button>
+              <button class="chip log-flt" data-lf="g">Eksekusi / Profit</button>
+              <button class="chip log-flt" data-lf="w">Peringatan</button>
+              <button class="chip log-flt" data-lf="r">Error / Guard</button>
+              <button id="b-clr-log" class="chip">Bersihkan</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div id="log" class="h-64 overflow-y-auto p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== WORKSPACE K: KONEKSI API & PROXY ==================== -->
+      <div data-t="k" style="display:none" class="flex flex-col gap-3">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">🔌 Manajer Koneksi Match-Trader API & Proxy</span>
+            <span id="rl" class="mono text-[11px] text-sky-400">Mode Sandbox Aktif</span>
+          </div>
+          <div class="panel-body">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <label class="f">Mode Koneksi
+                <select id="mode">
+                  <option value="proxy">Proxy Vercel (Aman, Disarankan)</option>
+                  <option value="direct">Langsung ke API (Token di Browser)</option>
+                  <option value="sim">Simulasi / Sandbox Lokal (Demo Tanpa API)</option>
+                </select>
+              </label>
+              <label class="f" id="wu">URL Proxy (`/api/mt` atau `http://localhost:3000/api/mt`)
+                <input id="purl" type="text" placeholder="/api/mt">
+              </label>
+              <label class="f" id="wa">Admin Key (Header `x-admin-key` Proxy)
+                <input id="adm" type="password" autocomplete="off" placeholder="Masukkan Admin Key...">
+              </label>
+              <label class="f" id="wt" style="display:none">Token Trader API (`Bearer`)
+                <input id="tok" type="password" autocomplete="off" placeholder="Masukkan Bearer Token...">
+              </label>
+              <label class="f" id="wb" style="display:none">Base URL Server Match-Trader
+                <input id="base" type="text" placeholder="https://trader-api.match-trader.com">
+              </label>
+              <label class="f" id="wsim" style="display:none">Modal Awal Sandbox Simulator ($)
+                <input id="simbal" type="number" step="100" value="10000">
+              </label>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800">
+              <div class="flex flex-wrap items-center gap-2">
+                <button id="bc" class="btn-primary px-4 py-2 text-xs font-bold">⚡ Hubungkan ke Server</button>
+                <button id="bd" class="px-3 py-2 text-xs">Putus Koneksi</button>
+                <button id="bsim-quick" class="sim-pill px-3 py-2 text-xs">🚀 Aktifkan Sandbox Demo</button>
+                <label class="k"><input type="checkbox" id="rem"> Ingat kredensial di perangkat ini</label>
+              </div>
+              <span class="text-[11px] text-slate-400">Kompatibel penuh dengan endpoint `/v1/account-summary`, `/v1/positions`, dan `/v1/quotes`.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== RIGHT DOCK: INSTITUTIONAL ORDER TICKET ==================== -->
+    <aside id="order-dock" class="panel sticky top-14">
+      <div class="panel-header">
+        <span class="panel-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="text-emerald-400"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Tiket Order Institusional
+        </span>
+        <span id="live-quote-badge" class="mono text-[11px] text-sky-400 font-bold">XAUUSD</span>
+      </div>
+
+      <div class="panel-body flex flex-col gap-3">
+        <!-- Quick Symbol Selector Chips -->
+        <div class="flex flex-wrap gap-1">
+          <span class="chip sym-chip active" data-sym="XAUUSD">XAUUSD</span>
+          <span class="chip sym-chip" data-sym="EURUSD">EURUSD</span>
+          <span class="chip sym-chip" data-sym="GBPUSD">GBPUSD</span>
+          <span class="chip sym-chip" data-sym="BTCUSD">BTCUSD</span>
+          <span class="chip sym-chip" data-sym="NAS100">NAS100</span>
+          <span class="chip sym-chip" data-sym="US30">US30</span>
+        </div>
+
+        <!-- Symbol & Layer Row -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <label class="f">Instrumen Symbol
+            <input id="sym" type="text" list="sl" value="XAUUSD" class="mono font-bold text-sm uppercase">
+            <datalist id="sl"></datalist>
+          </label>
+          <label class="f">Layer Tag
+            <select id="layer" class="font-semibold">
+              <option value="L1">L1 — Utama</option>
+              <option value="L2">L2 — Layer 2</option>
+              <option value="L3">L3 — Layer 3</option>
+              <option value="L4">L4 — Recovery</option>
+              <option value="L5">L5 — Scalping</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Volume / Lot Control -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-[11px] font-semibold text-slate-400">Volume Transaksi (Lot)</span>
+            <button type="button" id="b-calc-lot" class="text-[10.5px] px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25">🧮 Auto-Lot 0.5% Risk</button>
+          </div>
+          <input id="lot" type="number" step="0.01" min="0.01" value="0.01" class="mono font-bold text-base text-center py-1.5">
+          <div class="grid grid-cols-7 gap-1 mt-1.5">
+            <button type="button" class="chip lot-btn justify-center" data-v="0.01">.01</button>
+            <button type="button" class="chip lot-btn justify-center" data-v="0.05">.05</button>
+            <button type="button" class="chip lot-btn justify-center" data-v="0.10">.10</button>
+            <button type="button" class="chip lot-btn justify-center" data-v="0.50">.50</button>
+            <button type="button" class="chip lot-btn justify-center" data-v="1.00">1.0</button>
+            <button type="button" class="chip lot-mult justify-center" data-m="0.5">½×</button>
+            <button type="button" class="chip lot-mult justify-center" data-m="2">2×</button>
+          </div>
+        </div>
+
+        <!-- Optional SL / TP Price Inputs -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <label class="f">SL Harga (Opsional)
+            <input id="ord-sl" type="number" step="any" placeholder="Auto Maks Loss" class="mono text-xs">
+          </label>
+          <label class="f">TP Harga (Opsional)
+            <input id="ord-tp" type="number" step="any" placeholder="Dijaga Engine" class="mono text-xs">
+          </label>
+        </div>
+
+        <!-- Pre-Trade Risk Telemetry Box -->
+        <div class="p-2.5 rounded-lg bg-slate-950/90 border border-slate-800/90 text-[11px] flex flex-col gap-1">
+          <div class="flex justify-between">
+            <span class="text-slate-400">Estimasi SL Otomatis:</span>
+            <span id="sl-preview" class="mono text-amber-400 font-semibold">Sesuai Maks Loss/Pos</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Auto-Close Timer:</span>
+            <span id="timer-preview" class="mono text-sky-400 font-semibold">133 dtk</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Tag Komentar API:</span>
+            <span id="tag-preview" class="mono text-slate-300">FGK|L1</span>
+          </div>
+        </div>
+
+        <!-- Big Institutional BUY / SELL Execution Buttons -->
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <button class="btn-sell flex-col py-3 px-2 rounded-lg" id="bsell">
+            <span class="text-[11px] tracking-wider opacity-90">SELL / BID</span>
+            <span id="bid-txt" class="mono text-sm font-extrabold mt-0.5">2642.50</span>
+          </button>
+          <button class="btn-buy flex-col py-3 px-2 rounded-lg" id="bb">
+            <span class="text-[11px] tracking-wider opacity-90">BUY / ASK</span>
+            <span id="ask-txt" class="mono text-sm font-extrabold mt-0.5">2642.75</span>
+          </button>
+        </div>
+
+        <!-- Mini Recent Activity Feed inside Dock -->
+        <div class="pt-2 border-t border-slate-800/80">
+          <div class="flex justify-between items-center mb-1.5">
+            <span class="text-[10.5px] font-bold uppercase tracking-wider text-slate-400">Log Aktivitas Terkini</span>
+            <button onclick="show('h')" class="text-[10px] py-0.5 px-1.5 border-0 text-sky-400 hover:underline bg-transparent">Lihat Semua →</button>
+          </div>
+          <div id="mini-log" class="mono text-[10.5px] text-slate-400 space-y-1 max-h-28 overflow-y-auto bg-slate-950/70 p-2 rounded border border-slate-800/70"></div>
+        </div>
+      </div>
+    </aside>
+
+  </main>
 </div>
 
 <!-- Toast Notification Container -->
 <div id="toast-box"></div>
 
-<!-- Custom Non-Blocking Modal (Replaces native confirm/prompt) -->
+<!-- Custom Non-Blocking Modal -->
 <div id="modal-backdrop">
   <div class="modal-card">
-    <h2 id="mdl-title" style="font-size:13px;margin-bottom:8px">Konfirmasi Tindakan</h2>
-    <p id="mdl-msg" style="color:var(--t);font-size:13px;margin:0 0 12px;line-height:1.5"></p>
+    <h2 id="mdl-title" class="text-sm font-bold text-sky-400 uppercase tracking-wider mb-2">Konfirmasi Eksekusi</h2>
+    <p id="mdl-msg" class="text-slate-200 text-xs leading-relaxed mb-4"></p>
     <div id="mdl-input-wrap" style="display:none;margin-bottom:14px">
-      <input id="mdl-input" type="number" step="any" class="mono">
+      <input id="mdl-input" type="number" step="any" class="mono text-sm">
     </div>
-    <div class="row" style="justify-content:flex-end;gap:8px">
-      <button id="mdl-cancel">Batal</button>
-      <button id="mdl-ok" class="on" style="font-weight:700">Ya, Lanjutkan</button>
+    <div class="flex justify-end gap-2">
+      <button id="mdl-cancel" class="px-3 py-1.5 text-xs">Batal</button>
+      <button id="mdl-ok" class="btn-primary px-4 py-1.5 text-xs font-bold">Ya, Lanjutkan</button>
     </div>
   </div>
 </div>
@@ -767,11 +1006,11 @@ const f = (v, d = 2) => Number.isFinite(+v) && v !== null ? (+v).toFixed(d) : '-
 const D = {
   lm: 'h', bud: 280, mode: 'proxy', purl: '/api/mt', base: 'https://trader-api.match-trader.com',
   dry: true, timeOn: true, sec: 130, buf: 3, tmode: 'always',
-  lot: 0.01, maxLoss: 0, autoSL: true, contract: 100, posTP: 0,
+  lot: 0.01, maxLoss: 25, autoSL: true, contract: 100, posTP: 0,
   layerBy: 'sym', layerTP: 0, layerSL: 0, allTP: 0, allSL: 0,
-  dayL: 0, dayLP: 0, ddL: 0, ddLP: 0, initBal: 0, mlv: 0, maxPos: 0, maxLot: 0,
+  dayL: 0, dayLP: 4, ddL: 0, ddLP: 8, initBal: 10000, mlv: 100, maxPos: 10, maxLot: 2,
   resetH: 0, guardClose: true, poll: 4, confirm: true,
-  // Upgraded Pro Rules
+  // Pro Extended Keys
   trailStart: 0, trailStep: 0, minHoldSec: 120, blockShortHold: false,
   dayTP: 0, cooldownSec: 0, maxTradesDay: 0, soundOn: true
 };
@@ -783,52 +1022,63 @@ let C = { ...D, ...(ld('mtp_c') || {}) };
 let DAY = ld('mtp_day');
 let LOCK = ld('mtp_lock');
 let RQ = [], RG = null, F0 = 0, tp = 0, ts = 0;
-let PREV = {}, WHY = {}, TAB = 'k';
+let PREV = {}, WHY = {}, TAB = 'o';
 let HIST = ld('mtp_h') || [];
 let EQS = (ld('mtp_e') || []).filter(a => a[0] > Date.now() - 864e5);
 let TOK = '', ADM = '', on = false, armed = false, POS = [], SUM = null, G = {};
 let off = 0, hold = 0, busy = false, lastOk = 0, n = 0, SYMS = {}, PEND = {}, LG = [];
 
-// Upgraded In-Memory Trackers
-let PEAK = {};       // Peak profit per position ID for Virtual Trailing
-let BEP_LOCK = {};   // Positions with manual/auto Breakeven lock ($0.50 floor)
-let LAST_ORD_T = 0;  // Timestamp of last order for cooldown
-let LAST_PING = 0;   // Latest API latency in ms
+// Pro Trackers
+let PEAK = {};
+let BEP_LOCK = {};
+let LAST_ORD_T = 0;
+let LAST_PING = 12;
 let LOG_FILTER = 'all';
-let SPLIT_VIEW = false;
+let DOCK_OPEN = true;
+let CHART_MODE = 'eq'; // 'eq' or 'px'
 
-// Sandbox Simulator State
+// Live Sandbox Simulator State
 let SIM_ON = false;
-let SIM_BAL = 10000;
-let SIM_ID_SEQ = 9001;
+let SIM_BAL = C.initBal > 0 ? C.initBal : 10000;
+let SIM_ID_SEQ = 9410;
 const SIM_QUOTES = {
-  XAUUSD: { bid: 2642.50, ask: 2642.75, step: 0.01, digits: 2, contractSize: 100 },
-  EURUSD: { bid: 1.08420, ask: 1.08432, step: 0.01, digits: 5, contractSize: 100000 },
-  GBPUSD: { bid: 1.29640, ask: 1.29655, step: 0.01, digits: 5, contractSize: 100000 },
-  BTCUSD: { bid: 88420.0, ask: 88455.0, step: 0.01, digits: 1, contractSize: 1 },
-  US30:   { bid: 43850.0, ask: 43853.5, step: 0.01, digits: 1, contractSize: 1 },
-  NAS100: { bid: 20640.0, ask: 20642.2, step: 0.01, digits: 1, contractSize: 1 }
+  XAUUSD: { bid: 2642.50, ask: 2642.74, step: 0.01, digits: 2, contractSize: 100, chg: +0.64, hist: [] },
+  EURUSD: { bid: 1.08420, ask: 1.08431, step: 0.01, digits: 5, contractSize: 100000, chg: +0.18, hist: [] },
+  GBPUSD: { bid: 1.29640, ask: 1.29654, step: 0.01, digits: 5, contractSize: 100000, chg: -0.12, hist: [] },
+  BTCUSD: { bid: 88420.0, ask: 88448.0, step: 0.01, digits: 1, contractSize: 1, chg: +2.45, hist: [] },
+  NAS100: { bid: 20640.5, ask: 20642.3, step: 0.01, digits: 1, contractSize: 1, chg: +0.85, hist: [] },
+  US30:   { bid: 43850.0, ask: 43853.2, step: 0.01, digits: 1, contractSize: 1, chg: -0.21, hist: [] }
 };
+
+// Seed initial price history for symbol chart
+for (const s in SIM_QUOTES) {
+  let p = SIM_QUOTES[s].bid;
+  const v = s === 'XAUUSD' ? 0.5 : s === 'BTCUSD' ? 35 : s.includes('US') || s.includes('NAS') ? 5 : 0.00025;
+  for (let i = 60; i >= 0; i--) {
+    p = +(p + (Math.random() - 0.495) * v).toFixed(SIM_QUOTES[s].digits);
+    SIM_QUOTES[s].hist.push([Date.now() - i * 2000, p]);
+  }
+}
 
 const np = p => +(p.netProfit ?? p.profit ?? 0);
 const lk = p => p.symbol + '|' + p.side + (C.layerBy === 'tag' ? '|' + ((/L\d+/i.exec(p.comment || '') || ['*'])[0].toUpperCase()) : '');
 const minp = (...a) => { const v = a.filter(x => x > 0); return v.length ? Math.min(...v) : 0; };
 
 // ============================================================================
-// CUSTOM MODAL & TOAST HELPERS (No native alert/confirm/prompt)
+// CUSTOM NON-BLOCKING MODAL & TOASTS
 // ============================================================================
 function toast(msg, type = 'c') {
   const box = $('toast-box');
   if (!box) return;
   const el = document.createElement('div');
-  const col = { g: 'var(--g)', r: 'var(--r)', w: 'var(--a)', c: 'var(--c)' }[type] || 'var(--c)';
+  const col = { g: 'var(--emerald)', r: 'var(--rose)', w: 'var(--amber)', c: 'var(--cyan)' }[type] || 'var(--cyan)';
   el.className = 'toast-item';
   el.style.borderLeftColor = col;
-  el.innerHTML = `<div style="font-weight:600;margin-bottom:2px;font-size:11px;color:${col}">${
-    type === 'g' ? '✓ BERHASIL' : type === 'r' ? '⛔ PERINGATAN / ERROR' : type === 'w' ? '⚠ PERHATIAN' : 'ℹ INFO SISTEM'
+  el.innerHTML = `<div style="font-weight:700;margin-bottom:2px;font-size:10.5px;letter-spacing:.05em;color:${col}">${
+    type === 'g' ? '✓ EKSEKUSI BERHASIL' : type === 'r' ? '⛔ PERINGATAN GUARD' : type === 'w' ? '⚠ PERHATIAN' : 'ℹ TELEMETRI SISTEM'
   }</div><div>${esc(msg)}</div>`;
   box.appendChild(el);
-  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 250); }, 4200);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 250); }, 4000);
 }
 
 function askConfirm(title, message) {
@@ -871,7 +1121,7 @@ function askPrompt(title, message, defVal = '') {
 }
 
 // ============================================================================
-// UI HELPERS & LOGGING
+// LOGGING & STATUS BAR
 // ============================================================================
 function log(m, c = '') {
   const timeStr = new Date().toLocaleTimeString('id-ID');
@@ -882,19 +1132,27 @@ function log(m, c = '') {
 
 function renderLog() {
   const box = $('log');
-  if (!box) return;
-  const filtered = LOG_FILTER === 'all' ? LG : LG.filter(x => x.c === LOG_FILTER);
-  box.innerHTML = filtered.map(x => {
-    const cl = { g: 'pos', r: 'neg', w: 'warn' }[x.c] || '';
-    return `<div class="${cl}"><span style="opacity:.55">[${esc(x.t)}]</span> ${esc(x.m)}</div>`;
-  }).join('') || '<div style="color:var(--m);opacity:.6">Tidak ada catatan log untuk filter ini.</div>';
+  if (box) {
+    const filtered = LOG_FILTER === 'all' ? LG : LG.filter(x => x.c === LOG_FILTER);
+    box.innerHTML = filtered.map(x => {
+      const cl = { g: 'pos', r: 'neg', w: 'warn' }[x.c] || 'text-slate-300';
+      return `<div class="${cl} py-0.5 border-b border-slate-900/80"><span class="text-slate-500">[${esc(x.t)}]</span> ${esc(x.m)}</div>`;
+    }).join('') || '<div class="text-slate-500">Tidak ada log untuk filter ini.</div>';
+  }
+  const mini = $('mini-log');
+  if (mini) {
+    mini.innerHTML = LG.slice(0, 6).map(x => {
+      const cl = { g: 'pos', r: 'neg', w: 'warn' }[x.c] || '';
+      return `<div class="truncate ${cl}"><span class="opacity-50">${esc(x.t)}</span> ${esc(x.m)}</div>`;
+    }).join('');
+  }
 }
 
 let bt;
 function bn(m) {
   const b = $('bn');
-  b.textContent = m;
-  b.style.display = 'block';
+  b.innerHTML = `<span>⛔ ${esc(m)}</span><button onclick="$('bn').style.display='none'" class="text-xs px-2 py-0.5 bg-black/30 rounded">Tutup</button>`;
+  b.style.display = 'flex';
   clearTimeout(bt);
   bt = setTimeout(() => b.style.display = 'none', 9000);
   toast(m, 'r');
@@ -902,40 +1160,41 @@ function bn(m) {
 
 function setSt() {
   const s = $('st');
-  const modeTxt = SIM_ON ? '● SIMULASI AKTIF' : (on ? (Date.now() < hold ? '● Jeda Rate-Limit' : '● Terhubung') : '● Terputus');
+  const modeTxt = SIM_ON ? '● SANDBOX LIVE' : (on ? (Date.now() < hold ? '● Jeda Rate-Limit' : '● API TERHUBUNG') : '● Terputus');
   s.textContent = modeTxt + (armed ? ' · ENGINE ON' + (C.dry ? ' (DRY)' : ' (LIVE)') : '');
-  s.style.color = on ? (armed && !C.dry ? 'var(--a)' : 'var(--g)') : 'var(--r)';
-  s.style.borderColor = on ? (armed && !C.dry ? 'var(--a)' : 'var(--g)') : 'var(--r)';
+  s.style.color = on ? (armed && !C.dry ? 'var(--amber)' : 'var(--emerald)') : 'var(--rose)';
 
+  const engCls = armed ? 'on-pill text-xs px-2.5 py-1.5' : 'text-xs px-2.5 py-1.5';
   $('ba').textContent = 'ENGINE: ' + (armed ? 'ON' : 'OFF');
-  $('ba').className = armed ? 'on' : '';
+  $('ba').className = engCls;
   if ($('ba2')) {
     $('ba2').textContent = 'ENGINE: ' + (armed ? 'ON' : 'OFF');
-    $('ba2').className = armed ? 'on' : '';
+    $('ba2').className = engCls;
   }
 
+  const dryCls = C.dry ? 'on-pill text-xs px-2.5 py-1.5' : 'warn-pill text-xs px-2.5 py-1.5';
   $('bdry').textContent = 'DRY-RUN: ' + (C.dry ? 'ON' : 'OFF');
-  $('bdry').className = C.dry ? 'on' : 'warn-btn';
+  $('bdry').className = dryCls;
   if ($('bdry2')) {
     $('bdry2').textContent = 'DRY-RUN: ' + (C.dry ? 'ON' : 'OFF');
-    $('bdry2').className = C.dry ? 'on' : 'warn-btn';
+    $('bdry2').className = dryCls;
   }
 
-  $('bsnd').textContent = '🔔 Suara: ' + (C.soundOn ? 'ON' : 'OFF');
-  $('bsnd').className = C.soundOn ? 'on' : '';
+  $('bsnd').textContent = C.soundOn ? '🔔' : '🔕';
+  $('bsnd').className = C.soundOn ? 'on-pill text-xs px-2 py-1.5' : 'text-xs px-2 py-1.5';
 
-  $('bsim-top').textContent = '🧪 Simulasi: ' + (SIM_ON ? 'ON' : 'OFF');
-  $('bsim-top').className = SIM_ON ? 'sim-btn' : '';
+  $('bsim-top').textContent = '🧪 Sandbox: ' + (SIM_ON ? 'ON' : 'OFF');
+  $('bsim-top').className = SIM_ON ? 'sim-pill text-xs px-2.5 py-1.5' : 'text-xs px-2.5 py-1.5';
   $('sim-badge').style.display = SIM_ON ? 'inline-block' : 'none';
 }
 
-const beep = (freq = 880, dur = 420) => {
+const beep = (freq = 880, dur = 380) => {
   if (!C.soundOn) return;
   try {
     const a = new (window.AudioContext || window.webkitAudioContext)();
     const o = a.createOscillator();
     const g = a.createGain();
-    g.gain.value = 0.12;
+    g.gain.value = 0.1;
     o.connect(g);
     g.connect(a.destination);
     o.frequency.value = freq;
@@ -947,31 +1206,64 @@ const beep = (freq = 880, dur = 420) => {
 const notify = t => { try { new Notification('Match-Trader Guard', { body: t }) } catch (e) {} };
 
 // ============================================================================
-// API & SANDBOX SIMULATOR ADAPTER
+// MARKET WATCH RIBBON & SANDBOX SIMULATOR ENGINE
 // ============================================================================
+function renderMarketWatch() {
+  const curSym = ($('sym') ? $('sym').value : 'XAUUSD').toUpperCase();
+  $('mw-ribbon').innerHTML = Object.keys(SIM_QUOTES).map(s => {
+    const q = SIM_QUOTES[s];
+    const spread = ((q.ask - q.bid) * (q.digits === 5 ? 10000 : q.digits === 2 ? 10 : 1)).toFixed(1);
+    const active = s === curSym ? 'active' : '';
+    return `<div class="mw-item ${active}" onclick="selectSymbol('${s}')">
+      <div>
+        <div class="flex items-center gap-1.5">
+          <b class="text-xs text-white">${s}</b>
+          <span class="mono text-[10px] ${q.chg >= 0 ? 'pos' : 'neg'}">${q.chg >= 0 ? '+' : ''}${q.chg.toFixed(2)}%</span>
+        </div>
+        <div class="mono text-[11px] text-slate-300">
+          <span class="text-rose-400">${q.bid.toFixed(q.digits)}</span> / <span class="text-emerald-400">${q.ask.toFixed(q.digits)}</span>
+        </div>
+      </div>
+      <span class="text-[10px] mono px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">${spread}</span>
+    </div>`;
+  }).join('');
+}
+
+window.selectSymbol = function(s) {
+  $('sym').value = s;
+  document.querySelectorAll('.sym-chip').forEach(c => c.classList.toggle('active', c.dataset.sym === s));
+  updateLiveQuotePreview();
+  renderMarketWatch();
+  if (CHART_MODE === 'px') draw();
+};
+
 function stepSimulatorQuotes() {
   for (const sym in SIM_QUOTES) {
     const q = SIM_QUOTES[sym];
-    const vol = sym === 'XAUUSD' ? 0.45 : sym === 'BTCUSD' ? 28 : sym === 'US30' || sym === 'NAS100' ? 4.5 : 0.00018;
-    const delta = (Math.random() - 0.495) * vol;
+    const vol = sym === 'XAUUSD' ? 0.42 : sym === 'BTCUSD' ? 26 : sym === 'US30' || sym === 'NAS100' ? 4.2 : 0.00016;
+    const delta = (Math.random() - 0.493) * vol;
     const spread = q.ask - q.bid;
     q.bid = +(q.bid + delta).toFixed(q.digits);
     q.ask = +(q.bid + spread).toFixed(q.digits);
+    q.hist.push([Date.now(), q.bid]);
+    if (q.hist.length > 90) q.hist.shift();
   }
-  // Update open simulated positions
+  renderMarketWatch();
+
+  if (!SIM_ON) return;
   POS.forEach(p => {
     const q = SIM_QUOTES[p.symbol] || { bid: p.openPrice, ask: p.openPrice, digits: 2, contractSize: 100 };
     p.currentPrice = p.side === 'BUY' ? q.bid : q.ask;
     const diff = p.side === 'BUY' ? (p.currentPrice - p.openPrice) : (p.openPrice - p.currentPrice);
     p.netProfit = +(diff * p.volume * (q.contractSize || 100)).toFixed(2);
     p.profit = p.netProfit;
-    // Check simulated hardware SL / TP
+
     if (p.slPrice) {
       if ((p.side === 'BUY' && p.currentPrice <= p.slPrice) || (p.side === 'SELL' && p.currentPrice >= p.slPrice)) {
         WHY[p.id] = 'Stop Loss (Simulasi)';
         SIM_BAL = +(SIM_BAL + p.netProfit).toFixed(2);
         POS = POS.filter(x => x.id !== p.id);
-        log(`🎯 SL Tersentuh ${p.symbol} #${p.id} (${f(p.netProfit)})`, p.netProfit >= 0 ? 'g' : 'r');
+        log(`🎯 SL Tersentuh ${p.symbol} #${p.id} ($${f(p.netProfit)})`, p.netProfit >= 0 ? 'g' : 'r');
       }
     }
     if (p.tpPrice) {
@@ -979,19 +1271,19 @@ function stepSimulatorQuotes() {
         WHY[p.id] = 'Take Profit (Simulasi)';
         SIM_BAL = +(SIM_BAL + p.netProfit).toFixed(2);
         POS = POS.filter(x => x.id !== p.id);
-        log(`🎯 TP Tersentuh ${p.symbol} #${p.id} (+${f(p.netProfit)})`, 'g');
+        log(`🎯 TP Tersentuh ${p.symbol} #${p.id} (+$${f(p.netProfit)})`, 'g');
       }
     }
   });
 }
 
 async function simApi(path, o = {}) {
-  LAST_PING = Math.floor(8 + Math.random() * 14);
-  $('ping-badge').textContent = `Ping: ${LAST_PING}ms (Sim)`;
+  LAST_PING = Math.floor(7 + Math.random() * 10);
+  $('ping-badge').textContent = `${LAST_PING}ms (Sim)`;
   if (path === '/v1/account-summary') {
     const fl = POS.reduce((a, p) => a + np(p), 0);
     const eq = +(SIM_BAL + fl).toFixed(2);
-    const margin = +(POS.reduce((a, p) => a + p.volume * 250, 0)).toFixed(2);
+    const margin = +(POS.reduce((a, p) => a + p.volume * 260, 0)).toFixed(2);
     const marginLevel = margin > 0 ? (eq / margin) * 100 : 0;
     return { balance: SIM_BAL, equity: eq, margin, freeMargin: eq - margin, marginLevel };
   }
@@ -1017,7 +1309,7 @@ async function simApi(path, o = {}) {
   if (path === '/v1/positions' && o.method === 'POST') {
     const b = o.body || {};
     const sym = (b.symbol || 'XAUUSD').toUpperCase();
-    const q = SIM_QUOTES[sym] || { bid: 2640, ask: 2640.3, digits: 2, contractSize: 100 };
+    const q = SIM_QUOTES[sym] || { bid: 2642, ask: 2642.3, digits: 2, contractSize: 100 };
     const openPrice = b.side === 'BUY' ? q.ask : q.bid;
     const id = String(SIM_ID_SEQ++);
     const newPos = {
@@ -1032,7 +1324,7 @@ async function simApi(path, o = {}) {
       openTime: Date.now() + off,
       netProfit: 0,
       profit: 0,
-      comment: b.comment || ''
+      comment: b.comment || 'FGK|L1'
     };
     POS.push(newPos);
     PREV[id] = newPos;
@@ -1058,6 +1350,9 @@ async function simApi(path, o = {}) {
   return {};
 }
 
+// ============================================================================
+// REAL MATCH-TRADER API ADAPTER (100% Preserved)
+// ============================================================================
 async function api(path, o = {}) {
   if (SIM_ON || C.mode === 'sim') {
     RQ.push(Date.now());
@@ -1078,7 +1373,7 @@ async function api(path, o = {}) {
   RQ.push(Date.now());
   const r = await fetch(url, { method: o.method || 'GET', headers: h, body: o.body ? JSON.stringify(o.body) : undefined });
   LAST_PING = Math.round(performance.now() - t0);
-  $('ping-badge').textContent = `Ping: ${LAST_PING}ms`;
+  $('ping-badge').textContent = `${LAST_PING}ms`;
 
   const e1 = r.headers.get('x-ratelimit-remaining-endpoint');
   const g1 = r.headers.get('x-ratelimit-remaining-global');
@@ -1120,27 +1415,28 @@ async function connect() {
     }
   } catch (e) {}
 
-  if (C.mode === 'proxy' && !ADM) return bn('Isi Admin Key terlebih dahulu (atau gunakan Mode Simulasi).');
-  if (C.mode === 'direct' && !TOK) return bn('Isi Token Trader API terlebih dahulu (atau gunakan Mode Simulasi).');
+  if (C.mode === 'proxy' && !ADM) return bn('Isi Admin Key Proxy terlebih dahulu.');
+  if (C.mode === 'direct' && !TOK) return bn('Isi Bearer Token Trader API terlebih dahulu.');
 
   try {
+    if (!SIM_ON) POS = [];
     SUM = await api('/v1/account-summary');
     on = true;
-    log((SIM_ON ? '[SIMULASI] ' : '') + 'Terhubung. Balance $' + f(SUM.balance) + ' · Equity $' + f(SUM.equity), 'g');
-    toast('Terhubung ke ' + (SIM_ON ? 'Sandbox Simulator' : 'Match-Trader API'), 'g');
+    log((SIM_ON ? '[SANDBOX] ' : '[LIVE API] ') + 'Terhubung. Balance $' + f(SUM.balance) + ' · Equity $' + f(SUM.equity), 'g');
+    toast('Terhubung ke ' + (SIM_ON ? 'Sandbox Simulator' : 'Match-Trader Server'), 'g');
     try {
       const j = await api('/v1/symbols');
       (j.symbols || (Array.isArray(j) ? j : [])).forEach(x => SYMS[x.symbol] = x);
       $('sl').innerHTML = Object.keys(SYMS).map(s => '<option value="' + esc(s) + '">').join('');
     } catch (e) {
-      log('Daftar symbol gagal: ' + e.message + ' (ketik manual)', 'w');
+      log('Daftar symbol gagal dimuat: ' + e.message, 'w');
     }
     await poll('f');
     updateLiveQuotePreview();
     show('o');
   } catch (e) {
     on = false;
-    bn('Gagal konek: ' + e.message + (C.mode === 'direct' ? ' — jika error CORS, pakai mode Proxy.' : /^http/.test(C.purl) ? ' — pastikan server.js jalan di PC dan ALLOW_ORIGIN berisi alamat web ini.' : ''));
+    bn('Gagal konek: ' + e.message + (C.mode === 'direct' ? ' — jika error CORS, gunakan Mode Proxy Vercel.' : ''));
     log('Koneksi gagal: ' + e.message, 'r');
   }
   setSt();
@@ -1195,7 +1491,7 @@ async function poll(w = 'b') {
       log('Rate limit 429, jeda ' + (e.retry || 10) + 's', 'w');
     } else if (e.status === 401 || e.status === 403) {
       on = false;
-      bn('Ditolak (' + e.status + '): cek token / izin trading.');
+      bn('Akses Ditolak (' + e.status + '): Periksa Token atau Admin Key.');
       log('Ditolak ' + e.status, 'r');
     } else {
       log('Polling gagal: ' + e.message, 'w');
@@ -1253,11 +1549,11 @@ function dayRoll() {
   if (!DAY || DAY.k !== k) {
     DAY = { k, start: Math.max(+SUM.balance || 0, +SUM.equity || 0) };
     sv('mtp_day', DAY);
-    log('Hari baru (' + k + '): awal hari = $' + f(DAY.start) + ' (koreksi manual lewat “Set Saldo Awal Hari” bila perlu)', 'w');
+    log('Hari baru (' + k + '): Saldo awal hari = $' + f(DAY.start), 'w');
     if (LOCK && LOCK.k !== k) {
       LOCK = null;
       sv('mtp_lock', null);
-      log('Kunci otomatis dibuka (pergantian hari baru)', 'g');
+      log('Kunci Guard dibuka otomatis (pergantian hari baru)', 'g');
     }
   }
 }
@@ -1267,9 +1563,9 @@ function trip(r) {
   LOCK = { r, k: DAY ? DAY.k : '', t: Date.now() };
   sv('mtp_lock', LOCK);
   log('🔒 GUARD AKTIF: ' + r, 'r');
-  beep(620, 650);
+  beep(600, 650);
   notify(r);
-  bn('GUARD: ' + r);
+  bn('GUARD BREACH: ' + r);
   if (C.guardClose) closeAll('GUARD: ' + r);
 }
 
@@ -1290,7 +1586,7 @@ function guard() {
   if (C.dayTP > 0 && dProfit >= C.dayTP) return trip('Target Profit Harian Tercapai +$' + f(dProfit));
   if ((dLim > 0 && dl >= 0.8 * dLim) && !G.w) {
     G.w = 1;
-    log('⚠ Peringatan: Rugi harian sudah mencapai 80% dari batas maksimum!', 'w');
+    log('⚠ Peringatan: Rugi harian telah mencapai 80% dari batas!', 'w');
     toast('Rugi harian mencapai 80% dari batas!', 'w');
     beep(740, 350);
   }
@@ -1303,19 +1599,18 @@ async function cl(p, why, vol, force) {
   const id = p.id;
   if (PEND[id] && Date.now() - PEND[id] < 8000) return;
 
-  // Optional Min Hold Guard check on manual/TP close
   const ageSec = (Date.now() + off - p.openTime) / 1000;
   if (force && C.blockShortHold && C.minHoldSec > 0 && ageSec < C.minHoldSec && np(p) > -Math.abs(C.maxLoss || 999999)) {
     const ok = await askConfirm(
-      '⚠ Peringatan Aturan Durasi (< ' + C.minHoldSec + ' dtk)',
-      `Posisi ${p.symbol} #${id} baru berjalan ${f(ageSec, 0)} detik (di bawah batas ${C.minHoldSec} dtk). Tetap paksa tutup sekarang?`
+      '⚠ Proteksi Durasi Prop-Firm (< ' + C.minHoldSec + ' dtk)',
+      `Posisi ${p.symbol} #${id} baru terbuka selama ${f(ageSec, 0)} detik (kurang dari ${C.minHoldSec} dtk). Tetap paksa tutup sekarang?`
     );
     if (!ok) return;
   }
 
   if (C.dry && !force) {
     PEND[id] = Date.now() + 52e3;
-    log('[DRY-RUN] Akan tutup ' + p.symbol + ' #' + id + ' — ' + why, 'w');
+    log('[DRY-RUN] Simulasi tutup ' + p.symbol + ' #' + id + ' — ' + why, 'w');
     return;
   }
   PEND[id] = Date.now();
@@ -1330,7 +1625,7 @@ async function cl(p, why, vol, force) {
     toast(`Tutup ${p.symbol} (${why}): $${f(np(p))}`, np(p) >= 0 ? 'g' : 'w');
     if (!vol) POS = POS.filter(x => x.id !== id);
     render();
-    setTimeout(() => poll('f'), 600);
+    setTimeout(() => poll('f'), 500);
   } catch (e) {
     if (e.status === 404) POS = POS.filter(x => x.id !== id);
     else log('Gagal tutup #' + id + ': ' + e.message, 'r');
@@ -1345,7 +1640,6 @@ function engine() {
   const now = Date.now() + off;
   const fresh = Date.now() - lastOk < Math.min(90, Math.max(20, (MODES[C.lm] || MODES.h).pos * pace() * 2 + 5)) * 1000;
 
-  // 1. Time-based Auto-Close (Works without extra API calls)
   if (C.timeOn) {
     POS.forEach(p => {
       const a = (now - p.openTime) / 1000;
@@ -1357,7 +1651,6 @@ function engine() {
 
   if (!fresh) return;
 
-  // 2. Per-Position SL, TP, Virtual Trailing, and Virtual BEP Lock
   POS.forEach(p => {
     const v = np(p);
     const age = (now - p.openTime) / 1000;
@@ -1366,19 +1659,17 @@ function engine() {
     if (PEAK[p.id] === undefined || v > PEAK[p.id]) PEAK[p.id] = v;
     const pk = PEAK[p.id] || 0;
 
-    // Max Loss emergency always executes regardless of minHold
     if (C.maxLoss > 0 && v <= -C.maxLoss) {
       cl(p, 'Max Loss $' + f(v));
     } else if (C.posTP > 0 && v >= C.posTP && minHoldOk) {
       cl(p, 'TP Posisi +$' + f(v));
     } else if (C.trailStart > 0 && C.trailStep > 0 && pk >= C.trailStart && (pk - v) >= C.trailStep && minHoldOk) {
-      cl(p, `Trailing Profit (Puncak $${f(pk)} → $${f(v)})`);
+      cl(p, `Trailing Profit (Max $${f(pk)} → $${f(v)})`);
     } else if (BEP_LOCK[p.id] !== undefined && v <= BEP_LOCK[p.id] && minHoldOk) {
       cl(p, `BEP Lock Tersentuh ($${f(v)})`);
     }
   });
 
-  // 3. Layer Basket Rules
   const L = {};
   POS.forEach(p => (L[lk(p)] = L[lk(p)] || []).push(p));
   for (const k in L) {
@@ -1387,41 +1678,49 @@ function engine() {
     else if (C.layerSL > 0 && s <= -C.layerSL) L[k].forEach(p => cl(p, 'Layer ' + k + ' Loss $' + f(s)));
   }
 
-  // 4. Total Account Basket Rules
   const t = POS.reduce((a, p) => a + np(p), 0);
   if (C.allTP > 0 && t >= C.allTP) closeAll('Total Profit Basket +$' + f(t));
   else if (C.allSL > 0 && t <= -C.allSL) closeAll('Total Loss Basket $' + f(t));
 }
 
 // ============================================================================
-// ORDER EXECUTION & AUTO-LOT RISK CALCULATOR
+// ORDER TICKET & LIVE QUOTE PREVIEW
 // ============================================================================
 async function updateLiveQuotePreview() {
+  const sym = ($('sym').value || 'XAUUSD').trim().toUpperCase();
+  $('tag-preview').textContent = 'FGK|' + ($('layer').value || 'L1');
+  $('timer-preview').textContent = C.timeOn ? `${C.sec + C.buf} dtk (${C.sec}+${C.buf}s)` : 'Nonaktif';
+
+  const lot = parseFloat($('lot').value) || 0.01;
+  const si = SYMS[sym] || SIM_QUOTES[sym] || {};
+  const cs = +si.contractSize || (/XAU/.test(sym) ? C.contract : 100);
+  if (C.autoSL && C.maxLoss > 0 && cs > 0) {
+    const pts = (C.maxLoss / (lot * cs)).toFixed(si.pricePrecision ?? si.digits ?? 2);
+    $('sl-preview').textContent = `-$${f(C.maxLoss)} (Δ ${pts} pts)`;
+  } else {
+    $('sl-preview').textContent = C.maxLoss > 0 ? `Engine Guard -$${f(C.maxLoss)}` : 'SL Otomatis Off';
+  }
+
   if (!on) return;
-  const sym = $('sym').value.trim().toUpperCase();
-  if (!sym) return;
   try {
     const q = ((await api('/v1/quotes?symbol=' + encodeURIComponent(sym))).quotes || [])[0];
     if (q) {
-      const spread = Math.abs(q.ask - q.bid);
-      const si = SYMS[sym] || {};
-      const dg = si.pricePrecision ?? 2;
-      $('live-quote-badge').textContent = `${sym} · Bid ${ (+q.bid).toFixed(dg) } / Ask ${ (+q.ask).toFixed(dg) } (Spread ${ spread.toFixed(dg) })`;
-      $('ask-txt').textContent = '@ ' + (+q.ask).toFixed(dg);
-      $('bid-txt').textContent = '@ ' + (+q.bid).toFixed(dg);
+      const dg = si.pricePrecision ?? si.digits ?? 2;
+      $('live-quote-badge').textContent = `${sym} · Spread ${Math.abs(q.ask - q.bid).toFixed(dg)}`;
+      $('ask-txt').textContent = (+q.ask).toFixed(dg);
+      $('bid-txt').textContent = (+q.bid).toFixed(dg);
     }
   } catch (e) {}
 }
 
 async function openOrd(side) {
   try {
-    if (!on) throw Error('Belum terhubung ke server atau simulator');
-    if (LOCK) throw Error('Akun Terkunci oleh Guard: ' + LOCK.r);
+    if (!on) throw Error('Belum terhubung ke API atau Sandbox');
+    if (LOCK) throw Error('Order Terkunci oleh Guard: ' + LOCK.r);
 
-    // Cooldown & Max Trades/Day check
     if (C.cooldownSec > 0 && Date.now() - LAST_ORD_T < C.cooldownSec * 1000) {
       const wait = Math.ceil((C.cooldownSec * 1000 - (Date.now() - LAST_ORD_T)) / 1000);
-      throw Error(`Cooldown aktif: tunggu ${wait} detik lagi sebelum buka order baru.`);
+      throw Error(`Cooldown aktif: tunggu ${wait} detik lagi.`);
     }
     const kk = DAY ? DAY.k : '';
     const tradesToday = HIST.filter(h => dk(h.t) === kk).length + POS.length;
@@ -1433,9 +1732,9 @@ async function openOrd(side) {
     const si = SYMS[sym] || {};
     const st = +si.volumeStep || 0.01;
     let lot = +(Math.round(+$('lot').value / st) * st).toFixed(4);
-    if (!(lot > 0)) throw Error('Lot tidak valid');
+    if (!(lot > 0)) throw Error('Volume Lot tidak valid');
     if (C.maxLot > 0 && lot > C.maxLot) throw Error('Lot melebihi batas maksimum (' + C.maxLot + ' lot)');
-    if (C.maxPos > 0 && POS.length >= C.maxPos) throw Error('Jumlah posisi terbuka sudah ' + POS.length + ' (maks ' + C.maxPos + ')');
+    if (C.maxPos > 0 && POS.length >= C.maxPos) throw Error('Jumlah posisi sudah ' + POS.length + ' (maks ' + C.maxPos + ')');
 
     const q = ((await api('/v1/quotes?symbol=' + encodeURIComponent(sym))).quotes || [])[0];
     if (!q) throw Error('Quote ' + sym + ' tidak ditemukan');
@@ -1452,14 +1751,14 @@ async function openOrd(side) {
         const d = C.maxLoss / (lot * cs);
         sl = +(side === 'BUY' ? px - d : px + d).toFixed(dg);
       } else {
-        log('Contract size ' + sym + ' tidak diketahui → SL otomatis tidak dipasang (loss dijaga engine)', 'w');
+        log('Contract size ' + sym + ' tidak diketahui → SL otomatis tidak dipasang', 'w');
       }
     }
 
     if (C.confirm) {
       const ok = await askConfirm(
-        `Konfirmasi Order ${side} ${sym}`,
-        `Eksekusi ${side} ${lot} lot ${sym} pada harga pasar @ ${px}${sl ? ' · SL ' + sl : ''}${tpPrice ? ' · TP ' + tpPrice : ''} (Layer ${$('layer').value})?`
+        `Konfirmasi Eksekusi ${side} ${sym}`,
+        `Buka posisi ${side} ${lot} lot ${sym} @ ${px}${sl ? ' · SL ' + sl : ''}${tpPrice ? ' · TP ' + tpPrice : ''} (Tag: FGK|${$('layer').value})?`
       );
       if (!ok) return;
     }
@@ -1470,9 +1769,9 @@ async function openOrd(side) {
     const r = await api('/v1/positions', { method: 'POST', body: bodyPayload, idem: true });
     LAST_ORD_T = Date.now();
     log(side + ' ' + lot + ' ' + sym + ' @ ' + px + (sl ? ' SL ' + sl : '') + ' → #' + (r.positionId || '?'), 'g');
-    toast(`Order ${side} ${lot} ${sym} berhasil dibuka!`, 'g');
-    beep(980, 180);
-    setTimeout(() => poll('f'), 500);
+    toast(`${side} ${lot} ${sym} @ ${px} berhasil dibuka!`, 'g');
+    beep(980, 160);
+    setTimeout(() => poll('f'), 400);
   } catch (e) {
     log('Order gagal: ' + e.message, 'r');
     bn('Order gagal: ' + e.message);
@@ -1480,7 +1779,7 @@ async function openOrd(side) {
 }
 
 // ============================================================================
-// RENDER DASHBOARD, TABLES & HIGH-DPI EQUITY CHART
+// RENDER DASHBOARD, BENTO CARDS, TABLES & DUAL-MODE CANVAS CHART
 // ============================================================================
 function render() {
   const s = SUM || {};
@@ -1489,45 +1788,49 @@ function render() {
   const dlp = G.dLim ? G.dl / G.dLim : null;
   const ddp = G.ddLim ? G.dd / G.ddLim : null;
 
-  const cd = (l, v, c, p, sub = '') =>
-    `<div class="card"><span>${l}</span><b class="${c || ''}">${v}</b>${
-      p != null ? `<div class="bar"><i style="width:${Math.min(100, Math.max(0, p * 100))}%;background:${p > 0.8 ? 'var(--r)' : p > 0.5 ? 'var(--a)' : 'var(--g)'}"></i></div>` : ''
-    }${sub ? `<small>${sub}</small>` : ''}</div>`;
+  const kpi = (l, v, c, accent, p, subL = '', subR = '') =>
+    `<div class="kpi-card" style="--kpi-accent:${accent}">
+      <div class="kpi-label"><span>${l}</span></div>
+      <div class="kpi-val ${c || ''}">${v}</div>
+      ${p != null ? `<div class="bar"><i style="width:${Math.min(100, Math.max(0, p * 100))}%;background:${p > 0.8 ? 'var(--rose)' : p > 0.5 ? 'var(--amber)' : accent}"></i></div>` : ''}
+      <div class="kpi-sub mt-1"><span>${subL}</span><span class="mono">${subR}</span></div>
+    </div>`;
 
   $('cards').innerHTML =
-    cd('Balance', '$' + f(s.balance), '', null, SIM_ON ? 'Mode Simulasi Sandbox' : 'Saldo Terealisasi') +
-    cd('Equity Real-Time', '$' + f(eq), eq >= (DAY ? DAY.start : 0) ? 'pos' : 'neg', null, 'Awal Hari: $' + (DAY ? f(DAY.start) : '-')) +
-    cd('Floating P/L', (fl >= 0 ? '+$' : '-$') + f(Math.abs(fl)), fl >= 0 ? 'pos' : 'neg', null, POS.length + ' Posisi Aktif') +
-    cd('Margin Level', s.margin > 0 ? f(s.marginLevel, 0) + '%' : '∞', s.margin > 0 && C.mlv > 0 && s.marginLevel < C.mlv * 1.2 ? 'warn' : '', null, 'Margin: $' + f(s.margin || 0)) +
-    cd('Rugi Hari Ini', G.dl !== undefined ? '$' + f(G.dl) + (G.dLim ? ' / $' + f(G.dLim) : '') : '-', dlp > 0.8 ? 'neg' : '', dlp) +
-    cd('Drawdown Total', C.initBal > 0 ? '$' + f(G.dd) + (G.ddLim ? ' / $' + f(G.ddLim) : '') : 'Isi Modal Awal', ddp > 0.8 ? 'neg' : '', ddp) +
-    cd('Posisi Terbuka', POS.length + (C.maxPos ? ' / ' + C.maxPos : ''), POS.length > 0 ? 'cyan' : '', C.maxPos ? POS.length / C.maxPos : null) +
-    cd('Status Guard', LOCK ? '🔒 ' + esc(LOCK.r) : '🛡 Aman & Aktif', LOCK ? 'neg' : 'pos', null, armed ? (C.dry ? 'Engine DRY-RUN' : 'Engine LIVE Aktif') : 'Engine OFF');
+    kpi('Balance Akun', '$' + f(s.balance), 'text-white', 'var(--cyan)', null, SIM_ON ? 'Mode Sandbox' : 'Live Account', 'Margin: $' + f(s.margin || 0)) +
+    kpi('Equity Real-Time', '$' + f(eq), eq >= (DAY ? DAY.start : 0) ? 'pos' : 'neg', 'var(--emerald)', null, 'Awal Hari', '$' + (DAY ? f(DAY.start) : '-')) +
+    kpi('Floating Net P/L', (fl >= 0 ? '+$' : '-$') + f(Math.abs(fl)), fl >= 0 ? 'pos' : 'neg', fl >= 0 ? 'var(--emerald)' : 'var(--rose)', null, POS.length + ' Posisi Terbuka', s.balance ? f(fl / s.balance * 100, 2) + '%' : '') +
+    kpi('Margin Level', s.margin > 0 ? f(s.marginLevel, 0) + '%' : '∞', s.margin > 0 && C.mlv > 0 && s.marginLevel < C.mlv * 1.2 ? 'warn' : 'cyan', 'var(--violet)', null, 'Free Margin', '$' + f(s.freeMargin ?? eq)) +
+    kpi('Guard Rugi Harian', G.dl !== undefined ? '$' + f(Math.max(0, G.dl)) : '-', dlp > 0.8 ? 'neg' : '', 'var(--amber)', dlp, 'Batas Harian', G.dLim ? '$' + f(G.dLim) : 'Off') +
+    kpi('Guard Total Drawdown', C.initBal > 0 ? '$' + f(Math.max(0, G.dd)) : 'Set Modal', ddp > 0.8 ? 'neg' : '', 'var(--rose)', ddp, 'Batas DD', G.ddLim ? '$' + f(G.ddLim) : 'Off') +
+    kpi('Eksposur Posisi', POS.length + (C.maxPos ? ' / ' + C.maxPos : ''), 'cyan', 'var(--cyan)', C.maxPos ? POS.length / C.maxPos : null, 'Total Volume', f(POS.reduce((a, x) => a + (+x.volume || 0), 0)) + ' Lot') +
+    kpi('Status Proteksi Guard', LOCK ? '🔒 TERKUNCI' : '🛡 AMAN AKTIF', LOCK ? 'neg' : 'pos', LOCK ? 'var(--rose)' : 'var(--emerald)', null, armed ? (C.dry ? 'Engine DRY-RUN' : 'Engine LIVE') : 'Engine OFF', LOCK ? esc(LOCK.r).slice(0, 16) : 'Normal');
 
-  // API Rate Limit HUD
+  // API Rate Limit Telemetry
   const u = used(), M = MODES[C.lm] || MODES.h, k = pace();
   $('ru').textContent = u + ' / ' + C.bud;
   $('rb').style.width = Math.min(100, u / C.bud * 100) + '%';
-  $('rb').style.background = u / C.bud > 0.8 ? 'var(--r)' : u / C.bud > 0.6 ? 'var(--a)' : 'var(--g)';
-  $('pace-badge').textContent = k >= 99 ? '⏸ Dijeda' : k + 'x Pace';
-  $('pace-badge').style.color = k > 1 ? 'var(--a)' : 'var(--g)';
+  $('rb').style.background = u / C.bud > 0.8 ? 'var(--rose)' : u / C.bud > 0.6 ? 'var(--amber)' : 'var(--emerald)';
+  $('pace-badge').textContent = k >= 99 ? 'PAUSED' : k + 'x';
   $('rt').textContent = k >= 99
-    ? '⏸ Polling dijeda: budget hampir habis (order & tutup posisi tetap prioritas).'
-    : 'Interval posisi tiap ' + f((POS.length ? M.pos : M.idle) * k, 0) + 's · ringkasan akun tiap ' + f(M.sum * k, 0) + 's' + (k > 1 ? ' (diperlambat otomatis)' : '');
+    ? '⏸ Polling dijeda (hemat kuota)'
+    : 'Poll pos: ' + f((POS.length ? M.pos : M.idle) * k, 0) + 's · akun: ' + f(M.sum * k, 0) + 's';
 
   // Cooldown status
   if (C.cooldownSec > 0 && Date.now() - LAST_ORD_T < C.cooldownSec * 1000) {
     const remCd = Math.ceil((C.cooldownSec * 1000 - (Date.now() - LAST_ORD_T)) / 1000);
-    $('cooldown-status').textContent = `⏳ Cooldown Order: ${remCd}s`;
-    $('cooldown-status').style.color = 'var(--a)';
+    $('cooldown-status').textContent = `⏳ Cooldown: ${remCd}s`;
+    $('cooldown-status').className = 'mono text-[11px] text-amber-400';
   } else {
-    $('cooldown-status').textContent = LOCK ? '🔒 Order Terkunci' : '✓ Siap Eksekusi';
-    $('cooldown-status').style.color = LOCK ? 'var(--r)' : 'var(--g)';
+    $('cooldown-status').textContent = LOCK ? '🔒 Terkunci' : '✓ Siap Eksekusi';
+    $('cooldown-status').className = 'mono text-[11px] ' + (LOCK ? 'text-rose-400' : 'text-emerald-400');
   }
 
-  // Open Positions Table
+  // Open Positions Table & Nav Badge
   const now = Date.now() + off;
   $('pos-count-hdr').textContent = POS.length;
+  $('nav-pos-badge').textContent = POS.length;
+
   $('tb').innerHTML = POS.map(p => {
     const v = np(p);
     const a = Math.max(0, (now - p.openTime) / 1000);
@@ -1539,64 +1842,70 @@ function render() {
     const hasBep = BEP_LOCK[p.id] !== undefined;
 
     return `<tr>
-      <td><b>${esc(p.symbol)}</b> <small class="mono" style="opacity:.5">#${esc(p.id)}</small></td>
-      <td class="${p.side === 'BUY' ? 'pos' : 'neg'}" style="font-weight:700">${esc(p.side)}</td>
-      <td>${f(p.volume)}</td>
-      <td>${esc(p.openPrice)}</td>
-      <td>${esc(p.currentPrice)}</td>
-      <td class="${v >= 0 ? 'pos' : 'neg'}" style="font-weight:700">${v >= 0 ? '+' : ''}${f(v)}</td>
       <td>
-        <span class="mono" style="font-size:11px;color:var(--m)">Max: $${f(pk)}</span>
-        ${hasBep ? '<span style="font-size:10px;padding:1px 4px;border-radius:3px;background:#0f5f44;color:#fff;margin-left:4px">BEP</span>' : ''}
+        <div class="flex items-center gap-1.5">
+          <b class="text-white">${esc(p.symbol)}</b>
+          <span class="mono text-[10px] text-slate-500">#${esc(p.id)}</span>
+        </div>
+      </td>
+      <td>
+        <span class="px-1.5 py-0.5 rounded text-[10.5px] font-bold ${p.side === 'BUY' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'}">${esc(p.side)}</span>
+      </td>
+      <td class="font-semibold">${f(p.volume)}</td>
+      <td>${esc(p.openPrice)}</td>
+      <td class="text-slate-200">${esc(p.currentPrice)}</td>
+      <td class="${v >= 0 ? 'pos' : 'neg'} font-bold text-sm">${v >= 0 ? '+$' : '-$'}${f(Math.abs(v))}</td>
+      <td>
+        <span class="mono text-[11px] text-slate-400">Max: $${f(pk)}</span>
+        ${hasBep ? '<span class="ml-1 px-1 py-0.2 rounded text-[9.5px] bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold">BEP</span>' : ''}
       </td>
       <td>${p.slPrice ?? '-'}</td>
       <td>
-        <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px">
-          <span class="${under2m ? 'warn' : 'pos'}">${f(a, 0)}s</span>
-          <span style="opacity:.4">/</span>
-          <span>${rm === null ? 'Off' : 'Sisa ' + f(rm, 0) + 's'}</span>
+        <div class="flex items-center justify-end gap-1.5 text-[11px]">
+          <span class="${under2m ? 'warn font-semibold' : 'pos'}">${f(a, 0)}s</span>
+          <span class="text-slate-600">/</span>
+          <span class="text-slate-300">${rm === null ? '∞' : f(rm, 0) + 's'}</span>
         </div>
-        ${C.timeOn ? `<div class="bar" style="height:4px;margin-top:3px"><i style="width:${pctTime}%;background:${under2m ? 'var(--a)' : 'var(--c)'}"></i></div>` : ''}
+        <div class="bar" style="height:4px;margin-top:3px"><i style="width:${pctTime}%;background:${under2m ? 'var(--amber)' : 'var(--emerald)'}"></i></div>
       </td>
       <td><span class="chip" style="cursor:default">${esc(lk(p))}</span></td>
       <td>
-        <div class="row" style="justify-content:flex-end;gap:4px;flex-wrap:nowrap">
-          <button data-a="bep" data-i="${esc(p.id)}" title="Kunci BEP Virtual (+$0.20)" style="padding:3px 7px;font-size:11px">🛡 BEP</button>
-          <button data-a="h" data-i="${esc(p.id)}" title="Tutup Partial 50% Lot" style="padding:3px 7px;font-size:11px">50%</button>
-          <button data-a="c" data-i="${esc(p.id)}" class="sell" title="Tutup Penuh Posisi Ini" style="padding:3px 8px;font-size:11px">✕ Tutup</button>
+        <div class="flex items-center justify-end gap-1">
+          <button data-a="bep" data-i="${esc(p.id)}" class="text-[10.5px] px-2 py-1" title="Kunci BEP Virtual (+$0.20)">🛡 BEP</button>
+          <button data-a="h" data-i="${esc(p.id)}" class="text-[10.5px] px-2 py-1" title="Partial Close 50% Volume">50%</button>
+          <button data-a="c" data-i="${esc(p.id)}" class="btn-sell text-[10.5px] px-2.5 py-1">✕ Tutup</button>
         </div>
       </td>
     </tr>`;
-  }).join('') || '<tr><td colspan="11" style="text-align:center;color:var(--m);padding:18px">Tidak ada posisi terbuka saat ini.</td></tr>';
+  }).join('') || '<tr><td colspan="11" class="text-center text-slate-500 py-6">Belum ada posisi terbuka. Gunakan Tiket Order di kanan untuk membuka posisi.</td></tr>';
 
-  // Layer Basket Cards
+  // Layer Basket Strip
   const L = {};
   POS.forEach(p => (L[lk(p)] = L[lk(p)] || []).push(p));
   $('ly').innerHTML = Object.keys(L).map(k => {
     const t = L[k].reduce((a, p) => a + np(p), 0);
     const lots = L[k].reduce((a, p) => a + (+p.volume || 0), 0);
-    return `<div class="card">
-      <span><b>${esc(k)}</b> <small>${L[k].length} pos · ${f(lots)} lot</small></span>
-      <b class="${t >= 0 ? 'pos' : 'neg'}">${t >= 0 ? '+$' : '-$'}${f(Math.abs(t))}</b>
-      <button data-l="${esc(k)}" style="margin-top:6px;width:100%;font-size:11px;padding:4px 8px">Tutup Layer Ini</button>
+    return `<div class="kpi-card" style="--kpi-accent:${t >= 0 ? 'var(--emerald)' : 'var(--rose)'}">
+      <div class="kpi-label"><b>${esc(k)}</b><span class="mono">${L[k].length} pos · ${f(lots)} lot</span></div>
+      <div class="kpi-val ${t >= 0 ? 'pos' : 'neg'}">${t >= 0 ? '+$' : '-$'}${f(Math.abs(t))}</div>
+      <button data-l="${esc(k)}" class="mt-2 w-full text-[11px] py-1">Tutup Seluruh Layer ${esc(k)}</button>
     </div>`;
   }).join('');
 
-  // Overview Analytics & Prop-Firm HUD
+  // Prop-Firm HUD & Today Stats
   const kk = DAY ? DAY.k : '';
   const H = HIST.filter(h => dk(h.t) === kk);
   const w = H.filter(h => h.pl > 0);
   const sm = H.reduce((a, h) => a + h.pl, 0);
   const sh = H.filter(h => h.hold < (C.minHoldSec || 120)).length;
 
-  // Prop-Firm HUD Bars
-  $('hud-dl').textContent = G.dLim ? `$${f(Math.max(0, G.dl))} / $${f(G.dLim)}` : 'Belum diset';
+  $('hud-dl').textContent = G.dLim ? `$${f(Math.max(0, G.dl))} / $${f(G.dLim)}` : 'Off';
   $('hud-dl-bar').style.width = G.dLim ? Math.min(100, Math.max(0, (G.dl / G.dLim) * 100)) + '%' : '0%';
-  $('hud-dl-bar').style.background = dlp > 0.8 ? 'var(--r)' : dlp > 0.5 ? 'var(--a)' : 'var(--g)';
+  $('hud-dl-bar').style.background = dlp > 0.8 ? 'var(--rose)' : dlp > 0.5 ? 'var(--amber)' : 'var(--emerald)';
 
-  $('hud-dd').textContent = G.ddLim ? `$${f(Math.max(0, G.dd))} / $${f(G.ddLim)}` : 'Belum diset';
+  $('hud-dd').textContent = G.ddLim ? `$${f(Math.max(0, G.dd))} / $${f(G.ddLim)}` : 'Off';
   $('hud-dd-bar').style.width = G.ddLim ? Math.min(100, Math.max(0, (G.dd / G.ddLim) * 100)) + '%' : '0%';
-  $('hud-dd-bar').style.background = ddp > 0.8 ? 'var(--r)' : ddp > 0.5 ? 'var(--a)' : 'var(--g)';
+  $('hud-dd-bar').style.background = ddp > 0.8 ? 'var(--rose)' : ddp > 0.5 ? 'var(--amber)' : 'var(--emerald)';
 
   const tpPct = C.dayTP > 0 && G.dProfit > 0 ? Math.min(100, (G.dProfit / C.dayTP) * 100) : 0;
   $('hud-tp').textContent = C.dayTP > 0 ? `$${f(Math.max(0, G.dProfit || 0))} / $${f(C.dayTP)}` : 'Off';
@@ -1604,24 +1913,24 @@ function render() {
 
   $('hud-short').textContent = sh + ' Trade';
   $('hud-short').className = 'mono ' + (sh > 0 ? 'warn' : 'pos');
-  $('hud-hold-note').textContent = `Min Hold ${C.minHoldSec || 120}s · Proteksi: ${C.blockShortHold ? 'Aktif' : 'Peringatan Saja'}`;
-  $('comp-badge').textContent = LOCK ? '⛔ TERKUNCI' : sh > 0 ? '⚠ PERHATIAN (<2m)' : '✓ PATUH AMAN';
-  $('comp-badge').className = LOCK ? 'neg' : sh > 0 ? 'warn' : 'pos';
+  $('hud-hold-note').textContent = `Min Hold ${C.minHoldSec || 120}s · Proteksi: ${C.blockShortHold ? 'Aktif' : 'Peringatan'}`;
+  $('comp-badge').textContent = LOCK ? '⛔ GUARD LOCK' : sh > 0 ? '⚠ PERHATIAN (<2m)' : '✓ PATUH AMAN';
+  $('comp-badge').className = 'text-[11px] font-bold px-2 py-0.5 rounded ' + (LOCK ? 'bg-rose-500/20 text-rose-400' : sh > 0 ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/15 text-emerald-400');
 
-  if (TAB === 'o' || SPLIT_VIEW) {
+  if (TAB === 'o') {
     const grossWin = w.reduce((a, h) => a + h.pl, 0);
     const grossLoss = Math.abs(H.filter(h => h.pl < 0).reduce((a, h) => a + h.pl, 0));
     const pf = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : (grossWin > 0 ? '∞' : '-');
-    const c = (a, b, cl) => `<div class="card"><span>${a}</span><b class="${cl || ''}">${b}</b></div>`;
+    const statBox = (lbl, val, cl) => `<div class="p-2.5 rounded-lg bg-slate-950/75 border border-slate-800/80"><div class="text-[10.5px] text-slate-400">${lbl}</div><div class="mono text-sm font-bold mt-0.5 ${cl || 'text-white'}">${val}</div></div>`;
     $('stt').innerHTML =
-      c('Total Trade Hari Ini', H.length + (C.maxTradesDay ? ' / ' + C.maxTradesDay : '')) +
-      c('Win / Loss', w.length + 'W / ' + (H.length - w.length) + 'L') +
-      c('Win Rate', H.length ? f(w.length / H.length * 100, 1) + '%' : '-') +
-      c('Profit Factor', pf, +pf >= 1.5 ? 'pos' : '') +
-      c('P/L Realisasi ≈', (sm >= 0 ? '+$' : '-$') + f(Math.abs(sm)), sm >= 0 ? 'pos' : 'neg') +
-      c('Profit Terbaik', H.length ? '+$' + f(Math.max(0, ...H.map(h => h.pl))) : '-', 'pos') +
-      c('Loss Terburuk', H.length ? '$' + f(Math.min(0, ...H.map(h => h.pl))) : '-', 'neg') +
-      c('Trade < ' + (C.minHoldSec || 120) + ' dtk', sh, sh ? 'warn' : 'pos');
+      statBox('Total Trade', H.length + (C.maxTradesDay ? ' / ' + C.maxTradesDay : '')) +
+      statBox('Win / Loss', `${w.length}W / ${H.length - w.length}L`) +
+      statBox('Win Rate', H.length ? f(w.length / H.length * 100, 1) + '%' : '-', 'cyan') +
+      statBox('Profit Factor', pf, +pf >= 1.5 ? 'pos' : '') +
+      statBox('Net Realisasi ≈', (sm >= 0 ? '+$' : '-$') + f(Math.abs(sm)), sm >= 0 ? 'pos' : 'neg') +
+      statBox('Trade Terbaik', H.length ? '+$' + f(Math.max(0, ...H.map(h => h.pl))) : '-', 'pos') +
+      statBox('Trade Terburuk', H.length ? '$' + f(Math.min(0, ...H.map(h => h.pl))) : '-', 'neg') +
+      statBox('Durasi < 2m', sh + ' Trade', sh ? 'warn' : 'pos');
     draw();
   }
 
@@ -1632,51 +1941,63 @@ function render() {
       `<tr>
         <td>${new Date(h.t).toLocaleTimeString('id-ID')}</td>
         <td><b>${esc(h.sym)}</b></td>
-        <td class="${h.side === 'BUY' ? 'pos' : 'neg'}">${esc(h.side)}</td>
+        <td class="${h.side === 'BUY' ? 'pos' : 'neg'} font-bold">${esc(h.side)}</td>
         <td>${f(h.vol)}</td>
         <td class="${h.hold < (C.minHoldSec || 120) ? 'warn' : ''}">${f(h.hold, 0)} dtk</td>
-        <td class="${h.pl >= 0 ? 'pos' : 'neg'}" style="font-weight:700">${h.pl >= 0 ? '+$' : '-$'}${f(Math.abs(h.pl))}</td>
+        <td class="${h.pl >= 0 ? 'pos' : 'neg'} font-bold">${h.pl >= 0 ? '+$' : '-$'}${f(Math.abs(h.pl))}</td>
         <td>${esc(h.why)}</td>
       </tr>`
-    ).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--m);padding:16px">Belum ada riwayat trade yang cocok.</td></tr>';
+    ).join('') || '<tr><td colspan="7" class="text-center text-slate-500 py-6">Belum ada riwayat trade tertutup.</td></tr>';
   }
 }
 
-// High-DPI Interactive Equity Curve Canvas
+// ============================================================================
+// INTERACTIVE DUAL-MODE CHART (24H EQUITY CURVE OR LIVE SYMBOL PRICE)
+// ============================================================================
 function draw() {
-  const c = $('ch'), d = EQS;
+  const c = $('ch');
   if (!c || !c.clientWidth) return;
-  const w = c.width = c.clientWidth * 2, h = c.height = 270, x = c.getContext('2d');
+  const w = c.width = c.clientWidth * 2, h = c.height = 350, x = c.getContext('2d');
   x.clearRect(0, 0, w, h);
 
+  const sym = ($('sym').value || 'XAUUSD').toUpperCase();
+  const isPx = CHART_MODE === 'px';
+  const d = isPx ? ((SIM_QUOTES[sym] && SIM_QUOTES[sym].hist) || []) : EQS;
+
   if (d.length < 2) {
-    x.fillStyle = '#8fa0cc';
-    x.font = '22px Inter, sans-serif';
+    x.fillStyle = '#64748B';
+    x.font = '22px "Plus Jakarta Sans", sans-serif';
     x.textAlign = 'center';
-    x.fillText('Menunggu titik data equity (terhubung ke API / Simulator)...', w / 2, h / 2);
+    x.fillText('Menunggu aliran data grafik...', w / 2, h / 2);
     return;
   }
 
   const v = d.map(a => a[1]);
-  const st = DAY ? DAY.start : v[0];
-  const limFloor = G.dLim > 0 ? st - G.dLim : st;
-  const mn = Math.min(...v, st, limFloor) * 0.9995;
-  const mx = Math.max(...v, st) * 1.0005;
+  const st = isPx ? v[0] : (DAY ? DAY.start : v[0]);
+  const limFloor = (!isPx && G.dLim > 0) ? st - G.dLim : st;
+  const mn = Math.min(...v, st, limFloor) * 0.9997;
+  const mx = Math.max(...v, st) * 1.0003;
   const rg = mx - mn || 1;
-  const Y = y => h - 20 - (y - mn) / rg * (h - 40);
+  const Y = y => h - 24 - (y - mn) / rg * (h - 48);
 
-  // Subtle horizontal grid lines
-  x.strokeStyle = 'rgba(37, 52, 95, 0.45)';
+  // Grid lines & Y-axis labels
+  x.strokeStyle = 'rgba(30, 41, 59, 0.55)';
+  x.fillStyle = '#64748B';
+  x.font = '19px "JetBrains Mono", monospace';
+  x.textAlign = 'right';
   x.lineWidth = 1;
   for (let i = 0; i <= 3; i++) {
-    const gy = 20 + i * ((h - 40) / 3);
+    const gy = 24 + i * ((h - 48) / 3);
+    const val = mx - (i / 3) * rg;
     x.beginPath(); x.moveTo(0, gy); x.lineTo(w, gy); x.stroke();
+    x.fillText(isPx ? val.toFixed(SIM_QUOTES[sym]?.digits ?? 2) : '$' + val.toFixed(0), w - 12, gy - 6);
   }
 
-  // Area gradient under Equity
+  // Gradient fill
+  const lineCol = isPx ? '#10B981' : '#38BDF8';
   const grad = x.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0, 'rgba(53, 224, 255, 0.25)');
-  grad.addColorStop(1, 'rgba(53, 224, 255, 0.0)');
+  grad.addColorStop(0, isPx ? 'rgba(16, 185, 129, 0.24)' : 'rgba(56, 189, 248, 0.24)');
+  grad.addColorStop(1, 'rgba(6, 8, 15, 0.0)');
   x.fillStyle = grad;
   x.beginPath();
   d.forEach((a, i) => {
@@ -1685,9 +2006,9 @@ function draw() {
   });
   x.lineTo(w, h); x.lineTo(0, h); x.closePath(); x.fill();
 
-  // Equity Line
-  x.strokeStyle = '#35e0ff';
-  x.lineWidth = 3;
+  // Main Curve
+  x.strokeStyle = lineCol;
+  x.lineWidth = 3.2;
   x.beginPath();
   d.forEach((a, i) => {
     const X = i / (d.length - 1) * w;
@@ -1695,38 +2016,64 @@ function draw() {
   });
   x.stroke();
 
-  // Day Start Line (Yellow dashed)
-  x.strokeStyle = '#ffc94a';
-  x.lineWidth = 2;
-  x.setLineDash([10, 8]);
-  x.beginPath();
-  x.moveTo(0, Y(st));
-  x.lineTo(w, Y(st));
-  x.stroke();
+  // Baseline / Entry Lines
+  if (!isPx) {
+    x.strokeStyle = '#F59E0B';
+    x.lineWidth = 2;
+    x.setLineDash([10, 8]);
+    x.beginPath(); x.moveTo(0, Y(st)); x.lineTo(w, Y(st)); x.stroke();
 
-  // Daily Loss Limit Line (Red dotted)
-  if (G.dLim > 0) {
-    x.strokeStyle = '#ff4b6e';
-    x.setLineDash([4, 6]);
-    x.beginPath();
-    x.moveTo(0, Y(limFloor));
-    x.lineTo(w, Y(limFloor));
-    x.stroke();
+    if (G.dLim > 0) {
+      x.strokeStyle = '#F43F5E';
+      x.setLineDash([4, 6]);
+      x.beginPath(); x.moveTo(0, Y(limFloor)); x.lineTo(w, Y(limFloor)); x.stroke();
+    }
+  } else {
+    // Draw active position entry & SL lines for selected symbol
+    POS.filter(p => p.symbol === sym).forEach(p => {
+      x.strokeStyle = p.side === 'BUY' ? '#38BDF8' : '#F59E0B';
+      x.lineWidth = 2;
+      x.setLineDash([8, 6]);
+      x.beginPath(); x.moveTo(0, Y(p.openPrice)); x.lineTo(w, Y(p.openPrice)); x.stroke();
+      if (p.slPrice) {
+        x.strokeStyle = '#F43F5E';
+        x.setLineDash([4, 4]);
+        x.beginPath(); x.moveTo(0, Y(p.slPrice)); x.lineTo(w, Y(p.slPrice)); x.stroke();
+      }
+    });
   }
   x.setLineDash([]);
 }
 
-// Chart Hover Tooltip
+$('btn-ch-eq').onclick = () => {
+  CHART_MODE = 'eq';
+  $('btn-ch-eq').className = 'text-[11px] px-2.5 py-1 rounded border-0 on-pill';
+  $('btn-ch-px').className = 'text-[11px] px-2.5 py-1 rounded border-0 bg-transparent text-slate-400';
+  draw();
+};
+$('btn-ch-px').onclick = () => {
+  CHART_MODE = 'px';
+  $('btn-ch-px').className = 'text-[11px] px-2.5 py-1 rounded border-0 on-pill';
+  $('btn-ch-eq').className = 'text-[11px] px-2.5 py-1 rounded border-0 bg-transparent text-slate-400';
+  draw();
+};
+
 $('ch').addEventListener('mousemove', e => {
   const c = $('ch'), tip = $('ch-tip');
-  if (!EQS.length) return;
+  const sym = ($('sym').value || 'XAUUSD').toUpperCase();
+  const d = CHART_MODE === 'px' ? ((SIM_QUOTES[sym] && SIM_QUOTES[sym].hist) || []) : EQS;
+  if (!d.length) return;
   const rect = c.getBoundingClientRect();
-  const idx = Math.min(EQS.length - 1, Math.max(0, Math.round(((e.clientX - rect.left) / rect.width) * (EQS.length - 1))));
-  const pt = EQS[idx];
+  const idx = Math.min(d.length - 1, Math.max(0, Math.round(((e.clientX - rect.left) / rect.width) * (d.length - 1))));
+  const pt = d[idx];
   if (pt) {
     tip.style.display = 'block';
-    const diff = DAY ? pt[1] - DAY.start : 0;
-    tip.textContent = `${new Date(pt[0]).toLocaleTimeString('id-ID')} · Equity: $${f(pt[1])} (${diff >= 0 ? '+' : ''}$${f(diff)})`;
+    if (CHART_MODE === 'px') {
+      tip.textContent = `${sym} @ ${new Date(pt[0]).toLocaleTimeString('id-ID')} · Harga: ${pt[1]}`;
+    } else {
+      const diff = DAY ? pt[1] - DAY.start : 0;
+      tip.textContent = `${new Date(pt[0]).toLocaleTimeString('id-ID')} · Equity: $${f(pt[1])} (${diff >= 0 ? '+' : ''}$${f(diff)})`;
+    }
   }
 });
 $('ch').addEventListener('mouseleave', () => $('ch-tip').style.display = 'none');
@@ -1747,20 +2094,19 @@ $('tb').onclick = e => {
   if (b.dataset.a === 'c') {
     cl(p, 'Manual', 0, true);
   } else if (b.dataset.a === 'bep') {
-    if (np(p) <= 0.2) return bn('Posisi belum profit (minimal > $0.20) untuk mengunci BEP.');
+    if (np(p) <= 0.2) return bn('Posisi belum profit (> $0.20) untuk mengunci BEP Virtual.');
     BEP_LOCK[p.id] = 0.20;
-    log(`🛡 BEP Virtual dikunci untuk ${p.symbol} #${p.id} pada floor +$0.20`, 'g');
+    log(`🛡 BEP Virtual dikunci untuk ${p.symbol} #${p.id} pada +$0.20`, 'g');
     toast(`BEP Virtual dikunci untuk ${p.symbol} #${p.id}`, 'g');
     render();
   } else {
     const si = SYMS[p.symbol] || {}, st = +si.volumeStep || 0.01;
     const v = +(Math.floor(p.volume / 2 / st) * st).toFixed(4);
     if (v >= (+si.volumeMin || st)) cl(p, 'Manual 50%', v, true);
-    else bn('Lot terlalu kecil untuk partial close 50%');
+    else bn('Volume Lot terlalu kecil untuk partial close 50%');
   }
 };
 
-// Quick Actions Bar on Open Positions
 $('qa-all').onclick = async () => {
   if (!POS.length) return;
   if (await askConfirm('Tutup Semua Posisi', `Tutup seluruh ${POS.length} posisi terbuka sekarang?`)) closeAll('Manual Tutup Semua', true);
@@ -1771,46 +2117,46 @@ $('qa-buy').onclick = () => POS.filter(p => p.side === 'BUY').forEach(p => cl(p,
 $('qa-sell').onclick = () => POS.filter(p => p.side === 'SELL').forEach(p => cl(p, 'Manual Tutup SELL', 0, true));
 $('qa-bep').onclick = () => {
   let cnt = 0;
-  POS.forEach(p => { if (np(p) > 0.3) { BEP_LOCK[p.id] = 0.20; cnt++; } });
+  POS.forEach(p => { if (np(p) > 0.25) { BEP_LOCK[p.id] = 0.20; cnt++; } });
   if (cnt) {
-    log(`🛡 BEP Virtual dikunci untuk ${cnt} posisi profit (+$0.20 floor)`, 'g');
-    toast(`${cnt} posisi profit dikunci BEP!`, 'g');
+    log(`🛡 BEP Virtual dikunci untuk ${cnt} posisi profit (+$0.20)`, 'g');
+    toast(`${cnt} posisi profit berhasil dikunci BEP!`, 'g');
     render();
   } else {
-    toast('Belum ada posisi dengan profit > $0.30', 'w');
+    toast('Belum ada posisi dengan profit > $0.25', 'w');
   }
 };
 
-// Symbol Chips & Lot Multipliers
 document.querySelectorAll('.sym-chip').forEach(ch => {
-  ch.onclick = () => {
-    $('sym').value = ch.dataset.sym;
-    updateLiveQuotePreview();
-  };
+  ch.onclick = () => window.selectSymbol(ch.dataset.sym);
 });
-$('sym').onchange = updateLiveQuotePreview;
+$('sym').onchange = () => window.selectSymbol($('sym').value.trim().toUpperCase());
+$('layer').onchange = updateLiveQuotePreview;
+$('lot').oninput = updateLiveQuotePreview;
 
 document.querySelectorAll('.lot-btn').forEach(b => {
-  b.onclick = () => { $('lot').value = b.dataset.v; };
+  b.onclick = () => { $('lot').value = b.dataset.v; updateLiveQuotePreview(); };
 });
 document.querySelectorAll('.lot-mult').forEach(b => {
   b.onclick = () => {
     const cur = parseFloat($('lot').value) || 0.01;
     $('lot').value = Math.max(0.01, +(cur * parseFloat(b.dataset.m)).toFixed(2));
+    updateLiveQuotePreview();
   };
 });
 
 $('b-calc-lot').onclick = () => {
   const eq = eqNow() || (SUM ? +SUM.balance : 10000);
-  const riskUsd = eq * 0.005; // 0.5% risk
+  const riskUsd = eq * 0.005;
   const maxL = C.maxLoss > 0 ? C.maxLoss : riskUsd;
   const sugLot = Math.max(0.01, +(riskUsd / Math.max(5, maxL) * 0.05).toFixed(2));
   $('lot').value = sugLot;
+  updateLiveQuotePreview();
   toast(`Auto-Lot 0.5% Risiko ($${f(riskUsd)}) → ${sugLot} Lot`, 'c');
 };
 
 // ============================================================================
-// DYNAMIC SETTINGS BUILDER (Preserves all original keys + New Pro rules)
+// DYNAMIC SETTINGS BUILDER
 // ============================================================================
 const S = [
   ['⏱ Auto-Close Waktu & Proteksi Durasi Prop-Firm', [
@@ -1860,7 +2206,7 @@ const S = [
 
 function buildSettingsUI() {
   $('set').innerHTML = S.map(([t, fs]) =>
-    '<div class="pn"><h2>' + t + '</h2><div class="grid-form">' +
+    '<div class="panel"><div class="panel-header"><span class="panel-title">' + t + '</span></div><div class="panel-body grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">' +
     fs.map(([k, l, ty, o]) =>
       ty === 'k'
         ? '<label class="k"><input type="checkbox" data-k="' + k + '">' + l + '</label>'
@@ -1880,6 +2226,7 @@ function buildSettingsUI() {
       if (k === 'sec' && C.sec < 121) bn('Perhatian: Aturan prop-firm 2 menit biasanya membutuhkan waktu tahan > 120 detik.');
       sv('mtp_c', C);
       if (k === 'lot') $('lot').value = C.lot;
+      updateLiveQuotePreview();
       setSt();
       render();
     };
@@ -1887,22 +2234,23 @@ function buildSettingsUI() {
 }
 buildSettingsUI();
 
-// Presets & Config Backup/Restore
 $('preset-prop').onclick = () => {
   Object.assign(C, { timeOn: true, sec: 130, buf: 3, minHoldSec: 122, blockShortHold: true, dayLP: 4, ddLP: 8, guardClose: true });
   sv('mtp_c', C);
   buildSettingsUI();
-  toast('Preset Prop-Firm 2-Menit Safe diterapkan!', 'g');
-  log('Preset Prop-Firm diterapkan (Auto-close 130s+3s, MinHold 122s, Max Daily Loss 4%)', 'g');
+  updateLiveQuotePreview();
+  toast('Preset Prop-Firm >2m Safe diterapkan!', 'g');
+  log('Preset Prop-Firm diterapkan (Auto-close 130s+3s, MinHold 122s, Daily Loss 4%)', 'g');
   render();
 };
 
 $('preset-scalp').onclick = () => {
-  Object.assign(C, { timeOn: true, sec: 180, buf: 2, trailStart: 5, trailStep: 2, cooldownSec: 5 });
+  Object.assign(C, { timeOn: true, sec: 180, buf: 2, trailStart: 6, trailStep: 2, cooldownSec: 4 });
   sv('mtp_c', C);
   buildSettingsUI();
-  toast('Preset Scalping + Trailing Profit diterapkan!', 'g');
-  log('Preset Scalping diterapkan (Auto-close 180s, Trail Start $5 / Step $2)', 'g');
+  updateLiveQuotePreview();
+  toast('Preset Scalper Trailing diterapkan!', 'g');
+  log('Preset Scalper diterapkan (Auto-close 180s, Trail Start $6 / Step $2)', 'g');
   render();
 };
 
@@ -1912,7 +2260,7 @@ $('b-exp-cfg').onclick = () => {
   a.href = URL.createObjectURL(blob);
   a.download = 'match-trader-config-' + dayKey() + '.json';
   a.click();
-  toast('Konfigurasi berhasil di-export!', 'g');
+  toast('Konfigurasi di-export ke JSON!', 'g');
 };
 
 $('b-imp-cfg').onclick = () => $('f-imp-cfg').click();
@@ -1937,7 +2285,7 @@ $('f-imp-cfg').onchange = e => {
 };
 
 $('b-rst-cfg').onclick = async () => {
-  if (await askConfirm('Reset Pengaturan Default', 'Kembalikan seluruh aturan & parameter ke nilai bawaan pabrik?')) {
+  if (await askConfirm('Reset Pengaturan Default', 'Kembalikan seluruh aturan & parameter ke nilai standar?')) {
     C = { ...D };
     sv('mtp_c', C);
     buildSettingsUI();
@@ -1947,7 +2295,7 @@ $('b-rst-cfg').onclick = async () => {
 };
 
 // ============================================================================
-// NAVIGATION, BUTTON BINDINGS & KEYBOARD SHORTCUTS
+// NAVIGATION, WORKSPACE SWITCHING & INITIAL SANDBOX BOOT
 // ============================================================================
 $('mode').value = C.mode;
 $('purl').value = C.purl || '/api/mt';
@@ -1976,7 +2324,6 @@ $('lm').onchange = () => { C.lm = $('lm').value; sv('mtp_c', C); render(); };
 $('bud').onchange = () => { C.bud = Math.max(20, parseFloat($('bud').value) || 280); sv('mtp_c', C); render(); };
 $('bc').onclick = connect;
 
-// Quick Sandbox Mode Button
 $('bsim-quick').onclick = () => {
   $('mode').value = 'sim';
   tg();
@@ -1988,6 +2335,7 @@ $('bsim-top').onclick = () => {
     SIM_ON = false;
     $('mode').value = 'proxy';
     tg();
+    show('k');
     setSt();
   } else {
     $('mode').value = 'sim';
@@ -1998,32 +2346,28 @@ $('bsim-top').onclick = () => {
 
 function show(v) {
   TAB = v;
-  if (SPLIT_VIEW && (v === 'o' || v === 'p')) {
-    document.querySelectorAll('[data-t]').forEach(e => {
+  // On Terminal Utama ('o'), show both Overview ('o') and Open Positions ('p') stacked so the user gets a complete command center!
+  document.querySelectorAll('[data-t]').forEach(e => {
+    if (v === 'o') {
       e.style.display = (e.dataset.t === 'o' || e.dataset.t === 'p') ? '' : 'none';
-    });
-  } else {
-    document.querySelectorAll('[data-t]').forEach(e => {
+    } else {
       e.style.display = e.dataset.t === v ? '' : 'none';
-    });
-  }
+    }
+  });
   document.querySelectorAll('#tabs button[data-go]').forEach(b => b.classList.toggle('act', b.dataset.go === v));
   render();
 }
-
 document.querySelectorAll('#tabs button[data-go]').forEach(b => b.onclick = () => show(b.dataset.go));
 
-// Toggle Split Terminal Mode (Overview + Positions & Execution together)
+// Toggle Right Order Dock
 $('bview').onclick = () => {
-  SPLIT_VIEW = !SPLIT_VIEW;
-  $('bview').textContent = SPLIT_VIEW ? '🖥 Mode Terminal: Gabung (Pro)' : '🖥 Mode Terminal: Tab';
-  $('bview').classList.toggle('on', SPLIT_VIEW);
-  $('pro-split-container').className = SPLIT_VIEW ? 'pro-grid-active' : '';
-  if (SPLIT_VIEW) show('o');
-  else show(TAB);
+  DOCK_OPEN = !DOCK_OPEN;
+  $('order-dock').style.display = DOCK_OPEN ? '' : 'none';
+  $('main-grid').className = DOCK_OPEN ? 'terminal-grid with-dock' : 'terminal-grid';
+  $('bview').classList.toggle('on-pill', DOCK_OPEN);
+  setTimeout(draw, 50);
 };
 
-// Export CSV & Clear History
 $('bx').onclick = () => {
   const t = 'waktu,symbol,sisi,lot,tahan_detik,pl,alasan\n' +
     HIST.map(h => [new Date(h.t).toISOString(), h.sym, h.side, h.vol, Math.round(h.hold), (+h.pl).toFixed(2), '"' + h.why + '"'].join(',')).join('\n');
@@ -2034,7 +2378,7 @@ $('bx').onclick = () => {
 };
 
 $('bhc').onclick = async () => {
-  if (await askConfirm('Hapus Riwayat Trade', 'Hapus seluruh daftar riwayat trade dari penyimpanan browser?')) {
+  if (await askConfirm('Hapus Riwayat Trade', 'Hapus seluruh riwayat trade tertutup dari penyimpanan browser?')) {
     HIST = [];
     sv('mtp_h', []);
     render();
@@ -2046,7 +2390,7 @@ $('b-clear-eq').onclick = () => {
   EQS = SUM ? [[Date.now(), +SUM.equity]] : [];
   sv('mtp_e', EQS);
   draw();
-  toast('Grafik equity di-reset', 'c');
+  toast('Grafik di-reset', 'c');
 };
 
 $('h-search').oninput = render;
@@ -2079,7 +2423,7 @@ $('ba').onclick = async () => {
     try { await navigator.wakeLock.request('screen'); } catch (e) {}
   }
   log('Engine ' + (armed ? 'ON' + (C.dry ? ' (DRY-RUN)' : ' — LIVE AKTIF') : 'OFF'), armed && !C.dry ? 'w' : 'g');
-  toast('Engine ' + (armed ? (C.dry ? 'ON (Mode DRY-RUN)' : 'ON (LIVE MODE)') : 'OFF'), armed ? 'g' : 'w');
+  toast('Engine ' + (armed ? (C.dry ? 'ON (DRY-RUN)' : 'ON (LIVE MODE)') : 'OFF'), armed ? 'g' : 'w');
   setSt();
   render();
 };
@@ -2103,7 +2447,7 @@ $('bsnd').onclick = () => {
   C.soundOn = !C.soundOn;
   sv('mtp_c', C);
   setSt();
-  if (C.soundOn) beep(880, 150);
+  if (C.soundOn) beep(880, 140);
 };
 
 $('bs').onclick = async () => {
@@ -2123,7 +2467,7 @@ $('bu').onclick = () => {
   LOCK = null;
   sv('mtp_lock', null);
   G.w = 0;
-  log('🔓 Kunci Loss Guard dibuka secara manual', 'w');
+  log('🔓 Kunci Loss Guard dibuka manual', 'w');
   toast('Kunci Guard dibuka', 'g');
   render();
 };
@@ -2131,7 +2475,7 @@ $('bu').onclick = () => {
 $('bk').onclick = async () => {
   const ok = await askConfirm(
     '⛔ DARURAT: Aktifkan KILL SWITCH?',
-    'Tindakan ini akan langsung menutup SEMUA posisi terbuka saat ini dan mengunci pembukaan order baru!'
+    'Tindakan ini akan langsung menutup SEMUA posisi terbuka sekarang dan mengunci pembukaan order baru!'
   );
   if (!ok) return;
   LOCK = { r: 'Kill Switch Manual', k: DAY ? DAY.k : '', t: Date.now() };
@@ -2145,7 +2489,6 @@ $('bk2').onclick = $('bk').onclick;
 $('bb').onclick = () => openOrd('BUY');
 $('bsell').onclick = () => openOrd('SELL');
 
-// Keyboard Shortcuts (Alt+1 .. Alt+5)
 window.addEventListener('keydown', e => {
   if (e.altKey && !e.ctrlKey && !e.metaKey) {
     const map = { '1': 'o', '2': 'p', '3': 'a', '4': 'h', '5': 'k' };
@@ -2156,12 +2499,10 @@ window.addEventListener('keydown', e => {
   }
 });
 
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden && armed) log('Tab berada di background — Web Worker menjaga detak timer tetap berjalan.', 'w');
-});
+window.addEventListener('resize', draw);
 
 // ============================================================================
-// BACKGROUND WEB WORKER TICKER (Unthrottled 1s Loop)
+// WEB WORKER 1-SECOND TICKER & INSTANT SANDBOX LAUNCH
 // ============================================================================
 function updateClock() {
   const d = new Date(Date.now() + off);
@@ -2171,12 +2512,10 @@ function updateClock() {
 function tick() {
   n++;
   updateClock();
+  stepSimulatorQuotes();
   if (!on) return;
 
-  if (SIM_ON) {
-    stepSimulatorQuotes();
-    if (n % 2 === 0) updateLiveQuotePreview();
-  }
+  if (n % 2 === 0) updateLiveQuotePreview();
 
   const M = MODES[C.lm] || MODES.h;
   const k = pace();
@@ -2202,11 +2541,68 @@ try {
   setInterval(tick, 1000);
 }
 
-// Initial Boot
-updateClock();
-show('k');
-setSt();
-log('Terminal siap. Engine OFF, DRY-RUN ' + (C.dry ? 'ON' : 'OFF') + '. Klik "Coba Mode Sandbox" untuk simulasi instan.', 'g');
+// Launch immediately into a rich, live Sandbox session if no live connection is active yet
+(async function bootTerminal() {
+  updateClock();
+  renderMarketWatch();
+
+  // Seed realistic 24h equity curve if empty so chart looks alive immediately
+  if (EQS.length < 5) {
+    let eq = SIM_BAL;
+    for (let i = 40; i >= 1; i--) {
+      eq = +(eq + (Math.random() - 0.46) * 18).toFixed(2);
+      EQS.push([Date.now() - i * 180000, eq]);
+    }
+    SIM_BAL = eq;
+  }
+
+  // Seed 2 realistic demo positions in Sandbox mode so the DataGrid & Layer Matrix are immediately demonstrable
+  SIM_ON = true;
+  on = true;
+  POS = [
+    {
+      id: '9401',
+      symbol: 'XAUUSD',
+      side: 'BUY',
+      volume: 0.10,
+      openPrice: 2641.20,
+      currentPrice: 2642.50,
+      slPrice: 2638.70,
+      tpPrice: null,
+      openTime: Date.now() - 78000,
+      netProfit: 13.00,
+      profit: 13.00,
+      comment: 'FGK|L1'
+    },
+    {
+      id: '9402',
+      symbol: 'BTCUSD',
+      side: 'BUY',
+      volume: 0.05,
+      openPrice: 88310.0,
+      currentPrice: 88420.0,
+      slPrice: 87810.0,
+      tpPrice: null,
+      openTime: Date.now() - 124000,
+      netProfit: 5.50,
+      profit: 5.50,
+      comment: 'FGK|L2'
+    }
+  ];
+  POS.forEach(p => PREV[p.id] = p);
+
+  SUM = await simApi('/v1/account-summary');
+  const syms = await simApi('/v1/symbols');
+  syms.symbols.forEach(x => SYMS[x.symbol] = x);
+  $('sl').innerHTML = Object.keys(SYMS).map(s => '<option value="' + esc(s) + '">').join('');
+
+  dayRoll();
+  guard();
+  updateLiveQuotePreview();
+  setSt();
+  show('o');
+  log('Terminal Pro aktif dalam Mode Sandbox Live. Klik menu "Koneksi API" untuk menghubungkan akun Match-Trader asli.', 'g');
+})();
 </script>
 </body>
 </html>
