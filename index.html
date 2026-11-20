@@ -3398,6 +3398,26 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 .qd-lqk{grid-auto-rows:108px}
 html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canvas{background:transparent!important}
 </style>
+
+<style id="trade-recap-png-css">
+.trp-wrap{margin-top:16px}
+.trp-grid{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:16px;align-items:start}
+.trp-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trp-form label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:600;color:var(--muted);min-width:0}
+.trp-form label.full{grid-column:1/-1}
+.trp-form .sel,.trp-form input{width:100%;box-sizing:border-box}
+.trp-checks{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px 16px;padding:4px 0}
+.trp-checks label{flex-direction:row;align-items:center;gap:7px;font-size:12px;color:var(--text);cursor:pointer}
+.trp-checks input{width:16px;height:16px;accent-color:var(--gold)}
+.trp-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.trp-actions .btn{flex:1 1 120px}
+.trp-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px;border:1px solid var(--line2);border-radius:14px;background:var(--bg0);min-width:0}
+.trp-stage canvas{display:block;width:100%;max-width:540px;height:auto;border-radius:10px;box-shadow:0 16px 45px rgba(0,0,0,.4)}
+.trp-meta{font:600 11px var(--fm);color:var(--faint);text-align:center}
+@media(max-width:960px){.trp-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.trp-form{grid-template-columns:1fr}.trp-form label.full{grid-column:auto}}
+</style>
+   
 </head>
 <body>
 <div class="world" aria-hidden="true">
@@ -3983,6 +4003,105 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
     <button class="kp" data-share="cp" style="text-align:left;cursor:pointer"><small>Skor & status aturan</small><b>🛡️ Compliance</b></button>
     <button class="kp" data-share="all" style="text-align:left;cursor:pointer"><small>Key Levels + Liquidity + Fibo + Trend</small><b>📦 Paket Lengkap</b></button>
   </div></div>
+   <div class="card panel trp-wrap" id="tradeRecapPngCard">
+    <div class="panel-title">
+      <h3>🖼️ PNG Trade Recap Generator</h3>
+      <span id="trpSourceStatus">Siap generate kartu recap PNG</span>
+    </div>
+
+    <div class="trp-grid">
+      <div>
+        <div class="trp-form">
+          <label class="full">Sumber Data
+            <select id="trpSource" class="sel">
+              <option value="history">Otomatis · Trade History (EA/Live)</option>
+              <option value="backtest">Otomatis · Hasil Backtest</option>
+              <option value="manual">Manual · Edit Angka Sendiri</option>
+            </select>
+          </label>
+          <label>Judul Recap
+            <input id="trpTitle" class="sel" type="text" value="DAILY TRADE RECAP">
+          </label>
+          <label>Periode / Tanggal
+            <input id="trpPeriod" class="sel" type="text" placeholder="otomatis">
+          </label>
+          <label>Pair Utama
+            <input id="trpPair" class="sel" type="text" value="XAU/USD">
+          </label>
+          <label>Ukuran 1 Pip
+            <select id="trpPipSize" class="sel">
+              <option value="auto" selected>Otomatis per Pair</option>
+              <option value="0.1">0.10 (Gold Standard)</option>
+              <option value="0.01">0.01 (Gold Points / JPY)</option>
+              <option value="0.0001">0.0001 (Forex Major)</option>
+              <option value="1">1.0 (Index / Crypto)</option>
+            </select>
+          </label>
+          <label>Win Pips (+)
+            <input id="trpWinPips" class="sel" type="number" step="0.1" value="185.4">
+          </label>
+          <label>Loss Pips (−)
+            <input id="trpLossPips" class="sel" type="number" step="0.1" value="42.0">
+          </label>
+          <label>Total Win (trade)
+            <input id="trpWins" class="sel" type="number" min="0" step="1" value="6">
+          </label>
+          <label>Total Loss (trade)
+            <input id="trpLosses" class="sel" type="number" min="0" step="1" value="2">
+          </label>
+          <label>Net P/L ($)
+            <input id="trpPnl" class="sel" type="number" step="0.01" value="1420.50">
+          </label>
+          <label>Return (%)
+            <input id="trpPct" class="sel" type="number" step="0.01" value="2.84">
+          </label>
+          <label>Best Trade (Pips)
+            <input id="trpBestPips" class="sel" type="number" step="0.1" value="68.5">
+          </label>
+          <label>Profit Factor
+            <input id="trpPF" class="sel" type="number" step="0.01" value="3.45">
+          </label>
+          <label>Total Lot
+            <input id="trpLots" class="sel" type="number" step="0.01" value="1.60">
+          </label>
+          <label>Nama Trader / Akun
+            <input id="trpTrader" class="sel" type="text" placeholder="Golden Break Trader">
+          </label>
+          <label>Ukuran Kartu
+            <select id="trpRatio" class="sel">
+              <option value="square" selected>Square 1080×1080 (WA/IG)</option>
+              <option value="story">Portrait 1080×1350 (Story)</option>
+              <option value="wide">Landscape 1200×675 (X/Web)</option>
+            </select>
+          </label>
+          <label>Tema Kartu
+            <select id="trpTheme" class="sel">
+              <option value="auto" selected>Ikuti Tema Aktif</option>
+              <option value="graphite">Graphite Gold</option>
+              <option value="citadel">Citadel Navy</option>
+              <option value="emerald">Emerald Glass</option>
+              <option value="soft">Soft Light</option>
+            </select>
+          </label>
+          <div class="trp-checks">
+            <label><input type="checkbox" id="trpHideUsd"> Sembunyikan nominal $</label>
+            <label><input type="checkbox" id="trpShowList" checked> Tampilkan daftar trade</label>
+          </div>
+        </div>
+
+        <div class="trp-actions">
+          <button type="button" class="btn ghost" id="trpSyncBtn">↻ Ambil Data Tabel</button>
+          <button type="button" class="btn ghost" id="trpCopyBtn">📋 Salin Gambar</button>
+          <button type="button" class="btn primary" id="trpDownloadBtn">↓ Download PNG</button>
+        </div>
+      </div>
+
+      <div class="trp-stage">
+        <canvas id="trpCanvas" width="1080" height="1080" aria-label="Preview PNG Trade Recap"></canvas>
+        <div class="trp-meta" id="trpMeta">1080 × 1080 px · PNG siap bagikan</div>
+      </div>
+    </div>
+  </div>
 </section>
 <section id="view-kl" class="view">
   <div class="section-head"><div><h2>Key Levels</h2><p>Level acuan yang dipantau trader institusi &amp; algo, dihitung realtime dari harga Binance. Ini bukan data order institusi sebenarnya (pasar spot XAU tidak punya data terpusat).</p></div></div>
@@ -13530,7 +13649,409 @@ document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () =>
 setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) schedulePaint(); }, 1000);
 })();
 </script>
+<script id="trade-recap-png-js">
+(function(){
+  const $ = id => document.getElementById(id);
+  const canvas = $('trpCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
 
+  let recentRows = [];
+
+  const THEMES = {
+    graphite: { bg1:'#141821', bg2:'#0b0d12', card:'#1b212d', line:'rgba(255,255,255,.10)', text:'#eef1f6', muted:'#9aa4b8', gold:'#d9b068', green:'#3dcf94', red:'#ef6270', glow:'rgba(217,176,104,.16)' },
+    citadel:  { bg1:'#111c3a', bg2:'#060a18', card:'#162347', line:'rgba(130,165,255,.18)', text:'#eef3ff', muted:'#9eb0dc', gold:'#ffc94a', green:'#2df5a3', red:'#ff4b6e', glow:'rgba(53,224,255,.14)' },
+    emerald:  { bg1:'#0d2426', bg2:'#040c0d', card:'#112d30', line:'rgba(140,255,235,.15)', text:'#eef8f7', muted:'#8eb2af', gold:'#2ee6c4', green:'#34d399', red:'#fb5a6e', glow:'rgba(46,230,196,.16)' },
+    soft:     { bg1:'#ffffff', bg2:'#eef2f8', card:'#f6f8fc', line:'rgba(24,33,58,.12)',   text:'#18213a', muted:'#5c6985', gold:'#2f64e8', green:'#12905c', red:'#d02f4b', glow:'rgba(47,100,232,.10)' }
+  };
+
+  function parseNum(v){
+    if (typeof v === 'number') return isFinite(v) ? v : 0;
+    const s = String(v || '').replace(/\u2212/g, '-').replace(/[^0-9.\-+]/g, '');
+    const n = parseFloat(s);
+    return isFinite(n) ? n : 0;
+  }
+
+  function detectPipSize(sym){
+    const pref = $('trpPipSize').value;
+    if (pref !== 'auto') return parseFloat(pref) || 0.1;
+    const u = String(sym || '').toUpperCase();
+    if (/XAU|GOLD/.test(u)) return 0.1;
+    if (/XAG|SILVER/.test(u)) return 0.01;
+    if (/JPY/.test(u)) return 0.01;
+    if (/BTC|ETH|US30|NAS|NDX|SPX|GER/.test(u)) return 1;
+    return 0.0001;
+  }
+
+  function rrect(c, x, y, w, h, r){
+    const rr = Math.min(r, w / 2, h / 2);
+    c.beginPath();
+    c.moveTo(x + rr, y);
+    c.arcTo(x + w, y, x + w, y + h, rr);
+    c.arcTo(x + w, y + h, x, y + h, rr);
+    c.arcTo(x, y + h, x, y, rr);
+    c.arcTo(x, y, x + w, y, rr);
+    c.closePath();
+  }
+
+  function scrapeTable(tableId){
+    const tbl = $(tableId);
+    if (!tbl) return [];
+    const headers = [...tbl.querySelectorAll('thead th, tr:first-child th')].map(th => th.textContent.trim().toLowerCase());
+    const idx = {
+      sym:   headers.findIndex(h => /sym|pair|instr/.test(h)),
+      dir:   headers.findIndex(h => /type|arah|side|dir/.test(h)),
+      lot:   headers.findIndex(h => /lot|vol/.test(h)),
+      open:  headers.findIndex(h => /open|entry|masuk/.test(h)),
+      close: headers.findIndex(h => /close|exit|keluar/.test(h)),
+      pips:  headers.findIndex(h => /pip/.test(h)),
+      pnl:   headers.findIndex(h => /profit|p\/l|pnl|net|hasil/.test(h)),
+      time:  headers.findIndex(h => /time|waktu|tgl|date/.test(h))
+    };
+
+    const rows = [];
+    tbl.querySelectorAll('tbody tr').forEach(tr => {
+      const tds = [...tr.querySelectorAll('td')];
+      if (!tds.length || tds[0].hasAttribute('colspan') || tds[0].classList.contains('empty')) return;
+      const get = i => (i >= 0 && tds[i]) ? tds[i].textContent.trim() : '';
+
+      const sym = get(idx.sym) || $('trpPair').value || 'XAUUSD';
+      const dirRaw = get(idx.dir).toUpperCase();
+      const dir = dirRaw.includes('SELL') ? 'SELL' : 'BUY';
+      const lot = parseNum(get(idx.lot));
+      const open = parseNum(get(idx.open));
+      const close = parseNum(get(idx.close));
+      const pnl = parseNum(get(idx.pnl));
+
+      let pips = idx.pips >= 0 ? parseNum(get(idx.pips)) : NaN;
+      if (!isFinite(pips) || (idx.pips < 0)) {
+        if (open > 0 && close > 0) {
+          const diff = dir === 'SELL' ? (open - close) : (close - open);
+          pips = diff / detectPipSize(sym);
+        } else {
+          pips = 0;
+        }
+      }
+
+      rows.push({ sym, dir, lot, open, close, pips, pnl, time: get(idx.time) });
+    });
+    return rows;
+  }
+
+  function syncFromSource(){
+    const src = $('trpSource').value;
+    if (src === 'manual') {
+      $('trpSourceStatus').textContent = 'Mode manual aktif';
+      render();
+      return;
+    }
+
+    const tableId = src === 'backtest' ? 'btTrades' : 'historyTable';
+    const rows = scrapeTable(tableId);
+
+    if (!rows.length) {
+      $('trpSourceStatus').textContent = `Belum ada trade di tabel ${src === 'backtest' ? 'Backtest' : 'History'} — memakai angka saat ini`;
+      recentRows = [];
+      render();
+      return;
+    }
+
+    let winPips = 0, lossPips = 0, wins = 0, losses = 0, netPnl = 0, grossWin = 0, grossLoss = 0, totalLots = 0, bestPips = -Infinity;
+    const symCount = {};
+
+    rows.forEach(r => {
+      const isWin = r.pnl !== 0 ? r.pnl > 0 : r.pips >= 0;
+      if (isWin) {
+        wins++;
+        winPips += Math.abs(r.pips);
+        grossWin += Math.max(0, r.pnl);
+      } else {
+        losses++;
+        lossPips += Math.abs(r.pips);
+        grossLoss += Math.abs(Math.min(0, r.pnl));
+      }
+      netPnl += r.pnl;
+      totalLots += r.lot;
+      if (r.pips > bestPips) bestPips = r.pips;
+      symCount[r.sym] = (symCount[r.sym] || 0) + 1;
+    });
+
+    const topSym = Object.entries(symCount).sort((a,b) => b[1] - a[1])[0]?.[0] || 'XAU/USD';
+    const pf = grossLoss > 0 ? (grossWin / grossLoss) : (grossWin > 0 ? 9.99 : 0);
+    const balEl = $('hudBal');
+    const bal = balEl ? parseNum(balEl.textContent) : 0;
+    const pct = bal > 0 ? (netPnl / bal) * 100 : 0;
+
+    $('trpPair').value = topSym;
+    $('trpWinPips').value = winPips.toFixed(1);
+    $('trpLossPips').value = lossPips.toFixed(1);
+    $('trpWins').value = wins;
+    $('trpLosses').value = losses;
+    $('trpPnl').value = netPnl.toFixed(2);
+    $('trpPct').value = pct.toFixed(2);
+    $('trpBestPips').value = (isFinite(bestPips) ? bestPips : 0).toFixed(1);
+    $('trpPF').value = pf.toFixed(2);
+    $('trpLots').value = totalLots.toFixed(2);
+    $('trpTitle').value = src === 'backtest' ? 'BACKTEST TRADE RECAP' : 'LIVE TRADE RECAP';
+    recentRows = rows.slice(0, 5);
+
+    $('trpSourceStatus').textContent = `Tersinkron · ${rows.length} trade dari ${src === 'backtest' ? 'Backtest' : 'History'}`;
+    render();
+  }
+
+  function getActiveTheme(){
+    const pick = $('trpTheme').value;
+    if (pick !== 'auto' && THEMES[pick]) return THEMES[pick];
+    const dt = document.documentElement.dataset.theme;
+    return THEMES[dt] || THEMES.citadel;
+  }
+
+  function render(){
+    const ratio = $('trpRatio').value;
+    const W = ratio === 'wide' ? 1200 : 1080;
+    const H = ratio === 'story' ? 1350 : (ratio === 'wide' ? 675 : 1080);
+    canvas.width = W;
+    canvas.height = H;
+    $('trpMeta').textContent = `${W} × ${H} px · PNG siap bagikan`;
+
+    const T = getActiveTheme();
+    const winPips = Math.max(0, parseNum($('trpWinPips').value));
+    const lossPips = Math.max(0, parseNum($('trpLossPips').value));
+    const netPips = winPips - lossPips;
+    const wins = Math.max(0, Math.round(parseNum($('trpWins').value)));
+    const losses = Math.max(0, Math.round(parseNum($('trpLosses').value)));
+    const total = wins + losses;
+    const winRate = total > 0 ? (wins / total) * 100 : 0;
+    const pnl = parseNum($('trpPnl').value);
+    const pct = parseNum($('trpPct').value);
+    const bestPips = parseNum($('trpBestPips').value);
+    const pf = parseNum($('trpPF').value);
+    const lots = parseNum($('trpLots').value);
+    const avgPips = total > 0 ? netPips / total : 0;
+
+    const title = ($('trpTitle').value || 'TRADE RECAP').toUpperCase();
+    const pair = ($('trpPair').value || 'XAU/USD').toUpperCase();
+    const period = $('trpPeriod').value.trim() || new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+    const trader = $('trpTrader').value.trim() || ($('accLogin')?.textContent && $('accLogin').textContent !== '—' ? `Account #${$('accLogin').textContent}` : 'Golden Break Terminal');
+    const hideUsd = $('trpHideUsd').checked;
+    const showList = $('trpShowList').checked && recentRows.length > 0 && ratio !== 'wide';
+    const isPos = netPips >= 0;
+    const accent = isPos ? T.green : T.red;
+
+    // Background gradient
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, T.bg1);
+    bg.addColorStop(1, T.bg2);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Ambient glow
+    const rad = ctx.createRadialGradient(W * 0.85, H * 0.12, 20, W * 0.85, H * 0.12, W * 0.55);
+    rad.addColorStop(0, T.glow);
+    rad.addColorStop(1, 'transparent');
+    ctx.fillStyle = rad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Outer frame
+    const pad = ratio === 'wide' ? 42 : 54;
+    rrect(ctx, 20, 20, W - 40, H - 40, 24);
+    ctx.strokeStyle = T.line;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Header
+    ctx.fillStyle = T.gold;
+    ctx.font = '700 18px Inter, system-ui, sans-serif';
+    ctx.fillText('GOLDEN BREAK TERMINAL', pad, pad + 20);
+
+    ctx.fillStyle = T.text;
+    ctx.font = `800 ${ratio === 'wide' ? 32 : 38}px Inter, system-ui, sans-serif`;
+    ctx.fillText(title, pad, pad + 62);
+
+    // Pair & Period badge (top-right)
+    const badgeText = `${pair}  •  ${period}`;
+    ctx.font = '600 18px "JetBrains Mono", monospace';
+    const bw = ctx.measureText(badgeText).width + 34;
+    rrect(ctx, W - pad - bw, pad + 10, bw, 42, 21);
+    ctx.fillStyle = T.card;
+    ctx.fill();
+    ctx.strokeStyle = T.line;
+    ctx.stroke();
+    ctx.fillStyle = T.text;
+    ctx.fillText(badgeText, W - pad - bw + 17, pad + 37);
+
+    // Hero Net Pips & Win Pips Card
+    const heroY = pad + 92;
+    const heroH = ratio === 'wide' ? 185 : 235;
+    rrect(ctx, pad, heroY, W - pad * 2, heroH, 20);
+    ctx.fillStyle = T.card;
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Left accent bar
+    rrect(ctx, pad, heroY, 8, heroH, 4);
+    ctx.fillStyle = accent;
+    ctx.fill();
+
+    ctx.fillStyle = T.muted;
+    ctx.font = '700 16px Inter, system-ui, sans-serif';
+    ctx.fillText('NET PIPS PERFORMANCE', pad + 34, heroY + 42);
+
+    const netSign = netPips >= 0 ? '+' : '';
+    ctx.fillStyle = accent;
+    ctx.font = `800 ${ratio === 'wide' ? 64 : 82}px "JetBrains Mono", monospace`;
+    ctx.fillText(`${netSign}${netPips.toFixed(1)} PIPS`, pad + 32, heroY + (ratio === 'wide' ? 116 : 132));
+
+    // Win vs Loss pips breakdown pills inside hero
+    const subY = heroY + (ratio === 'wide' ? 156 : 184);
+    ctx.font = '700 20px "JetBrains Mono", monospace';
+    ctx.fillStyle = T.green;
+    ctx.fillText(`▲ WIN: +${winPips.toFixed(1)} pips`, pad + 34, subY);
+    ctx.fillStyle = T.red;
+    ctx.fillText(`▼ LOSS: -${lossPips.toFixed(1)} pips`, pad + 310, subY);
+
+    // Return % badge on right side of hero
+    const retStr = `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`;
+    ctx.font = '800 34px "JetBrains Mono", monospace';
+    const rw = ctx.measureText(retStr).width;
+    ctx.fillStyle = pnl >= 0 ? T.green : T.red;
+    ctx.fillText(retStr, W - pad - 34 - rw, heroY + (ratio === 'wide' ? 102 : 114));
+    ctx.font = '600 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = T.muted;
+    const pnlTxt = hideUsd ? 'NOMINAL TERSEMBUNYI' : `NET P/L: ${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+    const pw = ctx.measureText(pnlTxt).width;
+    ctx.fillText(pnlTxt, W - pad - 34 - pw, heroY + (ratio === 'wide' ? 136 : 150));
+
+    // KPI Grid (6 tiles)
+    const kpis = [
+      { k: 'WIN RATE', v: `${winRate.toFixed(1)}%`, s: `${wins} Win · ${losses} Loss`, c: winRate >= 50 ? T.green : T.red },
+      { k: 'TOTAL TRADES', v: `${total}`, s: `Avg ${avgPips >= 0 ? '+' : ''}${avgPips.toFixed(1)} pips/trade`, c: T.text },
+      { k: 'BEST TRADE', v: `+${Math.abs(bestPips).toFixed(1)} pips`, s: 'Single trade tertinggi', c: T.gold },
+      { k: 'PROFIT FACTOR', v: pf.toFixed(2), s: pf >= 1.5 ? 'Rasio sehat' : 'Perlu evaluasi', c: pf >= 1 ? T.green : T.red },
+      { k: 'TOTAL VOLUME', v: `${lots.toFixed(2)} lot`, s: `Pair utama ${pair}`, c: T.text },
+      { k: 'WIN / LOSS PIPS', v: `${winPips.toFixed(0)} / ${lossPips.toFixed(0)}`, s: lossPips > 0 ? `Rasio ${(winPips/lossPips).toFixed(2)}x` : 'Zero loss pips', c: T.gold }
+    ];
+
+    const cols = 3;
+    const gap = 16;
+    const gridY = heroY + heroH + 24;
+    const tileW = (W - pad * 2 - gap * (cols - 1)) / cols;
+    const tileH = ratio === 'wide' ? 112 : 142;
+
+    kpis.forEach((item, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const x = pad + col * (tileW + gap);
+      const y = gridY + row * (tileH + gap);
+
+      rrect(ctx, x, y, tileW, tileH, 16);
+      ctx.fillStyle = T.card;
+      ctx.fill();
+      ctx.strokeStyle = T.line;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = T.muted;
+      ctx.font = '700 14px Inter, system-ui, sans-serif';
+      ctx.fillText(item.k, x + 22, y + 34);
+
+      ctx.fillStyle = item.c;
+      ctx.font = `800 ${ratio === 'wide' ? 28 : 34}px "JetBrains Mono", monospace`;
+      ctx.fillText(item.v, x + 22, y + (ratio === 'wide' ? 74 : 86));
+
+      ctx.fillStyle = T.muted;
+      ctx.font = '500 14px Inter, system-ui, sans-serif';
+      ctx.fillText(item.s, x + 22, y + tileH - 20);
+    });
+
+    // Optional recent trades breakdown
+    if (showList) {
+      const listY = gridY + tileH * 2 + gap * 2 + 12;
+      const maxRows = ratio === 'story' ? 5 : 3;
+      const slice = recentRows.slice(0, maxRows);
+      const listH = 52 + slice.length * 44;
+
+      rrect(ctx, pad, listY, W - pad * 2, listH, 16);
+      ctx.fillStyle = T.card;
+      ctx.fill();
+      ctx.strokeStyle = T.line;
+      ctx.stroke();
+
+      ctx.fillStyle = T.gold;
+      ctx.font = '700 14px Inter, system-ui, sans-serif';
+      ctx.fillText('HIGHLIGHT TRADE TERAKHIR', pad + 22, listY + 32);
+
+      slice.forEach((r, idx) => {
+        const ry = listY + 70 + idx * 44;
+        ctx.fillStyle = T.text;
+        ctx.font = '700 17px "JetBrains Mono", monospace';
+        ctx.fillText(`${r.sym}  ${r.dir}  ${r.lot.toFixed(2)} lot`, pad + 22, ry);
+
+        const pStr = `${r.pips >= 0 ? '+' : ''}${r.pips.toFixed(1)} pips`;
+        ctx.fillStyle = r.pips >= 0 ? T.green : T.red;
+        ctx.fillText(pStr, W - pad - 240, ry);
+
+        if (!hideUsd) {
+          const uStr = `${r.pnl >= 0 ? '+' : '-'}$${Math.abs(r.pnl).toFixed(2)}`;
+          const uw = ctx.measureText(uStr).width;
+          ctx.fillStyle = r.pnl >= 0 ? T.green : T.red;
+          ctx.fillText(uStr, W - pad - 22 - uw, ry);
+        }
+      });
+    }
+
+    // Footer
+    ctx.fillStyle = T.muted;
+    ctx.font = '600 15px "JetBrains Mono", monospace';
+    ctx.fillText(trader, pad, H - 40);
+    const stamp = `Generated ${new Date().toLocaleString('id-ID')}`;
+    const sw = ctx.measureText(stamp).width;
+    ctx.fillText(stamp, W - pad - sw, H - 40);
+  }
+
+  function downloadPng(){
+    render();
+    const a = document.createElement('a');
+    const slug = ($('trpPair').value || 'trade').replace(/[^a-z0-9]/gi, '').toLowerCase();
+    a.download = `trade-recap-${slug}-${new Date().toISOString().slice(0,10)}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }
+
+  async function copyPng(){
+    render();
+    try {
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      $('trpSourceStatus').textContent = 'Gambar berhasil disalin ke clipboard (siap Paste di WA/Telegram)';
+    } catch (e) {
+      $('trpSourceStatus').textContent = 'Browser tidak mendukung salin gambar langsung — gunakan tombol Download PNG';
+    }
+  }
+
+  // Event bindings
+  ['trpTitle','trpPeriod','trpPair','trpWinPips','trpLossPips','trpWins','trpLosses','trpPnl','trpPct','trpBestPips','trpPF','trpLots','trpTrader']
+    .forEach(id => $(id)?.addEventListener('input', render));
+  ['trpRatio','trpTheme','trpHideUsd','trpShowList']
+    .forEach(id => $(id)?.addEventListener('change', render));
+  ['trpSource','trpPipSize']
+    .forEach(id => $(id)?.addEventListener('change', syncFromSource));
+
+  $('trpSyncBtn').addEventListener('click', syncFromSource);
+  $('trpDownloadBtn').addEventListener('click', downloadPng);
+  $('trpCopyBtn').addEventListener('click', copyPng);
+
+  // Auto-sync saat tab Share dibuka
+  document.querySelectorAll('[data-view="share"]').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(syncFromSource, 120));
+  });
+
+  // Render awal
+  render();
+})();
+</script>
 
 </body>
 </html>
