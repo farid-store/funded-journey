@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <script>try{var __t=localStorage.getItem('ffx_theme')||'graphite';if(__t==='soft'||__t==='graphite'||__t==='emerald'){document.documentElement.dataset.theme=__t;document.documentElement.dataset.pro='1'}}catch(e){}</script><script>(function(){try{var f=localStorage.getItem('fx_low');var m=(window.matchMedia&&matchMedia('(pointer:coarse)').matches)||Math.min(screen.width||9999,window.innerWidth||9999)<=820;window.__MOBILE=!!m;if(f==='1'||(f===null&&m)){document.documentElement.classList.add('mlite');window.__MLITE=true}}catch(e){}})();</script>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Golden Break Terminal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4098,7 +4099,12 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
           <label class="full" id="trpManualWrap">Data Harian (format: <code>tgl: pips|usd|trades</code>, pisah koma)
             <textarea id="trpManualData" spellcheck="false">2:+42.5|420|3, 3:+28.0|280|2, 4:-19.5|-195|2, 5:+64.0|640|4, 6:+31.2|312|2, 9:+55.0|550|3, 10:-24.0|-240|2, 11:+48.8|488|3, 12:+72.5|725|4, 13:+18.0|180|1, 16:-15.0|-150|1, 17:+61.0|610|3, 18:+39.4|394|2, 19:+84.0|840|5, 20:+22.6|226|2</textarea>
           </label>
-
+         <label class="full">Link QR Code (opsional — kosongkan jika tanpa QR)
+            <input id="trpQrLink" class="sel" type="url" placeholder="https://t.me/goldenbreakcapital atau link website">
+          </label>
+          <label class="full">Label di Bawah QR
+            <input id="trpQrLabel" class="sel" type="text" value="SCAN TO JOIN" maxlength="24">
+          </label>
           <div class="trp-checks">
             <label><input type="checkbox" id="trpHideUsd"> Sembunyikan nominal $</label>
             <label><input type="checkbox" id="trpShowSub" checked> Tampilkan jumlah trade di kalender</label>
@@ -13665,6 +13671,7 @@ document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () =>
 setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) schedulePaint(); }, 1000);
 })();
 </script>
+
 <script id="trade-recap-png-js">
 (function(){
   const $ = id => document.getElementById(id);
@@ -13672,18 +13679,17 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  // Set default bulan ke bulan sekarang
   const now = new Date();
   $('trpMonth').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
   let customBgImg = null;
-  let dayMap = {}; // { '1': { pips, usd, trades, wins, losses, winPips, lossPips } }
+  let dayMap = {};
 
   const THEMES = {
-    graphite: { bg1:'#161922', bg2:'#090b10', glass:'rgba(18,22,32,.74)', cell:'rgba(22,27,39,.72)', line:'rgba(217,176,104,.24)', lineSoft:'rgba(255,255,255,.10)', text:'#f2f4f8', muted:'#a3adc2', gold:'#e2bc72', gold2:'#b68a3c', green:'#38d996', greenBg:'rgba(56,217,150,.18)', red:'#f25c6e', redBg:'rgba(242,92,110,.18)' },
-    citadel:  { bg1:'#121d3d', bg2:'#050916', glass:'rgba(13,22,48,.76)', cell:'rgba(18,29,61,.74)', line:'rgba(255,201,74,.28)',  lineSoft:'rgba(130,165,255,.16)', text:'#eef3ff', muted:'#9eb0dc', gold:'#ffc94a', gold2:'#d9971e', green:'#2df5a3', greenBg:'rgba(45,245,163,.16)', red:'#ff4b6e', redBg:'rgba(255,75,110,.18)' },
-    emerald:  { bg1:'#0d2426', bg2:'#040c0d', glass:'rgba(10,27,29,.76)', cell:'rgba(15,37,40,.74)', line:'rgba(46,230,196,.28)',  lineSoft:'rgba(140,255,235,.14)', text:'#eef8f7', muted:'#8eb2af', gold:'#2ee6c4', gold2:'#149e8a', green:'#34d399', greenBg:'rgba(52,211,153,.18)', red:'#fb5a6e', redBg:'rgba(251,90,110,.18)' },
-    soft:     { bg1:'#f5f7fb', bg2:'#e5ebf5', glass:'rgba(255,255,255,.84)', cell:'rgba(255,255,255,.78)', line:'rgba(47,100,232,.25)', lineSoft:'rgba(24,33,58,.12)', text:'#18213a', muted:'#5c6985', gold:'#2f64e8', gold2:'#1d48b8', green:'#12905c', greenBg:'rgba(18,144,92,.14)', red:'#d02f4b', redBg:'rgba(208,47,75,.14)' }
+    graphite: { bg1:'#161922', bg2:'#090b10', glass:'rgba(18,22,32,.76)', cell:'rgba(22,27,39,.74)', line:'rgba(217,176,104,.26)', lineSoft:'rgba(255,255,255,.10)', text:'#f2f4f8', muted:'#a3adc2', gold:'#e2bc72', gold2:'#b68a3c', green:'#38d996', greenBg:'rgba(56,217,150,.18)', red:'#f25c6e', redBg:'rgba(242,92,110,.18)', qrBg:'rgba(10,13,20,.92)', qrFg:'#e2bc72' },
+    citadel:  { bg1:'#121d3d', bg2:'#050916', glass:'rgba(13,22,48,.78)', cell:'rgba(18,29,61,.75)', line:'rgba(255,201,74,.28)',  lineSoft:'rgba(130,165,255,.16)', text:'#eef3ff', muted:'#9eb0dc', gold:'#ffc94a', gold2:'#d9971e', green:'#2df5a3', greenBg:'rgba(45,245,163,.16)', red:'#ff4b6e', redBg:'rgba(255,75,110,.18)', qrBg:'rgba(6,10,24,.92)',  qrFg:'#ffc94a' },
+    emerald:  { bg1:'#0d2426', bg2:'#040c0d', glass:'rgba(10,27,29,.78)', cell:'rgba(15,37,40,.75)', line:'rgba(46,230,196,.28)',  lineSoft:'rgba(140,255,235,.14)', text:'#eef8f7', muted:'#8eb2af', gold:'#2ee6c4', gold2:'#149e8a', green:'#34d399', greenBg:'rgba(52,211,153,.18)', red:'#fb5a6e', redBg:'rgba(251,90,110,.18)', qrBg:'rgba(4,12,13,.92)',  qrFg:'#2ee6c4' },
+    soft:     { bg1:'#f5f7fb', bg2:'#e5ebf5', glass:'rgba(255,255,255,.86)', cell:'rgba(255,255,255,.80)', line:'rgba(47,100,232,.25)', lineSoft:'rgba(24,33,58,.12)', text:'#18213a', muted:'#5c6985', gold:'#2f64e8', gold2:'#1d48b8', green:'#12905c', greenBg:'rgba(18,144,92,.14)', red:'#d02f4b', redBg:'rgba(208,47,75,.14)', qrBg:'#ffffff', qrFg:'#18213a' }
   };
 
   function parseNum(v){
@@ -13717,10 +13723,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   function parseDateFlexible(str){
     if (!str) return null;
     const s = String(str).trim();
-    // YYYY-MM-DD atau YYYY.MM.DD
     let m = s.match(/(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})/);
     if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
-    // DD/MM/YYYY atau DD-MM-YYYY
     m = s.match(/(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})/);
     if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
     const d = new Date(s);
@@ -13854,26 +13858,17 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const cr = W / H;
     let dw, dh, dx, dy;
     if (ir > cr) {
-      dh = H;
-      dw = H * ir;
-      dx = (W - dw) * 0.5;
-      dy = 0;
+      dh = H; dw = H * ir; dx = (W - dw) * 0.5; dy = 0;
     } else {
-      dw = W;
-      dh = W / ir;
-      dx = 0;
-      dy = (H - dh) * (posPct / 100);
+      dw = W; dh = W / ir; dx = 0; dy = (H - dh) * (posPct / 100);
     }
     ctx.drawImage(img, dx, dy, dw, dh);
   }
 
-  // Gambar emblem logo Golden Break Capital di pojok kanan atas
-  function drawBrandTopRight(T, rightX, topY){
-    const badgeSize = 54;
+  function drawBrandTopRight(T, rightX, topY, compact){
+    const badgeSize = compact ? 46 : 54;
     const bx = rightX - badgeSize;
     const by = topY;
-
-    // Hexagon / Shield emblem emas
     const cx = bx + badgeSize / 2;
     const cy = by + badgeSize / 2;
     const r = badgeSize / 2;
@@ -13887,95 +13882,130 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.beginPath();
     for (let i = 0; i < 6; i++) {
       const a = (Math.PI / 3) * i - Math.PI / 2;
-      const px = cx + r * Math.cos(a);
-      const py = cy + r * Math.sin(a);
+      const px = cx + r * Math.cos(a), py = cy + r * Math.sin(a);
       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
     ctx.closePath();
     ctx.fillStyle = g;
     ctx.fill();
 
-    // Inner dark shield
     ctx.beginPath();
     for (let i = 0; i < 6; i++) {
       const a = (Math.PI / 3) * i - Math.PI / 2;
-      const px = cx + (r - 4) * Math.cos(a);
-      const py = cy + (r - 4) * Math.sin(a);
+      const px = cx + (r - 3.5) * Math.cos(a), py = cy + (r - 3.5) * Math.sin(a);
       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
     ctx.closePath();
-    ctx.fillStyle = 'rgba(10,13,20,.88)';
+    ctx.fillStyle = 'rgba(10,13,20,.90)';
     ctx.fill();
 
-    // Monogram GB
     ctx.fillStyle = T.gold;
-    ctx.font = '800 20px Inter, system-ui, sans-serif';
+    ctx.font = `800 ${compact ? 17 : 20}px Inter, system-ui, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('GB', cx, cy + 1);
 
-    // Nama Golden Break Capital di sebelah kiri logo
     ctx.textAlign = 'right';
     ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = T.text;
-    ctx.font = '800 21px Inter, system-ui, sans-serif';
-    ctx.fillText('GOLDEN BREAK', bx - 14, by + 25);
+    ctx.font = `800 ${compact ? 18 : 21}px Inter, system-ui, sans-serif`;
+    ctx.fillText('GOLDEN BREAK', bx - 12, by + (compact ? 21 : 25));
 
     ctx.fillStyle = T.gold;
-    ctx.font = '700 13px Inter, system-ui, sans-serif';
-    ctx.fillText('C A P I T A L', bx - 14, by + 45);
+    ctx.font = `700 ${compact ? 11.5 : 13}px Inter, system-ui, sans-serif`;
+    ctx.fillText('C A P I T A L', bx - 12, by + (compact ? 38 : 45));
     ctx.restore();
   }
 
-  // Gambar TTD Handwriting CEO Farid Siddiq di tengah bawah
-  function drawCeoSignature(T, W, bottomY){
-    const cx = W / 2;
+  function drawCeoSignature(T, cx, bottomY, compact){
     ctx.save();
     ctx.textAlign = 'center';
 
-    // Tulisan tanda tangan handwriting
     ctx.save();
-    ctx.translate(cx, bottomY - 54);
-    ctx.rotate(-0.045);
+    ctx.translate(cx, bottomY - (compact ? 42 : 52));
+    ctx.rotate(-0.04);
     ctx.fillStyle = T.gold;
     ctx.shadowColor = 'rgba(0,0,0,.45)';
     ctx.shadowBlur = 8;
-    ctx.font = '400 54px "Great Vibes", "Brush Script MT", cursive';
+    ctx.font = `400 ${compact ? 44 : 54}px "Great Vibes", "Brush Script MT", cursive`;
     ctx.fillText('Farid Siddiq', 0, 0);
 
-    // Goresan swash halus di bawah TTD
     ctx.shadowBlur = 0;
     ctx.strokeStyle = T.gold;
     ctx.globalAlpha = 0.7;
-    ctx.lineWidth = 1.8;
+    ctx.lineWidth = 1.6;
     ctx.beginPath();
-    ctx.moveTo(-92, 10);
-    ctx.quadraticCurveTo(0, 2, 96, 8);
+    ctx.moveTo(compact ? -76 : -92, 8);
+    ctx.quadraticCurveTo(0, 1, compact ? 80 : 96, 6);
     ctx.stroke();
     ctx.restore();
 
-    // Garis pemisah tipis
     ctx.strokeStyle = T.line;
     ctx.lineWidth = 1.2;
     ctx.beginPath();
-    ctx.moveTo(cx - 110, bottomY - 30);
-    ctx.lineTo(cx + 110, bottomY - 30);
+    ctx.moveTo(cx - (compact ? 95 : 110), bottomY - (compact ? 24 : 30));
+    ctx.lineTo(cx + (compact ? 95 : 110), bottomY - (compact ? 24 : 30));
     ctx.stroke();
 
-    // Nama & Jabatan
     ctx.fillStyle = T.text;
-    ctx.font = '700 14px Inter, system-ui, sans-serif';
-    ctx.fillText('FARID SIDDIQ', cx, bottomY - 10);
+    ctx.font = `700 ${compact ? 12.5 : 14}px Inter, system-ui, sans-serif`;
+    ctx.fillText('FARID SIDDIQ', cx, bottomY - (compact ? 8 : 10));
 
     ctx.fillStyle = T.muted;
-    ctx.font = '600 11px "JetBrains Mono", monospace';
-    ctx.fillText('CHIEF EXECUTIVE OFFICER  •  GOLDEN BREAK CAPITAL', cx, bottomY + 8);
+    ctx.font = `600 ${compact ? 10 : 11}px "JetBrains Mono", monospace`;
+    ctx.fillText('CHIEF EXECUTIVE OFFICER  •  GOLDEN BREAK CAPITAL', cx, bottomY + (compact ? 7 : 8));
     ctx.restore();
+  }
+
+  // Render QR Code sesuai warna tema
+  function drawThemedQR(T, x, y, boxSize, url, label){
+    if (!url || typeof window.qrcode !== 'function') return;
+    try {
+      const qr = window.qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+      const count = qr.getModuleCount();
+
+      ctx.save();
+      // Frame kaca QR
+      const labelH = label ? 18 : 0;
+      rrect(ctx, x, y, boxSize, boxSize + labelH, 12);
+      ctx.fillStyle = T.qrBg;
+      ctx.fill();
+      ctx.strokeStyle = T.line;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      const innerPad = 8;
+      const qrArea = boxSize - innerPad * 2;
+      const cell = qrArea / count;
+
+      ctx.fillStyle = T.qrFg;
+      for (let r = 0; r < count; r++) {
+        for (let c = 0; c < count; c++) {
+          if (qr.isDark(r, c)) {
+            const mx = x + innerPad + c * cell;
+            const my = y + innerPad + r * cell;
+            ctx.fillRect(mx, my, Math.ceil(cell), Math.ceil(cell));
+          }
+        }
+      }
+
+      if (label) {
+        ctx.fillStyle = T.gold;
+        ctx.font = '700 10px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(label.toUpperCase(), x + boxSize / 2, y + boxSize + 11);
+      }
+      ctx.restore();
+    } catch (e) {}
   }
 
   function render(){
     const ratio = $('trpRatio').value;
-    const W = ratio === 'wide' ? 1440 : 1080;
+    const isSquare = ratio === 'square';
+    const isWide = ratio === 'wide';
+    const W = isWide ? 1440 : 1080;
     const H = ratio === 'story' ? 1350 : 1080;
     canvas.width = W;
     canvas.height = H;
@@ -13988,10 +14018,9 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     $('trpDimVal').textContent = `${dimPct}%`;
     $('trpPosVal').textContent = `${posPct}%`;
 
-    // 1. Background Layer
+    // 1. Background
     if (customBgImg) {
       drawCoverImage(customBgImg, W, H, posPct);
-      // Overlay agar teks & kalender tetap kontras
       const ov = ctx.createLinearGradient(0, 0, 0, H);
       const baseRgb = isLight ? '245,247,251' : '6,9,16';
       const a = dimPct / 100;
@@ -14014,17 +14043,17 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.fillRect(0, 0, W, H);
     }
 
-    // Double Luxury Border Frame
-    rrect(ctx, 22, 22, W - 44, H - 44, 24);
+    // Double Frame
+    rrect(ctx, 20, 20, W - 40, H - 40, 24);
     ctx.strokeStyle = T.line;
     ctx.lineWidth = 2;
     ctx.stroke();
-    rrect(ctx, 30, 30, W - 60, H - 60, 18);
+    rrect(ctx, 28, 28, W - 56, H - 56, 18);
     ctx.strokeStyle = T.lineSoft;
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    const pad = 54;
+    const pad = isSquare ? 42 : 52;
     const { year, month } = getSelectedYM();
     const monthName = new Date(year, month, 1).toLocaleDateString('en-US', { month:'long', year:'numeric' }).toUpperCase();
     const title = ($('trpTitle').value || 'MONTHLY PNL RECAP').toUpperCase();
@@ -14032,33 +14061,29 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const hideUsd = $('trpHideUsd').checked;
     const showSub = $('trpShowSub').checked;
     const viewMode = $('trpViewMode').value;
+    const qrLink = ($('trpQrLink')?.value || '').trim();
+    const qrLabel = ($('trpQrLabel')?.value || 'SCAN TO JOIN').trim();
 
-    // 2. Header (Kiri: Judul & Periode | Kanan: Logo & Golden Break Capital)
+    // 2. Header
     ctx.textAlign = 'left';
     ctx.fillStyle = T.gold;
-    ctx.font = '700 14px "JetBrains Mono", monospace';
-    ctx.fillText(`${monthName}  •  ${pair}`, pad, pad + 18);
+    ctx.font = `700 ${isSquare ? 13 : 14}px "JetBrains Mono", monospace`;
+    ctx.fillText(`${monthName}  •  ${pair}`, pad, pad + 16);
 
     ctx.fillStyle = T.text;
-    ctx.font = '800 34px Inter, system-ui, sans-serif';
-    ctx.fillText(title, pad, pad + 56);
+    ctx.font = `800 ${isSquare ? 28 : 34}px Inter, system-ui, sans-serif`;
+    ctx.fillText(title, pad, pad + (isSquare ? 48 : 54));
 
-    drawBrandTopRight(T, W - pad, pad + 4);
+    drawBrandTopRight(T, W - pad, pad + 2, isSquare);
 
-    // Hitung agregasi bulanan dari dayMap
+    // Agregasi bulanan
     const entries = Object.values(dayMap);
     let winPips = 0, lossPips = 0, netPips = 0, netUsd = 0, totalTrades = 0, totalWins = 0, grossWin = 0, grossLoss = 0, winDays = 0, lossDays = 0;
     entries.forEach(d => {
-      netPips += d.pips;
-      winPips += d.winPips;
-      lossPips += d.lossPips;
-      netUsd += d.usd;
-      totalTrades += d.trades;
-      totalWins += d.wins;
-      grossWin += d.grossWin;
-      grossLoss += d.grossLoss;
-      if (d.pips > 0) winDays++;
-      else if (d.pips < 0) lossDays++;
+      netPips += d.pips; winPips += d.winPips; lossPips += d.lossPips;
+      netUsd += d.usd; totalTrades += d.trades; totalWins += d.wins;
+      grossWin += d.grossWin; grossLoss += d.grossLoss;
+      if (d.pips > 0) winDays++; else if (d.pips < 0) lossDays++;
     });
     const tradingDays = entries.length;
     const winRate = totalTrades > 0 ? (totalWins / totalTrades) * 100 : (tradingDays > 0 ? (winDays / tradingDays) * 100 : 0);
@@ -14067,57 +14092,149 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const isPos = netPips >= 0;
     const heroColor = isPos ? T.green : T.red;
 
-    // 3. Hero Summary Bar (Glass Card)
-    const heroY = pad + 78;
-    const heroH = ratio === 'square' ? 148 : 168;
-    rrect(ctx, pad, heroY, W - pad * 2, heroH, 18);
+    if (isWide) {
+      // ===== LAYOUT LANDSCAPE (2 KOLOM: Kiri Summary + QR | Kanan Kalender Proporsional) =====
+      const contentTop = pad + 76;
+      const sigReserve = 126;
+      const contentH = H - contentTop - sigReserve;
+      const leftW = 410;
+      const gapX = 22;
+      const calX = pad + leftW + gapX;
+      const calW = W - pad - calX;
+
+      // Panel Kiri: Hero Vertikal
+      rrect(ctx, pad, contentTop, leftW, contentH, 18);
+      ctx.fillStyle = T.glass;
+      ctx.fill();
+      ctx.strokeStyle = T.line;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      rrect(ctx, pad, contentTop + 18, 6, 120, 3);
+      ctx.fillStyle = heroColor;
+      ctx.fill();
+
+      ctx.fillStyle = T.muted;
+      ctx.font = '700 13px Inter, system-ui, sans-serif';
+      ctx.fillText('NET PIPS PERFORMANCE', pad + 26, contentTop + 42);
+
+      ctx.fillStyle = heroColor;
+      ctx.font = '800 50px "JetBrains Mono", monospace';
+      ctx.fillText(`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)}`, pad + 26, contentTop + 98);
+      ctx.font = '700 18px "JetBrains Mono", monospace';
+      ctx.fillText('PIPS', pad + 26, contentTop + 124);
+
+      // Win / Loss Pips
+      ctx.font = '700 15px "JetBrains Mono", monospace';
+      ctx.fillStyle = T.green;
+      ctx.fillText(`▲ WIN  +${winPips.toFixed(1)}p`, pad + 26, contentTop + 168);
+      ctx.fillStyle = T.red;
+      ctx.fillText(`▼ LOSS -${lossPips.toFixed(1)}p`, pad + 26, contentTop + 194);
+
+      // Divider
+      ctx.strokeStyle = T.lineSoft;
+      ctx.beginPath();
+      ctx.moveTo(pad + 24, contentTop + 218);
+      ctx.lineTo(pad + leftW - 24, contentTop + 218);
+      ctx.stroke();
+
+      // Return & Metrics (2x2 grid di panel kiri)
+      const mItems = [
+        { k:'RETURN', v:`${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`, c: pct >= 0 ? T.green : T.red },
+        { k: hideUsd ? 'WIN DAYS' : 'NET P/L', v: hideUsd ? `${winDays}W / ${lossDays}L` : `${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:0})}`, c: netUsd >= 0 ? T.green : T.red },
+        { k:'WIN RATE', v:`${winRate.toFixed(1)}%`, c: T.text },
+        { k:'PROFIT FACTOR', v:`${pf.toFixed(2)}`, c: T.gold }
+      ];
+      const mW = (leftW - 60) / 2;
+      mItems.forEach((m, i) => {
+        const mx = pad + 24 + (i % 2) * (mW + 12);
+        const my = contentTop + 236 + Math.floor(i / 2) * 86;
+        rrect(ctx, mx, my, mW, 74, 12);
+        ctx.fillStyle = T.cell;
+        ctx.fill();
+        ctx.strokeStyle = T.lineSoft;
+        ctx.stroke();
+
+        ctx.fillStyle = T.muted;
+        ctx.font = '700 11px Inter, system-ui, sans-serif';
+        ctx.fillText(m.k, mx + 14, my + 24);
+        ctx.fillStyle = m.c;
+        ctx.font = '800 22px "JetBrains Mono", monospace';
+        ctx.fillText(m.v, mx + 14, my + 56);
+      });
+
+      ctx.fillStyle = T.muted;
+      ctx.font = '600 13px "JetBrains Mono", monospace';
+      ctx.fillText(`${totalTrades} Total Trades  •  ${winDays}W / ${lossDays}L Days`, pad + 26, contentTop + 432);
+
+      // QR Code di bagian bawah panel kiri (jika link diisi)
+      if (qrLink) {
+        const qrSize = 136;
+        const qrX = pad + (leftW - qrSize) / 2;
+        const qrY = contentTop + contentH - qrSize - 38;
+        drawThemedQR(T, qrX, qrY, qrSize, qrLink, qrLabel);
+      }
+
+      // Panel Kanan: Kalender (tinggi penuh, tidak gepeng)
+      if (viewMode === 'day') {
+        drawDailyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd, showSub);
+      } else {
+        drawWeeklyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd);
+      }
+
+      drawCeoSignature(T, W / 2, H - 40, true);
+      return;
+    }
+
+    // ===== LAYOUT PORTRAIT (1080x1350) & SQUARE (1080x1080) =====
+    const heroY = pad + (isSquare ? 62 : 76);
+    const heroH = isSquare ? 118 : 162;
+    rrect(ctx, pad, heroY, W - pad * 2, heroH, 16);
     ctx.fillStyle = T.glass;
     ctx.fill();
     ctx.strokeStyle = T.line;
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Accent bar kiri
-    rrect(ctx, pad, heroY + 14, 6, heroH - 28, 3);
+    rrect(ctx, pad, heroY + 12, 6, heroH - 24, 3);
     ctx.fillStyle = heroColor;
     ctx.fill();
 
     ctx.fillStyle = T.muted;
-    ctx.font = '700 13px Inter, system-ui, sans-serif';
-    ctx.fillText('NET PIPS PERFORMANCE', pad + 28, heroY + 34);
+    ctx.font = `700 ${isSquare ? 11.5 : 13}px Inter, system-ui, sans-serif`;
+    ctx.fillText('NET PIPS PERFORMANCE', pad + 24, heroY + (isSquare ? 26 : 34));
 
     ctx.fillStyle = heroColor;
-    ctx.font = `800 ${ratio === 'square' ? 50 : 58}px "JetBrains Mono", monospace`;
-    ctx.fillText(`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)} PIPS`, pad + 26, heroY + (ratio === 'square' ? 92 : 102));
+    ctx.font = `800 ${isSquare ? 42 : 56}px "JetBrains Mono", monospace`;
+    ctx.fillText(`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)} PIPS`, pad + 24, heroY + (isSquare ? 72 : 98));
 
-    // Win / Loss Pips breakdown
-    ctx.font = '700 16px "JetBrains Mono", monospace';
+    ctx.font = `700 ${isSquare ? 13.5 : 16}px "JetBrains Mono", monospace`;
     ctx.fillStyle = T.green;
-    ctx.fillText(`▲ WIN +${winPips.toFixed(1)}p`, pad + 28, heroY + heroH - 22);
+    ctx.fillText(`▲ WIN +${winPips.toFixed(1)}p`, pad + 24, heroY + heroH - (isSquare ? 16 : 22));
     ctx.fillStyle = T.red;
-    ctx.fillText(`▼ LOSS -${lossPips.toFixed(1)}p`, pad + 218, heroY + heroH - 22);
+    ctx.fillText(`▼ LOSS -${lossPips.toFixed(1)}p`, pad + (isSquare ? 190 : 218), heroY + heroH - (isSquare ? 16 : 22));
 
-    // Kanan Hero: Return %, Net $, Win Rate, PF
+    // Kanan Hero
     ctx.textAlign = 'right';
     ctx.fillStyle = pct >= 0 ? T.green : T.red;
-    ctx.font = `800 ${ratio === 'square' ? 34 : 40}px "JetBrains Mono", monospace`;
-    ctx.fillText(`${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`, W - pad - 28, heroY + 58);
+    ctx.font = `800 ${isSquare ? 30 : 38}px "JetBrains Mono", monospace`;
+    ctx.fillText(`${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`, W - pad - 24, heroY + (isSquare ? 44 : 56));
 
     ctx.fillStyle = T.text;
-    ctx.font = '700 16px "JetBrains Mono", monospace';
+    ctx.font = `700 ${isSquare ? 14 : 16}px "JetBrains Mono", monospace`;
     const usdLabel = hideUsd
       ? `WIN RATE ${winRate.toFixed(1)}%`
       : `NET ${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:0})}`;
-    ctx.fillText(usdLabel, W - pad - 28, heroY + 90);
+    ctx.fillText(usdLabel, W - pad - 24, heroY + (isSquare ? 70 : 88));
 
     ctx.fillStyle = T.muted;
-    ctx.font = '600 14px "JetBrains Mono", monospace';
-    ctx.fillText(`${totalTrades} Trades  •  WR ${winRate.toFixed(0)}%  •  PF ${pf.toFixed(2)}  •  ${winDays}W/${lossDays}L Days`, W - pad - 28, heroY + heroH - 22);
+    ctx.font = `600 ${isSquare ? 12 : 14}px "JetBrains Mono", monospace`;
+    ctx.fillText(`${totalTrades} Trades • WR ${winRate.toFixed(0)}% • PF ${pf.toFixed(2)}`, W - pad - 24, heroY + heroH - (isSquare ? 16 : 22));
     ctx.textAlign = 'left';
 
-    // 4. Area PnL Calendar (Per Day / Per Week)
-    const calTop = heroY + heroH + 22;
-    const sigReserve = 148;
+    // Area Kalender (lebih lega di Square agar sel tidak gepeng)
+    const calTop = heroY + heroH + (isSquare ? 14 : 20);
+    const sigReserve = isSquare ? 124 : 150;
     const calH = H - calTop - sigReserve;
     const calW = W - pad * 2;
 
@@ -14127,12 +14244,18 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       drawWeeklyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd);
     }
 
-    // 5. CEO Handwriting Signature di tengah bawah
-    drawCeoSignature(T, W, H - 46);
+    // Footer: CEO Signature di tengah bawah + QR Code di pojok kanan bawah
+    drawCeoSignature(T, W / 2, H - (isSquare ? 36 : 44), isSquare);
+
+    if (qrLink) {
+      const qrSize = isSquare ? 82 : 100;
+      const qrX = W - pad - qrSize;
+      const qrY = H - (isSquare ? 116 : 140);
+      drawThemedQR(T, qrX, qrY, qrSize, qrLink, qrLabel);
+    }
   }
 
   function drawDailyCalendar(T, x, y, w, h, year, month, hideUsd, showSub){
-    // Panel pembungkus kalender
     rrect(ctx, x, y, w, h, 18);
     ctx.fillStyle = T.glass;
     ctx.fill();
@@ -14140,28 +14263,28 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.lineWidth = 1.2;
     ctx.stroke();
 
-    const innerPad = 18;
+    const innerPad = 16;
     const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
     const firstDay = new Date(year, month, 1);
-    const startOffset = (firstDay.getDay() + 6) % 7; // Senin = 0
+    const startOffset = (firstDay.getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const totalCells = startOffset + daysInMonth;
-    const rows = Math.ceil(totalCells / 7);
+    const rows = Math.ceil((startOffset + daysInMonth) / 7);
 
     const gap = 8;
-    const headH = 30;
+    const headH = 26;
     const cellW = (w - innerPad * 2 - gap * 6) / 7;
     const cellH = (h - innerPad * 2 - headH - gap * (rows - 1)) / rows;
 
-    // Header Hari
     ctx.textAlign = 'center';
-    ctx.font = '700 13px "JetBrains Mono", monospace';
+    ctx.font = '700 12.5px "JetBrains Mono", monospace';
     days.forEach((d, i) => {
       ctx.fillStyle = i >= 5 ? T.gold : T.muted;
-      ctx.fillText(d, x + innerPad + i * (cellW + gap) + cellW / 2, y + innerPad + 16);
+      ctx.fillText(d, x + innerPad + i * (cellW + gap) + cellW / 2, y + innerPad + 14);
     });
 
-    // Grid Tanggal
+    const pipsFont = Math.max(14, Math.min(20, Math.floor(cellH * 0.20)));
+    const subFont  = Math.max(10, Math.min(12, Math.floor(cellH * 0.12)));
+
     for (let cellIdx = 0; cellIdx < rows * 7; cellIdx++) {
       const col = cellIdx % 7;
       const row = Math.floor(cellIdx / 7);
@@ -14194,27 +14317,26 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         ctx.stroke();
       }
 
-      // Nomor tanggal pojok kiri atas
       ctx.textAlign = 'left';
       ctx.fillStyle = data ? T.text : T.muted;
-      ctx.font = '700 13px "JetBrains Mono", monospace';
-      ctx.fillText(String(dayNum), cx + 9, cy + 20);
+      ctx.font = '700 12px "JetBrains Mono", monospace';
+      ctx.fillText(String(dayNum), cx + 8, cy + 18);
 
       if (data) {
         const win = data.pips >= 0;
         ctx.textAlign = 'center';
         ctx.fillStyle = win ? T.green : T.red;
-        ctx.font = `800 ${cellH > 95 ? 20 : 17}px "JetBrains Mono", monospace`;
-        ctx.fillText(`${win ? '+' : ''}${data.pips.toFixed(1)}p`, cx + cellW / 2, cy + cellH * 0.56);
+        ctx.font = `800 ${pipsFont}px "JetBrains Mono", monospace`;
+        ctx.fillText(`${win ? '+' : ''}${data.pips.toFixed(1)}p`, cx + cellW / 2, cy + cellH * (showSub ? 0.57 : 0.62));
 
-        if (showSub) {
+        if (showSub && cellH >= 74) {
           ctx.fillStyle = T.text;
-          ctx.globalAlpha = 0.8;
-          ctx.font = '600 11.5px "JetBrains Mono", monospace';
+          ctx.globalAlpha = 0.82;
+          ctx.font = `600 ${subFont}px "JetBrains Mono", monospace`;
           const sub = hideUsd
-            ? `${data.trades} trade${data.trades > 1 ? 's' : ''}`
+            ? `${data.trades}T`
             : `${data.usd >= 0 ? '+' : '-'}$${Math.abs(data.usd).toFixed(0)} · ${data.trades}T`;
-          ctx.fillText(sub, cx + cellW / 2, cy + cellH - 12);
+          ctx.fillText(sub, cx + cellW / 2, cy + cellH - 10);
           ctx.globalAlpha = 1;
         }
       }
@@ -14243,19 +14365,14 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       for (let d = startDay; d <= endDay; d++) {
         const it = dayMap[d];
         if (!it) continue;
-        wk.pips += it.pips;
-        wk.winPips += it.winPips;
-        wk.lossPips += it.lossPips;
-        wk.usd += it.usd;
-        wk.trades += it.trades;
-        wk.wins += it.wins;
-        wk.days++;
+        wk.pips += it.pips; wk.winPips += it.winPips; wk.lossPips += it.lossPips;
+        wk.usd += it.usd; wk.trades += it.trades; wk.wins += it.wins; wk.days++;
       }
       weeks.push(wk);
     }
 
-    const innerPad = 20;
-    const gap = 12;
+    const innerPad = 18;
+    const gap = 10;
     const rowH = (h - innerPad * 2 - gap * (weeks.length - 1)) / weeks.length;
     const maxAbsPips = Math.max(10, ...weeks.map(k => Math.abs(k.pips)));
 
@@ -14273,63 +14390,55 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.lineWidth = 1.4;
       ctx.stroke();
 
-      // Kiri: Week label & range
       ctx.textAlign = 'left';
       ctx.fillStyle = T.gold;
-      ctx.font = '800 18px Inter, system-ui, sans-serif';
-      ctx.fillText(wk.label, rx + 22, ry + rowH * 0.42);
+      ctx.font = '800 17px Inter, system-ui, sans-serif';
+      ctx.fillText(wk.label, rx + 20, ry + rowH * 0.42);
 
       ctx.fillStyle = T.muted;
-      ctx.font = '600 14px "JetBrains Mono", monospace';
-      ctx.fillText(wk.range, rx + 22, ry + rowH * 0.72);
+      ctx.font = '600 13px "JetBrains Mono", monospace';
+      ctx.fillText(wk.range, rx + 20, ry + rowH * 0.72);
 
-      // Tengah: Progress bar + breakdown
-      const barX = rx + 200;
-      const barW = rw - 440;
-      if (barW > 80) {
-        const barY = ry + rowH * 0.46;
-        rrect(ctx, barX, barY, barW, 10, 5);
+      const barX = rx + 185;
+      const barW = rw - 405;
+      if (barW > 70) {
+        const barY = ry + rowH * 0.48;
+        rrect(ctx, barX, barY, barW, 9, 4.5);
         ctx.fillStyle = 'rgba(255,255,255,.08)';
         ctx.fill();
 
         if (hasData) {
           const fillW = Math.max(10, (Math.abs(wk.pips) / maxAbsPips) * barW);
-          rrect(ctx, barX, barY, fillW, 10, 5);
+          rrect(ctx, barX, barY, fillW, 9, 4.5);
           ctx.fillStyle = win ? T.green : T.red;
           ctx.fill();
         }
 
         ctx.fillStyle = T.text;
-        ctx.font = '600 13px "JetBrains Mono", monospace';
-        const info = hasData
-          ? `${wk.trades} Trades  •  Win +${wk.winPips.toFixed(0)}p / Loss -${wk.lossPips.toFixed(0)}p`
-          : 'No trading activity';
-        ctx.fillText(info, barX, barY - 12);
+        ctx.font = '600 12.5px "JetBrains Mono", monospace';
+        const info = hasData ? `${wk.trades} Trades • +${wk.winPips.toFixed(0)}p / -${wk.lossPips.toFixed(0)}p` : 'No trading activity';
+        ctx.fillText(info, barX, barY - 10);
       }
 
-      // Kanan: Net Pips & USD
       ctx.textAlign = 'right';
       if (hasData) {
         ctx.fillStyle = win ? T.green : T.red;
-        ctx.font = '800 28px "JetBrains Mono", monospace';
-        ctx.fillText(`${win ? '+' : ''}${wk.pips.toFixed(1)} PIPS`, rx + rw - 22, ry + rowH * 0.48);
+        ctx.font = '800 25px "JetBrains Mono", monospace';
+        ctx.fillText(`${win ? '+' : ''}${wk.pips.toFixed(1)} PIPS`, rx + rw - 20, ry + rowH * 0.48);
 
         ctx.fillStyle = T.text;
-        ctx.font = '600 14px "JetBrains Mono", monospace';
-        const sub = hideUsd
-          ? `${wk.days} Active Days`
-          : `${wk.usd >= 0 ? '+' : '-'}$${Math.abs(wk.usd).toLocaleString('en-US', {maximumFractionDigits:0})}  •  ${wk.days}d`;
-        ctx.fillText(sub, rx + rw - 22, ry + rowH * 0.78);
+        ctx.font = '600 13px "JetBrains Mono", monospace';
+        const sub = hideUsd ? `${wk.days} Active Days` : `${wk.usd >= 0 ? '+' : '-'}$${Math.abs(wk.usd).toLocaleString('en-US', {maximumFractionDigits:0})} • ${wk.days}d`;
+        ctx.fillText(sub, rx + rw - 20, ry + rowH * 0.78);
       } else {
         ctx.fillStyle = T.muted;
         ctx.font = '700 18px "JetBrains Mono", monospace';
-        ctx.fillText('—', rx + rw - 22, ry + rowH * 0.58);
+        ctx.fillText('—', rx + rw - 20, ry + rowH * 0.58);
       }
     });
     ctx.textAlign = 'left';
   }
 
-  // Upload custom background JPG/PNG
   $('trpBgFile').addEventListener('change', e => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -14376,19 +14485,13 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     }
   }
 
-  // Event listeners
-  ['trpTitle','trpPair','trpPct','trpBgDim','trpBgPos'].forEach(id => $(id)?.addEventListener('input', render));
+  ['trpTitle','trpPair','trpPct','trpBgDim','trpBgPos','trpQrLink','trpQrLabel'].forEach(id => $(id)?.addEventListener('input', render));
   ['trpViewMode','trpRatio','trpTheme','trpHideUsd','trpShowSub'].forEach(id => $(id)?.addEventListener('change', render));
   ['trpSource','trpMonth','trpPipSize'].forEach(id => $(id)?.addEventListener('change', syncFromSource));
   $('trpManualData').addEventListener('input', () => {
-    if ($('trpSource').value === 'manual' || !Object.keys(dayMap).length) {
-      dayMap = parseManualToMap();
-      render();
-    } else {
-      $('trpSource').value = 'manual';
-      dayMap = parseManualToMap();
-      render();
-    }
+    $('trpSource').value = 'manual';
+    dayMap = parseManualToMap();
+    render();
   });
 
   $('trpSyncBtn').addEventListener('click', syncFromSource);
@@ -14399,11 +14502,11 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     btn.addEventListener('click', () => setTimeout(syncFromSource, 120));
   });
 
-  // Render awal setelah font handwriting siap
   dayMap = parseManualToMap();
   document.fonts.ready.then(render);
   render();
 })();
 </script>
+   
 </body>
 </html>
