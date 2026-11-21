@@ -4421,42 +4421,250 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 html.gbc-proof-mode .app,
 html.gbc-proof-mode .world { display: none !important; }
 html.gbc-proof-mode,
-html.gbc-proof-mode body { overflow: hidden !important; background: #060912 !important; }
-#gbcProofPortal{position:fixed;inset:0;z-index:2147483600;overflow:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(900px 520px at 50% -10%,rgba(214,176,92,.14),transparent 65%),#060912;color:#f3f6fd;font-family:"Inter","Chakra Petch",system-ui,sans-serif;padding:clamp(14px,3vw,32px) 14px 48px;display:flex;justify-content:center;align-items:flex-start}
-.gp-card{width:100%;max-width:660px;border:1px solid rgba(214,176,92,.45);border-radius:18px;background:linear-gradient(180deg,#0f172a,#090e1a);box-shadow:0 24px 80px rgba(0,0,0,.65);overflow:hidden;position:relative}
-.gp-card::before{content:"";display:block;height:3px;background:linear-gradient(90deg,#9c752b,#f7e4a8,#9c752b)}
-.gp-head{padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.gp-brand{display:flex;align-items:center;gap:12px}
-.gp-mark{width:42px;height:42px;border-radius:10px;background:linear-gradient(145deg,#f7e4a8,#b98b3f);color:#090e1a;font:800 17px "Chakra Petch",sans-serif;display:grid;place-items:center;flex:none}
-.gp-brand b{display:block;font:700 15px "Chakra Petch",sans-serif;letter-spacing:.12em;color:#f2d996}
-.gp-brand small{display:block;font-size:11px;color:#8d9bb7;margin-top:2px}
-.gp-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;font:700 11px "JetBrains Mono",monospace;letter-spacing:.08em}
-.gp-badge.ok{background:rgba(52,211,153,.14);color:#34d399;border:1px solid rgba(52,211,153,.45)}
-.gp-badge.bad{background:rgba(251,113,133,.14);color:#fb7185;border:1px solid rgba(251,113,133,.45)}
-.gp-body{padding:20px 22px;display:grid;gap:16px}
-.gp-hero{padding:16px 18px;border-radius:14px;border:1px solid rgba(214,176,92,.25);background:rgba(255,255,255,.03);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.gp-hero small{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#d6b05c;font-weight:700}
-.gp-hero h2{margin:4px 0 2px;font:700 clamp(22px,4vw,30px) "Cormorant Garamond",Georgia,serif;color:#fff}
-.gp-hero .gp-sub{font-size:12px;color:#95a4c0}
-.gp-val{text-align:right;font:700 clamp(24px,5vw,34px) "JetBrains Mono",monospace}
-.gp-val.pos{color:#34d399}.gp-val.neg{color:#fb7185}
-.gp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.gp-item{padding:11px 13px;border-radius:11px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);min-width:0}
-.gp-item small{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7e8da8;margin-bottom:4px;font-weight:700}
-.gp-item b{display:block;font:600 13.5px "JetBrains Mono",monospace;color:#eef3ff;overflow-wrap:anywhere}
-.gp-sign{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 18px;border-radius:14px;border:1px solid rgba(214,176,92,.25);background:rgba(214,176,92,.05)}
-.gp-sigtxt .gp-calli{font:400 34px/1.1 "Great Vibes",cursive;color:#f5dfa0;margin-bottom:4px}
-.gp-sigtxt b{display:block;font-size:11.5px;letter-spacing:.16em;color:#e6c572}
-.gp-sigtxt span{display:block;font-size:11px;color:#95a4c0;margin-top:2px}
-.gp-id{text-align:right;font-family:"JetBrains Mono",monospace}
-.gp-id small{display:block;font-size:10px;color:#7e8da8;letter-spacing:.1em}
-.gp-id b{display:block;font-size:12.5px;color:#eef3ff;margin-top:3px;word-break:break-all}
-.gp-foot{padding:14px 22px 20px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.gp-foot p{margin:0;font-size:11px;color:#6e7e9c;flex:1 1 220px;line-height:1.5}
-.gp-btns{display:flex;gap:8px;flex-wrap:wrap}
-.gp-btn{min-height:38px;padding:0 14px;border-radius:9px;border:1px solid rgba(214,176,92,.45);background:rgba(214,176,92,.14);color:#f2d996;font:700 12px inherit;cursor:pointer}
-.gp-btn.pri{background:linear-gradient(135deg,#f0d283,#c6973c);color:#090e1a;border:0}
-@media(max-width:520px){.gp-grid{grid-template-columns:1fr}.gp-val,.gp-id{text-align:left}.gp-btns{width:100%}.gp-btn{flex:1}}
+html.gbc-proof-mode body { overflow: hidden !important; background: #050811 !important; margin: 0 !important; }
+
+#gbcProofPortal {
+  position: fixed; inset: 0; z-index: 2147483600;
+  overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+  background:
+    radial-gradient(960px 460px at 50% -10%, rgba(214,176,92,.14), transparent 65%),
+    radial-gradient(640px 420px at 100% 100%, rgba(52,211,153,.07), transparent 65%),
+    #050811;
+  color: #eef3ff;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  display: flex; flex-direction: column;
+}
+
+/* Sticky Top Registry Bar */
+.gp-nav {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 12px clamp(14px, 3vw, 32px);
+  background: rgba(8, 12, 24, .88);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(214,176,92,.22);
+}
+.gp-nav-l { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.gp-mark {
+  width: 36px; height: 36px; border-radius: 9px; flex: none;
+  background: linear-gradient(145deg, #f7e4a8, #b98b3f);
+  color: #080c18; font: 800 15px "Chakra Petch", sans-serif;
+  display: grid; place-items: center;
+  box-shadow: 0 4px 16px rgba(214,176,92,.25);
+}
+.gp-nav-title { min-width: 0; }
+.gp-nav-title b { display: block; font: 700 13.5px "Chakra Petch", sans-serif; letter-spacing: .12em; color: #f2d996; }
+.gp-nav-title small { display: block; font-size: 11px; color: #8c9bb8; margin-top: 1px; }
+.gp-nav-r { display: flex; align-items: center; gap: 8px; }
+.gp-nav-btn {
+  min-height: 36px; padding: 0 13px; border-radius: 9px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.04);
+  color: #d7e1f5; font: 600 12px inherit; transition: border-color .15s, background .15s;
+}
+.gp-nav-btn:hover { border-color: #d6b05c; background: rgba(214,176,92,.12); color: #f7e4a8; }
+
+/* Main Container */
+.gp-shell {
+  width: 100%; max-width: 860px; margin: 0 auto;
+  padding: clamp(18px, 3vw, 32px) clamp(12px, 2.5vw, 24px) 56px;
+  display: grid; gap: 16px;
+}
+
+/* Verification Status Banner */
+.gp-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  padding: 14px 18px; border-radius: 14px;
+  border: 1px solid rgba(52,211,153,.38);
+  background: linear-gradient(90deg, rgba(52,211,153,.13), rgba(14,22,38,.88) 55%);
+}
+.gp-banner.bad {
+  border-color: rgba(251,113,133,.45);
+  background: linear-gradient(90deg, rgba(251,113,133,.15), rgba(14,22,38,.88) 55%);
+}
+.gp-ban-l { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 260px; }
+.gp-shield {
+  width: 40px; height: 40px; border-radius: 11px; flex: none;
+  display: grid; place-items: center;
+  background: rgba(52,211,153,.16); color: #34d399;
+  border: 1px solid rgba(52,211,153,.4);
+}
+.gp-banner.bad .gp-shield { background: rgba(251,113,133,.16); color: #fb7185; border-color: rgba(251,113,133,.45); }
+.gp-ban-txt b { display: block; font-size: 14px; color: #fff; letter-spacing: .01em; }
+.gp-ban-txt span { display: block; font-size: 12px; color: #9eb0ce; margin-top: 2px; line-height: 1.45; }
+.gp-hashpill {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 12px; border-radius: 999px;
+  background: rgba(6,10,20,.75); border: 1px solid rgba(255,255,255,.12);
+  font: 600 11px "JetBrains Mono", monospace; color: #d6b05c; letter-spacing: .06em;
+}
+.gp-hashpill i { width: 7px; height: 7px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px #34d399; }
+.gp-banner.bad .gp-hashpill i { background: #fb7185; box-shadow: 0 0 8px #fb7185; }
+
+/* Official Framed Credential Card */
+.gp-doc {
+  position: relative; border-radius: 18px; overflow: hidden;
+  background: linear-gradient(160deg, #0e1629 0%, #070b15 55%, #0c1425 100%);
+  border: 1.5px solid rgba(214,176,92,.48);
+  box-shadow: 0 28px 80px rgba(0,0,0,.65), inset 0 0 0 1px rgba(255,255,255,.04);
+}
+.gp-doc::before {
+  content: ""; display: block; height: 3px;
+  background: linear-gradient(90deg, #8a6420, #f7e4a8 50%, #8a6420);
+}
+.gp-doc-inner {
+  position: relative; margin: 10px; padding: clamp(18px, 3vw, 30px);
+  border-radius: 12px; border: 1px solid rgba(214,176,92,.2);
+  display: grid; gap: 22px;
+}
+
+/* Watermark subtle crest */
+.gp-wm {
+  position: absolute; right: -40px; top: -40px; width: 280px; height: 280px;
+  opacity: .05; pointer-events: none; color: #e6c572;
+}
+
+/* Document Header */
+.gp-doc-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+  padding-bottom: 18px; border-bottom: 1px solid rgba(214,176,92,.22);
+}
+.gp-doc-eyebrow {
+  font: 700 10.5px "Chakra Petch", sans-serif; letter-spacing: .22em;
+  color: #e6c572; text-transform: uppercase;
+}
+.gp-doc-h1 {
+  margin: 6px 0 10px;
+  font: 700 clamp(26px, 4.2vw, 38px)/1.12 "Cormorant Garamond", Georgia, serif;
+  background: linear-gradient(135deg, #fbf0cd, #d6b05c 60%, #b38938);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.gp-recipient-lbl { font: italic 500 15px "Cormorant Garamond", Georgia, serif; color: #96a6c4; }
+.gp-recipient-name {
+  margin: 4px 0 8px; font: 700 clamp(22px, 3.6vw, 32px)/1.15 "Cormorant Garamond", Georgia, serif;
+  color: #ffffff; letter-spacing: .01em;
+}
+.gp-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
+.gp-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 7px;
+  background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.1);
+  font: 600 11.5px "JetBrains Mono", monospace; color: #d5e0f5;
+}
+.gp-tag.gold { background: rgba(214,176,92,.12); border-color: rgba(214,176,92,.38); color: #f2d996; }
+.gp-tag.pos { background: rgba(52,211,153,.13); border-color: rgba(52,211,153,.4); color: #5ef0ba; }
+.gp-tag.neg { background: rgba(251,113,133,.13); border-color: rgba(251,113,133,.4); color: #ff9ab0; }
+
+/* Vector Official Crest Seal */
+.gp-seal-wrap { flex: none; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.gp-seal-svg { width: 92px; height: 92px; filter: drop-shadow(0 8px 20px rgba(0,0,0,.5)); }
+.gp-seal-cap { font: 700 9.5px "JetBrains Mono", monospace; letter-spacing: .16em; color: #c8a75a; }
+
+/* KPI Showcase Strip */
+.gp-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.gp-kpi {
+  position: relative; padding: 15px 16px; border-radius: 13px;
+  background: rgba(16, 24, 44, .75); border: 1px solid rgba(255,255,255,.09);
+  min-width: 0; overflow: hidden;
+}
+.gp-kpi::before {
+  content: ""; position: absolute; left: 16px; right: 16px; top: 0; height: 2.5px;
+  border-radius: 0 0 3px 3px; background: var(--ka, #e6c572);
+}
+.gp-kpi small { display: block; font: 700 10px "Chakra Petch", sans-serif; letter-spacing: .14em; color: #8c9bb8; text-transform: uppercase; }
+.gp-kpi strong {
+  display: block; margin-top: 7px; font: 700 clamp(20px, 2.8vw, 27px)/1.15 "JetBrains Mono", monospace;
+  color: var(--ka, #ffffff); overflow-wrap: anywhere;
+}
+.gp-kpi span { display: block; margin-top: 6px; font-size: 11.5px; color: #8c9bb8; }
+.gp-prog { height: 5px; border-radius: 99px; background: rgba(255,255,255,.09); overflow: hidden; margin-top: 8px; }
+.gp-prog i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #34d399, #f2d996); }
+
+/* Audited Ledger Table */
+.gp-sec-title {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font: 700 11px "Chakra Petch", sans-serif; letter-spacing: .16em; color: #e6c572; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.gp-sec-title span { font: 500 11px "JetBrains Mono", monospace; color: #7c8ca8; letter-spacing: 0; text-transform: none; }
+.gp-ledger {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid rgba(255,255,255,.08); border-radius: 13px; overflow: hidden;
+  background: rgba(11, 17, 32, .72);
+}
+.gp-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 11px 15px; border-bottom: 1px solid rgba(255,255,255,.06);
+  min-width: 0;
+}
+.gp-row:nth-child(odd) { border-right: 1px solid rgba(255,255,255,.06); }
+.gp-row:nth-last-child(-n+2) { border-bottom: 0; }
+.gp-row small { font-size: 11.5px; color: #8a99b5; flex: 0 0 auto; }
+.gp-row b { font: 600 12.5px "JetBrains Mono", monospace; color: #eef3ff; text-align: right; overflow-wrap: anywhere; }
+
+/* Executive Authorization & Registry Stamp */
+.gp-auth {
+  display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center;
+  padding-top: 18px; border-top: 1px solid rgba(214,176,92,.22);
+}
+.gp-sign { display: flex; flex-direction: column; align-items: flex-start; }
+.gp-calli {
+  font: 400 38px/1.05 "Great Vibes", "Cormorant Garamond", cursive;
+  color: #f5dfa0; padding: 0 4px 2px;
+}
+.gp-sign-line { width: 220px; max-width: 100%; height: 1px; background: linear-gradient(90deg, #d6b05c, transparent); margin: 4px 0 8px; }
+.gp-sign b { font: 700 12px "Chakra Petch", sans-serif; letter-spacing: .18em; color: #e6c572; }
+.gp-sign span { font-size: 11.5px; color: #8f9fba; margin-top: 2px; }
+
+.gp-registry {
+  padding: 12px 16px; border-radius: 12px;
+  background: rgba(214,176,92,.06); border: 1px solid rgba(214,176,92,.28);
+  font-family: "JetBrains Mono", monospace; text-align: right; min-width: 230px;
+}
+.gp-registry div { display: flex; justify-content: space-between; gap: 14px; font-size: 11px; padding: 3px 0; }
+.gp-registry small { color: #8c9bb8; }
+.gp-registry b { color: #eef3ff; font-weight: 600; }
+.gp-registry .ok { color: #34d399; }
+.gp-registry .bad { color: #fb7185; }
+
+/* Action Bar & Legal Footnote */
+.gp-actions {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.gp-btns { display: flex; gap: 9px; flex-wrap: wrap; }
+.gp-btn {
+  min-height: 40px; padding: 0 16px; border-radius: 10px; cursor: pointer;
+  border: 1px solid rgba(214,176,92,.42); background: rgba(214,176,92,.1);
+  color: #f3dc9b; font: 600 12.5px inherit; display: inline-flex; align-items: center; gap: 7px;
+  transition: filter .15s, background .15s;
+}
+.gp-btn:hover { background: rgba(214,176,92,.2); }
+.gp-btn.pri {
+  background: linear-gradient(135deg, #f3dc9b, #c5963a); color: #090d18; border: 0; font-weight: 700;
+}
+.gp-btn.pri:hover { filter: brightness(1.07); }
+.gp-legal {
+  font-size: 11px; color: #6e7e9c; line-height: 1.55; margin: 0;
+  padding-top: 8px; border-top: 1px solid rgba(255,255,255,.06);
+}
+
+@media (max-width: 720px) {
+  .gp-kpis { grid-template-columns: 1fr; }
+  .gp-ledger { grid-template-columns: 1fr; }
+  .gp-row:nth-child(odd) { border-right: 0; }
+  .gp-row:nth-last-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,.06); }
+  .gp-row:last-child { border-bottom: 0; }
+  .gp-auth { grid-template-columns: 1fr; }
+  .gp-registry { text-align: left; min-width: 0; }
+  .gp-seal-wrap { display: none; }
+  .gp-btns { width: 100%; }
+  .gp-btn { flex: 1 1 140px; justify-content: center; }
+}
+
+@media print {
+  .gp-nav, .gp-actions { display: none !important; }
+  #gbcProofPortal { position: static; background: #060912 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .gp-shell { padding: 0; max-width: none; }
+}
 </style>
 
 <script id="gbc-proof-portal-js">
@@ -4467,7 +4675,6 @@ html.gbc-proof-mode body { overflow: hidden !important; background: #060912 !imp
   const legacySig = qs.get('sig') || '';
   if(!compact && !legacyRaw) return;
 
-  // Sembunyikan Overview sejak awal sebelum render pertama
   document.documentElement.classList.add('gbc-proof-mode');
 
   function hashFull(str){
@@ -4491,29 +4698,33 @@ html.gbc-proof-mode body { overflow: hidden !important; background: #060912 !imp
   };
   const fmtDate = code => {
     const s = String(code || '');
-    if(s.length === 10) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)} ${s.slice(6,8)}:${s.slice(8,10)} WIB`;
+    if(s.length === 10) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)} · ${s.slice(6,8)}:${s.slice(8,10)} WIB`;
     if(s.length === 6) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)}`;
     return s || '—';
   };
 
-  let data = null, valid = false;
+  let data = null, valid = false, sigShown = 'INVALID';
   if(compact){
     try {
       const parts = compact.split('~');
       const sig = (parts.pop() || '').toLowerCase();
       const body = parts.join('~');
-      valid = sig.length === 6 && sig === hashFull(body).slice(0, 6);
+      const expected = hashFull(body).slice(0, 6);
+      valid = sig.length === 6 && sig === expected;
+      sigShown = sig.toUpperCase() || 'NONE';
       if(parts[0] === 'C' && parts.length >= 11){
         const [, lg, tr, fm, stRaw, eqRaw, tg, wr, ct, dt, cur] = parts;
         const st = Number(stRaw), eq = Number(eqRaw), prof = eq - st;
         const pct = st ? (prof / st * 100) : 0;
+        const tgNum = Number(tg) || 10;
         data = {
           t: 'CERT',
           id: `GBC-${lg.replace(/[^a-z0-9]/gi, '')}-20${dt}`,
-          tr, fm, lg, br: fm,
+          tr, fm, lg, cur,
           np: fmtMoney(prof, cur, true),
           sb: fmtMoney(st, cur),
           eq: fmtMoney(eq, cur),
+          pct, tgNum,
           rt: `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`,
           tg: `${tg}%`,
           wr: `${wr}%`,
@@ -4525,7 +4736,7 @@ html.gbc-proof-mode body { overflow: hidden !important; background: #060912 !imp
         const [, id, lg, tr, sy, sd, vl, netRaw, en, ex, sl, tp, dt, cur] = parts;
         const net = Number(netRaw);
         data = {
-          t: 'PNL', id, lg, tr, fm: 'Golden Break Terminal',
+          t: 'PNL', id, lg, tr, fm: 'Golden Break Terminal', cur,
           sy, sd: sd === 'S' ? 'SELL' : 'BUY', vl,
           np: fmtMoney(net, cur, true),
           gn: net >= 0 ? 1 : 0,
@@ -4539,75 +4750,195 @@ html.gbc-proof-mode body { overflow: hidden !important; background: #060912 !imp
     } catch(e){ valid = false; }
   } else if(legacyRaw){
     try {
-      valid = legacySig.toLowerCase() === hashFull(legacyRaw);
+      const expected = hashFull(legacyRaw);
+      valid = legacySig.toLowerCase() === expected;
+      sigShown = legacySig.slice(0, 6).toUpperCase() || 'LEGACY';
       data = JSON.parse(decB64(legacyRaw));
+      if(data && data.gn == null) data.gn = 1;
     } catch(e){ valid = false; }
   }
 
   const isCert = data && data.t === 'CERT';
-  const rows = !data ? [] : (isCert ? [
-    ['Prop Firm / Broker', data.fm], ['Account Login', data.lg],
-    ['Achieved Return', `${data.rt} (Target ${data.tg})`], ['Win Rate & Trades', `${data.wr} · ${data.ct} trades`],
-    ['Starting Balance', data.sb], ['Current Equity', data.eq]
+  const sealSvg = `<svg class="gp-seal-svg" viewBox="0 0 120 120" aria-hidden="true">
+    <defs><linearGradient id="gpG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbf0cd"/><stop offset="50%" stop-color="#d6b05c"/><stop offset="100%" stop-color="#8c6620"/></linearGradient></defs>
+    <circle cx="60" cy="60" r="54" fill="url(#gpG)" opacity=".18"/>
+    <circle cx="60" cy="60" r="48" fill="#091020" stroke="url(#gpG)" stroke-width="3.2"/>
+    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6c572" stroke-width="1.2" stroke-dasharray="3 3" opacity=".75"/>
+    <polygon points="60,25 63,32 70,32 64.5,36.5 66.5,43 60,39 53.5,43 55.5,36.5 50,32 57,32" fill="#f2d996"/>
+    <text x="60" y="70" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="28" font-weight="700" fill="#fbf0cd">GB</text>
+    <text x="60" y="86" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="700" letter-spacing="2" fill="#d6b05c">VERIFIED</text>
+  </svg>`;
+
+  const checkSvg = valid
+    ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>`
+    : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+
+  const progPct = isCert && data?.tgNum > 0 ? Math.min(100, Math.max(0, (data.pct / data.tgNum) * 100)) : 100;
+
+  const kpisHtml = !data ? '' : (isCert ? `
+    <div class="gp-kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
+      <small>Verified Net Profit</small>
+      <strong>${esc(data.np)}</strong>
+      <span>Modal awal ${esc(data.sb)}</span>
+    </div>
+    <div class="gp-kpi" style="--ka:#f2d996">
+      <small>Achieved Return</small>
+      <strong>${esc(data.rt)}</strong>
+      <div class="gp-prog"><i style="width:${progPct.toFixed(0)}%"></i></div>
+      <span>Target challenge ${esc(data.tg)} tercapai</span>
+    </div>
+    <div class="gp-kpi" style="--ka:#eef3ff">
+      <small>Execution Consistency</small>
+      <strong>${esc(data.wr)}</strong>
+      <span>${esc(data.ct)} posisi tertutup tercatat</span>
+    </div>
+  ` : `
+    <div class="gp-kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
+      <small>Net Profit / Loss</small>
+      <strong>${esc(data.np)}</strong>
+      <span>${esc(data.sy)} · ${esc(data.sd)}</span>
+    </div>
+    <div class="gp-kpi" style="--ka:#f2d996">
+      <small>Entry → Exit</small>
+      <strong>${esc(data.en)} → ${esc(data.ex)}</strong>
+      <span>Volume ${esc(data.vl)} lot</span>
+    </div>
+    <div class="gp-kpi" style="--ka:#eef3ff">
+      <small>Risk Parameters</small>
+      <strong>SL ${esc(data.sl)}</strong>
+      <span>TP ${esc(data.tp)}</span>
+    </div>
+  `);
+
+  const ledgerRows = !data ? [] : (isCert ? [
+    ['Account Holder', data.tr],
+    ['Prop Firm / Broker', data.fm],
+    ['Account Login', data.lg],
+    ['Account Currency', data.cur || 'USD'],
+    ['Starting Balance', data.sb],
+    ['Verified Equity', data.eq],
+    ['Profit Target', `${data.tg} (${data.rt})`],
+    ['Recorded Closed Trades', `${data.ct} trades · ${data.wr} WR`]
   ] : [
-    ['Trader', data.tr], ['Account Login', data.lg],
-    ['Symbol & Arah', `${data.sy} · ${data.sd} (${data.vl} lot)`], ['Waktu Close', data.dt],
-    ['Entry Price', data.en], ['Exit Price', data.ex],
-    ['Stop Loss', data.sl], ['Take Profit', data.tp]
+    ['Trader', data.tr],
+    ['Account Login', data.lg],
+    ['Instrument & Side', `${data.sy} · ${data.sd}`],
+    ['Position Volume', `${data.vl} lot`],
+    ['Entry Price', data.en],
+    ['Exit Price', data.ex],
+    ['Stop Loss / Take Profit', `${data.sl} / ${data.tp}`],
+    ['Close Time (WIB)', data.dt]
   ]);
 
   const mount = () => {
     if(document.getElementById('gbcProofPortal')) return;
+    if(!document.querySelector('link[href*="Cormorant+Garamond"]')){
+      const fl = document.createElement('link'); fl.rel = 'stylesheet';
+      fl.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap';
+      document.head.appendChild(fl);
+    }
     const el = document.createElement('div');
     el.id = 'gbcProofPortal';
-    el.innerHTML = `<div class="gp-card">
-      <div class="gp-head">
-        <div class="gp-brand"><div class="gp-mark">GB</div><div><b>GOLDEN BREAK CAPITAL</b><small>Official Web Verification Proof</small></div></div>
-        <span class="gp-badge ${valid ? 'ok' : 'bad'}">${valid ? '✔ VERIFIED RECORD' : '✕ INVALID / MODIFIED'}</span>
-      </div>
-      <div class="gp-body">
-        ${data ? `
-          <div class="gp-hero">
-            <div>
-              <small>${isCert ? 'TARGET ACHIEVEMENT CERTIFICATE' : 'TRADE PERFORMANCE RECORD'}</small>
-              <h2>${esc(isCert ? data.tr : `${data.sy} · ${data.sd}`)}</h2>
-              <div class="gp-sub">${esc(isCert ? `${data.fm} · Account ${data.lg}` : `${data.tr} · Ticket #${data.id}`)}</div>
-            </div>
-            <div class="gp-val ${data.gn !== 0 ? 'pos' : 'neg'}">${esc(data.np)}</div>
+    el.innerHTML = `
+      <header class="gp-nav">
+        <div class="gp-nav-l">
+          <div class="gp-mark">GB</div>
+          <div class="gp-nav-title">
+            <b>GOLDEN BREAK CAPITAL</b>
+            <small>Certificate &amp; Performance Verification Registry</small>
           </div>
-          <div class="gp-grid">${rows.map(([k, v]) => `<div class="gp-item"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}</div>
-          <div class="gp-sign">
-            <div class="gp-sigtxt">
-              <div class="gp-calli">Farid Siddiq</div>
-              <b>FARID SIDDIQ</b>
-              <span>CEO · Golden Break Capital</span>
-            </div>
-            <div class="gp-id">
-              <small>${isCert ? 'CERTIFICATE ID' : 'RECORD TICKET'}</small>
-              <b>${esc(isCert ? data.id : '#' + data.id)}</b>
-              <small style="margin-top:6px">ISSUED (WIB)</small>
-              <b>${esc(data.dt)}</b>
-            </div>
-          </div>
-        ` : `<div class="gp-item"><b>Data verifikasi tidak valid atau link terpotong.</b></div>`}
-      </div>
-      <div class="gp-foot">
-        <p>${valid ? 'Record ini cocok dengan tanda tangan integritas Golden Break Terminal. Bukti internal dashboard, bukan laporan resmi broker.' : 'Peringatan: parameter URL telah diubah atau rusak sehingga gagal verifikasi.'}</p>
-        <div class="gp-btns">
-          <button type="button" class="gp-btn" id="gpCopy">🔗 Salin Link</button>
-          <button type="button" class="gp-btn pri" id="gpClose">Buka Terminal</button>
         </div>
-      </div>
-    </div>`;
+        <div class="gp-nav-r">
+          <button type="button" class="gp-nav-btn" id="gpNavClose">← Buka Terminal</button>
+        </div>
+      </header>
+
+      <main class="gp-shell">
+        <section class="gp-banner ${valid ? '' : 'bad'}">
+          <div class="gp-ban-l">
+            <div class="gp-shield">${checkSvg}</div>
+            <div class="gp-ban-txt">
+              <b>${valid ? 'Authentic &amp; Verified Credential' : 'Verification Failed · Data Modified'}</b>
+              <span>${valid ? 'Tanda tangan integritas cocok dengan catatan Golden Break Terminal.' : 'Parameter tautan telah diubah atau rusak sehingga gagal verifikasi.'}</span>
+            </div>
+          </div>
+          <span class="gp-hashpill"><i></i>SIG · 0x${esc(sigShown)}</span>
+        </section>
+
+        ${data ? `
+        <article class="gp-doc">
+          <div class="gp-doc-inner">
+            <svg class="gp-wm" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="88" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4"/><circle cx="100" cy="100" r="52" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+
+            <div class="gp-doc-head">
+              <div>
+                <div class="gp-doc-eyebrow">${isCert ? 'GOLDEN BREAK CAPITAL · CHALLENGE MILESTONE' : 'GOLDEN BREAK CAPITAL · AUDITED EXECUTION'}</div>
+                <h1 class="gp-doc-h1">${isCert ? 'Certificate of Target Achievement' : 'Verified Trade Performance Proof'}</h1>
+                <div class="gp-recipient-lbl">${isCert ? 'Officially presented to' : 'Recorded execution for'}</div>
+                <div class="gp-recipient-name">${esc(isCert ? data.tr : `${data.sy} · ${data.sd}`)}</div>
+                <div class="gp-tags">
+                  <span class="gp-tag gold">${esc(data.fm)}</span>
+                  <span class="gp-tag">Account #${esc(data.lg)}</span>
+                  <span class="gp-tag ${data.gn ? 'pos' : 'neg'}">${isCert ? 'TARGET PASSED' : (data.gn ? 'PROFITABLE EXIT' : 'CLOSED LOSS')}</span>
+                </div>
+              </div>
+              <div class="gp-seal-wrap">${sealSvg}<span class="gp-seal-cap">OFFICIAL SEAL</span></div>
+            </div>
+
+            <div class="gp-kpis">${kpisHtml}</div>
+
+            <div>
+              <div class="gp-sec-title">
+                ${isCert ? 'Audited Account Specifications' : 'Execution &amp; Audit Details'}
+                <span>Issued ${esc(data.dt)}</span>
+              </div>
+              <div class="gp-ledger">
+                ${ledgerRows.map(([k, v]) => `<div class="gp-row"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}
+              </div>
+            </div>
+
+            <div class="gp-auth">
+              <div class="gp-sign">
+                <div class="gp-calli">Farid Siddiq</div>
+                <div class="gp-sign-line"></div>
+                <b>FARID SIDDIQ</b>
+                <span>Chief Executive Officer · Golden Break Capital</span>
+              </div>
+              <div class="gp-registry">
+                <div><small>STATUS</small><b class="${valid ? 'ok' : 'bad'}">${valid ? 'VERIFIED' : 'INVALID'}</b></div>
+                <div><small>${isCert ? 'CERT ID' : 'TICKET'}</small><b>${esc(isCert ? data.id : '#' + data.id)}</b></div>
+                <div><small>ISSUED</small><b>${esc(data.dt)}</b></div>
+                <div><small>CHECKSUM</small><b>0x${esc(sigShown)}</b></div>
+              </div>
+            </div>
+          </div>
+        </article>
+        ` : `<article class="gp-doc"><div class="gp-doc-inner"><b>Data verifikasi tidak valid atau tautan QR terpotong.</b></div></article>`}
+
+        <div class="gp-actions">
+          <div class="gp-btns">
+            <button type="button" class="gp-btn pri" id="gpPrint">🖨 Cetak / Simpan PDF</button>
+            <button type="button" class="gp-btn" id="gpCopy">🔗 Salin Link Proof</button>
+            <button type="button" class="gp-btn" id="gpClose">↗ Buka Terminal</button>
+          </div>
+        </div>
+
+        <p class="gp-legal">Halaman verifikasi ini menampilkan catatan performa yang diterbitkan oleh Golden Break Terminal berdasarkan data akun yang terhubung. Dokumen ini merupakan bukti pencapaian internal komunitas/terminal dan bukan pernyataan payout resmi dari broker maupun prop firm pihak ketiga.</p>
+      </main>
+    `;
     document.body.appendChild(el);
-    document.getElementById('gpCopy').onclick = () => {
-      navigator.clipboard?.writeText(location.href);
-      document.getElementById('gpCopy').textContent = '✔ Tersalin';
-    };
-    document.getElementById('gpClose').onclick = () => {
+
+    const closePortal = () => {
       el.remove();
       document.documentElement.classList.remove('gbc-proof-mode');
       history.replaceState({}, '', location.pathname);
+    };
+    document.getElementById('gpClose').onclick = closePortal;
+    document.getElementById('gpNavClose').onclick = closePortal;
+    document.getElementById('gpPrint').onclick = () => window.print();
+    document.getElementById('gpCopy').onclick = () => {
+      navigator.clipboard?.writeText(location.href);
+      document.getElementById('gpCopy').textContent = '✔ Link Tersalin';
     };
   };
 
@@ -10771,7 +11102,7 @@ function drawLadder(x, box, m, info, opt = {}){
 
 /* ---------- helper visual premium (Obsidian & Champagne Gold + Crisp QR) ---------- */
 const SIGN_FONT = '"Great Vibes","Cormorant Garamond",Georgia,serif';
-const PROOF_BASE_URL = /^https?:/i.test(location.protocol)
+const PROOF_BASE_URL = /^https:/i.test(location.protocol) && !/localhost|127\.0\.0\.1/i.test(location.hostname)
   ? (location.origin + location.pathname.replace(/index\.html$/i, ''))
   : 'https://funded-journey-nu.vercel.app/';
 
@@ -10819,7 +11150,7 @@ function buildCompactProofUrl(fields){
   const rawBody = fields.join('~');
   const sig = proofHash(rawBody);
   const encoded = [...fields, sig].map(urlSeg).join('~');
-  return `${PROOF_BASE_URL}?p=${encoded}`;
+  return `${PROOF_BASE_URL}?gbc=${encoded}`;
 }
 
 function drawCornerBrackets(x, bx, by, bw, bh, len, color, lw){
@@ -10943,29 +11274,38 @@ function drawGoldSeal(x, cx, cy, r, u = 1){
   x.restore();
 }
 
-function drawQrBadge(x, url, bx, by, size, u = 1){
+function drawQrBadge(x, url, bx, by, maxSlot, u = 1, opt = {}){
   x.save();
-  // Latar putih murni (#ffffff) + border emas tipis untuk rasio kontras 21:1
-  const rx = Math.round(bx), ry = Math.round(by), sz = Math.round(size);
-  rr(x, rx, ry, sz, sz, Math.round(10 * u));
-  x.fillStyle = '#ffffff';
-  x.fill();
-  x.strokeStyle = '#d6b05c';
-  x.lineWidth = Math.max(1.5, 2 * u);
-  x.stroke();
-
-  let ok = false;
   try {
     if(typeof window.qrcode === 'function'){
       const qr = window.qrcode(0, 'L');
       qr.addData(String(url || PROOF_BASE_URL));
       qr.make();
       const count = qr.getModuleCount();
-      // Quiet zone minimal 3-4 modul putih di setiap sisi + ukuran modul integer tajam
-      const mod = Math.max(2, Math.floor(sz / (count + 7)));
+      // Quiet zone ramping 2.2 modul + ukuran modul integer tajam (tanpa padding putih tebal)
+      const quietRatio = 2.2;
+      let mod = Math.floor(maxSlot / (count + quietRatio * 2));
+      if(mod < 2) mod = 2;
       const qrPx = count * mod;
-      const ox = Math.round(rx + (sz - qrPx) / 2);
-      const oy = Math.round(ry + (sz - qrPx) / 2);
+      const quiet = Math.max(Math.round(5 * u), Math.round(mod * quietRatio));
+      const boxSz = qrPx + quiet * 2;
+      const rx = Math.round(opt.alignRight ? (bx + maxSlot - boxSz) : (bx + (maxSlot - boxSz) / 2));
+      const ry = Math.round(opt.alignBottom ? (by + maxSlot - boxSz) : (by + (maxSlot - boxSz) / 2));
+
+      x.shadowColor = 'rgba(0,0,0,.45)';
+      x.shadowBlur = 14 * u;
+      x.shadowOffsetY = 4 * u;
+      rr(x, rx, ry, boxSz, boxSz, Math.round(7 * u));
+      x.fillStyle = '#ffffff';
+      x.fill();
+      x.shadowColor = 'transparent';
+
+      x.strokeStyle = 'rgba(214,176,92,.72)';
+      x.lineWidth = Math.max(1.2, 1.4 * u);
+      x.stroke();
+
+      const ox = rx + quiet;
+      const oy = ry + quiet;
       x.imageSmoothingEnabled = false;
       x.fillStyle = '#000000';
       for(let r = 0; r < count; r++){
@@ -10975,16 +11315,20 @@ function drawQrBadge(x, url, bx, by, size, u = 1){
           }
         }
       }
-      ok = true;
+      x.restore();
+      return { x: rx, y: ry, size: boxSz };
     }
   } catch(e){}
 
-  if(!ok){
-    const { T } = tools(x);
-    T('SCAN', rx + sz / 2, ry + sz * 0.46, { size: sz * 0.18, weight: 700, color: '#000000', align: 'center', family: MONO });
-    T('PROOF', rx + sz / 2, ry + sz * 0.70, { size: sz * 0.15, weight: 700, color: '#8a6823', align: 'center', family: MONO });
-  }
+  const rx = Math.round(bx), ry = Math.round(by), sz = Math.round(maxSlot);
+  rr(x, rx, ry, sz, sz, Math.round(7 * u));
+  x.fillStyle = '#ffffff'; x.fill();
+  x.strokeStyle = '#d6b05c'; x.lineWidth = Math.max(1.2, 1.4 * u); x.stroke();
+  const { T } = tools(x);
+  T('SCAN', rx + sz / 2, ry + sz * 0.46, { size: sz * 0.18, weight: 700, color: '#000000', align: 'center', family: MONO });
+  T('PROOF', rx + sz / 2, ry + sz * 0.70, { size: sz * 0.15, weight: 700, color: '#8a6823', align: 'center', family: MONO });
   x.restore();
+  return { x: rx, y: ry, size: sz };
 }
 
 /* ---------- chart: kurva saldo (fallback sertifikat) ---------- */
@@ -11468,9 +11812,9 @@ function drawCert(fmtKey, d, best){
   x.fillRect(0, 0, W, H);
 
   drawMicroGrid(x, W, H, Math.round(42 * u), 'rgba(214,176,92,.038)');
-  drawGuilloche(x, wide ? W * 0.28 : W * 0.5, wide ? H * 0.40 : H * 0.25, (wide ? 300 : 340) * u, 'rgba(214,176,92,.055)');
+  drawGuilloche(x, wide ? W * 0.28 : W * 0.5, wide ? H * 0.39 : H * 0.25, (wide ? 295 : 340) * u, 'rgba(214,176,92,.055)');
 
-  const amb = x.createRadialGradient(wide ? W * 0.27 : W * 0.5, wide ? H * 0.28 : H * 0.21, 10, wide ? W * 0.27 : W * 0.5, wide ? H * 0.28 : H * 0.21, (wide ? 480 : 540) * u);
+  const amb = x.createRadialGradient(wide ? W * 0.27 : W * 0.5, wide ? H * 0.28 : H * 0.21, 10, wide ? W * 0.27 : W * 0.5, wide ? H * 0.28 : H * 0.21, (wide ? 470 : 540) * u);
   amb.addColorStop(0, 'rgba(214,176,92,.13)');
   amb.addColorStop(1, 'rgba(0,0,0,0)');
   x.fillStyle = amb;
@@ -11478,14 +11822,14 @@ function drawCert(fmtKey, d, best){
 
   const padOut = 24 * u, padIn = 38 * u;
   x.strokeStyle = goldGrad(x, 0, 0, W, H);
-  x.lineWidth = 3.2 * u;
+  x.lineWidth = 3 * u;
   rr(x, padOut, padOut, W - padOut * 2, H - padOut * 2, 16 * u);
   x.stroke();
   x.strokeStyle = 'rgba(214,176,92,.32)';
   x.lineWidth = 1.2 * u;
   rr(x, padIn, padIn, W - padIn * 2, H - padIn * 2, 10 * u);
   x.stroke();
-  drawCornerBrackets(x, padIn + 8 * u, padIn + 8 * u, W - (padIn + 8 * u) * 2, H - (padIn + 8 * u) * 2, 30 * u, '#e6c572', 2.2 * u);
+  drawCornerBrackets(x, padIn + 8 * u, padIn + 8 * u, W - (padIn + 8 * u) * 2, H - (padIn + 8 * u) * 2, 28 * u, '#e6c572', 2 * u);
 
   const drawMetrics = (bx, by, bw, bh) => {
     const gap = 14 * u, mw = (bw - gap * 2) / 3;
@@ -11506,7 +11850,7 @@ function drawCert(fmtKey, d, best){
       x.fillStyle = r[3];
       x.fill();
       T(r[0], mx + mw / 2, by + bh * 0.27, { size: 11 * u, weight: 700, color: '#9caac5', align: 'center', ls: 1.6 * u, max: mw - 20 * u });
-      T(r[1], mx + mw / 2, by + bh * 0.64, { size: Math.min(30 * u, bh * 0.30), weight: 700, color: r[3], align: 'center', family: MONO, max: mw - 22 * u, minScale: 0.45 });
+      T(r[1], mx + mw / 2, by + bh * 0.64, { size: Math.min(29 * u, bh * 0.30), weight: 700, color: r[3], align: 'center', family: MONO, max: mw - 22 * u, minScale: 0.45 });
       T(r[2], mx + mw / 2, by + bh * 0.87, { size: 11.5 * u, weight: 500, color: FAINT, align: 'center', max: mw - 20 * u });
     });
   };
@@ -11598,7 +11942,6 @@ function drawCert(fmtKey, d, best){
 
   const stText = `for successfully achieving the ${d.target}% profit target on trading account ${accLogin}${inferFirm(d.a, d.custom) ? ' with ' + inferFirm(d.a, d.custom) : ''}.`;
 
-  // URL proof super ringkas (~100-118 karakter -> QR Version 5-6, kotak besar super mudah scan!)
   const qrData = buildCompactProofUrl([
     'C',
     cleanSeg(accLogin, 16),
@@ -11613,124 +11956,125 @@ function drawCert(fmtKey, d, best){
     cleanSeg(cur, 4)
   ]);
 
-  const M = 74 * u;
-
   if(wide){
-    const lx = M, lw = W * 0.47, lcx = lx + lw / 2;
+    // ===== LANDSCAPE 16:9 & 4:3 — Margin lega dari bingkai & siku sudut =====
+    const M = 90 * u;
+    const lx = M, lw = (W - M * 2) * 0.495, lcx = lx + lw / 2;
     const rx = lx + lw + 34 * u, rw = W - M - rx;
-    const footerY = H - 202 * u;
-    const contentTop = 66 * u;
-    const contentBot = footerY - 16 * u;
+    const footerY = H - 208 * u;
+    const contentTop = 74 * u;
+    const contentBot = footerY - 18 * u;
     const ch = contentBot - contentTop;
 
     T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', lcx, contentTop + ch * 0.04, {
-      size: 13 * u, weight: 700, color: GOLD, align: 'center', ls: 3.2 * u, max: lw
+      size: 12.5 * u, weight: 700, color: GOLD, align: 'center', ls: 3.2 * u, max: lw
     });
     const tg = goldGrad(x, lcx - 220 * u, contentTop + ch * 0.07, lcx + 220 * u, contentTop + ch * 0.18);
-    T('CERTIFICATE', lcx, contentTop + ch * 0.16, { size: 66 * u, weight: 700, color: tg, align: 'center', family: SERIF, ls: 5 * u, max: lw });
-    T('OF TARGET ACHIEVEMENT', lcx, contentTop + ch * 0.22, { size: 21 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: lw });
-    drawOrnament(lcx, contentTop + ch * 0.256, Math.min(lw * 0.54, 340 * u));
+    T('CERTIFICATE', lcx, contentTop + ch * 0.16, { size: 64 * u, weight: 700, color: tg, align: 'center', family: SERIF, ls: 5 * u, max: lw });
+    T('OF TARGET ACHIEVEMENT', lcx, contentTop + ch * 0.22, { size: 20.5 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: lw });
+    drawOrnament(lcx, contentTop + ch * 0.256, Math.min(lw * 0.54, 330 * u));
 
-    T('This certificate proudly recognizes the verified performance of', lcx, contentTop + ch * 0.312, {
-      size: 18.5 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: lw
+    T('This certificate proudly recognizes the verified performance of', lcx, contentTop + ch * 0.314, {
+      size: 18 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: lw
     });
     T(trader, lcx, contentTop + ch * 0.415, {
-      size: 54 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: lw, minScale: 0.42
+      size: 52 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: lw, minScale: 0.42
     });
     const nlG = x.createLinearGradient(lcx - lw * 0.36, 0, lcx + lw * 0.36, 0);
     nlG.addColorStop(0, 'rgba(214,176,92,0)'); nlG.addColorStop(0.5, '#e6c572'); nlG.addColorStop(1, 'rgba(214,176,92,0)');
-    x.strokeStyle = nlG; x.lineWidth = 1.6 * u;
+    x.strokeStyle = nlG; x.lineWidth = 1.5 * u;
     x.beginPath(); x.moveTo(lcx - lw * 0.36, contentTop + ch * 0.442); x.lineTo(lcx + lw * 0.36, contentTop + ch * 0.442); x.stroke();
 
-    wrap(stText, lw * 0.94, 18 * u, 500, SERIF, 2).forEach((ln, i) =>
-      T(ln, lcx, contentTop + ch * (0.492 + i * 0.044), { size: 18 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
+    wrap(stText, lw * 0.94, 17.5 * u, 500, SERIF, 2).forEach((ln, i) =>
+      T(ln, lcx, contentTop + ch * (0.492 + i * 0.044), { size: 17.5 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
     );
 
-    const my = contentTop + ch * 0.585, mh = Math.min(112 * u, ch * 0.185);
+    const my = contentTop + ch * 0.585, mh = Math.min(110 * u, ch * 0.185);
     drawMetrics(lx, my, lw, mh);
 
-    const sigCenterY = my + mh + (contentBot - (my + mh)) * 0.54;
-    drawGoldSeal(x, lx + 74 * u, sigCenterY - 4 * u, Math.min(42 * u, (contentBot - (my + mh)) * 0.36), u);
+    const sigCenterY = my + mh + (contentBot - (my + mh)) * 0.55;
+    drawGoldSeal(x, lx + 72 * u, sigCenterY - 4 * u, Math.min(41 * u, (contentBot - (my + mh)) * 0.36), u);
     drawSignature(lx + lw * 0.58, sigCenterY + 2 * u, lw * 0.52);
 
     const chartH = ch * 0.53;
     drawCertChart({ x: rx, y: contentTop, w: rw, h: chartH });
     drawDetailsBox(rx, contentTop + chartH + 16 * u, rw, ch - chartH - 16 * u, 2);
 
-    // Footer dengan QR besar 142*u tajam
+    // Footer: QR aman di dalam area [footerY + 14 .. H - 72] & [.. W - M - 6]
     x.strokeStyle = 'rgba(214,176,92,.32)';
     x.lineWidth = 1 * u;
     x.beginPath(); x.moveTo(M, footerY); x.lineTo(W - M, footerY); x.stroke();
 
-    const qrS = 142 * u;
-    drawQrBadge(x, qrData, W - M - qrS, footerY + 10 * u, qrS, u);
+    const qrSlot = 132 * u;
+    const qrTop = footerY + 14 * u;
+    const qrBox = drawQrBadge(x, qrData, W - M - qrSlot - 6 * u, qrTop, qrSlot, u, { alignRight: true });
 
-    T('CERTIFICATE ID', M, footerY + 46 * u, { size: 11 * u, weight: 700, color: GOLD, ls: 1.5 * u });
-    T(certId, M, footerY + 72 * u, { size: 16 * u, weight: 600, color: TXT, family: MONO, max: 420 * u });
-    T('Scan QR di kanan untuk melihat proof verifikasi di web.', M, footerY + 102 * u, {
-      size: 12.5 * u, weight: 500, color: MUTED, max: W - M * 2 - qrS - 320 * u
+    const txtMid = qrBox.y + qrBox.size * 0.5;
+    T('CERTIFICATE ID', M, txtMid - 28 * u, { size: 10.5 * u, weight: 700, color: GOLD, ls: 1.5 * u });
+    T(certId, M, txtMid - 2 * u, { size: 15.5 * u, weight: 600, color: TXT, family: MONO, max: 420 * u });
+    T('Scan QR di kanan untuk membuka halaman verifikasi resmi di web.', M, txtMid + 24 * u, {
+      size: 12 * u, weight: 500, color: MUTED, max: qrBox.x - M - 300 * u
     });
-    T('Sertifikat internal berdasarkan data dashboard · Bukan bukti payout resmi prop-firm.', M, footerY + 124 * u, {
-      size: 11 * u, weight: 400, color: FAINT, max: W - M * 2 - qrS - 320 * u
+    T('Catatan performa internal Golden Break Terminal · Bukan bukti payout resmi prop-firm.', M, txtMid + 44 * u, {
+      size: 10.5 * u, weight: 400, color: FAINT, max: qrBox.x - M - 260 * u
     });
 
-    const isX = W - M - qrS - 28 * u;
-    T('ISSUED (WIB)', isX, footerY + 46 * u, { size: 11 * u, weight: 700, color: GOLD, align: 'right', ls: 1.5 * u });
-    T(issuedStr, isX, footerY + 72 * u, { size: 15 * u, weight: 600, color: TXT, align: 'right', family: MONO, max: 300 * u });
-    T('SCAN QR FOR WEB PROOF →', isX, footerY + 104 * u, { size: 11.5 * u, weight: 700, color: GOLD, align: 'right', ls: 1.4 * u, family: MONO });
+    const isX = qrBox.x - 24 * u;
+    T('ISSUED (WIB)', isX, txtMid - 28 * u, { size: 10.5 * u, weight: 700, color: GOLD, align: 'right', ls: 1.5 * u });
+    T(issuedStr, isX, txtMid - 2 * u, { size: 14.5 * u, weight: 600, color: TXT, align: 'right', family: MONO, max: 290 * u });
+    T('SCAN TO VERIFY PROOF →', isX, txtMid + 26 * u, { size: 11 * u, weight: 700, color: GOLD, align: 'right', ls: 1.4 * u, family: MONO });
 
   } else if(square){
-    const cx = W / 2, CW = W - M * 2;
-    drawGoldSeal(x, cx, 90 * u, 32 * u, u);
-    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 144 * u, { size: 12.5 * u, weight: 700, color: GOLD, align: 'center', ls: 3 * u, max: CW });
-    T('CERTIFICATE', cx, 202 * u, { size: 60 * u, weight: 700, color: goldGrad(x, cx - 200 * u, 155 * u, cx + 200 * u, 210 * u), align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
-    T('OF TARGET ACHIEVEMENT', cx, 234 * u, { size: 19 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4 * u, max: CW });
-    drawOrnament(cx, 254 * u, 300 * u);
-    T('This certificate proudly recognizes the verified performance of', cx, 286 * u, { size: 17.5 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: CW });
-    T(trader, cx, 338 * u, { size: 48 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: CW, minScale: 0.42 });
+    const M = 84 * u, cx = W / 2, CW = W - M * 2;
+    drawGoldSeal(x, cx, 94 * u, 32 * u, u);
+    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 148 * u, { size: 12.5 * u, weight: 700, color: GOLD, align: 'center', ls: 3 * u, max: CW });
+    T('CERTIFICATE', cx, 206 * u, { size: 58 * u, weight: 700, color: goldGrad(x, cx - 200 * u, 160 * u, cx + 200 * u, 212 * u), align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
+    T('OF TARGET ACHIEVEMENT', cx, 238 * u, { size: 19 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4 * u, max: CW });
+    drawOrnament(cx, 258 * u, 300 * u);
+    T('This certificate proudly recognizes the verified performance of', cx, 290 * u, { size: 17.5 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: CW });
+    T(trader, cx, 342 * u, { size: 48 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: CW, minScale: 0.42 });
     x.strokeStyle = GOLD_DIM; x.lineWidth = 1.4 * u;
-    x.beginPath(); x.moveTo(cx - CW * 0.3, 354 * u); x.lineTo(cx + CW * 0.3, 354 * u); x.stroke();
+    x.beginPath(); x.moveTo(cx - CW * 0.3, 358 * u); x.lineTo(cx + CW * 0.3, 358 * u); x.stroke();
     wrap(stText, CW * 0.9, 16.5 * u, 500, SERIF, 2).forEach((ln, i) =>
-      T(ln, cx, (382 + i * 23) * u, { size: 16.5 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
+      T(ln, cx, (386 + i * 23) * u, { size: 16.5 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
     );
 
-    drawMetrics(M, 428 * u, CW, 92 * u);
-    drawCertChart({ x: M, y: 534 * u, w: CW, h: 248 * u });
-    drawDetailsBox(M, 796 * u, CW, 146 * u, 4);
+    drawMetrics(M, 432 * u, CW, 90 * u);
+    drawCertChart({ x: M, y: 536 * u, w: CW, h: 244 * u });
+    drawDetailsBox(M, 794 * u, CW, 142 * u, 4);
 
-    const fy = 958 * u;
+    const fy = 952 * u;
     x.strokeStyle = 'rgba(214,176,92,.32)'; x.lineWidth = 1 * u;
     x.beginPath(); x.moveTo(M, fy); x.lineTo(W - M, fy); x.stroke();
 
-    drawSignature(M + 155 * u, fy + 86 * u, 260 * u);
-    T('CERTIFICATE ID', cx + 12 * u, fy + 52 * u, { size: 10.5 * u, weight: 700, color: GOLD, align: 'center', ls: 1.4 * u });
-    T(certId, cx + 12 * u, fy + 76 * u, { size: 14 * u, weight: 600, color: TXT, align: 'center', family: MONO, max: 320 * u });
-    T(`Issued ${issuedStr}`, cx + 12 * u, fy + 102 * u, { size: 11.5 * u, weight: 500, color: MUTED, align: 'center', family: MONO, max: 320 * u });
-
-    const qrS = 148 * u;
-    drawQrBadge(x, qrData, W - M - qrS, fy + 14 * u, qrS, u);
-    T('Scan QR untuk melihat proof verifikasi di web · Bukan laporan resmi prop-firm.', cx, H - 54 * u, {
+    const qrSlot = 136 * u;
+    const qrBox = drawQrBadge(x, qrData, W - M - qrSlot - 4 * u, fy + 14 * u, qrSlot, u, { alignRight: true });
+    drawSignature(M + 150 * u, fy + 84 * u, 255 * u);
+    T('CERTIFICATE ID', cx + 4 * u, fy + 52 * u, { size: 10.5 * u, weight: 700, color: GOLD, align: 'center', ls: 1.4 * u });
+    T(certId, cx + 4 * u, fy + 76 * u, { size: 14 * u, weight: 600, color: TXT, align: 'center', family: MONO, max: 300 * u });
+    T(`Issued ${issuedStr}`, cx + 4 * u, fy + 102 * u, { size: 11.5 * u, weight: 500, color: MUTED, align: 'center', family: MONO, max: 300 * u });
+    T('Scan QR untuk melihat proof verifikasi di web · Bukan laporan resmi prop-firm.', cx, H - 56 * u, {
       size: 10.5 * u, weight: 400, color: FAINT, align: 'center', max: CW
     });
 
   } else {
-    const cx = W / 2, CW = W - M * 2;
-    drawGoldSeal(x, cx, 114 * u, 42 * u, u);
-    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 188 * u, { size: 14 * u, weight: 700, color: GOLD, align: 'center', ls: 3.4 * u, max: CW });
-    T('CERTIFICATE', cx, 266 * u, { size: 72 * u, weight: 700, color: goldGrad(x, cx - 230 * u, 210 * u, cx + 230 * u, 275 * u), align: 'center', family: SERIF, ls: 5 * u, max: CW });
-    T('OF TARGET ACHIEVEMENT', cx, 308 * u, { size: 22 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
-    drawOrnament(cx, 336 * u, 360 * u);
-    T('This certificate proudly recognizes the verified trading performance of', cx, 380 * u, { size: 20.5 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: CW });
-    T(trader, cx, 450 * u, { size: 60 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: CW, minScale: 0.4 });
+    const M = 84 * u, cx = W / 2, CW = W - M * 2;
+    drawGoldSeal(x, cx, 118 * u, 42 * u, u);
+    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 192 * u, { size: 14 * u, weight: 700, color: GOLD, align: 'center', ls: 3.4 * u, max: CW });
+    T('CERTIFICATE', cx, 268 * u, { size: 70 * u, weight: 700, color: goldGrad(x, cx - 230 * u, 212 * u, cx + 230 * u, 276 * u), align: 'center', family: SERIF, ls: 5 * u, max: CW });
+    T('OF TARGET ACHIEVEMENT', cx, 310 * u, { size: 22 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
+    drawOrnament(cx, 338 * u, 360 * u);
+    T('This certificate proudly recognizes the verified trading performance of', cx, 382 * u, { size: 20.5 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: CW });
+    T(trader, cx, 452 * u, { size: 60 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: CW, minScale: 0.4 });
     x.strokeStyle = GOLD_DIM; x.lineWidth = 1.5 * u;
-    x.beginPath(); x.moveTo(cx - CW * 0.34, 470 * u); x.lineTo(cx + CW * 0.34, 470 * u); x.stroke();
+    x.beginPath(); x.moveTo(cx - CW * 0.34, 472 * u); x.lineTo(cx + CW * 0.34, 472 * u); x.stroke();
     wrap(stText, CW * 0.9, 19.5 * u, 500, SERIF, 2).forEach((ln, i) =>
-      T(ln, cx, (508 + i * 28) * u, { size: 19.5 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
+      T(ln, cx, (510 + i * 28) * u, { size: 19.5 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
     );
 
-    drawMetrics(M, 568 * u, CW, 122 * u);
+    drawMetrics(M, 570 * u, CW, 120 * u);
 
-    const footerY = H - 256 * u;
+    const footerY = H - 262 * u;
     const detailsH = 166 * u;
     const detailsY = footerY - detailsH - 20 * u;
     const chartY = 710 * u;
@@ -11742,13 +12086,12 @@ function drawCert(fmtKey, d, best){
     x.strokeStyle = 'rgba(214,176,92,.32)'; x.lineWidth = 1.1 * u;
     x.beginPath(); x.moveTo(M, footerY); x.lineTo(W - M, footerY); x.stroke();
 
-    drawSignature(M + 165 * u, footerY + 94 * u, 290 * u);
-    T('CERTIFICATE ID', cx + 4 * u, footerY + 58 * u, { size: 11 * u, weight: 700, color: GOLD, align: 'center', ls: 1.5 * u });
-    T(certId, cx + 4 * u, footerY + 84 * u, { size: 15 * u, weight: 600, color: TXT, align: 'center', family: MONO, max: 320 * u });
-    T(`ISSUED · ${issuedStr}`, cx + 4 * u, footerY + 114 * u, { size: 12 * u, weight: 500, color: MUTED, align: 'center', family: MONO, max: 320 * u });
-
-    const qrS = 154 * u;
-    drawQrBadge(x, qrData, W - M - qrS, footerY + 18 * u, qrS, u);
+    const qrSlot = 144 * u;
+    drawQrBadge(x, qrData, W - M - qrSlot - 4 * u, footerY + 18 * u, qrSlot, u, { alignRight: true });
+    drawSignature(M + 160 * u, footerY + 94 * u, 285 * u);
+    T('CERTIFICATE ID', cx, footerY + 58 * u, { size: 11 * u, weight: 700, color: GOLD, align: 'center', ls: 1.5 * u });
+    T(certId, cx, footerY + 84 * u, { size: 15 * u, weight: 600, color: TXT, align: 'center', family: MONO, max: 310 * u });
+    T(`ISSUED · ${issuedStr}`, cx, footerY + 114 * u, { size: 12 * u, weight: 500, color: MUTED, align: 'center', family: MONO, max: 310 * u });
 
     T('Scan QR untuk melihat proof verifikasi di web · Bukan laporan resmi prop-firm.', cx, H - 62 * u, {
       size: 11.5 * u, weight: 400, color: FAINT, align: 'center', max: CW
