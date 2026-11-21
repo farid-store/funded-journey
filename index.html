@@ -4079,13 +4079,21 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
             </select>
           </label>
 
-          <div class="trp-bgbox">
-            <label style="margin:0">Custom Background (JPG / PNG / WebP)
-              <div class="trp-bgrow">
-                <input id="trpBgFile" type="file" accept="image/jpeg,image/png,image/webp" class="sel">
-                <button type="button" class="btn ghost" id="trpBgClear" title="Hapus background custom">✕ Reset</button>
-              </div>
+         <div class="trp-bgbox">
+            <div class="trp-bgrow">
+              <button type="button" class="btn primary" id="trpBgRandom" style="flex:1">🎲 Ganti Background</button>
+              <button type="button" class="btn ghost" id="trpBgClear" title="Gunakan latar polos tema">✕ Polos</button>
+            </div>
+            <div style="font:600 10.5px var(--fm);color:var(--faint)" id="trpBgInfo">Memindai folder /theme…</div>
+
+            <label style="flex-direction:row;align-items:center;gap:7px;cursor:pointer;margin:2px 0 0">
+              <input type="checkbox" id="trpCustomBgToggle" style="width:15px;height:15px;accent-color:var(--gold)">
+              <span>Gunakan upload gambar custom sendiri</span>
             </label>
+            <div id="trpCustomBgWrap" hidden>
+              <input id="trpBgFile" type="file" accept="image/jpeg,image/png,image/webp" class="sel">
+            </div>
+
             <div class="trp-sliders">
               <label>Gelap Overlay (<span id="trpDimVal">68%</span>)
                 <input id="trpBgDim" type="range" min="15" max="90" value="68">
@@ -13681,11 +13689,25 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
 
+  // ===== KONFIGURASI AUTO-SCAN FOLDER /theme =====
+  // Ubah maxScan jika suatu saat koleksi gambar melebihi 100
+  const THEME_CFG = {
+    folder: './theme',   // folder /theme sejajar dengan index.html
+    prefix: 'theme',     // nama file: theme1.png, theme2.png, ...
+    ext: 'png',          // ekstensi file
+    maxScan: 100,        // batas maksimal scan (otomatis berhenti saat file habis)
+    stopAfterMiss: 5     // berhenti scan setelah 5 nomor beruntun tidak ditemukan
+  };
+
   const now = new Date();
-  $('trpMonth').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  if ($('trpMonth')) {
+    $('trpMonth').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  }
 
   let customBgImg = null;
   let dayMap = {};
+  let availableThemes = [];
+  let currentThemeIdx = -1;
 
   const THEMES = {
     graphite: { bg1:'#161922', bg2:'#090b10', glass:'rgba(18,22,32,.76)', cell:'rgba(22,27,39,.74)', line:'rgba(217,176,104,.26)', lineSoft:'rgba(255,255,255,.10)', text:'#f2f4f8', muted:'#a3adc2', gold:'#e2bc72', gold2:'#b68a3c', green:'#38d996', greenBg:'rgba(56,217,150,.18)', red:'#f25c6e', redBg:'rgba(242,92,110,.18)', qrBg:'rgba(10,13,20,.92)', qrFg:'#e2bc72' },
@@ -13703,13 +13725,12 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   // Deteksi ukuran 1 pip otomatis (aman untuk broker 1, 2, maupun 3 angka belakang koma)
   function detectPipSize(sym, refPrice){
-    const pref = $('trpPipSize').value;
+    const pref = $('trpPipSize')?.value || 'auto';
     if (pref !== 'auto') return parseFloat(pref) || 0.1;
 
-    // Bersihkan suffix broker (.vx, m, .pro, _i, dll) untuk pencocokan nama
     const u = String(sym || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-    // 1. Gold / XAU: $1.00 = 10 pips (1 pip = 0.1) — berlaku sama untuk 1, 2, atau 3 desimal
+    // 1. Gold / XAU: $1.00 = 10 pips (1 pip = 0.1) — konsisten untuk 1, 2, atau 3 desimal
     if (/XAU|GOLD/.test(u)) return 0.1;
 
     // 2. Nasdaq & Indeks global + Crypto besar: $10 = 10 pips (1 pip = 1.0)
@@ -13720,13 +13741,13 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     // 3. Silver, Oil, & Pair JPY: 1 pip = 0.01
     if (/XAG|SILVER|USOIL|UKOIL|WTI|BRENT|XTI|XBR|JPY/.test(u)) return 0.01;
 
-    // 4. Smart fallback berdasarkan besaran harga jika simbol broker unik
+    // 4. Smart fallback berdasarkan rentang harga
     const px = Math.abs(Number(refPrice || 0));
-    if (px >= 6000) return 1.0;       // Indeks / Crypto (mis. Nasdaq 20000, BTC 90000)
-    if (px >= 1000) return 0.1;       // Logam emas / komoditas sekelas XAU (2000–5000)
-    if (px >= 20)   return 0.01;      // Pair JPY / Oil / Silver
+    if (px >= 6000) return 1.0;
+    if (px >= 1000) return 0.1;
+    if (px >= 20)   return 0.01;
 
-    // 5. Forex Major/Minor standar (mis. EURUSD 1.08542 -> 1 pip = 0.0001)
+    // 5. Forex Major/Minor standar
     return 0.0001;
   }
 
@@ -13753,14 +13774,14 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   }
 
   function getSelectedYM(){
-    const v = $('trpMonth').value || `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    const v = $('trpMonth')?.value || `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
     const [y, m] = v.split('-').map(Number);
     return { year: y || now.getFullYear(), month: (m || (now.getMonth()+1)) - 1 };
   }
 
   function parseManualToMap(){
     const map = {};
-    const raw = ($('trpManualData').value || '').split(',');
+    const raw = ($('trpManualData')?.value || '').split(',');
     raw.forEach(item => {
       const m = item.trim().match(/^(\d{1,2})\s*:\s*([+\-]?\d+(?:\.\d+)?)(?:\|([+\-]?\d+(?:\.\d+)?))?(?:\|(\d+))?/);
       if (!m) return;
@@ -13896,7 +13917,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       const dt = parseDateFlexible(get(idx.time));
       if (!dt || dt.getFullYear() !== year || dt.getMonth() !== month) return;
 
-      const sym = get(idx.sym) || $('trpPair').value || 'XAUUSD';
+      const sym = get(idx.sym) || $('trpPair')?.value || 'XAUUSD';
       const isSell = get(idx.dir).toUpperCase().includes('SELL');
       const open = parseNum(get(idx.open));
       const close = parseNum(get(idx.close));
@@ -13931,10 +13952,10 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   }
 
   function syncFromSource(){
-    const src = $('trpSource').value;
+    const src = $('trpSource')?.value || 'history';
     if (src === 'manual') {
       dayMap = parseManualToMap();
-      $('trpSourceStatus').textContent = 'Mode manual · edit langsung pada kolom Data Harian';
+      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = 'Mode manual · edit langsung pada kolom Data Harian';
       render();
       return;
     }
@@ -13943,10 +13964,10 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       const res = buildEaMap();
       if (res.count > 0) {
         dayMap = res.map;
-        if (res.topSym) $('trpPair').value = res.topSym;
+        if (res.topSym && $('trpPair')) $('trpPair').value = res.topSym;
         const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
-        if (res.startBal > 0) $('trpPct').value = ((totalUsd / res.startBal) * 100).toFixed(2);
-        $('trpSourceStatus').textContent = `Live EA · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
+        if (res.startBal > 0 && $('trpPct')) $('trpPct').value = ((totalUsd / res.startBal) * 100).toFixed(2);
+        if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Live EA · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
         render();
         return;
       }
@@ -13956,20 +13977,20 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const res = scrapeTableToMap(tableId);
     if (res.count > 0) {
       dayMap = res.map;
-      if (res.topSym) $('trpPair').value = res.topSym;
+      if (res.topSym && $('trpPair')) $('trpPair').value = res.topSym;
       const bal = $('hudBal') ? parseNum($('hudBal').textContent) : 0;
       const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
-      if (bal > 0) $('trpPct').value = ((totalUsd / bal) * 100).toFixed(2);
-      $('trpSourceStatus').textContent = `Tersinkron · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
+      if (bal > 0 && $('trpPct')) $('trpPct').value = ((totalUsd / bal) * 100).toFixed(2);
+      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Tersinkron · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
     } else {
       dayMap = parseManualToMap();
-      $('trpSourceStatus').textContent = `Belum ada transaksi ${src === 'backtest' ? 'Backtest' : 'EA'} di bulan ini · menampilkan data preview`;
+      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Belum ada transaksi ${src === 'backtest' ? 'Backtest' : 'EA'} di bulan ini · menampilkan data preview`;
     }
     render();
   }
 
   function getActiveTheme(){
-    const pick = $('trpTheme').value;
+    const pick = $('trpTheme')?.value || 'auto';
     if (pick !== 'auto' && THEMES[pick]) return THEMES[pick];
     return THEMES[document.documentElement.dataset.theme] || THEMES.graphite;
   }
@@ -14121,21 +14142,21 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   }
 
   function render(){
-    const ratio = $('trpRatio').value;
+    const ratio = $('trpRatio')?.value || 'story';
     const isSquare = ratio === 'square';
     const isWide = ratio === 'wide';
     const W = isWide ? 1440 : 1080;
     const H = ratio === 'story' ? 1350 : 1080;
     canvas.width = W;
     canvas.height = H;
-    $('trpMeta').textContent = `${W} × ${H} px · PNG siap bagikan`;
+    if ($('trpMeta')) $('trpMeta').textContent = `${W} × ${H} px · PNG siap bagikan`;
 
     const T = getActiveTheme();
-    const isLight = $('trpTheme').value === 'soft' || ($('trpTheme').value === 'auto' && document.documentElement.dataset.theme === 'soft');
-    const dimPct = parseNum($('trpBgDim').value);
-    const posPct = parseNum($('trpBgPos').value);
-    $('trpDimVal').textContent = `${dimPct}%`;
-    $('trpPosVal').textContent = `${posPct}%`;
+    const isLight = $('trpTheme')?.value === 'soft' || ($('trpTheme')?.value === 'auto' && document.documentElement.dataset.theme === 'soft');
+    const dimPct = parseNum($('trpBgDim')?.value ?? 68);
+    const posPct = parseNum($('trpBgPos')?.value ?? 30);
+    if ($('trpDimVal')) $('trpDimVal').textContent = `${dimPct}%`;
+    if ($('trpPosVal')) $('trpPosVal').textContent = `${posPct}%`;
 
     // 1. Background
     if (customBgImg) {
@@ -14162,7 +14183,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.fillRect(0, 0, W, H);
     }
 
-    // Double Frame (inner border di 28px dari semua sisi)
+    // Double Frame
     rrect(ctx, 20, 20, W - 40, H - 40, 24);
     ctx.strokeStyle = T.line;
     ctx.lineWidth = 2;
@@ -14175,11 +14196,11 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const pad = isSquare ? 42 : 52;
     const { year, month } = getSelectedYM();
     const monthName = new Date(year, month, 1).toLocaleDateString('en-US', { month:'long', year:'numeric' }).toUpperCase();
-    const title = ($('trpTitle').value || 'MONTHLY PNL RECAP').toUpperCase();
-    const pair = ($('trpPair').value || 'XAU/USD').toUpperCase();
-    const hideUsd = $('trpHideUsd').checked;
-    const showSub = $('trpShowSub').checked;
-    const viewMode = $('trpViewMode').value;
+    const title = ($('trpTitle')?.value || 'MONTHLY PNL RECAP').toUpperCase();
+    const pair = ($('trpPair')?.value || 'XAU/USD').toUpperCase();
+    const hideUsd = !!$('trpHideUsd')?.checked;
+    const showSub = $('trpShowSub') ? $('trpShowSub').checked : true;
+    const viewMode = $('trpViewMode')?.value || 'day';
     const qrLink = ($('trpQrLink')?.value || '').trim();
     const qrLabel = ($('trpQrLabel')?.value || 'SCAN TO JOIN').trim();
 
@@ -14208,7 +14229,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const tradingDays = entries.length;
     const winRate = totalTrades > 0 ? (totalWins / totalTrades) * 100 : (tradingDays > 0 ? (winDays / tradingDays) * 100 : 0);
     const pf = grossLoss > 0 ? grossWin / grossLoss : (grossWin > 0 ? 9.99 : 0);
-    const pct = parseNum($('trpPct').value);
+    const pct = parseNum($('trpPct')?.value);
     const isPos = netPips !== 0 ? netPips >= 0 : netUsd >= 0;
     const heroColor = isPos ? T.green : T.red;
 
@@ -14283,7 +14304,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.font = '600 13px "JetBrains Mono", monospace';
       ctx.fillText(`${totalTrades} Total Trades  •  ${winDays}W / ${lossDays}L Days`, pad + 26, contentTop + 432);
 
-      // QR Code terpusat di dalam panel kiri dengan jarak lega dari tepi bawah
       if (qrLink) {
         const qrSize = 126;
         const qrTotalH = qrSize + (qrLabel ? 20 : 0);
@@ -14347,7 +14367,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.fillText(`${totalTrades} Trades • WR ${winRate.toFixed(0)}% • PF ${pf.toFixed(2)}`, W - pad - 24, heroY + heroH - (isSquare ? 16 : 22));
     ctx.textAlign = 'left';
 
-    // Area Kalender dengan ruang footer yang lega agar QR & TTD jauh dari bingkai
     const calTop = heroY + heroH + (isSquare ? 14 : 20);
     const sigReserve = isSquare ? 156 : 184;
     const calH = H - calTop - sigReserve;
@@ -14359,7 +14378,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       drawWeeklyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd);
     }
 
-    // TTD CEO di tengah bawah (aman di dalam bingkai dalam)
+    // TTD CEO di tengah bawah
     drawCeoSignature(T, W / 2, H - (isSquare ? 54 : 62), isSquare);
 
     // QR Code pojok kanan bawah dengan margin aman dari bingkai kanan & bawah
@@ -14556,7 +14575,75 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.textAlign = 'left';
   }
 
-  $('trpBgFile').addEventListener('change', e => {
+  // ===== AUTO-SCAN & RANDOM PICKER FOLDER /theme =====
+  function probeImage(url){
+    return new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve({ ok: true, url, img });
+      img.onerror = () => resolve({ ok: false, url });
+      img.src = url;
+    });
+  }
+
+  async function scanThemeFolder(){
+    const info = $('trpBgInfo');
+    if (info) info.textContent = `Memindai folder ${THEME_CFG.folder}…`;
+    availableThemes = [];
+    let misses = 0;
+    const batchSize = 5;
+
+    for (let i = 1; i <= THEME_CFG.maxScan; i += batchSize) {
+      const batch = [];
+      for (let j = i; j < i + batchSize && j <= THEME_CFG.maxScan; j++) {
+        const url = `${THEME_CFG.folder}/${THEME_CFG.prefix}${j}.${THEME_CFG.ext}`;
+        batch.push(probeImage(url).then(res => ({ num: j, ...res })));
+      }
+      const results = await Promise.all(batch);
+      for (const r of results) {
+        if (r.ok) {
+          availableThemes.push({ num: r.num, url: r.url, img: r.img });
+          misses = 0;
+        } else {
+          misses++;
+        }
+      }
+      if (misses >= THEME_CFG.stopAfterMiss) break;
+    }
+
+    if (availableThemes.length > 0) {
+      pickRandomTheme();
+    } else if (info) {
+      info.textContent = `Belum ada file ${THEME_CFG.prefix}1.${THEME_CFG.ext} di folder ${THEME_CFG.folder}`;
+    }
+  }
+
+  function pickRandomTheme(){
+    if (!availableThemes.length) {
+      scanThemeFolder();
+      return;
+    }
+    let nextIdx = Math.floor(Math.random() * availableThemes.length);
+    if (availableThemes.length > 1 && nextIdx === currentThemeIdx) {
+      nextIdx = (nextIdx + 1 + Math.floor(Math.random() * (availableThemes.length - 1))) % availableThemes.length;
+    }
+    currentThemeIdx = nextIdx;
+    const picked = availableThemes[currentThemeIdx];
+    customBgImg = picked.img;
+    if ($('trpBgInfo')) {
+      $('trpBgInfo').textContent = `Aktif: ${THEME_CFG.prefix}${picked.num}.${THEME_CFG.ext} (${availableThemes.length} gambar tersedia)`;
+    }
+    render();
+  }
+
+  $('trpBgRandom')?.addEventListener('click', pickRandomTheme);
+
+  $('trpCustomBgToggle')?.addEventListener('change', e => {
+    const wrap = $('trpCustomBgWrap');
+    if (wrap) wrap.hidden = !e.target.checked;
+  });
+
+  $('trpBgFile')?.addEventListener('change', e => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
@@ -14564,7 +14651,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       const img = new Image();
       img.onload = () => {
         customBgImg = img;
-        $('trpSourceStatus').textContent = `Background terpasang: ${file.name}`;
+        if ($('trpBgInfo')) $('trpBgInfo').textContent = `Custom upload: ${file.name}`;
         render();
       };
       img.src = ev.target.result;
@@ -14572,10 +14659,15 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     reader.readAsDataURL(file);
   });
 
-  $('trpBgClear').addEventListener('click', () => {
+  $('trpBgClear')?.addEventListener('click', () => {
     customBgImg = null;
-    $('trpBgFile').value = '';
-    $('trpSourceStatus').textContent = 'Background dikembalikan ke tema default';
+    currentThemeIdx = -1;
+    if ($('trpBgFile')) $('trpBgFile').value = '';
+    if ($('trpBgInfo')) {
+      $('trpBgInfo').textContent = availableThemes.length
+        ? `Latar polos aktif (${availableThemes.length} gambar di ${THEME_CFG.folder} siap dipakai)`
+        : 'Latar polos tema aktif';
+    }
     render();
   });
 
@@ -14583,8 +14675,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     await document.fonts.ready;
     render();
     const a = document.createElement('a');
-    const mode = $('trpViewMode').value;
-    const ym = $('trpMonth').value || 'recap';
+    const mode = $('trpViewMode')?.value || 'day';
+    const ym = $('trpMonth')?.value || 'recap';
     a.download = `golden-break-${mode}-recap-${ym}.png`;
     a.href = canvas.toDataURL('image/png');
     a.click();
@@ -14596,28 +14688,28 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     try {
       const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      $('trpSourceStatus').textContent = 'Gambar disalin ke clipboard (siap Paste di WA/IG/Telegram)';
+      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = 'Gambar disalin ke clipboard (siap Paste di WA/IG/Telegram)';
     } catch (e) {
-      $('trpSourceStatus').textContent = 'Browser tidak mendukung salin langsung — klik Download PNG';
+      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = 'Browser tidak mendukung salin langsung — klik Download PNG';
     }
   }
 
   ['trpTitle','trpPair','trpPct','trpBgDim','trpBgPos','trpQrLink','trpQrLabel'].forEach(id => $(id)?.addEventListener('input', render));
   ['trpViewMode','trpRatio','trpTheme','trpHideUsd','trpShowSub'].forEach(id => $(id)?.addEventListener('change', render));
   ['trpSource','trpMonth','trpPipSize'].forEach(id => $(id)?.addEventListener('change', syncFromSource));
-  $('trpManualData').addEventListener('input', () => {
-    $('trpSource').value = 'manual';
+  $('trpManualData')?.addEventListener('input', () => {
+    if ($('trpSource')) $('trpSource').value = 'manual';
     dayMap = parseManualToMap();
     render();
   });
 
-  $('trpSyncBtn').addEventListener('click', syncFromSource);
-  $('trpDownloadBtn').addEventListener('click', downloadPng);
-  $('trpCopyBtn').addEventListener('click', copyPng);
+  $('trpSyncBtn')?.addEventListener('click', syncFromSource);
+  $('trpDownloadBtn')?.addEventListener('click', downloadPng);
+  $('trpCopyBtn')?.addEventListener('click', copyPng);
 
   // Auto-update saat data EA/Firestore masuk atau akun diganti
   window.addEventListener('fx-recap-sync', () => {
-    if ($('trpSource').value === 'history') syncFromSource();
+    if ($('trpSource')?.value === 'history') syncFromSource();
   });
 
   document.querySelectorAll('[data-view="share"]').forEach(btn => {
@@ -14625,6 +14717,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   });
 
   syncFromSource();
+  scanThemeFolder();
   document.fonts.ready.then(render);
 })();
 </script>
