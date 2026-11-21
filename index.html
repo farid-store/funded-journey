@@ -13690,13 +13690,13 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   const ctx = canvas.getContext('2d');
 
   // ===== KONFIGURASI AUTO-SCAN FOLDER /theme =====
-  // Ubah maxScan jika suatu saat koleksi gambar melebihi 100
+  // Mendukung campuran .png, .jpg, .jpeg, dan .webp (ubah maxScan jika > 100 file)
   const THEME_CFG = {
-    folder: './theme',   // folder /theme sejajar dengan index.html
-    prefix: 'theme',     // nama file: theme1.png, theme2.png, ...
-    ext: 'png',          // ekstensi file
-    maxScan: 100,        // batas maksimal scan (otomatis berhenti saat file habis)
-    stopAfterMiss: 5     // berhenti scan setelah 5 nomor beruntun tidak ditemukan
+    folder: './theme',
+    prefix: 'theme',
+    exts: ['png', 'jpg', 'jpeg', 'webp'],
+    maxScan: 100,
+    stopAfterMiss: 5
   };
 
   const now = new Date();
@@ -14575,7 +14575,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.textAlign = 'left';
   }
 
-  // ===== AUTO-SCAN & RANDOM PICKER FOLDER /theme =====
+  // ===== AUTO-SCAN & RANDOM PICKER FOLDER /theme (.png, .jpg, .jpeg, .webp) =====
   function probeImage(url){
     return new Promise(resolve => {
       const img = new Image();
@@ -14584,6 +14584,15 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       img.onerror = () => resolve({ ok: false, url });
       img.src = url;
     });
+  }
+
+  async function probeThemeNumber(num){
+    for (const ext of THEME_CFG.exts) {
+      const url = `${THEME_CFG.folder}/${THEME_CFG.prefix}${num}.${ext}`;
+      const res = await probeImage(url);
+      if (res.ok) return { ok: true, num, ext, url, img: res.img };
+    }
+    return { ok: false, num };
   }
 
   async function scanThemeFolder(){
@@ -14596,13 +14605,12 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     for (let i = 1; i <= THEME_CFG.maxScan; i += batchSize) {
       const batch = [];
       for (let j = i; j < i + batchSize && j <= THEME_CFG.maxScan; j++) {
-        const url = `${THEME_CFG.folder}/${THEME_CFG.prefix}${j}.${THEME_CFG.ext}`;
-        batch.push(probeImage(url).then(res => ({ num: j, ...res })));
+        batch.push(probeThemeNumber(j));
       }
       const results = await Promise.all(batch);
       for (const r of results) {
         if (r.ok) {
-          availableThemes.push({ num: r.num, url: r.url, img: r.img });
+          availableThemes.push(r);
           misses = 0;
         } else {
           misses++;
@@ -14614,7 +14622,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     if (availableThemes.length > 0) {
       pickRandomTheme();
     } else if (info) {
-      info.textContent = `Belum ada file ${THEME_CFG.prefix}1.${THEME_CFG.ext} di folder ${THEME_CFG.folder}`;
+      info.textContent = `Belum ada file ${THEME_CFG.prefix}1.(png/jpg/webp) di folder ${THEME_CFG.folder}`;
     }
   }
 
@@ -14631,7 +14639,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const picked = availableThemes[currentThemeIdx];
     customBgImg = picked.img;
     if ($('trpBgInfo')) {
-      $('trpBgInfo').textContent = `Aktif: ${THEME_CFG.prefix}${picked.num}.${THEME_CFG.ext} (${availableThemes.length} gambar tersedia)`;
+      $('trpBgInfo').textContent = `Aktif: ${THEME_CFG.prefix}${picked.num}.${picked.ext} (${availableThemes.length} gambar tersedia)`;
     }
     render();
   }
