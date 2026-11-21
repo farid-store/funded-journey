@@ -3174,6 +3174,113 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
 }
 
 </style>
+<style id="bt-dock-v2">
+/* ===== Backtest Lab · Dock v2 — area chart ringkas di HP ===== */
+#view-backtest .btd-only-m{display:none}
+#view-backtest .btx-ib.on,#view-backtest .btx-rb.on{border-color:var(--gold);color:var(--gold)}
+
+@media(max-width:760px){
+  #view-backtest .btd-only-m{display:inline-flex;align-items:center;justify-content:center}
+
+  /* urutan: toolbar -> replay -> chart -> buy/sell -> info -> drawing tools -> status */
+  #view-backtest .btx-card:not(.full){gap:8px}
+  #view-backtest .btx-card:not(.full) .btx-stage{display:contents}
+  #view-backtest .btx-card:not(.full) .btx-top{order:1}
+  #view-backtest .btx-card:not(.full) .btx-ctl{order:2}
+  #view-backtest .btx-card:not(.full) .btx-slwarn{order:3}
+  #view-backtest .btx-card:not(.full) .btx-plot{order:4;height:clamp(360px,64dvh,640px)}
+  #view-backtest .btx-card:not(.full) .btx-quick{order:5}
+  #view-backtest .btx-card:not(.full) .btx-mini{order:6}
+  #view-backtest .btx-card:not(.full) .btx-rail{order:7}
+  #view-backtest .btx-card:not(.full) .btx-status{order:8}
+  #view-backtest .btx-card:not(.full) .btx-prog{order:9}
+  #view-backtest .btx-card:not(.full) .btx-help{order:10;-webkit-line-clamp:1}
+  #view-backtest .btx-card:not(.full) .btx-dl{order:11}
+
+  /* toolbar atas */
+  #view-backtest .btx-card:not(.full) .btx-top{gap:6px}
+  #view-backtest .btx-card:not(.full) .btx-tfs button{min-height:36px}
+  #view-backtest .btx-card:not(.full) .btx-tools{gap:4px}
+  #view-backtest .btx-card:not(.full) .btx-tools .btx-ib{min-height:38px;min-width:0;padding:0 2px}
+
+  /* replay: satu baris inti, sisanya di tombol ⋯ */
+  #view-backtest .btx-card:not(.full) .btx-grp-replay{padding:6px}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay .btx-replay{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;overflow:visible;padding:0}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay .btx-vsep{display:none}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay .btx-rb,#view-backtest .btx-card:not(.full) .btx-grp-replay #btSpeed{min-height:40px;min-width:0;padding:0 2px}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btPlay{order:1;grid-column:span 2}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btRewind{order:2;grid-column:span 1}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btStep{order:3;grid-column:span 1}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btStep10{order:4;grid-column:span 1}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btSpeed{order:5;grid-column:span 2;width:100%}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btReplayMore{order:6;grid-column:span 1}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btReset{order:7;grid-column:span 2}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btPickStart{order:8;grid-column:span 2}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btStepBar{order:9;grid-column:span 2}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btJumpToggle{order:10;grid-column:span 2}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btJumpToggle .tx{display:inline}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay .btx-rb .tx{display:inline}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btPlay .tx{display:inline}
+  #view-backtest #btCtl:not(.btd-more-on) #btReset,
+  #view-backtest #btCtl:not(.btd-more-on) #btPickStart,
+  #view-backtest #btCtl:not(.btd-more-on) #btStepBar,
+  #view-backtest #btCtl:not(.btd-more-on) #btJumpToggle{display:none}
+
+  /* sync: tersembunyi, dibuka dari tombol ☁ */
+  #view-backtest #btCtl:not(.btd-sync-on) .btx-grp-sync,
+  #view-backtest #btCtl:not(.btd-sync-on) #btCloudAuthBox{display:none!important}
+
+  /* buy/sell + info tepat di bawah chart */
+  #view-backtest .btx-card:not(.full) .btx-q{min-height:48px}
+  #view-backtest .btx-card:not(.full) .btx-mini{flex-wrap:nowrap;justify-content:space-between;gap:8px;font-size:11.5px;overflow:hidden;white-space:nowrap}
+  #view-backtest .btx-card:not(.full) .btx-status{font-size:11px;gap:2px 10px}
+  #view-backtest .btx-card:not(.full) .btx-prog{height:3px;margin-top:-4px}
+
+  /* Data Historis: satu baris setelah data dimuat */
+  #view-backtest .bt-data:has(#btDataBody[hidden]){display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 8px;padding:8px 10px}
+  #view-backtest .bt-data:has(#btDataBody[hidden]) .btx-datahead{display:contents}
+  #view-backtest .bt-data:has(#btDataBody[hidden]) .btx-datahead h3{display:none}
+  #view-backtest .bt-data:has(#btDataBody[hidden]) #btDataInfo{grid-column:1;grid-row:1;margin:0!important;padding:7px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+  #view-backtest .bt-data:has(#btDataBody[hidden]) #btDataToggle{grid-column:2;grid-row:1;min-height:36px;padding:0 12px;font-size:12px;white-space:nowrap}
+  #view-backtest .bt-data:has(#btDataBody[hidden]) #btResume{grid-column:1/-1;margin:0}
+  #view-backtest .bt-data:has(#btDataBody[hidden]) #btResume:empty{display:none}
+
+  /* popup order di chart: bottom sheet 2 kolom */
+  #view-backtest .btx-menu.sheet{width:auto;max-width:none;padding:10px;gap:8px;border-radius:14px;grid-template-columns:1fr 1fr}
+  #view-backtest .btx-menu.sheet .btx-mh,#view-backtest .btx-menu.sheet .btx-lotrow,#view-backtest .btx-menu.sheet .btx-mkt,#view-backtest .btx-menu.sheet .btx-chk{grid-column:1/-1}
+  #view-backtest .btx-menu.sheet .btx-mh small{font-size:10.5px}
+  #view-backtest .btx-menu.sheet .btx-mh b{font-size:16px}
+  #view-backtest .btx-menu.sheet .btx-mh em{font-size:11px}
+  #view-backtest .btx-menu.sheet .btx-lotrow{font-size:12px}
+  #view-backtest .btx-menu.sheet .btx-lot button{width:40px;min-height:40px}
+  #view-backtest .btx-menu.sheet .btx-lot b{font-size:14px}
+  #view-backtest .btx-menu.sheet .btx-opt{min-height:48px;padding:6px 10px;border-radius:10px}
+  #view-backtest .btx-menu.sheet .btx-opt span{font-size:12px}
+  #view-backtest .btx-menu.sheet .btx-opt b{font-size:11.5px}
+  #view-backtest .btx-menu.sheet .btx-mkt .btn,#view-backtest .btx-menu.sheet .btx-mkt button{min-height:46px;font-size:12px}
+  #view-backtest .btx-menu.sheet .btx-x{min-width:36px;min-height:36px}
+  #view-backtest .btx-menu.sheet .btx-chk{font-size:11.5px;min-height:34px}
+  /* penyempurnaan v2 */
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btRewind .ic{font-size:11px;letter-spacing:-.08em}
+  #view-backtest .btx-card:not(.full) .btx-grp-replay #btRewind,#view-backtest .btx-card:not(.full) .btx-grp-replay #btStep,#view-backtest .btx-card:not(.full) .btx-grp-replay #btStep10{font-size:12px}
+  #view-backtest #btCtl .btx-sync{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #view-backtest #btCtl .btx-sess{max-width:none}
+  #view-backtest #btCtl .btx-sess .sl{display:inline;max-width:none}
+  #view-backtest .btx-menu.sheet{padding:8px 10px;gap:6px}
+  #view-backtest .btx-menu.sheet .btx-mh{grid-column:1}
+  #view-backtest .btx-menu.sheet .btx-lotrow{grid-column:2;justify-self:end;gap:6px}
+  #view-backtest .btx-menu.sheet .btx-lotrow>span{display:none}
+  #view-backtest .btx-menu.sheet .btx-lotrow{margin-right:38px}
+  #view-backtest .btx-menu.sheet .btx-x{position:absolute;top:4px;right:4px}
+  #view-backtest .btx-menu.sheet .btx-opt{min-height:44px}
+  #view-backtest .btx-menu.sheet .btx-mkt .btn,#view-backtest .btx-menu.sheet .btx-mkt button{min-height:42px}
+  #view-backtest .btx-menu.sheet .btx-chk{min-height:30px}
+}
+@media(max-height:520px) and (orientation:landscape){
+  #view-backtest .btx-card:not(.full) .btx-plot{height:max(220px,72dvh)}
+}
+
+</style>
 <style id="qd-dual-style">
 /* ===== Quantum DOM · Dual Market + Sinyal Realtime ===== */
 .qd-dualwrap{display:flex;flex-direction:column;gap:14px;margin-top:6px;min-width:0}
@@ -3918,7 +4025,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
               <button id="btAuto" class="btn ghost btx-ib" type="button" title="Reset skala &amp; posisi chart" aria-label="Auto skala">A</button>
               <button id="btZoomOut" class="btn ghost btx-ib" type="button" title="Perkecil" aria-label="Perkecil">−</button>
               <button id="btZoomIn" class="btn ghost btx-ib" type="button" title="Perbesar" aria-label="Perbesar">+</button>
-              <button id="btFull" class="btn ghost btx-ib" type="button" title="Layar penuh" aria-label="Layar penuh">⛶</button>
+              <button id="btFull" class="btn ghost btx-ib" type="button" title="Layar penuh" aria-label="Layar penuh">⛶</button><button id="btSyncToggle" class="btn ghost btx-ib btd-only-m" type="button" title="Sync &amp; login Cloud" aria-label="Sync dan login Cloud" aria-expanded="false">☁</button>
               <div id="btIndMenu" class="btx-indmenu" hidden></div>
             </div>
           </div>
@@ -3926,7 +4033,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
             <div class="btx-grp btx-grp-replay" role="group" aria-label="Utilitas chart dan replay">
               <span class="btx-grp-lbl">Replay</span>
               <div class="btx-replay">
-                <button id="btReset" class="btn ghost btx-rb" type="button" title="Kembali ke awal replay (hapus posisi dan trade)"><span class="ic">⟲</span><span class="tx">Reset</span></button><button id="btPickStart" class="btn ghost btx-rb" type="button" title="Pilih candle awal replay lalu ketuk chart"><span class="ic">⌖</span><span class="tx">Awal</span></button><span class="btx-vsep" aria-hidden="true"></span><button id="btPlay" class="btn primary btx-rb" type="button" title="Spasi"><span class="ic">▶</span><span class="tx">Play</span></button><button id="btRewind" class="btn btx-rb" type="button" title="Mundur 1 candle dan pulihkan keadaan transaksi sebelumnya (panah kiri)"><span class="ic">◀−1</span></button><button id="btStep" class="btn btx-rb" type="button" title="+1 candle (panah kanan)"><span class="ic">+1</span></button><button id="btStep10" class="btn btx-rb" type="button" title="+10 candle (Shift + panah kanan)"><span class="ic">+10</span></button><button id="btStepBar" class="btn btx-rb" type="button" title="Maju sampai bar timeframe aktif selesai"><span class="ic">⏭</span><span class="tx">Bar</span></button><span class="btx-vsep" aria-hidden="true"></span><select id="btSpeed" class="sel" title="Kecepatan (candle per detik)" aria-label="Kecepatan"><option value="1">1×</option><option value="3">3×</option><option value="10" selected>10×</option><option value="30">30×</option><option value="100">100×</option></select><button id="btJumpToggle" class="btn ghost btx-rb" type="button" title="Lompat ke waktu tertentu"><span class="ic">🕒</span><span class="tx">Lompat</span></button>
+                <button id="btReset" class="btn ghost btx-rb" type="button" title="Kembali ke awal replay (hapus posisi dan trade)"><span class="ic">⟲</span><span class="tx">Reset</span></button><button id="btPickStart" class="btn ghost btx-rb" type="button" title="Pilih candle awal replay lalu ketuk chart"><span class="ic">⌖</span><span class="tx">Awal</span></button><span class="btx-vsep" aria-hidden="true"></span><button id="btPlay" class="btn primary btx-rb" type="button" title="Spasi"><span class="ic">▶</span><span class="tx">Play</span></button><button id="btRewind" class="btn btx-rb" type="button" title="Mundur 1 candle dan pulihkan keadaan transaksi sebelumnya (panah kiri)"><span class="ic">◀−1</span></button><button id="btStep" class="btn btx-rb" type="button" title="+1 candle (panah kanan)"><span class="ic">+1</span></button><button id="btStep10" class="btn btx-rb" type="button" title="+10 candle (Shift + panah kanan)"><span class="ic">+10</span></button><button id="btStepBar" class="btn btx-rb" type="button" title="Maju sampai bar timeframe aktif selesai"><span class="ic">⏭</span><span class="tx">Bar</span></button><span class="btx-vsep" aria-hidden="true"></span><select id="btSpeed" class="sel" title="Kecepatan (candle per detik)" aria-label="Kecepatan"><option value="1">1×</option><option value="3">3×</option><option value="10" selected>10×</option><option value="30">30×</option><option value="100">100×</option></select><button id="btJumpToggle" class="btn ghost btx-rb" type="button" title="Lompat ke waktu tertentu"><span class="ic">🕒</span><span class="tx">Lompat</span></button><button id="btReplayMore" class="btn ghost btx-rb btd-only-m" type="button" title="Tombol lain: Reset, Awal, Bar, Lompat" aria-label="Tombol replay lainnya" aria-expanded="false"><span class="ic">⋯</span></button>
               </div>
             </div>
             <div class="btx-jump" id="btJumpRow" hidden><input id="btJump" type="datetime-local" class="sel" title="Lompat maju ke waktu tertentu (UTC)"><button id="btJumpGo" class="btn" type="button">Lompat</button></div>
@@ -11279,9 +11386,18 @@ function renderMenu(force){
   h+=`<div class="btx-mkt"><button type="button" class="buy" data-m="mkt:buy">Buy market<b>${fp(ask)}</b></button><button type="button" class="sell" data-m="mkt:sell">Sell market<b>${fp(bid)}</b></button></div>`;
   h+=`<label class="btx-chk"><input type="checkbox" data-m="br" ${cfg.autoBr?'checked':''}> SL/TP otomatis (${$('btAutoSL')&&nz($('btAutoSL').value)>0?'jarak manual':'ATR'} × RR ${rrValue()??1.5})</label>`;
   m.innerHTML=h;m.hidden=false;
-  const y=geo.y(price),w=m.offsetWidth,hh=m.offsetHeight;
-  m.style.left=Math.max(6,Math.min(geo.padL+geo.cw-w-8,geo.W-w-6))+'px';
-  m.style.top=cl(y-hh/2,6,Math.max(6,geo.H-hh-6))+'px';
+  const y=geo.y(price);
+  if(window.innerWidth<=760){
+    m.classList.add('sheet');
+    m.style.left='6px';m.style.right='6px';m.style.width='auto';
+    const up=y>geo.H/2;
+    m.style.top=up?'6px':'auto';m.style.bottom=up?'auto':'6px';
+  }else{
+    m.classList.remove('sheet');m.style.right='';m.style.bottom='';m.style.width='';
+    const w=m.offsetWidth,hh=m.offsetHeight;
+    m.style.left=Math.max(6,Math.min(geo.padL+geo.cw-w-8,geo.W-w-6))+'px';
+    m.style.top=cl(y-hh/2,6,Math.max(6,geo.H-hh-6))+'px';
+  }
 }
 function menuClick(e){
   // Menu memakai pointerdown stopPropagation; jangan menolak klik pertama pada order.
@@ -15991,6 +16107,19 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   if(hf&&hc)hf.addEventListener('click',function(e){var b=e.target.closest('[data-f]');if(!b)return;hc.dataset.hf=b.dataset.f;hf.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});});
   var mo=document.getElementById('btHistMore');
   if(mo&&hc)mo.addEventListener('click',function(){hc.dataset.hall='1';mo.hidden=true;});
+})();
+
+</script>
+<script id="bt-dock-js2">
+(function(){
+  'use strict';
+  var ctl=document.getElementById('btCtl');if(!ctl)return;
+  function tg(id,cls){
+    var b=document.getElementById(id);if(!b)return;
+    b.addEventListener('click',function(){var on=ctl.classList.toggle(cls);b.classList.toggle('on',on);b.setAttribute('aria-expanded',on?'true':'false');});
+  }
+  tg('btSyncToggle','btd-sync-on');
+  tg('btReplayMore','btd-more-on');
 })();
 
 </script>
