@@ -11382,7 +11382,7 @@ function persist(){
   S.saveT=setTimeout(()=>{
     const snap={v:1,name:S.name,baseSec:S.baseSec,dec:S.dec,n:S.n,B:S.B,i:S.i,start:S.start,pos:S.pos,pend:S.pend,closed:S.closed,balance:S.balance,initial:S.initial,nextId:S.nextId,eq:S.eq,eqStride:S.eqStride,peak:S.peak,balancePeak:S.balancePeak,maxDD:S.maxDD,maxDDpct:S.maxDDpct,drawings:S.drawings,dayKey:S.dayKey,dayStartEq:S.dayStartEq,breach:S.breach,violations:S.violations,vioKeys:S.vioKeys,targetHit:S.targetHit,tf:S.tf,savedAt:Date.now()};
     idb.set('last',snap).catch(()=>{});
-    scheduleCloudSave();
+    // scheduleCloudSave(); <-- dimatikan agar tidak boros kuota Firestore
   },1500);
 }
 async function offerResume(){
