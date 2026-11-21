@@ -4416,6 +4416,205 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 }
 </style>
 
+
+<style id="gbc-proof-portal-css">
+html.gbc-proof-mode .app,
+html.gbc-proof-mode .world { display: none !important; }
+html.gbc-proof-mode,
+html.gbc-proof-mode body { overflow: hidden !important; background: #060912 !important; }
+#gbcProofPortal{position:fixed;inset:0;z-index:2147483600;overflow:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(900px 520px at 50% -10%,rgba(214,176,92,.14),transparent 65%),#060912;color:#f3f6fd;font-family:"Inter","Chakra Petch",system-ui,sans-serif;padding:clamp(14px,3vw,32px) 14px 48px;display:flex;justify-content:center;align-items:flex-start}
+.gp-card{width:100%;max-width:660px;border:1px solid rgba(214,176,92,.45);border-radius:18px;background:linear-gradient(180deg,#0f172a,#090e1a);box-shadow:0 24px 80px rgba(0,0,0,.65);overflow:hidden;position:relative}
+.gp-card::before{content:"";display:block;height:3px;background:linear-gradient(90deg,#9c752b,#f7e4a8,#9c752b)}
+.gp-head{padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gp-brand{display:flex;align-items:center;gap:12px}
+.gp-mark{width:42px;height:42px;border-radius:10px;background:linear-gradient(145deg,#f7e4a8,#b98b3f);color:#090e1a;font:800 17px "Chakra Petch",sans-serif;display:grid;place-items:center;flex:none}
+.gp-brand b{display:block;font:700 15px "Chakra Petch",sans-serif;letter-spacing:.12em;color:#f2d996}
+.gp-brand small{display:block;font-size:11px;color:#8d9bb7;margin-top:2px}
+.gp-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;font:700 11px "JetBrains Mono",monospace;letter-spacing:.08em}
+.gp-badge.ok{background:rgba(52,211,153,.14);color:#34d399;border:1px solid rgba(52,211,153,.45)}
+.gp-badge.bad{background:rgba(251,113,133,.14);color:#fb7185;border:1px solid rgba(251,113,133,.45)}
+.gp-body{padding:20px 22px;display:grid;gap:16px}
+.gp-hero{padding:16px 18px;border-radius:14px;border:1px solid rgba(214,176,92,.25);background:rgba(255,255,255,.03);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.gp-hero small{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#d6b05c;font-weight:700}
+.gp-hero h2{margin:4px 0 2px;font:700 clamp(22px,4vw,30px) "Cormorant Garamond",Georgia,serif;color:#fff}
+.gp-hero .gp-sub{font-size:12px;color:#95a4c0}
+.gp-val{text-align:right;font:700 clamp(24px,5vw,34px) "JetBrains Mono",monospace}
+.gp-val.pos{color:#34d399}.gp-val.neg{color:#fb7185}
+.gp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gp-item{padding:11px 13px;border-radius:11px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);min-width:0}
+.gp-item small{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7e8da8;margin-bottom:4px;font-weight:700}
+.gp-item b{display:block;font:600 13.5px "JetBrains Mono",monospace;color:#eef3ff;overflow-wrap:anywhere}
+.gp-sign{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 18px;border-radius:14px;border:1px solid rgba(214,176,92,.25);background:rgba(214,176,92,.05)}
+.gp-sigtxt .gp-calli{font:400 34px/1.1 "Great Vibes",cursive;color:#f5dfa0;margin-bottom:4px}
+.gp-sigtxt b{display:block;font-size:11.5px;letter-spacing:.16em;color:#e6c572}
+.gp-sigtxt span{display:block;font-size:11px;color:#95a4c0;margin-top:2px}
+.gp-id{text-align:right;font-family:"JetBrains Mono",monospace}
+.gp-id small{display:block;font-size:10px;color:#7e8da8;letter-spacing:.1em}
+.gp-id b{display:block;font-size:12.5px;color:#eef3ff;margin-top:3px;word-break:break-all}
+.gp-foot{padding:14px 22px 20px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.gp-foot p{margin:0;font-size:11px;color:#6e7e9c;flex:1 1 220px;line-height:1.5}
+.gp-btns{display:flex;gap:8px;flex-wrap:wrap}
+.gp-btn{min-height:38px;padding:0 14px;border-radius:9px;border:1px solid rgba(214,176,92,.45);background:rgba(214,176,92,.14);color:#f2d996;font:700 12px inherit;cursor:pointer}
+.gp-btn.pri{background:linear-gradient(135deg,#f0d283,#c6973c);color:#090e1a;border:0}
+@media(max-width:520px){.gp-grid{grid-template-columns:1fr}.gp-val,.gp-id{text-align:left}.gp-btns{width:100%}.gp-btn{flex:1}}
+</style>
+
+<script id="gbc-proof-portal-js">
+(function(){
+  const qs = new URLSearchParams(location.search);
+  const compact = qs.get('gbc') || qs.get('p');
+  const legacyRaw = qs.get('verify');
+  const legacySig = qs.get('sig') || '';
+  if(!compact && !legacyRaw) return;
+
+  // Sembunyikan Overview sejak awal sebelum render pertama
+  document.documentElement.classList.add('gbc-proof-mode');
+
+  function hashFull(str){
+    let h = 0x811c9dc5;
+    const s = 'GBC::FARID_SIDDIQ::2026::' + str;
+    for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+    return (h >>> 0).toString(16).padStart(8, '0');
+  }
+  function decB64(b64){
+    const pad = b64.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((b64.length + 3) % 4);
+    const bin = atob(pad);
+    return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
+  }
+  const esc = v => String(v ?? '—').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+  const fmtMoney = (val, cur = 'USD', signed = false) => {
+    const num = Number(val);
+    if(!Number.isFinite(num)) return String(val || '—');
+    const sym = cur === 'EUR' ? '€' : cur === 'GBP' ? '£' : cur === 'IDR' ? 'Rp ' : '$';
+    const abs = Math.abs(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (num < 0 ? '-' : (signed && num > 0 ? '+' : '')) + sym + abs;
+  };
+  const fmtDate = code => {
+    const s = String(code || '');
+    if(s.length === 10) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)} ${s.slice(6,8)}:${s.slice(8,10)} WIB`;
+    if(s.length === 6) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)}`;
+    return s || '—';
+  };
+
+  let data = null, valid = false;
+  if(compact){
+    try {
+      const parts = compact.split('~');
+      const sig = (parts.pop() || '').toLowerCase();
+      const body = parts.join('~');
+      valid = sig.length === 6 && sig === hashFull(body).slice(0, 6);
+      if(parts[0] === 'C' && parts.length >= 11){
+        const [, lg, tr, fm, stRaw, eqRaw, tg, wr, ct, dt, cur] = parts;
+        const st = Number(stRaw), eq = Number(eqRaw), prof = eq - st;
+        const pct = st ? (prof / st * 100) : 0;
+        data = {
+          t: 'CERT',
+          id: `GBC-${lg.replace(/[^a-z0-9]/gi, '')}-20${dt}`,
+          tr, fm, lg, br: fm,
+          np: fmtMoney(prof, cur, true),
+          sb: fmtMoney(st, cur),
+          eq: fmtMoney(eq, cur),
+          rt: `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`,
+          tg: `${tg}%`,
+          wr: `${wr}%`,
+          ct,
+          dt: fmtDate(dt),
+          gn: prof >= 0 ? 1 : 0
+        };
+      } else if(parts[0] === 'P' && parts.length >= 14){
+        const [, id, lg, tr, sy, sd, vl, netRaw, en, ex, sl, tp, dt, cur] = parts;
+        const net = Number(netRaw);
+        data = {
+          t: 'PNL', id, lg, tr, fm: 'Golden Break Terminal',
+          sy, sd: sd === 'S' ? 'SELL' : 'BUY', vl,
+          np: fmtMoney(net, cur, true),
+          gn: net >= 0 ? 1 : 0,
+          en: en === '-' ? 'Tidak tercatat' : en,
+          ex: ex === '-' ? 'Tidak tercatat' : ex,
+          sl: sl === '-' ? 'Tidak tercatat' : sl,
+          tp: tp === '-' ? 'Tidak tercatat' : tp,
+          dt: fmtDate(dt)
+        };
+      }
+    } catch(e){ valid = false; }
+  } else if(legacyRaw){
+    try {
+      valid = legacySig.toLowerCase() === hashFull(legacyRaw);
+      data = JSON.parse(decB64(legacyRaw));
+    } catch(e){ valid = false; }
+  }
+
+  const isCert = data && data.t === 'CERT';
+  const rows = !data ? [] : (isCert ? [
+    ['Prop Firm / Broker', data.fm], ['Account Login', data.lg],
+    ['Achieved Return', `${data.rt} (Target ${data.tg})`], ['Win Rate & Trades', `${data.wr} · ${data.ct} trades`],
+    ['Starting Balance', data.sb], ['Current Equity', data.eq]
+  ] : [
+    ['Trader', data.tr], ['Account Login', data.lg],
+    ['Symbol & Arah', `${data.sy} · ${data.sd} (${data.vl} lot)`], ['Waktu Close', data.dt],
+    ['Entry Price', data.en], ['Exit Price', data.ex],
+    ['Stop Loss', data.sl], ['Take Profit', data.tp]
+  ]);
+
+  const mount = () => {
+    if(document.getElementById('gbcProofPortal')) return;
+    const el = document.createElement('div');
+    el.id = 'gbcProofPortal';
+    el.innerHTML = `<div class="gp-card">
+      <div class="gp-head">
+        <div class="gp-brand"><div class="gp-mark">GB</div><div><b>GOLDEN BREAK CAPITAL</b><small>Official Web Verification Proof</small></div></div>
+        <span class="gp-badge ${valid ? 'ok' : 'bad'}">${valid ? '✔ VERIFIED RECORD' : '✕ INVALID / MODIFIED'}</span>
+      </div>
+      <div class="gp-body">
+        ${data ? `
+          <div class="gp-hero">
+            <div>
+              <small>${isCert ? 'TARGET ACHIEVEMENT CERTIFICATE' : 'TRADE PERFORMANCE RECORD'}</small>
+              <h2>${esc(isCert ? data.tr : `${data.sy} · ${data.sd}`)}</h2>
+              <div class="gp-sub">${esc(isCert ? `${data.fm} · Account ${data.lg}` : `${data.tr} · Ticket #${data.id}`)}</div>
+            </div>
+            <div class="gp-val ${data.gn !== 0 ? 'pos' : 'neg'}">${esc(data.np)}</div>
+          </div>
+          <div class="gp-grid">${rows.map(([k, v]) => `<div class="gp-item"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}</div>
+          <div class="gp-sign">
+            <div class="gp-sigtxt">
+              <div class="gp-calli">Farid Siddiq</div>
+              <b>FARID SIDDIQ</b>
+              <span>CEO · Golden Break Capital</span>
+            </div>
+            <div class="gp-id">
+              <small>${isCert ? 'CERTIFICATE ID' : 'RECORD TICKET'}</small>
+              <b>${esc(isCert ? data.id : '#' + data.id)}</b>
+              <small style="margin-top:6px">ISSUED (WIB)</small>
+              <b>${esc(data.dt)}</b>
+            </div>
+          </div>
+        ` : `<div class="gp-item"><b>Data verifikasi tidak valid atau link terpotong.</b></div>`}
+      </div>
+      <div class="gp-foot">
+        <p>${valid ? 'Record ini cocok dengan tanda tangan integritas Golden Break Terminal. Bukti internal dashboard, bukan laporan resmi broker.' : 'Peringatan: parameter URL telah diubah atau rusak sehingga gagal verifikasi.'}</p>
+        <div class="gp-btns">
+          <button type="button" class="gp-btn" id="gpCopy">🔗 Salin Link</button>
+          <button type="button" class="gp-btn pri" id="gpClose">Buka Terminal</button>
+        </div>
+      </div>
+    </div>`;
+    document.body.appendChild(el);
+    document.getElementById('gpCopy').onclick = () => {
+      navigator.clipboard?.writeText(location.href);
+      document.getElementById('gpCopy').textContent = '✔ Tersalin';
+    };
+    document.getElementById('gpClose').onclick = () => {
+      el.remove();
+      document.documentElement.classList.remove('gbc-proof-mode');
+      history.replaceState({}, '', location.pathname);
+    };
+  };
+
+  if(document.body) mount();
+  else document.addEventListener('DOMContentLoaded', mount);
+})();
+</script>
    
 </head>
 <body>
@@ -17564,142 +17763,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
 </script>
 
-<style id="gbc-proof-portal-css">
-#gbcProofPortal{position:fixed;inset:0;z-index:2147483600;overflow:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(900px 520px at 50% -10%,rgba(214,176,92,.14),transparent 65%),#060912;color:#f3f6fd;font-family:"Inter","Chakra Petch",system-ui,sans-serif;padding:clamp(14px,3vw,32px) 14px 48px;display:flex;justify-content:center;align-items:flex-start}
-.gp-card{width:100%;max-width:660px;border:1px solid rgba(214,176,92,.45);border-radius:18px;background:linear-gradient(180deg,#0f172a,#090e1a);box-shadow:0 24px 80px rgba(0,0,0,.65);overflow:hidden;position:relative}
-.gp-card::before{content:"";display:block;height:3px;background:linear-gradient(90deg,#9c752b,#f7e4a8,#9c752b)}
-.gp-head{padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.gp-brand{display:flex;align-items:center;gap:12px}
-.gp-mark{width:42px;height:42px;border-radius:10px;background:linear-gradient(145deg,#f7e4a8,#b98b3f);color:#090e1a;font:800 17px "Chakra Petch",sans-serif;display:grid;place-items:center;flex:none}
-.gp-brand b{display:block;font:700 15px "Chakra Petch",sans-serif;letter-spacing:.12em;color:#f2d996}
-.gp-brand small{display:block;font-size:11px;color:#8d9bb7;margin-top:2px}
-.gp-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;font:700 11px "JetBrains Mono",monospace;letter-spacing:.08em}
-.gp-badge.ok{background:rgba(52,211,153,.14);color:#34d399;border:1px solid rgba(52,211,153,.45)}
-.gp-badge.bad{background:rgba(251,113,133,.14);color:#fb7185;border:1px solid rgba(251,113,133,.45)}
-.gp-body{padding:20px 22px;display:grid;gap:16px}
-.gp-hero{padding:16px 18px;border-radius:14px;border:1px solid rgba(214,176,92,.25);background:rgba(255,255,255,.03);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.gp-hero small{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#d6b05c;font-weight:700}
-.gp-hero h2{margin:4px 0 2px;font:700 clamp(22px,4vw,30px) "Cormorant Garamond",Georgia,serif;color:#fff}
-.gp-hero .gp-sub{font-size:12px;color:#95a4c0}
-.gp-val{text-align:right;font:700 clamp(24px,5vw,34px) "JetBrains Mono",monospace}
-.gp-val.pos{color:#34d399}.gp-val.neg{color:#fb7185}
-.gp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.gp-item{padding:11px 13px;border-radius:11px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);min-width:0}
-.gp-item small{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7e8da8;margin-bottom:4px;font-weight:700}
-.gp-item b{display:block;font:600 13.5px "JetBrains Mono",monospace;color:#eef3ff;overflow-wrap:anywhere}
-.gp-sign{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 18px;border-radius:14px;border:1px solid rgba(214,176,92,.25);background:rgba(214,176,92,.05)}
-.gp-sigtxt .gp-calli{font:400 34px/1.1 "Great Vibes",cursive;color:#f5dfa0;margin-bottom:4px}
-.gp-sigtxt b{display:block;font-size:11.5px;letter-spacing:.16em;color:#e6c572}
-.gp-sigtxt span{display:block;font-size:11px;color:#95a4c0;margin-top:2px}
-.gp-id{text-align:right;font-family:"JetBrains Mono",monospace}
-.gp-id small{display:block;font-size:10px;color:#7e8da8;letter-spacing:.1em}
-.gp-id b{display:block;font-size:12.5px;color:#eef3ff;margin-top:3px;word-break:break-all}
-.gp-foot{padding:14px 22px 20px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.gp-foot p{margin:0;font-size:11px;color:#6e7e9c;flex:1 1 220px;line-height:1.5}
-.gp-btns{display:flex;gap:8px;flex-wrap:wrap}
-.gp-btn{min-height:38px;padding:0 14px;border-radius:9px;border:1px solid rgba(214,176,92,.45);background:rgba(214,176,92,.14);color:#f2d996;font:700 12px inherit;cursor:pointer}
-.gp-btn.pri{background:linear-gradient(135deg,#f0d283,#c6973c);color:#090e1a;border:0}
-@media(max-width:520px){.gp-grid{grid-template-columns:1fr}.gp-val,.gp-id{text-align:left}.gp-btns{width:100%}.gp-btn{flex:1}}
-</style>
 
-<script id="gbc-proof-portal-js">
-(function(){
-  const qs = new URLSearchParams(location.search);
-  const raw = qs.get('verify');
-  const sig = qs.get('sig') || '';
-  if(!raw) return;
-
-  function hashCheck(str){
-    let h = 0x811c9dc5;
-    const s = 'GBC::FARID_SIDDIQ::2026::' + str;
-    for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
-    return (h >>> 0).toString(16).padStart(8, '0');
-  }
-  function dec(b64){
-    const pad = b64.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((b64.length + 3) % 4);
-    const bin = atob(pad);
-    return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
-  }
-  const esc = v => String(v ?? '—').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
-
-  let data = null, valid = false;
-  try {
-    valid = sig.toLowerCase() === hashCheck(raw);
-    data = JSON.parse(dec(raw));
-  } catch(e){ valid = false; }
-
-  const isCert = data && data.t === 'CERT';
-  const rows = !data ? [] : (isCert ? [
-    ['Prop Firm', data.fm], ['Account Login', data.lg],
-    ['Broker / Company', data.br], ['Achieved Return', `${data.rt} (Target ${data.tg})`],
-    ['Starting Balance', data.sb], ['Current Equity', data.eq],
-    ['Closed Trades', data.ct], ['Win Rate', data.wr]
-  ] : [
-    ['Trader', data.tr], ['Prop Firm / Broker', data.fm],
-    ['Account Login', data.lg], ['Symbol & Arah', `${data.sy} · ${data.sd} (${data.vl} lot)`],
-    ['Entry Price', data.en], ['Exit Price', data.ex],
-    ['Stop Loss', data.sl], ['Take Profit', data.tp],
-    ['Return / R-Multiple', `${data.rt} · ${data.rm}`], ['Waktu Close', data.dt]
-  ]);
-
-  const el = document.createElement('div');
-  el.id = 'gbcProofPortal';
-  el.innerHTML = `<div class="gp-card">
-    <div class="gp-head">
-      <div class="gp-brand"><div class="gp-mark">GB</div><div><b>GOLDEN BREAK CAPITAL</b><small>Official Web Verification Proof</small></div></div>
-      <span class="gp-badge ${valid ? 'ok' : 'bad'}">${valid ? '✔ VERIFIED RECORD' : '✕ INVALID / MODIFIED'}</span>
-    </div>
-    <div class="gp-body">
-      ${data ? `
-        <div class="gp-hero">
-          <div>
-            <small>${isCert ? 'TARGET ACHIEVEMENT CERTIFICATE' : 'TRADE PERFORMANCE RECORD'}</small>
-            <h2>${esc(isCert ? data.tr : `${data.sy} · ${data.sd}`)}</h2>
-            <div class="gp-sub">${esc(isCert ? `${data.fm} · Account ${data.lg}` : `${data.tr} · Ticket #${data.id}`)}</div>
-          </div>
-          <div class="gp-val ${isCert || data.gn !== 0 ? 'pos' : 'neg'}">${esc(data.np)}</div>
-        </div>
-        <div class="gp-grid">${rows.map(([k, v]) => `<div class="gp-item"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}</div>
-        <div class="gp-sign">
-          <div class="gp-sigtxt">
-            <div class="gp-calli">Farid Siddiq</div>
-            <b>FARID SIDDIQ</b>
-            <span>CEO · Golden Break Capital</span>
-          </div>
-          <div class="gp-id">
-            <small>${isCert ? 'CERTIFICATE ID' : 'RECORD TICKET'}</small>
-            <b>${esc(isCert ? data.id : '#' + data.id)}</b>
-            <small style="margin-top:6px">ISSUED (WIB)</small>
-            <b>${esc(data.dt)}</b>
-          </div>
-        </div>
-      ` : `<div class="gp-item"><b>Data verifikasi tidak valid atau link terpotong.</b></div>`}
-    </div>
-    <div class="gp-foot">
-      <p>${valid ? 'Record ini cocok dengan tanda tangan integritas Golden Break Terminal. Bukti internal dashboard, bukan laporan resmi broker.' : 'Peringatan: parameter URL telah diubah atau rusak sehingga gagal verifikasi.'}</p>
-      <div class="gp-btns">
-        <button type="button" class="gp-btn" id="gpCopy">🔗 Salin Link</button>
-        <button type="button" class="gp-btn pri" id="gpClose">Buka Terminal</button>
-      </div>
-    </div>
-  </div>`;
-
-  const mount = () => {
-    document.body.appendChild(el);
-    document.documentElement.style.overflow = 'hidden';
-    document.getElementById('gpCopy').onclick = () => {
-      navigator.clipboard?.writeText(location.href);
-      document.getElementById('gpCopy').textContent = '✔ Tersalin';
-    };
-    document.getElementById('gpClose').onclick = () => {
-      el.remove();
-      document.documentElement.style.overflow = '';
-      history.replaceState({}, '', location.pathname);
-    };
-  };
-  if(document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
-})();
-</script>
 
 </body>
 </html>
