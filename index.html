@@ -13693,6 +13693,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 })();
 </script>
 
+
 <script id="trade-recap-png-js">
 (function(){
   const $ = id => document.getElementById(id);
@@ -13716,10 +13717,17 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   let customBgImg = null;
   let dayMap = {};
-  let importedTrades = [];   // menyimpan hasil parsing file XLSX / XML / HTML / CSV
-  let importedDeposit = 0;   // saldo awal / deposit dari file report MT5
+  let importedTrades = [];
+  let importedDeposit = 0;
   let availableThemes = [];
   let currentThemeIdx = -1;
+
+  // State terpisah untuk mode Manual agar tidak pernah tercampur dengan EA / Backtest / Import
+  const manualState = {
+    pct: $('trpPct')?.value || '8.45',
+    pair: $('trpPair')?.value || 'XAU/USD',
+    title: $('trpTitle')?.value || 'MONTHLY PNL RECAP'
+  };
 
   const THEMES = {
     graphite: { bg1:'#161922', bg2:'#090b10', glass:'rgba(18,22,32,.76)', cell:'rgba(22,27,39,.74)', line:'rgba(217,176,104,.26)', lineSoft:'rgba(255,255,255,.10)', text:'#f2f4f8', muted:'#a3adc2', gold:'#e2bc72', gold2:'#b68a3c', green:'#38d996', greenBg:'rgba(56,217,150,.18)', red:'#f25c6e', redBg:'rgba(242,92,110,.18)', qrBg:'rgba(10,13,20,.92)', qrFg:'#e2bc72' },
@@ -13768,7 +13776,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     if (!str) return null;
     if (str instanceof Date && !isNaN(str.getTime())) return str;
     if (typeof str === 'number' && str > 20000 && str < 80000) {
-      // Excel serial date
       return new Date(Math.round((str - 25569) * 86400 * 1000));
     }
     const s = String(str).trim();
@@ -13791,7 +13798,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const trades = [];
     let deposit = 0;
 
-    // 1. Cari bagian "Positions" (MT5 Report standar)
     let posHeaderIdx = -1;
     for (let i = 0; i < rows.length; i++) {
       const c0 = String(rows[i]?.[0] ?? '').trim().toLowerCase();
@@ -13807,7 +13813,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       }
     }
 
-    // Jika file CSV/tabel langsung tanpa judul "Positions", cari baris header langsung
     if (posHeaderIdx < 0) {
       for (let i = 0; i < Math.min(25, rows.length); i++) {
         const line = (rows[i] || []).map(x => String(x ?? '').trim().toLowerCase());
@@ -13839,7 +13844,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       for (let i = posHeaderIdx + 1; i < rows.length; i++) {
         const r = rows[i] || [];
         const firstCell = String(r[0] ?? '').trim().toLowerCase();
-        // Berhenti saat masuk bagian Orders / Deals / Results
         if (/^(orders|deals|results|open positions|working orders|balance:)/.test(firstCell)) break;
 
         const typRaw = String(r[iType] ?? '').trim().toLowerCase();
@@ -13861,12 +13865,10 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       }
     }
 
-    // 2. Cari Initial Deposit di bagian Deals (baris dengan Type == 'balance')
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i] || [];
       const rowLower = r.map(x => String(x ?? '').trim().toLowerCase());
       if (rowLower.includes('balance') && rowLower[0] && /^\d{4}[.\-/]/.test(rowLower[0])) {
-        // Ambil nilai positif deposit (biasanya kolom Profit atau Balance di baris balance)
         for (let c = r.length - 1; c >= 4; c--) {
           const v = parseNum(r[c]);
           if (v > 0) { deposit += v; break; }
@@ -13938,10 +13940,10 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
       if (!importedTrades.length) {
         if (info) info.textContent = `Tidak ditemukan transaksi pada ${file.name}. Pastikan file adalah ReportHistory MT5.`;
+        syncFromSource();
         return;
       }
 
-      // Deteksi otomatis bulan transaksi terbaru di dalam file
       const latest = importedTrades.reduce((a, b) => (b.dt > a.dt ? b : a), importedTrades[0]).dt;
       if ($('trpMonth')) {
         $('trpMonth').value = `${latest.getFullYear()}-${String(latest.getMonth() + 1).padStart(2, '0')}`;
@@ -14070,9 +14072,9 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return { map, count, topSym, startBal };
   }
 
-  function scrapeTableToMap(tableId){
+  function scrapeTableToMap(tableId, autoSwitchMonth){
     const tbl = $(tableId);
-    if (!tbl) return { map:{}, count:0, topSym:'' };
+    if (!tbl) return { map:{}, count:0, topSym:'', totalInTable:0 };
     const headers = [...tbl.querySelectorAll('thead th, tr:first-child th')].map(th => th.textContent.trim().toLowerCase());
     const idx = {
       sym:   headers.findIndex(h => /sym|pair|instr/.test(h)),
@@ -14084,110 +14086,143 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       time:  headers.findIndex(h => /time|waktu|tgl|date|close/.test(h))
     };
 
-    const { year, month } = getSelectedYM();
-    const map = {};
-    const symCount = {};
-    let count = 0;
-
+    const rawRows = [];
     tbl.querySelectorAll('tbody tr').forEach(tr => {
       const tds = [...tr.querySelectorAll('td')];
       if (!tds.length || tds[0].hasAttribute('colspan') || tds[0].classList.contains('empty')) return;
       const get = i => (i >= 0 && tds[i]) ? tds[i].textContent.trim() : '';
-
       const dt = parseDateFlexible(get(idx.time));
-      if (!dt || dt.getFullYear() !== year || dt.getMonth() !== month) return;
+      if (!dt) return;
+      rawRows.push({
+        dt,
+        sym: get(idx.sym) || ($('btName')?.value || $('btBinSym')?.value || 'XAUUSD'),
+        isSell: get(idx.dir).toUpperCase().includes('SELL'),
+        open: parseNum(get(idx.open)),
+        close: parseNum(get(idx.close)),
+        usd: parseNum(get(idx.pnl)),
+        pipsRaw: idx.pips >= 0 ? parseNum(get(idx.pips)) : NaN,
+        hasPipsCol: idx.pips >= 0
+      });
+    });
 
-      const sym = get(idx.sym) || $('trpPair')?.value || 'XAUUSD';
-      const isSell = get(idx.dir).toUpperCase().includes('SELL');
-      const open = parseNum(get(idx.open));
-      const close = parseNum(get(idx.close));
-      const usd = parseNum(get(idx.pnl));
+    if (!rawRows.length) return { map:{}, count:0, topSym:'', totalInTable:0 };
 
-      let pips = idx.pips >= 0 ? parseNum(get(idx.pips)) : NaN;
-      if (!isFinite(pips) || idx.pips < 0) {
-        if (open > 0 && close > 0) {
-          const pipSize = detectPipSize(sym, open);
-          pips = (isSell ? (open - close) : (close - open)) / pipSize;
-        } else {
-          pips = 0;
-        }
+    let { year, month } = getSelectedYM();
+    let matched = rawRows.filter(r => r.dt.getFullYear() === year && r.dt.getMonth() === month);
+
+    // Jika di bulan sekarang kosong tapi tabel punya transaksi di bulan lain, otomatis pindah ke bulan transaksi terbaru
+    if (!matched.length && autoSwitchMonth) {
+      const latest = rawRows.reduce((a, b) => (b.dt > a.dt ? b : a), rawRows[0]).dt;
+      year = latest.getFullYear();
+      month = latest.getMonth();
+      if ($('trpMonth')) $('trpMonth').value = `${year}-${String(month + 1).padStart(2, '0')}`;
+      matched = rawRows.filter(r => r.dt.getFullYear() === year && r.dt.getMonth() === month);
+    }
+
+    const map = {};
+    const symCount = {};
+    matched.forEach(r => {
+      let pips = r.hasPipsCol && isFinite(r.pipsRaw) ? r.pipsRaw : 0;
+      if (!r.hasPipsCol && r.open > 0 && r.close > 0) {
+        pips = (r.isSell ? (r.open - r.close) : (r.close - r.open)) / detectPipSize(r.sym, r.open);
       }
 
-      const d = dt.getDate();
+      const d = r.dt.getDate();
       if (!map[d]) map[d] = { pips:0, usd:0, trades:0, wins:0, losses:0, winPips:0, lossPips:0, grossWin:0, grossLoss:0 };
       const cell = map[d];
-      const isWin = usd !== 0 ? usd > 0 : pips >= 0;
+      const isWin = r.usd !== 0 ? r.usd > 0 : pips >= 0;
       cell.pips += pips;
-      cell.usd += usd;
+      cell.usd += r.usd;
       cell.trades += 1;
-      if (isWin) { cell.wins++; cell.winPips += Math.abs(pips); cell.grossWin += Math.max(0, usd); }
-      else       { cell.losses++; cell.lossPips += Math.abs(pips); cell.grossLoss += Math.abs(Math.min(0, usd)); }
+      if (isWin) { cell.wins++; cell.winPips += Math.abs(pips); cell.grossWin += Math.max(0, r.usd); }
+      else       { cell.losses++; cell.lossPips += Math.abs(pips); cell.grossLoss += Math.abs(Math.min(0, r.usd)); }
 
-      symCount[sym] = (symCount[sym] || 0) + 1;
-      count++;
+      symCount[r.sym] = (symCount[r.sym] || 0) + 1;
     });
 
     const topSym = Object.entries(symCount).sort((a,b) => b[1] - a[1])[0]?.[0] || '';
-    return { map, count, topSym };
+    return { map, count: matched.length, topSym, totalInTable: rawRows.length };
   }
 
-  function syncFromSource(){
+  // ===== SINKRONISASI TERISOLASI PER SUMBER DATA =====
+  function syncFromSource(isSourceSwitch){
     const src = $('trpSource')?.value || 'history';
-    if ($('trpImportBox')) $('trpImportBox').hidden = (src !== 'import');
+    const isManual = !!$('trpManualToggle')?.checked;
+    if ($('trpImportBox')) $('trpImportBox').hidden = (src !== 'import' || isManual);
 
-    // Jika toggle manual sedang aktif, utamakan input manual
-    if ($('trpManualToggle')?.checked) {
+    // 1. MODE FULL MANUAL (berdiri sendiri, tidak mengambil apa pun dari EA/Backtest/Import)
+    if (isManual) {
       dayMap = parseManualToMap();
-      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = 'Mode edit manual aktif';
+      if ($('trpPct')) $('trpPct').value = manualState.pct;
+      if ($('trpPair')) $('trpPair').value = manualState.pair;
+      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = 'Mode Full Manual · berdiri sendiri';
       render();
       return;
     }
 
+    // 2. MODE IMPORT REPORT MT5 (berdiri sendiri dari file yang di-upload)
     if (src === 'import') {
       const res = buildImportedMap();
+      dayMap = res.map;
+      const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
       if (res.count > 0) {
-        dayMap = res.map;
         if (res.topSym && $('trpPair')) $('trpPair').value = res.topSym;
-        const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
-        if (res.startBal > 0 && $('trpPct')) $('trpPct').value = ((totalUsd / res.startBal) * 100).toFixed(2);
-        if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Report MT5 · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
+        if ($('trpPct')) $('trpPct').value = res.startBal > 0 ? ((totalUsd / res.startBal) * 100).toFixed(2) : '0.00';
+        if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Report MT5 · ${res.count} trade (${Object.keys(dayMap).length} hari)`;
       } else {
-        dayMap = {};
+        if ($('trpPct')) $('trpPct').value = '0.00';
         if ($('trpSourceStatus')) {
           $('trpSourceStatus').textContent = importedTrades.length
-            ? 'Tidak ada transaksi di bulan yang dipilih — ganti Bulan Kalender'
-            : 'Upload file Report MT5 (.xlsx / .xml / .html / .csv)';
+            ? 'Report MT5 · 0 trade di bulan ini (ganti Bulan Kalender)'
+            : 'Report MT5 · belum ada file di-upload';
         }
       }
       render();
       return;
     }
 
-    if (src === 'history') {
-      const res = buildEaMap();
-      if (res.count > 0) {
-        dayMap = res.map;
-        if (res.topSym && $('trpPair')) $('trpPair').value = res.topSym;
-        const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
-        if (res.startBal > 0 && $('trpPct')) $('trpPct').value = ((totalUsd / res.startBal) * 100).toFixed(2);
-        if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Live EA · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
-        render();
-        return;
+    // 3. MODE HASIL BACKTEST (berdiri sendiri dari #btTrades & #btBal, tidak menyentuh data EA)
+    if (src === 'backtest') {
+      const res = scrapeTableToMap('btTrades', !!isSourceSwitch);
+      dayMap = res.map;
+      const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
+      const btBal = parseNum($('btBal')?.value) || 10000;
+      const btSym = res.topSym || $('btName')?.value?.trim() || $('btBinSym')?.value || 'BACKTEST';
+
+      if ($('trpPair')) $('trpPair').value = btSym;
+      if ($('trpPct')) $('trpPct').value = res.count > 0 && btBal > 0 ? ((totalUsd / btBal) * 100).toFixed(2) : '0.00';
+
+      if ($('trpSourceStatus')) {
+        $('trpSourceStatus').textContent = res.count > 0
+          ? `Hasil Backtest · ${res.count} trade (${Object.keys(dayMap).length} hari · Modal $${btBal.toLocaleString('en-US')})`
+          : (res.totalInTable > 0 ? 'Hasil Backtest · 0 trade di bulan ini' : 'Hasil Backtest · belum ada trade tertutup di Backtest Lab');
       }
+      render();
+      return;
     }
 
-    const tableId = src === 'backtest' ? 'btTrades' : 'historyTable';
-    const res = scrapeTableToMap(tableId);
-    if (res.count > 0) {
-      dayMap = res.map;
-      if (res.topSym && $('trpPair')) $('trpPair').value = res.topSym;
-      const bal = $('hudBal') ? parseNum($('hudBal').textContent) : 0;
+    // 4. MODE LIVE EA (berdiri sendiri dari historyCache & dailyPnlMap)
+    const eaRes = buildEaMap();
+    if (eaRes.count > 0) {
+      dayMap = eaRes.map;
+      if (eaRes.topSym && $('trpPair')) $('trpPair').value = eaRes.topSym;
       const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
-      if (bal > 0 && $('trpPct')) $('trpPct').value = ((totalUsd / bal) * 100).toFixed(2);
-      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Tersinkron · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
+      if ($('trpPct')) $('trpPct').value = eaRes.startBal > 0 ? ((totalUsd / eaRes.startBal) * 100).toFixed(2) : '0.00';
+      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Live EA · ${eaRes.count} trade (${Object.keys(dayMap).length} hari)`;
     } else {
-      dayMap = parseManualToMap();
-      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Belum ada transaksi ${src === 'backtest' ? 'Backtest' : 'EA'} di bulan ini · menampilkan data preview`;
+      // Fallback baca tabel #historyTable jika bridge belum terpasang
+      const tblRes = scrapeTableToMap('historyTable', false);
+      dayMap = tblRes.map;
+      const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
+      const eaBal = $('hudBal') ? parseNum($('hudBal').textContent) : 0;
+      if (tblRes.count > 0) {
+        if (tblRes.topSym && $('trpPair')) $('trpPair').value = tblRes.topSym;
+        if ($('trpPct')) $('trpPct').value = eaBal > 0 ? ((totalUsd / eaBal) * 100).toFixed(2) : '0.00';
+        if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Live EA · ${tblRes.count} trade (${Object.keys(dayMap).length} hari)`;
+      } else {
+        if ($('trpPct')) $('trpPct').value = '0.00';
+        if ($('trpSourceStatus')) $('trpSourceStatus').textContent = 'Live EA · belum ada transaksi di bulan ini';
+      }
     }
     render();
   }
@@ -14875,16 +14910,39 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     render();
   });
 
-  // Upload Report MT5 (XLSX / XML / HTML / CSV)
   $('trpReportFile')?.addEventListener('change', e => handleReportFile(e.target.files?.[0]));
 
-  // Toggle edit manual opsional
   $('trpManualToggle')?.addEventListener('change', e => {
     if ($('trpManualWrap')) $('trpManualWrap').hidden = !e.target.checked;
-    syncFromSource();
+    syncFromSource(true);
   });
 
-  async function downloadPng(){
+  // Simpan perubahan user khusus saat mode manual aktif
+  ['trpPct','trpPair','trpTitle'].forEach(id => {
+    $(id)?.addEventListener('input', () => {
+      if ($('trpManualToggle')?.checked) {
+        if (id === 'trpPct') manualState.pct = $('trpPct').value;
+        if (id === 'trpPair') manualState.pair = $('trpPair').value;
+        if (id === 'trpTitle') manualState.title = $('trpTitle').value;
+      }
+      render();
+    });
+  });
+
+  ['trpBgDim','trpBgPos','trpQrLink','trpQrLabel'].forEach(id => $(id)?.addEventListener('input', render));
+  ['trpViewMode','trpRatio','trpTheme','trpHideUsd','trpShowSub'].forEach(id => $(id)?.addEventListener('change', render));
+  $('trpSource')?.addEventListener('change', () => syncFromSource(true));
+  ['trpMonth','trpPipSize'].forEach(id => $(id)?.addEventListener('change', () => syncFromSource(false)));
+
+  $('trpManualData')?.addEventListener('input', () => {
+    if ($('trpManualToggle')?.checked) {
+      dayMap = parseManualToMap();
+      render();
+    }
+  });
+
+  $('trpSyncBtn')?.addEventListener('click', () => syncFromSource(true));
+  $('trpDownloadBtn')?.addEventListener('click', async () => {
     await document.fonts.ready;
     render();
     const a = document.createElement('a');
@@ -14893,9 +14951,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     a.download = `golden-break-${mode}-recap-${ym}.png`;
     a.href = canvas.toDataURL('image/png');
     a.click();
-  }
-
-  async function copyPng(){
+  });
+  $('trpCopyBtn')?.addEventListener('click', async () => {
     await document.fonts.ready;
     render();
     try {
@@ -14905,33 +14962,22 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     } catch (e) {
       if ($('trpSourceStatus')) $('trpSourceStatus').textContent = 'Browser tidak mendukung salin langsung — klik Download PNG';
     }
-  }
-
-  ['trpTitle','trpPair','trpPct','trpBgDim','trpBgPos','trpQrLink','trpQrLabel'].forEach(id => $(id)?.addEventListener('input', render));
-  ['trpViewMode','trpRatio','trpTheme','trpHideUsd','trpShowSub'].forEach(id => $(id)?.addEventListener('change', render));
-  ['trpSource','trpMonth','trpPipSize'].forEach(id => $(id)?.addEventListener('change', syncFromSource));
-  $('trpManualData')?.addEventListener('input', () => {
-    dayMap = parseManualToMap();
-    render();
   });
 
-  $('trpSyncBtn')?.addEventListener('click', syncFromSource);
-  $('trpDownloadBtn')?.addEventListener('click', downloadPng);
-  $('trpCopyBtn')?.addEventListener('click', copyPng);
-
   window.addEventListener('fx-recap-sync', () => {
-    if ($('trpSource')?.value === 'history' && !$('trpManualToggle')?.checked) syncFromSource();
+    if ($('trpSource')?.value === 'history' && !$('trpManualToggle')?.checked) syncFromSource(false);
   });
 
   document.querySelectorAll('[data-view="share"]').forEach(btn => {
-    btn.addEventListener('click', () => setTimeout(syncFromSource, 120));
+    btn.addEventListener('click', () => setTimeout(() => syncFromSource(false), 120));
   });
 
-  syncFromSource();
+  syncFromSource(false);
   scanThemeFolder();
   document.fonts.ready.then(render);
 })();
 </script>
+   
    
 </body>
 </html>
