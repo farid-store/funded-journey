@@ -3849,6 +3849,120 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
   .trp-calday .da{display:none}
 }
 </style>
+
+
+
+<style id="header-strip-single-col">
+/* Satukan & rapikan .ea-strip + .account-strip menjadi 1 kolom di semua layar */
+html body .app .ea-strip,
+html body .app .account-strip {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0;
+  align-items: stretch;
+  padding: 4px 14px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius, 14px);
+  background: var(--surface, #0d1428);
+  box-shadow: var(--shadow-sm, none);
+}
+
+/* Sembunyikan ea-strip jika belum ada data */
+html body .app .ea-strip:empty {
+  display: none;
+}
+
+/* Gabungkan visual .ea-strip dan .account-strip menjadi 1 kotak menyatu */
+html body .app .ea-strip:not(:empty) {
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding-bottom: 0;
+}
+html body .app .ea-strip:not(:empty) + .account-strip {
+  border-top: 1px solid var(--line);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  padding-top: 0;
+  margin-bottom: 10px;
+}
+html body .app .ea-strip:empty + .account-strip {
+  margin-bottom: 10px;
+}
+
+/* Format tiap baris: label kiri, nilai kanan */
+html body .app .ea-strip .pill2,
+html body .app .account-strip > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 32px;
+  padding: 6px 0;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent !important;
+  clip-path: none;
+  font-size: 12px;
+  letter-spacing: 0;
+  white-space: normal;
+}
+
+html body .app .account-strip > span:last-child {
+  border-bottom: 0;
+}
+
+/* Warna & perataan isi EA strip */
+html body .app .ea-strip .pill2 .dotmini {
+  flex: 0 0 auto;
+  background: currentColor;
+}
+html body .app .ea-strip .pill2 .k {
+  flex: 1 1 auto;
+  color: var(--faint);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  min-width: 0;
+}
+html body .app .ea-strip .pill2 .v {
+  flex: 0 1 auto;
+  margin-left: auto;
+  text-align: right;
+  font-family: var(--fm);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+html body .app .ea-strip .pill2.on { color: var(--green); }
+html body .app .ea-strip .pill2.warn { color: var(--amber); }
+html body .app .ea-strip .pill2.danger { color: var(--red); }
+html body .app .ea-strip .pill2.off { color: var(--muted); }
+
+/* Warna & perataan isi Account strip */
+html body .app .account-strip > span {
+  color: var(--faint);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+html body .app .account-strip > span b {
+  margin-left: auto;
+  text-align: right;
+  font-size: 12px;
+  color: var(--text);
+  font-family: var(--fm);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+</style>
+   
    
 </head>
 <body>
