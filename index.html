@@ -3852,7 +3852,569 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 
 
    
+<style id="ea-strip-unified">
+/* Satukan #eaStrip dan #accountStrip jadi 1 kartu, 1 kolom di semua ukuran layar */
+#eaStrip,
+#accountStrip {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--surface, #0d1428);
+  border: 1px solid var(--line2, var(--line));
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
 
+#eaStrip {
+  border-bottom: 0;
+  border-radius: var(--radius, 12px) var(--radius, 12px) 0 0;
+}
+
+#eaStrip:empty {
+  display: none;
+}
+
+#accountStrip {
+  border-radius: var(--radius, 12px);
+  margin-bottom: 10px;
+}
+
+#eaStrip:not(:empty) + #accountStrip {
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 var(--radius, 12px) var(--radius, 12px);
+}
+
+/* Setiap item 1 baris: label rata kiri, nilai rata kanan */
+#eaStrip .pill2,
+#accountStrip > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 32px;
+  padding: 5px 14px;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  clip-path: none;
+  box-sizing: border-box;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  white-space: normal;
+  transition: background-color 0.15s ease;
+}
+
+#eaStrip .pill2:last-child,
+#accountStrip > span:last-child {
+  border-bottom: 0;
+}
+
+#eaStrip .pill2:hover,
+#accountStrip > span:hover {
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+}
+
+/* Ratakan poros kiri & kanan (titik status dipindah ke sebelah nilai di kanan) */
+#eaStrip .pill2 .k {
+  order: 1;
+  margin-right: auto;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+#eaStrip .pill2 .dotmini {
+  order: 2;
+  flex: 0 0 auto;
+}
+
+#eaStrip .pill2 .v {
+  order: 3;
+  text-align: right;
+  font-family: var(--fm);
+  font-size: 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+#eaStrip .pill2.on { color: var(--green); }
+#eaStrip .pill2.warn { color: var(--amber); }
+#eaStrip .pill2.danger { color: var(--red); }
+#eaStrip .pill2.off { color: var(--muted); }
+
+#accountStrip > span b {
+  margin-left: auto;
+  text-align: right;
+  font-family: var(--fm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+</style>
+
+
+<style id="all-tabs-mobile-v1">
+/* =====================================================================
+   ALL TABS MOBILE FRIENDLY — additive only (desktop & Backtest aman)
+   ===================================================================== */
+
+@media (max-width: 900px) {
+  /* Cegah horizontal overflow di semua tab & kartu */
+  .stage,
+  .view,
+  .view .card,
+  .view .panel,
+  .view .grid2 > *,
+  .view .grid3 > *,
+  .view .metrics > *,
+  .view .info-list > *,
+  .view .stat-grid > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Paksa minmax(0, 1fr) agar angka/teks panjang tidak mendorong grid melebar */
+  .metrics,
+  .info-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Scroll tabel mulus di layar sentuh & tidak bikin halaman memanjang ekstrem */
+  .view:not(#view-backtest) .table-scroll {
+    max-height: 65dvh;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  .view:not(#view-backtest) table {
+    min-width: 600px;
+  }
+
+  .view:not(#view-backtest) th,
+  .view:not(#view-backtest) td {
+    padding: 8px 10px;
+    font-size: 11.5px;
+  }
+
+  /* Heatmap 24 jam (Analitik / Edge Lab): geser horizontal halus, sel tidak gepeng */
+  .hm {
+    grid-template-columns: 38px repeat(24, minmax(24px, 1fr));
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+
+  /* Journal rows */
+  .jrow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 10px;
+    padding: 10px 0;
+  }
+  .jrow > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Quantum DOM: buka tinggi tetap agar konten tidak terpotong di HP/tablet */
+  .qd-inst .qd-insight,
+  .qs-card {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .qd-inst .qd-chips,
+  .qs-ch,
+  .qs-sc,
+  .qs-zn,
+  .qs-card .qs-acts,
+  .qd-sbar,
+  .qd-lqt0 {
+    height: auto !important;
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+  }
+  .qs-why {
+    max-height: none;
+    -webkit-line-clamp: unset;
+  }
+  .qd-inst #qdPane,
+  .qd-inst #qdArus,
+  .qd-inst #qdAna {
+    height: auto !important;
+    max-height: 68dvh !important;
+  }
+  .qd-banners {
+    height: auto;
+    min-height: 34px;
+  }
+  .qd-banners > * {
+    position: static;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 760px) {
+  /* ---- Umum: jarak, header section, toolbar filter ---- */
+  .view:not(#view-backtest) .section-head {
+    margin: 18px 0 10px;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .view:not(#view-backtest) .section-head > .btn {
+    width: 100%;
+  }
+  .view:not(#view-backtest) .panel-title {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    gap: 6px 10px;
+  }
+  .view:not(#view-backtest) .toolbar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    align-items: stretch;
+  }
+  .view:not(#view-backtest) .toolbar .search,
+  .view:not(#view-backtest) .toolbar input[type="search"],
+  .view:not(#view-backtest) .toolbar input[type="text"] {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    max-width: none !important;
+  }
+  .view:not(#view-backtest) .toolbar .select,
+  .view:not(#view-backtest) .toolbar .sel,
+  .view:not(#view-backtest) .toolbar .btn {
+    width: 100%;
+    min-width: 0;
+    max-width: none !important;
+    min-height: 42px;
+  }
+
+  /* ---- Kontrol Modul (Liquidity, Key Levels, Edge Lab, Challenge, Risk, dll.) ---- */
+  .view:not(#view-backtest) .ctl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    align-items: center;
+  }
+  .view:not(#view-backtest) .ctl > select,
+  .view:not(#view-backtest) .ctl > input,
+  .view:not(#view-backtest) .ctl > .btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+  }
+  .view:not(#view-backtest) .ctl > label {
+    min-height: 36px;
+    font-size: 12px;
+  }
+  .pgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .pgrid input,
+  .pgrid select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* ---- Overview ---- */
+  #view-overview .arena {
+    height: 260px;
+  }
+  #view-overview .arena-hud {
+    max-width: 86%;
+    left: 10px;
+    top: 8px;
+  }
+  #view-overview .arena-hud b {
+    font-size: 15px;
+  }
+  #view-overview .arena-hud span {
+    font-size: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  #view-overview .quests {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  #ovCalCard .cal-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  #ovCalCard .cal-seg {
+    width: 100%;
+    justify-content: space-between;
+  }
+  #ovCalCard .cal-seg button {
+    flex: 1 0 auto;
+    min-height: 38px;
+  }
+
+  /* ---- Control Room (#view-control) ---- */
+  #view-control .toolbar > span[style*="width:1px"] {
+    display: none !important;
+  }
+  #view-control #ctlLot,
+  #view-control #ctlSL,
+  #view-control #ctlTP {
+    grid-column: 1 / -1;
+    max-width: none !important;
+    width: 100% !important;
+    min-height: 44px;
+  }
+  #view-control [data-cmd="close_all"] {
+    grid-column: 1 / -1;
+  }
+  #view-control #ctlBuy,
+  #view-control #ctlSell {
+    min-height: 48px;
+    font-size: 13px;
+  }
+
+  /* ---- Trend & Fibo Ladder (#view-mtf) ---- */
+  .mtf-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .mtf-card {
+    padding: 10px 8px;
+  }
+  .mtf-tf {
+    font-size: 20px;
+  }
+  .lrow {
+    grid-template-columns: 56px 38px minmax(0, 1fr) auto;
+    gap: 6px;
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+  .lrow .ld {
+    min-width: 0;
+    font-size: 10px;
+  }
+
+  /* ---- Sinyal (#view-sig) ---- */
+  .sig-tools {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  .sig-tools .grp {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .tfchip {
+    min-height: 36px;
+    padding: 5px 11px;
+    font-size: 12px;
+  }
+  .sig-cards,
+  .calib-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .sig-card {
+    padding: 12px;
+  }
+
+  /* ---- Kalender P/L (#view-calendar) ---- */
+  .cal-toolbar {
+    justify-content: center;
+    gap: 8px;
+  }
+  .cal-toolbar .btn {
+    min-height: 40px;
+  }
+  .cal-month {
+    min-width: 130px;
+    font-size: 15px;
+  }
+  .cal-sum {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .cal-sum span {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 10px;
+  }
+
+  /* ---- Quantum DOM (#view-qdom) ---- */
+  .qd-lqk {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
+  }
+  .qd-sres {
+    position: static;
+    margin-bottom: 10px;
+    max-height: 60dvh;
+    box-shadow: none;
+  }
+  .qd-fo .qd-fotop {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .qd-fo .qd-fobody {
+    padding: 10px 10px 44px;
+  }
+  .qd-focus .qd-chartbox {
+    min-height: 340px;
+  }
+  .qd-inst #qdAna .qd-k4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .qd-crg {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  /* ---- Command Intel (#view-intel) ---- */
+  #view-intel .cro-tools {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  #view-intel .cro-tools .cro-fx,
+  #view-intel .cro-tools .cro-search {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: none;
+    justify-content: space-between;
+  }
+  #view-intel .cro-tools .btn {
+    width: 100%;
+    min-height: 40px;
+  }
+  #view-intel .cro-jump {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #view-intel .cro-jump .btn {
+    width: 100%;
+  }
+  #croLedger {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  /* ---- Wallet (#view-wallet) & News (#view-news) ---- */
+  .wallet-card {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px 12px;
+  }
+  .wallet-card .net {
+    min-width: 0;
+    flex: 1 1 200px;
+  }
+  .wallet-card .mono,
+  .wallet-card small {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .news-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .news-form > :first-child,
+  .news-form > button:last-child {
+    grid-column: 1 / -1;
+  }
+  .news-item {
+    gap: 10px;
+  }
+  .news-item .left {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  /* ---- Modal (Diagnosa, Parameter, Manual Trade Recap) ---- */
+  .modal-overlay {
+    padding: 10px;
+  }
+  .modal {
+    max-height: 90dvh;
+  }
+  .modal-head,
+  .modal-body {
+    padding: 12px 14px;
+  }
+  .diag-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+  .diag-log div {
+    grid-template-columns: 60px 66px minmax(0, 1fr);
+    font-size: 10px;
+  }
+  .trp-modal {
+    padding: 8px;
+  }
+  .trp-mdlg {
+    max-height: 94dvh;
+  }
+  .trp-mhead {
+    padding: 12px 14px;
+  }
+
+  /* Ruang aman agar konten paling bawah tidak tertutup bottom dock */
+  .footer {
+    margin-bottom: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .metrics,
+  .info-list,
+  .stat-grid,
+  .pgrid,
+  .cal-sum,
+  .qd-lqk,
+  #view-overview .quests,
+  #view-intel .cro-jump {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cro-st {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: 4px;
+  }
+  .cro-st .u,
+  .cro-st .c {
+    grid-column: 2;
+    text-align: left;
+  }
+  .qd-crg {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .view:not(#view-backtest) .ctl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .news-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+</style>
 
    
 </head>
