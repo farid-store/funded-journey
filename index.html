@@ -5,6 +5,7 @@
 <script>try{var __t=localStorage.getItem('ffx_theme')||'graphite';if(__t==='soft'||__t==='graphite'||__t==='emerald'){document.documentElement.dataset.theme=__t;document.documentElement.dataset.pro='1'}}catch(e){}</script><script>(function(){try{var f=localStorage.getItem('fx_low');var m=(window.matchMedia&&matchMedia('(pointer:coarse)').matches)||Math.min(screen.width||9999,window.innerWidth||9999)<=820;window.__MOBILE=!!m;if(f==='1'||(f===null&&m)){document.documentElement.classList.add('mlite');window.__MLITE=true}}catch(e){}})();</script>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Golden Break Terminal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4023,10 +4024,17 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
           <label class="full">Sumber Data
             <select id="trpSource" class="sel">
               <option value="history">Otomatis · Trade History (EA/Live)</option>
+              <option value="import">Import Report MT5 (.xlsx / .xml / .html / .csv)</option>
               <option value="backtest">Otomatis · Hasil Backtest</option>
-              <option value="manual">Manual · Edit Data Kalender</option>
             </select>
           </label>
+
+          <div class="trp-bgbox" id="trpImportBox" hidden>
+            <label style="margin:0">Upload Report MT5 (XLSX / XML / HTML / CSV)
+              <input id="trpReportFile" type="file" accept=".xlsx,.xls,.xml,.html,.htm,.csv" class="sel" style="margin-top:4px">
+            </label>
+            <div style="font:600 10.5px var(--fm);color:var(--faint)" id="trpImportInfo">Pilih file ReportHistory dari MT5 (Account History → Report → Open XML / Excel)</div>
+          </div>
 
           <label>Tampilan Kalender
             <select id="trpViewMode" class="sel">
@@ -4053,7 +4061,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
               <option value="0.1">0.10 (Gold Standard)</option>
               <option value="0.01">0.01 (Gold Points / JPY)</option>
               <option value="0.0001">0.0001 (Forex Major)</option>
-              <option value="1">1.0 (Index / Crypto)</option>
+              <option value="1">1.0 (Nasdaq / Index / Crypto)</option>
             </select>
           </label>
 
@@ -4079,7 +4087,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
             </select>
           </label>
 
-         <div class="trp-bgbox">
+          <div class="trp-bgbox">
             <div class="trp-bgrow">
               <button type="button" class="btn primary" id="trpBgRandom" style="flex:1">🎲 Ganti Background</button>
               <button type="button" class="btn ghost" id="trpBgClear" title="Gunakan latar polos tema">✕ Polos</button>
@@ -4104,23 +4112,26 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
             </div>
           </div>
 
-          <label class="full" id="trpManualWrap">Data Harian (format: <code>tgl: pips|usd|trades</code>, pisah koma)
-            <textarea id="trpManualData" spellcheck="false">2:+42.5|420|3, 3:+28.0|280|2, 4:-19.5|-195|2, 5:+64.0|640|4, 6:+31.2|312|2, 9:+55.0|550|3, 10:-24.0|-240|2, 11:+48.8|488|3, 12:+72.5|725|4, 13:+18.0|180|1, 16:-15.0|-150|1, 17:+61.0|610|3, 18:+39.4|394|2, 19:+84.0|840|5, 20:+22.6|226|2</textarea>
-          </label>
-         <label class="full">Link QR Code (opsional — kosongkan jika tanpa QR)
+          <label class="full">Link QR Code (opsional — kosongkan jika tanpa QR)
             <input id="trpQrLink" class="sel" type="url" placeholder="https://t.me/goldenbreakcapital atau link website">
           </label>
           <label class="full">Label di Bawah QR
             <input id="trpQrLabel" class="sel" type="text" value="SCAN TO JOIN" maxlength="24">
           </label>
+
           <div class="trp-checks">
             <label><input type="checkbox" id="trpHideUsd"> Sembunyikan nominal $</label>
             <label><input type="checkbox" id="trpShowSub" checked> Tampilkan jumlah trade di kalender</label>
+            <label><input type="checkbox" id="trpManualToggle"> Edit data manual (opsional)</label>
           </div>
+
+          <label class="full" id="trpManualWrap" hidden>Data Harian Manual (format: <code>tgl: pips|usd|trades</code>, pisah koma)
+            <textarea id="trpManualData" spellcheck="false">2:+42.5|420|3, 3:+28.0|280|2, 4:-19.5|-195|2, 5:+64.0|640|4, 6:+31.2|312|2, 9:+55.0|550|3, 10:-24.0|-240|2, 11:+48.8|488|3, 12:+72.5|725|4, 13:+18.0|180|1, 16:-15.0|-150|1, 17:+61.0|610|3, 18:+39.4|394|2, 19:+84.0|840|5, 20:+22.6|226|2</textarea>
+          </label>
         </div>
 
         <div class="trp-actions">
-          <button type="button" class="btn ghost" id="trpSyncBtn">↻ Ambil Data Tabel</button>
+          <button type="button" class="btn ghost" id="trpSyncBtn">↻ Sinkron Data</button>
           <button type="button" class="btn ghost" id="trpCopyBtn">📋 Salin Gambar</button>
           <button type="button" class="btn primary" id="trpDownloadBtn">↓ Download PNG</button>
         </div>
@@ -13690,7 +13701,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   const ctx = canvas.getContext('2d');
 
   // ===== KONFIGURASI AUTO-SCAN FOLDER /theme =====
-  // Mendukung campuran .png, .jpg, .jpeg, dan .webp (ubah maxScan jika > 100 file)
   const THEME_CFG = {
     folder: './theme',
     prefix: 'theme',
@@ -13706,6 +13716,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   let customBgImg = null;
   let dayMap = {};
+  let importedTrades = [];   // menyimpan hasil parsing file XLSX / XML / HTML / CSV
+  let importedDeposit = 0;   // saldo awal / deposit dari file report MT5
   let availableThemes = [];
   let currentThemeIdx = -1;
 
@@ -13718,36 +13730,26 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   function parseNum(v){
     if (typeof v === 'number') return isFinite(v) ? v : 0;
-    const s = String(v || '').replace(/\u2212/g, '-').replace(/[^0-9.\-+]/g, '');
+    const s = String(v || '').replace(/\u2212/g, '-').replace(/\s+/g, '').replace(/[^0-9.\-+]/g, '');
     const n = parseFloat(s);
     return isFinite(n) ? n : 0;
   }
 
-  // Deteksi ukuran 1 pip otomatis (aman untuk broker 1, 2, maupun 3 angka belakang koma)
   function detectPipSize(sym, refPrice){
     const pref = $('trpPipSize')?.value || 'auto';
     if (pref !== 'auto') return parseFloat(pref) || 0.1;
 
     const u = String(sym || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-
-    // 1. Gold / XAU: $1.00 = 10 pips (1 pip = 0.1) — konsisten untuk 1, 2, atau 3 desimal
     if (/XAU|GOLD/.test(u)) return 0.1;
-
-    // 2. Nasdaq & Indeks global + Crypto besar: $10 = 10 pips (1 pip = 1.0)
     if (/NAS|USTEC|US100|NDX|NQ100|^NQ|TECH100|US30|DJ30|WS30|DOW|US500|SPX|SP500|GER|DE30|DE40|DAX|UK100|FTSE|JP225|NI225|HK50|HSI|AUS200|BTC|ETH|SOL|BNB/.test(u)) {
       return 1.0;
     }
-
-    // 3. Silver, Oil, & Pair JPY: 1 pip = 0.01
     if (/XAG|SILVER|USOIL|UKOIL|WTI|BRENT|XTI|XBR|JPY/.test(u)) return 0.01;
 
-    // 4. Smart fallback berdasarkan rentang harga
     const px = Math.abs(Number(refPrice || 0));
     if (px >= 6000) return 1.0;
     if (px >= 1000) return 0.1;
     if (px >= 20)   return 0.01;
-
-    // 5. Forex Major/Minor standar
     return 0.0001;
   }
 
@@ -13764,6 +13766,11 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   function parseDateFlexible(str){
     if (!str) return null;
+    if (str instanceof Date && !isNaN(str.getTime())) return str;
+    if (typeof str === 'number' && str > 20000 && str < 80000) {
+      // Excel serial date
+      return new Date(Math.round((str - 25569) * 86400 * 1000));
+    }
     const s = String(str).trim();
     let m = s.match(/(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})/);
     if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
@@ -13777,6 +13784,181 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const v = $('trpMonth')?.value || `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
     const [y, m] = v.split('-').map(Number);
     return { year: y || now.getFullYear(), month: (m || (now.getMonth()+1)) - 1 };
+  }
+
+  // ===== PARSER REPORT MT5 (XLSX / XML / XLS / HTML / CSV) =====
+  function parseMt5Matrix(rows){
+    const trades = [];
+    let deposit = 0;
+
+    // 1. Cari bagian "Positions" (MT5 Report standar)
+    let posHeaderIdx = -1;
+    for (let i = 0; i < rows.length; i++) {
+      const c0 = String(rows[i]?.[0] ?? '').trim().toLowerCase();
+      if (c0 === 'positions' || c0 === 'posisi') {
+        for (let k = i + 1; k < Math.min(i + 5, rows.length); k++) {
+          const line = (rows[k] || []).map(x => String(x ?? '').trim().toLowerCase());
+          if (line.some(x => x === 'symbol') && line.some(x => x === 'profit')) {
+            posHeaderIdx = k;
+            break;
+          }
+        }
+        break;
+      }
+    }
+
+    // Jika file CSV/tabel langsung tanpa judul "Positions", cari baris header langsung
+    if (posHeaderIdx < 0) {
+      for (let i = 0; i < Math.min(25, rows.length); i++) {
+        const line = (rows[i] || []).map(x => String(x ?? '').trim().toLowerCase());
+        if (line.some(x => /symbol|pair/.test(x)) && line.some(x => /profit|p\/l|pnl/.test(x))) {
+          posHeaderIdx = i;
+          break;
+        }
+      }
+    }
+
+    if (posHeaderIdx >= 0) {
+      const hdr = (rows[posHeaderIdx] || []).map(x => String(x ?? '').trim().toLowerCase());
+      const timeCols = [], priceCols = [];
+      hdr.forEach((h, idx) => {
+        if (h === 'time' || /close\s*time|open\s*time|waktu/.test(h)) timeCols.push(idx);
+        if (h === 'price' || /open\s*price|close\s*price|harga/.test(h)) priceCols.push(idx);
+      });
+
+      const iOpenTime  = timeCols[0] ?? 0;
+      const iCloseTime = timeCols[1] ?? timeCols[0] ?? 8;
+      const iSym       = hdr.findIndex(h => /symbol|pair/.test(h));
+      const iType      = hdr.findIndex(h => h === 'type' || /arah|side/.test(h));
+      const iOpenPx    = priceCols[0] ?? 5;
+      const iClosePx   = priceCols[1] ?? priceCols[0] ?? 9;
+      const iComm      = hdr.findIndex(h => /commission|komisi/.test(h));
+      const iSwap      = hdr.findIndex(h => /swap/.test(h));
+      const iProfit    = hdr.findIndex(h => h === 'profit' || /net|p\/l|pnl/.test(h));
+
+      for (let i = posHeaderIdx + 1; i < rows.length; i++) {
+        const r = rows[i] || [];
+        const firstCell = String(r[0] ?? '').trim().toLowerCase();
+        // Berhenti saat masuk bagian Orders / Deals / Results
+        if (/^(orders|deals|results|open positions|working orders|balance:)/.test(firstCell)) break;
+
+        const typRaw = String(r[iType] ?? '').trim().toLowerCase();
+        if (!typRaw.includes('buy') && !typRaw.includes('sell')) continue;
+
+        const dt = parseDateFlexible(r[iCloseTime]) || parseDateFlexible(r[iOpenTime]);
+        if (!dt) continue;
+
+        const sym = String(r[iSym] ?? 'XAUUSD').trim();
+        const isSell = typRaw.includes('sell');
+        const openPx = parseNum(r[iOpenPx]);
+        const closePx = parseNum(r[iClosePx]);
+        const comm = iComm >= 0 ? parseNum(r[iComm]) : 0;
+        const swap = iSwap >= 0 ? parseNum(r[iSwap]) : 0;
+        const prof = iProfit >= 0 ? parseNum(r[iProfit]) : 0;
+        const netUsd = prof + comm + swap;
+
+        trades.push({ dt, sym, isSell, openPx, closePx, netUsd });
+      }
+    }
+
+    // 2. Cari Initial Deposit di bagian Deals (baris dengan Type == 'balance')
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i] || [];
+      const rowLower = r.map(x => String(x ?? '').trim().toLowerCase());
+      if (rowLower.includes('balance') && rowLower[0] && /^\d{4}[.\-/]/.test(rowLower[0])) {
+        // Ambil nilai positif deposit (biasanya kolom Profit atau Balance di baris balance)
+        for (let c = r.length - 1; c >= 4; c--) {
+          const v = parseNum(r[c]);
+          if (v > 0) { deposit += v; break; }
+        }
+      }
+    }
+
+    return { trades, deposit };
+  }
+
+  function buildImportedMap(){
+    if (!importedTrades.length) return { map:{}, count:0, topSym:'', startBal:0 };
+    const { year, month } = getSelectedYM();
+    const map = {};
+    const symCount = {};
+    let count = 0;
+
+    importedTrades.forEach(t => {
+      if (t.dt.getFullYear() !== year || t.dt.getMonth() !== month) return;
+      const d = t.dt.getDate();
+      let pips = 0;
+      if (t.openPx > 0 && t.closePx > 0) {
+        const pipSize = detectPipSize(t.sym, t.openPx);
+        pips = (t.isSell ? (t.openPx - t.closePx) : (t.closePx - t.openPx)) / pipSize;
+      }
+
+      if (!map[d]) map[d] = { pips:0, usd:0, trades:0, wins:0, losses:0, winPips:0, lossPips:0, grossWin:0, grossLoss:0 };
+      const cell = map[d];
+      const isWin = t.netUsd !== 0 ? t.netUsd > 0 : pips >= 0;
+
+      cell.pips += pips;
+      cell.usd += t.netUsd;
+      cell.trades += 1;
+      if (isWin) {
+        cell.wins += 1;
+        cell.winPips += Math.abs(pips);
+        cell.grossWin += Math.max(0, t.netUsd);
+      } else {
+        cell.losses += 1;
+        cell.lossPips += Math.abs(pips);
+        cell.grossLoss += Math.abs(Math.min(0, t.netUsd));
+      }
+
+      symCount[t.sym] = (symCount[t.sym] || 0) + 1;
+      count++;
+    });
+
+    const topSym = Object.entries(symCount).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+    return { map, count, topSym, startBal: importedDeposit };
+  }
+
+  async function handleReportFile(file){
+    if (!file) return;
+    const info = $('trpImportInfo');
+    if (typeof window.XLSX === 'undefined') {
+      if (info) info.textContent = 'Library SheetJS belum termuat — pastikan koneksi internet aktif lalu refresh.';
+      return;
+    }
+
+    try {
+      const buf = await file.arrayBuffer();
+      const wb = window.XLSX.read(buf, { type: 'array', cellDates: false });
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = window.XLSX.utils.sheet_to_json(sheet, { header: 1, raw: true, defval: '' });
+
+      const parsed = parseMt5Matrix(rows);
+      importedTrades = parsed.trades;
+      importedDeposit = parsed.deposit;
+
+      if (!importedTrades.length) {
+        if (info) info.textContent = `Tidak ditemukan transaksi pada ${file.name}. Pastikan file adalah ReportHistory MT5.`;
+        return;
+      }
+
+      // Deteksi otomatis bulan transaksi terbaru di dalam file
+      const latest = importedTrades.reduce((a, b) => (b.dt > a.dt ? b : a), importedTrades[0]).dt;
+      if ($('trpMonth')) {
+        $('trpMonth').value = `${latest.getFullYear()}-${String(latest.getMonth() + 1).padStart(2, '0')}`;
+      }
+      if ($('trpSource')) $('trpSource').value = 'import';
+      if ($('trpManualToggle')) $('trpManualToggle').checked = false;
+      if ($('trpManualWrap')) $('trpManualWrap').hidden = true;
+
+      if (info) {
+        info.textContent = `Berhasil: ${file.name} · ${importedTrades.length} posisi terbaca` +
+          (importedDeposit > 0 ? ` · Deposit $${importedDeposit.toLocaleString('en-US')}` : '');
+      }
+      syncFromSource();
+    } catch (err) {
+      console.error('Report import error:', err);
+      if (info) info.textContent = `Gagal membaca ${file.name}: ${err.message || err}`;
+    }
   }
 
   function parseManualToMap(){
@@ -13819,7 +14001,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const symCount = {};
     let count = 0;
 
-    // 1. Hitung dari seluruh historyCache EA (akurat sampai pips & netProfit)
     hist.forEach(t => {
       const dayKey = t.day || (t.closeTime ? new Date((Number(t.closeTime) + offSec) * 1000).toISOString().slice(0, 10) : '');
       if (!dayKey.startsWith(ymPrefix)) return;
@@ -13861,7 +14042,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       count++;
     });
 
-    // 2. Gabungkan dailyPnlMap jika ada hari yang rincian history-nya belum lengkap
     daily.forEach((v, k) => {
       if (!String(k).startsWith(ymPrefix)) return;
       const d = parseInt(String(k).slice(8, 10), 10);
@@ -13953,9 +14133,32 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   function syncFromSource(){
     const src = $('trpSource')?.value || 'history';
-    if (src === 'manual') {
+    if ($('trpImportBox')) $('trpImportBox').hidden = (src !== 'import');
+
+    // Jika toggle manual sedang aktif, utamakan input manual
+    if ($('trpManualToggle')?.checked) {
       dayMap = parseManualToMap();
-      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = 'Mode manual · edit langsung pada kolom Data Harian';
+      if ($('trpSourceStatus')) $('trpSourceStatus').textContent = 'Mode edit manual aktif';
+      render();
+      return;
+    }
+
+    if (src === 'import') {
+      const res = buildImportedMap();
+      if (res.count > 0) {
+        dayMap = res.map;
+        if (res.topSym && $('trpPair')) $('trpPair').value = res.topSym;
+        const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
+        if (res.startBal > 0 && $('trpPct')) $('trpPct').value = ((totalUsd / res.startBal) * 100).toFixed(2);
+        if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Report MT5 · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
+      } else {
+        dayMap = {};
+        if ($('trpSourceStatus')) {
+          $('trpSourceStatus').textContent = importedTrades.length
+            ? 'Tidak ada transaksi di bulan yang dipilih — ganti Bulan Kalender'
+            : 'Upload file Report MT5 (.xlsx / .xml / .html / .csv)';
+        }
+      }
       render();
       return;
     }
@@ -14234,7 +14437,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const heroColor = isPos ? T.green : T.red;
 
     if (isWide) {
-      // ===== LAYOUT LANDSCAPE (2 KOLOM) =====
       const contentTop = pad + 76;
       const sigReserve = 138;
       const contentH = H - contentTop - sigReserve;
@@ -14322,7 +14524,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       return;
     }
 
-    // ===== LAYOUT PORTRAIT (1080x1350) & SQUARE (1080x1080) =====
     const heroY = pad + (isSquare ? 62 : 76);
     const heroH = isSquare ? 116 : 160;
     rrect(ctx, pad, heroY, W - pad * 2, heroH, 16);
@@ -14378,10 +14579,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       drawWeeklyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd);
     }
 
-    // TTD CEO di tengah bawah
     drawCeoSignature(T, W / 2, H - (isSquare ? 54 : 62), isSquare);
 
-    // QR Code pojok kanan bawah dengan margin aman dari bingkai kanan & bawah
     if (qrLink) {
       const qrSize = isSquare ? 76 : 96;
       const qrTotalH = qrSize + (qrLabel ? 20 : 0);
@@ -14644,13 +14843,11 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     render();
   }
 
+  // Event bindings
   $('trpBgRandom')?.addEventListener('click', pickRandomTheme);
-
   $('trpCustomBgToggle')?.addEventListener('change', e => {
-    const wrap = $('trpCustomBgWrap');
-    if (wrap) wrap.hidden = !e.target.checked;
+    if ($('trpCustomBgWrap')) $('trpCustomBgWrap').hidden = !e.target.checked;
   });
-
   $('trpBgFile')?.addEventListener('change', e => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -14666,7 +14863,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     };
     reader.readAsDataURL(file);
   });
-
   $('trpBgClear')?.addEventListener('click', () => {
     customBgImg = null;
     currentThemeIdx = -1;
@@ -14677,6 +14873,15 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         : 'Latar polos tema aktif';
     }
     render();
+  });
+
+  // Upload Report MT5 (XLSX / XML / HTML / CSV)
+  $('trpReportFile')?.addEventListener('change', e => handleReportFile(e.target.files?.[0]));
+
+  // Toggle edit manual opsional
+  $('trpManualToggle')?.addEventListener('change', e => {
+    if ($('trpManualWrap')) $('trpManualWrap').hidden = !e.target.checked;
+    syncFromSource();
   });
 
   async function downloadPng(){
@@ -14706,7 +14911,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   ['trpViewMode','trpRatio','trpTheme','trpHideUsd','trpShowSub'].forEach(id => $(id)?.addEventListener('change', render));
   ['trpSource','trpMonth','trpPipSize'].forEach(id => $(id)?.addEventListener('change', syncFromSource));
   $('trpManualData')?.addEventListener('input', () => {
-    if ($('trpSource')) $('trpSource').value = 'manual';
     dayMap = parseManualToMap();
     render();
   });
@@ -14715,9 +14919,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   $('trpDownloadBtn')?.addEventListener('click', downloadPng);
   $('trpCopyBtn')?.addEventListener('click', copyPng);
 
-  // Auto-update saat data EA/Firestore masuk atau akun diganti
   window.addEventListener('fx-recap-sync', () => {
-    if ($('trpSource')?.value === 'history') syncFromSource();
+    if ($('trpSource')?.value === 'history' && !$('trpManualToggle')?.checked) syncFromSource();
   });
 
   document.querySelectorAll('[data-view="share"]').forEach(btn => {
