@@ -14144,6 +14144,71 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return { map, count: matched.length, topSym, totalInTable: rawRows.length };
   }
 
+   function buildBacktestMap(autoSwitchMonth){
+    const bt = window.__BT && window.__BT.state;
+    const closed = (bt && Array.isArray(bt.closed)) ? bt.closed : [];
+    const sym = (bt && bt.name) || $('btName')?.value?.trim() || $('btBinSym')?.value || 'BACKTEST';
+    const startBal = Number(bt && bt.initial > 0 ? bt.initial : (parseNum($('btBal')?.value) || 10000));
+
+    if (!closed.length) {
+      return { map:{}, count:0, totalClosed:0, topSym:sym, startBal };
+    }
+
+    let { year, month } = getSelectedYM();
+    const getUtcDate = sec => new Date(Number(sec) * 1000);
+
+    let matched = closed.filter(t => {
+      const d = getUtcDate(t.closeT);
+      return d.getUTCFullYear() === year && d.getUTCMonth() === month;
+    });
+
+    // Jika bulan terpilih kosong tapi sesi backtest punya trade di bulan lain, otomatis pindah ke bulan trade terbaru
+    if (!matched.length && autoSwitchMonth) {
+      const latest = closed.reduce((a, b) => (Number(b.closeT) > Number(a.closeT) ? b : a), closed[0]);
+      const ld = getUtcDate(latest.closeT);
+      year = ld.getUTCFullYear();
+      month = ld.getUTCMonth();
+      if ($('trpMonth')) $('trpMonth').value = `${year}-${String(month + 1).padStart(2, '0')}`;
+      matched = closed.filter(t => {
+        const d = getUtcDate(t.closeT);
+        return d.getUTCFullYear() === year && d.getUTCMonth() === month;
+      });
+    }
+
+    const map = {};
+    matched.forEach(t => {
+      const d = getUtcDate(t.closeT).getUTCDate();
+      const isSell = String(t.side || '').toLowerCase() === 'sell';
+      const entry = Number(t.entry || 0);
+      const exit = Number(t.exit || 0);
+      const usd = Number(t.pnl || 0);
+
+      let pips = 0;
+      if (entry > 0 && exit > 0) {
+        const pipSize = detectPipSize(sym, entry);
+        pips = (isSell ? (entry - exit) : (exit - entry)) / pipSize;
+      }
+
+      if (!map[d]) map[d] = { pips:0, usd:0, trades:0, wins:0, losses:0, winPips:0, lossPips:0, grossWin:0, grossLoss:0 };
+      const cell = map[d];
+      const isWin = usd !== 0 ? usd > 0 : pips >= 0;
+
+      cell.pips += pips;
+      cell.usd += usd;
+      cell.trades += 1;
+      if (isWin) {
+        cell.wins += 1;
+        cell.winPips += Math.abs(pips);
+        cell.grossWin += Math.max(0, usd);
+      } else {
+        cell.losses += 1;
+        cell.lossPips += Math.abs(pips);
+        cell.grossLoss += Math.abs(Math.min(0, usd));
+      }
+    });
+
+    return { map, count: matched.length, totalClosed: closed.length, topSym: sym, startBal };
+  }
   // ===== SINKRONISASI TERISOLASI PER SUMBER DATA =====
   function syncFromSource(isSourceSwitch){
     const src = $('trpSource')?.value || 'history';
@@ -14182,20 +14247,21 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     }
 
     // 3. MODE HASIL BACKTEST (berdiri sendiri dari #btTrades & #btBal, tidak menyentuh data EA)
+    // 3. MODE HASIL BACKTEST (langsung dari window.__BT.state.closed)
     if (src === 'backtest') {
-      const res = scrapeTableToMap('btTrades', !!isSourceSwitch);
+      const res = buildBacktestMap(!!isSourceSwitch);
       dayMap = res.map;
       const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
-      const btBal = parseNum($('btBal')?.value) || 10000;
-      const btSym = res.topSym || $('btName')?.value?.trim() || $('btBinSym')?.value || 'BACKTEST';
 
-      if ($('trpPair')) $('trpPair').value = btSym;
-      if ($('trpPct')) $('trpPct').value = res.count > 0 && btBal > 0 ? ((totalUsd / btBal) * 100).toFixed(2) : '0.00';
+      if ($('trpPair')) $('trpPair').value = res.topSym;
+      if ($('trpPct')) $('trpPct').value = res.count > 0 && res.startBal > 0 ? ((totalUsd / res.startBal) * 100).toFixed(2) : '0.00';
 
       if ($('trpSourceStatus')) {
         $('trpSourceStatus').textContent = res.count > 0
-          ? `Hasil Backtest · ${res.count} trade (${Object.keys(dayMap).length} hari · Modal $${btBal.toLocaleString('en-US')})`
-          : (res.totalInTable > 0 ? 'Hasil Backtest · 0 trade di bulan ini' : 'Hasil Backtest · belum ada trade tertutup di Backtest Lab');
+          ? `Backtest Lab · ${res.count} trade (${Object.keys(dayMap).length} hari · Modal $${res.startBal.toLocaleString('en-US')})`
+          : (res.totalClosed > 0
+              ? `Backtest Lab · 0 trade di bulan ini (total ${res.totalClosed} trade di bulan lain)`
+              : 'Backtest Lab · belum ada trade tertutup di sesi aktif');
       }
       render();
       return;
