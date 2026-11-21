@@ -13701,13 +13701,32 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return isFinite(n) ? n : 0;
   }
 
-  function detectPipSize(sym){
+  // Deteksi ukuran 1 pip otomatis (aman untuk broker 1, 2, maupun 3 angka belakang koma)
+  function detectPipSize(sym, refPrice){
     const pref = $('trpPipSize').value;
     if (pref !== 'auto') return parseFloat(pref) || 0.1;
-    const u = String(sym || '').toUpperCase();
+
+    // Bersihkan suffix broker (.vx, m, .pro, _i, dll) untuk pencocokan nama
+    const u = String(sym || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    // 1. Gold / XAU: $1.00 = 10 pips (1 pip = 0.1) — berlaku sama untuk 1, 2, atau 3 desimal
     if (/XAU|GOLD/.test(u)) return 0.1;
-    if (/XAG|SILVER|JPY/.test(u)) return 0.01;
-    if (/BTC|ETH|US30|NAS|NDX|SPX|GER/.test(u)) return 1;
+
+    // 2. Nasdaq & Indeks global + Crypto besar: $10 = 10 pips (1 pip = 1.0)
+    if (/NAS|USTEC|US100|NDX|NQ100|^NQ|TECH100|US30|DJ30|WS30|DOW|US500|SPX|SP500|GER|DE30|DE40|DAX|UK100|FTSE|JP225|NI225|HK50|HSI|AUS200|BTC|ETH|SOL|BNB/.test(u)) {
+      return 1.0;
+    }
+
+    // 3. Silver, Oil, & Pair JPY: 1 pip = 0.01
+    if (/XAG|SILVER|USOIL|UKOIL|WTI|BRENT|XTI|XBR|JPY/.test(u)) return 0.01;
+
+    // 4. Smart fallback berdasarkan besaran harga jika simbol broker unik
+    const px = Math.abs(Number(refPrice || 0));
+    if (px >= 6000) return 1.0;       // Indeks / Crypto (mis. Nasdaq 20000, BTC 90000)
+    if (px >= 1000) return 0.1;       // Logam emas / komoditas sekelas XAU (2000–5000)
+    if (px >= 20)   return 0.01;      // Pair JPY / Oil / Silver
+
+    // 5. Forex Major/Minor standar (mis. EURUSD 1.08542 -> 1 pip = 0.0001)
     return 0.0001;
   }
 
@@ -13788,14 +13807,16 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       if (!d || d < 1 || d > 31) return;
 
       const sym = String(t.symbol || 'XAUUSD');
-      const dir = String(t.type || '').toLowerCase().includes('sell') ? 'SELL' : 'BUY';
+      const dirStr = String(t.type ?? '').toLowerCase();
+      const isSell = dirStr.includes('sell') || t.type === 1;
       const open = Number(t.openPrice || 0);
       const close = Number(t.closePrice || 0);
       const usd = Number(t.netProfit ?? t.profit ?? 0);
 
       let pips = 0;
       if (open > 0 && close > 0) {
-        pips = (dir === 'SELL' ? (open - close) : (close - open)) / detectPipSize(sym);
+        const pipSize = detectPipSize(sym, open);
+        pips = (isSell ? (open - close) : (close - open)) / pipSize;
       }
 
       if (!map[d]) map[d] = { pips:0, usd:0, trades:0, wins:0, losses:0, winPips:0, lossPips:0, grossWin:0, grossLoss:0 };
@@ -13876,7 +13897,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       if (!dt || dt.getFullYear() !== year || dt.getMonth() !== month) return;
 
       const sym = get(idx.sym) || $('trpPair').value || 'XAUUSD';
-      const dir = get(idx.dir).toUpperCase().includes('SELL') ? 'SELL' : 'BUY';
+      const isSell = get(idx.dir).toUpperCase().includes('SELL');
       const open = parseNum(get(idx.open));
       const close = parseNum(get(idx.close));
       const usd = parseNum(get(idx.pnl));
@@ -13884,7 +13905,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       let pips = idx.pips >= 0 ? parseNum(get(idx.pips)) : NaN;
       if (!isFinite(pips) || idx.pips < 0) {
         if (open > 0 && close > 0) {
-          pips = (dir === 'SELL' ? (open - close) : (close - open)) / detectPipSize(sym);
+          const pipSize = detectPipSize(sym, open);
+          pips = (isSell ? (open - close) : (close - open)) / pipSize;
         } else {
           pips = 0;
         }
@@ -14065,7 +14087,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       const count = qr.getModuleCount();
 
       ctx.save();
-      const labelH = label ? 18 : 0;
+      const labelH = label ? 20 : 0;
       rrect(ctx, x, y, boxSize, boxSize + labelH, 12);
       ctx.fillStyle = T.qrBg;
       ctx.fill();
@@ -14073,7 +14095,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      const innerPad = 8;
+      const innerPad = 10;
       const qrArea = boxSize - innerPad * 2;
       const cell = qrArea / count;
 
@@ -14092,7 +14114,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         ctx.fillStyle = T.gold;
         ctx.font = '700 10px "JetBrains Mono", monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(label.toUpperCase(), x + boxSize / 2, y + boxSize + 11);
+        ctx.fillText(label.toUpperCase(), x + boxSize / 2, y + boxSize + 12);
       }
       ctx.restore();
     } catch (e) {}
@@ -14140,7 +14162,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.fillRect(0, 0, W, H);
     }
 
-    // Double Frame
+    // Double Frame (inner border di 28px dari semua sisi)
     rrect(ctx, 20, 20, W - 40, H - 40, 24);
     ctx.strokeStyle = T.line;
     ctx.lineWidth = 2;
@@ -14193,7 +14215,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     if (isWide) {
       // ===== LAYOUT LANDSCAPE (2 KOLOM) =====
       const contentTop = pad + 76;
-      const sigReserve = 126;
+      const sigReserve = 138;
       const contentH = H - contentTop - sigReserve;
       const leftW = 410;
       const gapX = 22;
@@ -14261,10 +14283,12 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.font = '600 13px "JetBrains Mono", monospace';
       ctx.fillText(`${totalTrades} Total Trades  •  ${winDays}W / ${lossDays}L Days`, pad + 26, contentTop + 432);
 
+      // QR Code terpusat di dalam panel kiri dengan jarak lega dari tepi bawah
       if (qrLink) {
-        const qrSize = 136;
+        const qrSize = 126;
+        const qrTotalH = qrSize + (qrLabel ? 20 : 0);
         const qrX = pad + (leftW - qrSize) / 2;
-        const qrY = contentTop + contentH - qrSize - 38;
+        const qrY = contentTop + contentH - qrTotalH - 24;
         drawThemedQR(T, qrX, qrY, qrSize, qrLink, qrLabel);
       }
 
@@ -14274,13 +14298,13 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         drawWeeklyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd);
       }
 
-      drawCeoSignature(T, W / 2, H - 40, true);
+      drawCeoSignature(T, W / 2, H - 56, true);
       return;
     }
 
     // ===== LAYOUT PORTRAIT (1080x1350) & SQUARE (1080x1080) =====
     const heroY = pad + (isSquare ? 62 : 76);
-    const heroH = isSquare ? 118 : 162;
+    const heroH = isSquare ? 116 : 160;
     rrect(ctx, pad, heroY, W - pad * 2, heroH, 16);
     ctx.fillStyle = T.glass;
     ctx.fill();
@@ -14323,8 +14347,9 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.fillText(`${totalTrades} Trades • WR ${winRate.toFixed(0)}% • PF ${pf.toFixed(2)}`, W - pad - 24, heroY + heroH - (isSquare ? 16 : 22));
     ctx.textAlign = 'left';
 
+    // Area Kalender dengan ruang footer yang lega agar QR & TTD jauh dari bingkai
     const calTop = heroY + heroH + (isSquare ? 14 : 20);
-    const sigReserve = isSquare ? 124 : 150;
+    const sigReserve = isSquare ? 156 : 184;
     const calH = H - calTop - sigReserve;
     const calW = W - pad * 2;
 
@@ -14334,12 +14359,15 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       drawWeeklyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd);
     }
 
-    drawCeoSignature(T, W / 2, H - (isSquare ? 36 : 44), isSquare);
+    // TTD CEO di tengah bawah (aman di dalam bingkai dalam)
+    drawCeoSignature(T, W / 2, H - (isSquare ? 54 : 62), isSquare);
 
+    // QR Code pojok kanan bawah dengan margin aman dari bingkai kanan & bawah
     if (qrLink) {
-      const qrSize = isSquare ? 82 : 100;
-      const qrX = W - pad - qrSize;
-      const qrY = H - (isSquare ? 116 : 140);
+      const qrSize = isSquare ? 76 : 96;
+      const qrTotalH = qrSize + (qrLabel ? 20 : 0);
+      const qrX = W - pad - qrSize - 14;
+      const qrY = H - (isSquare ? 50 : 54) - qrTotalH;
       drawThemedQR(T, qrX, qrY, qrSize, qrLink, qrLabel);
     }
   }
@@ -14596,7 +14624,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     btn.addEventListener('click', () => setTimeout(syncFromSource, 120));
   });
 
-  // Inisialisasi awal: langsung coba ambil data EA jika sudah siap
   syncFromSource();
   document.fonts.ready.then(render);
 })();
