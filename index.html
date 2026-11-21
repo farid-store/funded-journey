@@ -5610,6 +5610,8 @@ window.__THEME = { apply, get };
   function renderAll(){ if (renderTimer) return; renderTimer = setTimeout(() => { renderTimer = null; renderAllNow(); }, 60); }
   function renderAllNow(){
     if (!currentAccount) return;
+      window.__FX_RECAP_DATA = { account: currentAccount, history: historyCache, daily: dailyPnlMap };
+      window.dispatchEvent(new CustomEvent('fx-recap-sync'));
     renderEaStrip();
     renderOverview();
     renderPositions();
@@ -13762,6 +13764,90 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return map;
   }
 
+  function buildEaMap(){
+    const src = window.__FX_RECAP_DATA;
+    if (!src || !src.account) return { map:{}, count:0, topSym:'', startBal:0 };
+
+    const a = src.account;
+    const hist = Array.isArray(src.history) ? src.history : [];
+    const daily = src.daily instanceof Map ? src.daily : new Map();
+    const offSec = Number(a.serverGmtOffset || 0) * 3600;
+    const { year, month } = getSelectedYM();
+    const ymPrefix = `${year}-${String(month + 1).padStart(2, '0')}-`;
+
+    const map = {};
+    const symCount = {};
+    let count = 0;
+
+    // 1. Hitung dari seluruh historyCache EA (akurat sampai pips & netProfit)
+    hist.forEach(t => {
+      const dayKey = t.day || (t.closeTime ? new Date((Number(t.closeTime) + offSec) * 1000).toISOString().slice(0, 10) : '');
+      if (!dayKey.startsWith(ymPrefix)) return;
+
+      const d = parseInt(dayKey.slice(8, 10), 10);
+      if (!d || d < 1 || d > 31) return;
+
+      const sym = String(t.symbol || 'XAUUSD');
+      const dir = String(t.type || '').toLowerCase().includes('sell') ? 'SELL' : 'BUY';
+      const open = Number(t.openPrice || 0);
+      const close = Number(t.closePrice || 0);
+      const usd = Number(t.netProfit ?? t.profit ?? 0);
+
+      let pips = 0;
+      if (open > 0 && close > 0) {
+        pips = (dir === 'SELL' ? (open - close) : (close - open)) / detectPipSize(sym);
+      }
+
+      if (!map[d]) map[d] = { pips:0, usd:0, trades:0, wins:0, losses:0, winPips:0, lossPips:0, grossWin:0, grossLoss:0 };
+      const cell = map[d];
+      const isWin = usd !== 0 ? usd > 0 : pips >= 0;
+
+      cell.pips += pips;
+      cell.usd += usd;
+      cell.trades += 1;
+      if (isWin) {
+        cell.wins += 1;
+        cell.winPips += Math.abs(pips);
+        cell.grossWin += Math.max(0, usd);
+      } else {
+        cell.losses += 1;
+        cell.lossPips += Math.abs(pips);
+        cell.grossLoss += Math.abs(Math.min(0, usd));
+      }
+
+      symCount[sym] = (symCount[sym] || 0) + 1;
+      count++;
+    });
+
+    // 2. Gabungkan dailyPnlMap jika ada hari yang rincian history-nya belum lengkap
+    daily.forEach((v, k) => {
+      if (!String(k).startsWith(ymPrefix)) return;
+      const d = parseInt(String(k).slice(8, 10), 10);
+      if (!d || d < 1 || d > 31) return;
+      const dt = Number(v.trades || 0);
+      if (!map[d] || dt > map[d].trades) {
+        const pnl = Number(v.pnl || 0);
+        const prev = map[d];
+        map[d] = {
+          pips: prev ? prev.pips : 0,
+          usd: pnl,
+          trades: dt,
+          wins: Number(v.wins || 0),
+          losses: Number(v.losses || 0),
+          winPips: prev ? prev.winPips : 0,
+          lossPips: prev ? prev.lossPips : 0,
+          grossWin: pnl > 0 ? pnl : 0,
+          grossLoss: pnl < 0 ? Math.abs(pnl) : 0
+        };
+        if (!prev) count += dt;
+      }
+    });
+
+    const topSym = Object.entries(symCount).sort((x, y) => y[1] - x[1])[0]?.[0] || '';
+    const startBal = Number(a.startingBalance ?? a.initialBalance ?? a.balance ?? 0);
+    return { map, count, topSym, startBal };
+  }
+
   function scrapeTableToMap(tableId){
     const tbl = $(tableId);
     if (!tbl) return { map:{}, count:0, topSym:'' };
@@ -13831,6 +13917,19 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       return;
     }
 
+    if (src === 'history') {
+      const res = buildEaMap();
+      if (res.count > 0) {
+        dayMap = res.map;
+        if (res.topSym) $('trpPair').value = res.topSym;
+        const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
+        if (res.startBal > 0) $('trpPct').value = ((totalUsd / res.startBal) * 100).toFixed(2);
+        $('trpSourceStatus').textContent = `Live EA · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
+        render();
+        return;
+      }
+    }
+
     const tableId = src === 'backtest' ? 'btTrades' : 'historyTable';
     const res = scrapeTableToMap(tableId);
     if (res.count > 0) {
@@ -13842,7 +13941,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       $('trpSourceStatus').textContent = `Tersinkron · ${res.count} trade (${Object.keys(dayMap).length} hari trading)`;
     } else {
       dayMap = parseManualToMap();
-      $('trpSourceStatus').textContent = `Belum ada trade bulan ini di tabel ${src === 'backtest' ? 'Backtest' : 'History'} · memakai data preview`;
+      $('trpSourceStatus').textContent = `Belum ada transaksi ${src === 'backtest' ? 'Backtest' : 'EA'} di bulan ini · menampilkan data preview`;
     }
     render();
   }
@@ -13957,7 +14056,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.restore();
   }
 
-  // Render QR Code sesuai warna tema
   function drawThemedQR(T, x, y, boxSize, url, label){
     if (!url || typeof window.qrcode !== 'function') return;
     try {
@@ -13967,7 +14065,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       const count = qr.getModuleCount();
 
       ctx.save();
-      // Frame kaca QR
       const labelH = label ? 18 : 0;
       rrect(ctx, x, y, boxSize, boxSize + labelH, 12);
       ctx.fillStyle = T.qrBg;
@@ -14083,17 +14180,18 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       netPips += d.pips; winPips += d.winPips; lossPips += d.lossPips;
       netUsd += d.usd; totalTrades += d.trades; totalWins += d.wins;
       grossWin += d.grossWin; grossLoss += d.grossLoss;
-      if (d.pips > 0) winDays++; else if (d.pips < 0) lossDays++;
+      if (d.pips > 0 || (d.pips === 0 && d.usd > 0)) winDays++;
+      else if (d.pips < 0 || (d.pips === 0 && d.usd < 0)) lossDays++;
     });
     const tradingDays = entries.length;
     const winRate = totalTrades > 0 ? (totalWins / totalTrades) * 100 : (tradingDays > 0 ? (winDays / tradingDays) * 100 : 0);
     const pf = grossLoss > 0 ? grossWin / grossLoss : (grossWin > 0 ? 9.99 : 0);
     const pct = parseNum($('trpPct').value);
-    const isPos = netPips >= 0;
+    const isPos = netPips !== 0 ? netPips >= 0 : netUsd >= 0;
     const heroColor = isPos ? T.green : T.red;
 
     if (isWide) {
-      // ===== LAYOUT LANDSCAPE (2 KOLOM: Kiri Summary + QR | Kanan Kalender Proporsional) =====
+      // ===== LAYOUT LANDSCAPE (2 KOLOM) =====
       const contentTop = pad + 76;
       const sigReserve = 126;
       const contentH = H - contentTop - sigReserve;
@@ -14102,7 +14200,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       const calX = pad + leftW + gapX;
       const calW = W - pad - calX;
 
-      // Panel Kiri: Hero Vertikal
       rrect(ctx, pad, contentTop, leftW, contentH, 18);
       ctx.fillStyle = T.glass;
       ctx.fill();
@@ -14124,21 +14221,18 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.font = '700 18px "JetBrains Mono", monospace';
       ctx.fillText('PIPS', pad + 26, contentTop + 124);
 
-      // Win / Loss Pips
       ctx.font = '700 15px "JetBrains Mono", monospace';
       ctx.fillStyle = T.green;
       ctx.fillText(`▲ WIN  +${winPips.toFixed(1)}p`, pad + 26, contentTop + 168);
       ctx.fillStyle = T.red;
       ctx.fillText(`▼ LOSS -${lossPips.toFixed(1)}p`, pad + 26, contentTop + 194);
 
-      // Divider
       ctx.strokeStyle = T.lineSoft;
       ctx.beginPath();
       ctx.moveTo(pad + 24, contentTop + 218);
       ctx.lineTo(pad + leftW - 24, contentTop + 218);
       ctx.stroke();
 
-      // Return & Metrics (2x2 grid di panel kiri)
       const mItems = [
         { k:'RETURN', v:`${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`, c: pct >= 0 ? T.green : T.red },
         { k: hideUsd ? 'WIN DAYS' : 'NET P/L', v: hideUsd ? `${winDays}W / ${lossDays}L` : `${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:0})}`, c: netUsd >= 0 ? T.green : T.red },
@@ -14167,7 +14261,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.font = '600 13px "JetBrains Mono", monospace';
       ctx.fillText(`${totalTrades} Total Trades  •  ${winDays}W / ${lossDays}L Days`, pad + 26, contentTop + 432);
 
-      // QR Code di bagian bawah panel kiri (jika link diisi)
       if (qrLink) {
         const qrSize = 136;
         const qrX = pad + (leftW - qrSize) / 2;
@@ -14175,7 +14268,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         drawThemedQR(T, qrX, qrY, qrSize, qrLink, qrLabel);
       }
 
-      // Panel Kanan: Kalender (tinggi penuh, tidak gepeng)
       if (viewMode === 'day') {
         drawDailyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd, showSub);
       } else {
@@ -14214,7 +14306,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.fillStyle = T.red;
     ctx.fillText(`▼ LOSS -${lossPips.toFixed(1)}p`, pad + (isSquare ? 190 : 218), heroY + heroH - (isSquare ? 16 : 22));
 
-    // Kanan Hero
     ctx.textAlign = 'right';
     ctx.fillStyle = pct >= 0 ? T.green : T.red;
     ctx.font = `800 ${isSquare ? 30 : 38}px "JetBrains Mono", monospace`;
@@ -14232,7 +14323,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.fillText(`${totalTrades} Trades • WR ${winRate.toFixed(0)}% • PF ${pf.toFixed(2)}`, W - pad - 24, heroY + heroH - (isSquare ? 16 : 22));
     ctx.textAlign = 'left';
 
-    // Area Kalender (lebih lega di Square agar sel tidak gepeng)
     const calTop = heroY + heroH + (isSquare ? 14 : 20);
     const sigReserve = isSquare ? 124 : 150;
     const calH = H - calTop - sigReserve;
@@ -14244,7 +14334,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       drawWeeklyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd);
     }
 
-    // Footer: CEO Signature di tengah bawah + QR Code di pojok kanan bawah
     drawCeoSignature(T, W / 2, H - (isSquare ? 36 : 44), isSquare);
 
     if (qrLink) {
@@ -14303,7 +14392,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       rrect(ctx, cx, cy, cellW, cellH, 10);
 
       if (data) {
-        const win = data.pips >= 0;
+        const win = data.pips !== 0 ? data.pips >= 0 : data.usd >= 0;
         ctx.fillStyle = win ? T.greenBg : T.redBg;
         ctx.fill();
         ctx.strokeStyle = win ? T.green : T.red;
@@ -14323,7 +14412,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.fillText(String(dayNum), cx + 8, cy + 18);
 
       if (data) {
-        const win = data.pips >= 0;
+        const win = data.pips !== 0 ? data.pips >= 0 : data.usd >= 0;
         ctx.textAlign = 'center';
         ctx.fillStyle = win ? T.green : T.red;
         ctx.font = `800 ${pipsFont}px "JetBrains Mono", monospace`;
@@ -14381,7 +14470,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       const rx = x + innerPad;
       const rw = w - innerPad * 2;
       const hasData = wk.trades > 0;
-      const win = wk.pips >= 0;
+      const win = wk.pips !== 0 ? wk.pips >= 0 : wk.usd >= 0;
 
       rrect(ctx, rx, ry, rw, rowH, 14);
       ctx.fillStyle = hasData ? (win ? T.greenBg : T.redBg) : T.cell;
@@ -14498,13 +14587,18 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   $('trpDownloadBtn').addEventListener('click', downloadPng);
   $('trpCopyBtn').addEventListener('click', copyPng);
 
+  // Auto-update saat data EA/Firestore masuk atau akun diganti
+  window.addEventListener('fx-recap-sync', () => {
+    if ($('trpSource').value === 'history') syncFromSource();
+  });
+
   document.querySelectorAll('[data-view="share"]').forEach(btn => {
     btn.addEventListener('click', () => setTimeout(syncFromSource, 120));
   });
 
-  dayMap = parseManualToMap();
+  // Inisialisasi awal: langsung coba ambil data EA jika sudah siap
+  syncFromSource();
   document.fonts.ready.then(render);
-  render();
 })();
 </script>
    
