@@ -10572,6 +10572,9 @@ function drawLadder(x, box, m, info, opt = {}){
 
 /* ---------- helper visual premium (Obsidian & Champagne Gold) ---------- */
 const SIGN_FONT = '"Great Vibes","Cormorant Garamond",Georgia,serif';
+const PROOF_BASE_URL = /^https?:/i.test(location.protocol)
+  ? (location.origin + location.pathname)
+  : 'https://funded-journey-nu.vercel.app/';
 
 function goldGrad(x, x0, y0, x1, y1){
   const g = x.createLinearGradient(x0, y0, x1, y1);
@@ -10581,18 +10584,39 @@ function goldGrad(x, x0, y0, x1, y1){
   return g;
 }
 
+function proofB64Enc(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  bytes.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function proofHash(str){
+  let h = 0x811c9dc5;
+  const s = 'GBC::FARID_SIDDIQ::2026::' + str;
+  for(let i = 0; i < s.length; i++){
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16).padStart(8, '0');
+}
+
+function buildProofUrl(payload){
+  const raw = proofB64Enc(JSON.stringify(payload));
+  return `${PROOF_BASE_URL}?verify=${raw}&sig=${proofHash(raw)}`;
+}
+
 function drawCornerBrackets(x, bx, by, bw, bh, len, color, lw){
   x.save();
   x.strokeStyle = color;
   x.lineWidth = lw;
   x.lineCap = 'square';
-  const corners = [
+  [
     [bx, by, 1, 1],
     [bx + bw, by, -1, 1],
     [bx, by + bh, 1, -1],
     [bx + bw, by + bh, -1, -1]
-  ];
-  corners.forEach(([cx, cy, sx, sy]) => {
+  ].forEach(([cx, cy, sx, sy]) => {
     x.beginPath();
     x.moveTo(cx + sx * len, cy);
     x.lineTo(cx, cy);
@@ -10657,7 +10681,6 @@ function drawBrandMark(x, bx, by, size){
 
 function drawGoldSeal(x, cx, cy, r, u = 1){
   x.save();
-  // outer scalloped medal ring
   const spikes = 26;
   x.beginPath();
   for(let i = 0; i < spikes * 2; i++){
@@ -10675,7 +10698,6 @@ function drawGoldSeal(x, cx, cy, r, u = 1){
   x.fill();
   x.shadowColor = 'transparent';
 
-  // inner obsidian disc
   x.beginPath();
   x.arc(cx, cy, r * 0.78, 0, Math.PI * 2);
   x.fillStyle = '#09101f';
@@ -10684,7 +10706,6 @@ function drawGoldSeal(x, cx, cy, r, u = 1){
   x.lineWidth = 1.6 * u;
   x.stroke();
 
-  // inner dashed gold ring
   x.beginPath();
   x.arc(cx, cy, r * 0.66, 0, Math.PI * 2);
   x.setLineDash([2.5 * u, 2.5 * u]);
@@ -10693,7 +10714,6 @@ function drawGoldSeal(x, cx, cy, r, u = 1){
   x.stroke();
   x.setLineDash([]);
 
-  // center monogram + star
   const { T } = tools(x);
   star(x, cx, cy - r * 0.34, r * 0.13, r * 0.055, 5);
   x.fillStyle = '#f2da99';
@@ -10707,37 +10727,8 @@ function drawGoldSeal(x, cx, cy, r, u = 1){
   x.restore();
 }
 
-/* ---------- Generator URL Web Proof & QR Kontras Tinggi ---------- */
-const PROOF_BASE_URL = /^https?:/i.test(location.protocol)
-  ? (location.origin + location.pathname)
-  : 'https://funded-journey-nu.vercel.app/';
-
-function proofB64Enc(str){
-  const bytes = new TextEncoder().encode(str);
-  let bin = '';
-  bytes.forEach(b => bin += String.fromCharCode(b));
-  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-function proofHash(str){
-  let h = 0x811c9dc5;
-  const s = 'GBC::FARID_SIDDIQ::2026::' + str;
-  for(let i = 0; i < s.length; i++){
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193);
-  }
-  return (h >>> 0).toString(16).padStart(8, '0');
-}
-
-function buildProofUrl(payload){
-  const raw = proofB64Enc(JSON.stringify(payload));
-  const sig = proofHash(raw);
-  return `${PROOF_BASE_URL}?verify=${raw}&sig=${sig}`;
-}
-
 function drawQrBadge(x, url, bx, by, size, u = 1){
   x.save();
-  // Latar krem terang + bingkai emas agar kamera HP membaca QR dalam < 1 detik
   rr(x, bx, by, size, size, 9 * u);
   x.fillStyle = '#f8f4e8';
   x.fill();
@@ -10773,6 +10764,7 @@ function drawQrBadge(x, url, bx, by, size, u = 1){
   }
   x.restore();
 }
+
 /* ---------- chart: kurva saldo (fallback sertifikat) ---------- */
 function drawCurve(x, box, pts, cur, opt = {}){
   const { T } = tools(x), fs = opt.fs || 15, r = opt.radius ?? 16, { x:bx, y:by, w:bw, h:bh } = box;
@@ -10822,7 +10814,6 @@ function drawCurve(x, box, pts, cur, opt = {}){
   x.lineJoin = 'round';
   x.stroke();
 
-  // glowing endpoint
   const ex = px(data.length - 1), ey = py(lastB);
   x.beginPath(); x.arc(ex, ey, 9, 0, Math.PI * 2); x.fillStyle = c + '33'; x.fill();
   x.beginPath(); x.arc(ex, ey, 4.5, 0, Math.PI * 2); x.fillStyle = c; x.fill();
@@ -10874,7 +10865,7 @@ function afterExit(m, sel){
 }
 const fmtMin = v => v < 90 ? `${Math.max(1, Math.round(v))} menit` : (v < 2880 ? `${(v / 60).toFixed(1).replace('.0', '')} jam` : `${(v / 1440).toFixed(1).replace('.0', '')} hari`);
 
-/* ---------- Kartu P/L (Institutional Obsidian Edition) ---------- */
+/* ---------- Kartu P/L (Institutional Obsidian + CEO Signature + Web Proof QR) ---------- */
 function drawTradeCard(t){
   const m = model(t), a = m.a, cur = m.cur, W = 1080, H = 1744, P = 56, CW = W - P * 2;
   const c = document.createElement('canvas'); c.width = W; c.height = H;
@@ -10885,7 +10876,6 @@ function drawTradeCard(t){
   const accentLine = good ? 'rgba(52,211,153,.45)' : 'rgba(251,113,133,.45)';
   const pf = priceFmtFor([m.entry, m.exit, m.sl, m.tp], m.sym);
 
-  // 1. Latar obsidian dalam + dot grid halus + ambient glow terkendali
   const bg = x.createLinearGradient(0, 0, W, H);
   bg.addColorStop(0, '#0a101d');
   bg.addColorStop(0.52, '#060912');
@@ -10906,7 +10896,6 @@ function drawTradeCard(t){
   x.fillStyle = gRes;
   x.fillRect(0, 0, W, 720);
 
-  // 2. Bingkai arsitektural ganda + siku emas
   x.strokeStyle = goldGrad(x, 0, 0, W, H);
   x.lineWidth = 2.5;
   rr(x, 20, 20, W - 40, H - 40, 18);
@@ -10917,7 +10906,6 @@ function drawTradeCard(t){
   x.stroke();
   drawCornerBrackets(x, 38, 38, W - 76, H - 76, 24, 'rgba(232,198,109,.65)', 2);
 
-  // 3. Header Brand Bar
   drawBrandMark(x, P, 62, 50);
   T('GOLDEN BREAK CAPITAL', P + 66, 85, { size: 22, weight: 700, color: '#f2d996', ls: 2.2, max: CW * 0.56 });
   T('TRADE PERFORMANCE RECORD  ·  BREAK YOUR LIMIT', P + 66, 107, { size: 12, weight: 600, color: '#7e8da8', ls: 1.6, max: CW * 0.58 });
@@ -10941,7 +10929,6 @@ function drawTradeCard(t){
   x.lineWidth = 1;
   x.beginPath(); x.moveTo(P, 132); x.lineTo(W - P, 132); x.stroke();
 
-  // 4. Hero Card (Simbol + Pill kiri | Net P/L kanan)
   const hy = 148, hh = 150;
   rr(x, P, hy, CW, hh, 16);
   const hbg = x.createLinearGradient(P, hy, P + CW, hy + hh);
@@ -10952,8 +10939,6 @@ function drawTradeCard(t){
   x.strokeStyle = 'rgba(255,255,255,.09)';
   x.lineWidth = 1;
   x.stroke();
-
-  // aksen tepi kiri hero
   rr(x, P + 1, hy + 16, 5, hh - 32, 3);
   x.fillStyle = accent;
   x.fill();
@@ -10984,7 +10969,6 @@ function drawTradeCard(t){
     pxx += pw + 10;
   });
 
-  // Hero kanan: Net P/L
   T('NET PROFIT / LOSS', hxR, hy + 38, { size: 12.5, weight: 700, color: '#8d9bb7', align: 'right', ls: 2 });
   x.save();
   x.shadowColor = accent;
@@ -10996,7 +10980,6 @@ function drawTradeCard(t){
   if(m.rMult != null) subBits.push(`${m.rMult >= 0 ? '+' : ''}${m.rMult.toFixed(2)}R`);
   T(subBits.join('   ·   ') || 'Recorded Closed Position', hxR, hy + 129, { size: 15, weight: 600, color: '#b4c0d8', align: 'right', max: CW * 0.48, family: MONO });
 
-  // 5. Area Chart OHLC / Ladder (tetap 540px agar detail candle maksimal)
   const chartBox = { x: P, y: 314, w: CW, h: 540 };
   c._chart = chartFor(x, chartBox, m, { fs: 16, radius: 16 });
   x.strokeStyle = 'rgba(214,176,92,.28)';
@@ -11004,7 +10987,6 @@ function drawTradeCard(t){
   rr(x, chartBox.x, chartBox.y, chartBox.w, chartBox.h, 16);
   x.stroke();
 
-  // 6. Banner Evaluasi Pasca-Exit (lebih lega, 84px)
   const ax = c._chart?.ax || afterExit(m, null), by0 = 870, bh0 = 84;
   const exitedLoss = m.reason === 'SL' || m.net < 0;
   const B = ({
@@ -11027,45 +11009,34 @@ function drawTradeCard(t){
   rr(x, P + 1, by0 + 12, 5, bh0 - 24, 3);
   x.fillStyle = B[2];
   x.fill();
-
   T('POST-EXIT INTELLIGENCE', P + 24, by0 + 25, { size: 11, weight: 700, color: '#7e8da8', ls: 1.8 });
   T(B[0], P + 24, by0 + 50, { size: 19, weight: 700, color: B[2], max: CW - 44 });
   T(B[1], P + 24, by0 + 72, { size: 13.5, weight: 500, color: '#aebbd3', max: CW - 44, minScale: 0.78 });
 
-  // 7. 4 Kartu Harga Utama (beraksen garis atas)
-  const gap = 14, tw = (CW - gap * 3) / 4;
-  const NA = 'Tidak tercatat';
-  const drawPriceTile = (i, y, h, label, val, topColor, isMuted) => {
+  const gap = 14, tw = (CW - gap * 3) / 4, NA = 'Tidak tercatat';
+  const drawPriceTile = (i, ty, h, label, val, topColor, isMuted) => {
     const tx0 = P + i * (tw + gap);
-    rr(x, tx0, y, tw, h, 14);
+    rr(x, tx0, ty, tw, h, 14);
     x.fillStyle = 'rgba(17,25,43,.85)';
     x.fill();
     x.strokeStyle = 'rgba(255,255,255,.08)';
     x.lineWidth = 1;
     x.stroke();
-    // accent top bar
-    rr(x, tx0 + 18, y + 1, tw - 36, 3, 2);
+    rr(x, tx0 + 18, ty + 1, tw - 36, 3, 2);
     x.fillStyle = isMuted ? 'rgba(255,255,255,.15)' : topColor;
     x.fill();
-    T(label, tx0 + 18, y + 32, { size: 12, weight: 700, color: '#8494b2', ls: 1.5, max: tw - 36 });
-    T(val, tx0 + 18, y + 73, {
+    T(label, tx0 + 18, ty + 32, { size: 12, weight: 700, color: '#8494b2', ls: 1.5, max: tw - 36 });
+    T(val, tx0 + 18, ty + 73, {
       size: isMuted ? 16 : 27, weight: 700, color: isMuted ? '#62718d' : topColor,
       family: isMuted ? FONT : MONO, max: tw - 36
     });
   };
   let y = 972;
-  const priceRows = [
-    ['ENTRY', m.entry, '#f0d283'],
-    ['EXIT', m.exit, '#8cb4ff'],
-    ['STOP LOSS', m.sl, '#fb7185'],
-    ['TAKE PROFIT', m.tp, '#34d399']
-  ];
-  priceRows.forEach(([lbl, v, col], i) => {
+  [['ENTRY', m.entry, '#f0d283'], ['EXIT', m.exit, '#8cb4ff'], ['STOP LOSS', m.sl, '#fb7185'], ['TAKE PROFIT', m.tp, '#34d399']].forEach(([lbl, v, col], i) => {
     const empty = v == null;
     drawPriceTile(i, y, 102, lbl, empty ? NA : pf(v), col, empty);
   });
 
-  // 8. 2 Baris Metrik Eksekusi & P/L
   const drawMetricTile = (i, ty, h, label, val, o = {}) => {
     const tx0 = P + i * (tw + gap);
     rr(x, tx0, ty, tw, h, 12);
@@ -11099,7 +11070,6 @@ function drawTradeCard(t){
   drawMetricTile(2, y, 92, 'SWAP', fmtMoney(m.swap, cur, true), { color: '#dfe6f5' });
   drawMetricTile(3, y, 92, 'NET P/L', fmtMoney(m.net, cur, true), { color: accent, highlight: true });
 
-  // 9. Unified Account Dossier Card (rapi, 1 kotak 4x2 dengan hairline internal)
   const dy = 1306, dh = 254, dhHead = 44;
   rr(x, P, dy, CW, dh, 16);
   x.fillStyle = 'rgba(14,21,37,.82)';
@@ -11107,8 +11077,6 @@ function drawTradeCard(t){
   x.strokeStyle = 'rgba(214,176,92,.22)';
   x.lineWidth = 1;
   x.stroke();
-
-  // header dossier
   x.strokeStyle = 'rgba(255,255,255,.07)';
   x.beginPath(); x.moveTo(P, dy + dhHead); x.lineTo(P + CW, dy + dhHead); x.stroke();
   T('ACCOUNT DOSSIER', P + 20, dy + 28, { size: 12.5, weight: 700, color: '#e8c66d', ls: 2 });
@@ -11126,7 +11094,6 @@ function drawTradeCard(t){
     ['LEVERAGE', a.leverage ? `1:${a.leverage}` : '—']
   ];
   const cellW = CW / 4, cellH = (dh - dhHead) / 2;
-  // garis pemisah internal 4x2
   x.strokeStyle = 'rgba(255,255,255,.06)';
   x.beginPath(); x.moveTo(P + 16, dy + dhHead + cellH); x.lineTo(P + CW - 16, dy + dhHead + cellH); x.stroke();
   for(let col = 1; col < 4; col++){
@@ -11149,27 +11116,26 @@ function drawTradeCard(t){
     }
   });
 
-// 10. Footer + Mini Seal + Tanda Tangan CEO + QR Web Proof
+  // Footer + Mini Seal + Tanda Tangan CEO Farid Siddiq + QR Web Proof
   const fy = 1580;
   x.strokeStyle = divG;
   x.lineWidth = 1;
   x.beginPath(); x.moveTo(P, fy); x.lineTo(W - P, fy); x.stroke();
 
-  drawGoldSeal(x, P + 34, fy + 66, 32, 1);
-  T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE RECORD', P + 80, fy + 44, { size: 14.5, weight: 700, color: '#e8c66d', ls: 1.4, max: 495 });
+  drawGoldSeal(x, P + 34, fy + 64, 32, 1);
+  T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE RECORD', P + 80, fy + 44, { size: 14.5, weight: 700, color: '#e8c66d', ls: 1.4, max: 465 });
   T(`Account ${a.login ?? a.account ?? '—'}  ·  ${dtFull(m.closeS || Math.floor(Date.now() / 1000))}`, P + 80, fy + 70, {
-    size: 13, weight: 500, color: '#a8b5ce', family: MONO, max: 495
+    size: 13, weight: 500, color: '#a8b5ce', family: MONO, max: 465
   });
   T('Scan QR untuk melihat proof verifikasi di web · Bukan laporan resmi broker.', P + 80, fy + 94, {
-    size: 11.5, weight: 400, color: '#6b7b99', max: 505
+    size: 11.5, weight: 400, color: '#6b7b99', max: 475
   });
 
-  // Tanda tangan CEO Farid Siddiq
-  const scx = 768;
-  T('Farid Siddiq', scx, fy + 58, { size: 32, weight: 400, color: '#f5dfa0', align: 'center', family: SIGN_FONT, max: 210 });
+  const scx = 748;
+  T('Farid Siddiq', scx, fy + 58, { size: 34, weight: 400, color: '#f5dfa0', align: 'center', family: SIGN_FONT, max: 200 });
   x.strokeStyle = 'rgba(214,176,92,.45)';
   x.lineWidth = 1;
-  x.beginPath(); x.moveTo(scx - 96, fy + 68); x.lineTo(scx + 96, fy + 68); x.stroke();
+  x.beginPath(); x.moveTo(scx - 94, fy + 68); x.lineTo(scx + 94, fy + 68); x.stroke();
   T('FARID SIDDIQ', scx, fy + 85, { size: 10.5, weight: 700, color: '#e8c66d', align: 'center', ls: 2 });
   T('CEO · GOLDEN BREAK CAPITAL', scx, fy + 100, { size: 9, weight: 600, color: '#7e8da8', align: 'center', ls: 1 });
 
@@ -11192,12 +11158,13 @@ function drawTradeCard(t){
     rm: m.rMult != null ? `${m.rMult >= 0 ? '+' : ''}${m.rMult.toFixed(2)}R` : '—',
     dt: dtFull(m.closeS || Math.floor(Date.now() / 1000))
   });
-  drawQrBadge(x, pnlProofUrl, W - P - 104, fy + 14, 104, 1);
+  drawQrBadge(x, pnlProofUrl, W - P - 100, fy + 14, 100, 1);
   c._proofUrl = pnlProofUrl;
 
   return c;
+}
 
-/* ---------- Sertifikat Pencapaian (Obsidian & Champagne Gold Institutional Edition) ---------- */
+/* ---------- Sertifikat Pencapaian (Obsidian & Champagne Gold + CEO Signature + Web Proof QR) ---------- */
 const CERT_FORMATS = {
   landscape: { label: 'Landscape 16:9', w: 1600, h: 900 },
   classic43: { label: 'Landscape 4:3', w: 1600, h: 1200 },
@@ -11258,7 +11225,6 @@ function drawCert(fmtKey, d, best){
   const certId = 'GBC-' + String(accLogin).replace(/[^a-z0-9]/gi, '') + '-' + new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const issuedStr = dtFull(Math.floor(Date.now() / 1000));
 
-  // 1. Latar Obsidian Mewah + Guilloché Watermark + Cahaya Emas Terkendali
   const bg = x.createLinearGradient(0, 0, W, H);
   bg.addColorStop(0, '#0b1120');
   bg.addColorStop(0.5, '#060a14');
@@ -11275,20 +11241,17 @@ function drawCert(fmtKey, d, best){
   x.fillStyle = amb;
   x.fillRect(0, 0, W, H);
 
-  // 2. Bingkai Ganda Metallic Gold + Filigree Corner
   const padOut = 24 * u, padIn = 38 * u;
   x.strokeStyle = goldGrad(x, 0, 0, W, H);
   x.lineWidth = 3.2 * u;
   rr(x, padOut, padOut, W - padOut * 2, H - padOut * 2, 16 * u);
   x.stroke();
-
   x.strokeStyle = 'rgba(214,176,92,.32)';
   x.lineWidth = 1.2 * u;
   rr(x, padIn, padIn, W - padIn * 2, H - padIn * 2, 10 * u);
   x.stroke();
   drawCornerBrackets(x, padIn + 8 * u, padIn + 8 * u, W - (padIn + 8 * u) * 2, H - (padIn + 8 * u) * 2, 30 * u, '#e6c572', 2.2 * u);
 
-  // Helper gambar 3 kartu metrik
   const drawMetrics = (bx, by, bw, bh) => {
     const gap = 14 * u, mw = (bw - gap * 2) / 3;
     const metr = [
@@ -11313,7 +11276,6 @@ function drawCert(fmtKey, d, best){
     });
   };
 
-  // Helper gambar tabel detail akun terpadu
   const drawDetailsBox = (bx, by, bw, bh, cols) => {
     const items = [
       ['PROP FIRM', firm],
@@ -11353,7 +11315,6 @@ function drawCert(fmtKey, d, best){
     });
   };
 
-  // Helper gambar ornament divider
   const drawOrnament = (cx, oy, width) => {
     const g = x.createLinearGradient(cx - width / 2, 0, cx + width / 2, 0);
     g.addColorStop(0, 'rgba(214,176,92,0)');
@@ -11373,8 +11334,6 @@ function drawCert(fmtKey, d, best){
     x.restore();
   };
 
-  // Helper gambar tanda tangan kaligrafi
-// Helper gambar tanda tangan CEO Farid Siddiq
   const drawSignature = (cx, baseY, lineW) => {
     T('Farid Siddiq', cx, baseY - 12 * u, { size: 44 * u, weight: 400, color: '#f5dfa0', align: 'center', family: SIGN_FONT, max: lineW });
     x.strokeStyle = GOLD_DIM;
@@ -11384,7 +11343,6 @@ function drawCert(fmtKey, d, best){
     T('CEO · GOLDEN BREAK CAPITAL', cx, baseY + 35 * u, { size: 9.8 * u, weight: 600, color: MUTED, align: 'center', ls: 1.3 * u, max: lineW });
   };
 
-  // Helper gambar grafik (OHLC trade terbaik / fallback Balance Curve)
   let drewCandle = false;
   const drawCertChart = cbox => {
     if(best){
@@ -11423,26 +11381,19 @@ function drawCert(fmtKey, d, best){
   const M = 74 * u;
 
   if(wide){
-    // ===== LANDSCAPE 16:9 (1600x900) & 4:3 (1600x1200) =====
     const lx = M, lw = W * 0.47, lcx = lx + lw / 2;
     const rx = lx + lw + 34 * u, rw = W - M - rx;
-    const footerY = H - 134 * u;
+    const footerY = H - 146 * u;
     const contentTop = 74 * u;
-    const contentBot = footerY - 22 * u;
+    const contentBot = footerY - 20 * u;
     const ch = contentBot - contentTop;
 
-    // Eyebrow pill
     T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', lcx, contentTop + ch * 0.045, {
       size: 13 * u, weight: 700, color: GOLD, align: 'center', ls: 3.2 * u, max: lw
     });
-
-    // Metallic Gold Title
-    x.save();
     const tg = goldGrad(x, lcx - 220 * u, contentTop + ch * 0.08, lcx + 220 * u, contentTop + ch * 0.19);
     T('CERTIFICATE', lcx, contentTop + ch * 0.165, { size: 70 * u, weight: 700, color: tg, align: 'center', family: SERIF, ls: 5 * u, max: lw });
-    x.restore();
     T('OF TARGET ACHIEVEMENT', lcx, contentTop + ch * 0.225, { size: 22 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: lw });
-
     drawOrnament(lcx, contentTop + ch * 0.262, Math.min(lw * 0.54, 340 * u));
 
     T('This certificate proudly recognizes the verified performance of', lcx, contentTop + ch * 0.32, {
@@ -11460,41 +11411,36 @@ function drawCert(fmtKey, d, best){
       T(ln, lcx, contentTop + ch * (0.502 + i * 0.044), { size: 18.5 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
     );
 
-    // 3 Metric Cards
-    const my = contentTop + ch * 0.59, mh = Math.min(126 * u, ch * 0.195);
+    const my = contentTop + ch * 0.59, mh = Math.min(122 * u, ch * 0.19);
     drawMetrics(lx, my, lw, mh);
 
-    // Seal + Signature row
     const sigCenterY = my + mh + (contentBot - (my + mh)) * 0.56;
-    drawGoldSeal(x, lx + 74 * u, sigCenterY - 4 * u, Math.min(46 * u, (contentBot - (my + mh)) * 0.39), u);
+    drawGoldSeal(x, lx + 74 * u, sigCenterY - 4 * u, Math.min(44 * u, (contentBot - (my + mh)) * 0.38), u);
     drawSignature(lx + lw * 0.58, sigCenterY + 2 * u, lw * 0.52);
 
-    // Right column: Chart + Unified Account Details
     const chartH = ch * 0.54;
     drawCertChart({ x: rx, y: contentTop, w: rw, h: chartH });
     drawDetailsBox(rx, contentTop + chartH + 18 * u, rw, ch - chartH - 18 * u, 2);
 
-    // Footer band
     x.strokeStyle = 'rgba(214,176,92,.32)';
     x.lineWidth = 1 * u;
     x.beginPath(); x.moveTo(M, footerY); x.lineTo(W - M, footerY); x.stroke();
 
-    const qrS = 68 * u;
+    const qrS = 82 * u;
     drawQrBadge(x, qrData, W - M - qrS, footerY + 14 * u, qrS, u);
 
-    T('CERTIFICATE ID', M, footerY + 30 * u, { size: 10.5 * u, weight: 700, color: GOLD, ls: 1.4 * u });
-    T(certId, M, footerY + 52 * u, { size: 14 * u, weight: 600, color: TXT, family: MONO, max: 360 * u });
-    T('Internal achievement certificate based on dashboard records · Not an official prop-firm payout confirmation.', M, footerY + 76 * u, {
+    T('CERTIFICATE ID', M, footerY + 32 * u, { size: 10.5 * u, weight: 700, color: GOLD, ls: 1.4 * u });
+    T(certId, M, footerY + 54 * u, { size: 14 * u, weight: 600, color: TXT, family: MONO, max: 360 * u });
+    T('Scan QR untuk melihat proof verifikasi di web · Bukan laporan resmi prop-firm.', M, footerY + 80 * u, {
       size: 11 * u, weight: 400, color: FAINT, max: W - M * 2 - qrS - 320 * u
     });
 
     const isX = W - M - qrS - 24 * u;
-    T('ISSUED (WIB)', isX, footerY + 30 * u, { size: 10.5 * u, weight: 700, color: GOLD, align: 'right', ls: 1.4 * u });
-    T(issuedStr, isX, footerY + 52 * u, { size: 13.5 * u, weight: 600, color: TXT, align: 'right', family: MONO, max: 280 * u });
-    T('GOLDEN BREAK TERMINAL', isX, footerY + 76 * u, { size: 11 * u, weight: 700, color: FAINT, align: 'right', ls: 1.5 * u });
+    T('ISSUED (WIB)', isX, footerY + 32 * u, { size: 10.5 * u, weight: 700, color: GOLD, align: 'right', ls: 1.4 * u });
+    T(issuedStr, isX, footerY + 54 * u, { size: 13.5 * u, weight: 600, color: TXT, align: 'right', family: MONO, max: 280 * u });
+    T('GOLDEN BREAK TERMINAL', isX, footerY + 80 * u, { size: 11 * u, weight: 700, color: FAINT, align: 'right', ls: 1.5 * u });
 
   } else if(square){
-    // ===== SQUARE 1:1 (1200x1200) =====
     const cx = W / 2, CW = W - M * 2;
     drawGoldSeal(x, cx, 92 * u, 33 * u, u);
     T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 148 * u, { size: 12.5 * u, weight: 700, color: GOLD, align: 'center', ls: 3 * u, max: CW });
@@ -11509,25 +11455,23 @@ function drawCert(fmtKey, d, best){
       T(ln, cx, (394 + i * 24) * u, { size: 17 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
     );
 
-    drawMetrics(M, 442 * u, CW, 100 * u);
-    drawCertChart({ x: M, y: 558 * u, w: CW, h: 256 * u });
-    drawDetailsBox(M, 828 * u, CW, 146 * u, 4);
+    drawMetrics(M, 442 * u, CW, 98 * u);
+    drawCertChart({ x: M, y: 554 * u, w: CW, h: 254 * u });
+    drawDetailsBox(M, 822 * u, CW, 144 * u, 4);
 
-    // Footer Square
-    const fy = 994 * u;
+    const fy = 986 * u;
     x.strokeStyle = 'rgba(214,176,92,.32)'; x.lineWidth = 1 * u;
     x.beginPath(); x.moveTo(M, fy); x.lineTo(W - M, fy); x.stroke();
-    drawSignature(M + 165 * u, fy + 64 * u, 280 * u);
+    drawSignature(M + 165 * u, fy + 66 * u, 280 * u);
     T('CERTIFICATE ID', cx + 30 * u, fy + 34 * u, { size: 10 * u, weight: 700, color: GOLD, align: 'center', ls: 1.4 * u });
-    T(certId, cx + 30 * u, fy + 55 * u, { size: 13.5 * u, weight: 600, color: TXT, align: 'center', family: MONO, max: 320 * u });
-    T(`Issued ${issuedStr}`, cx + 30 * u, fy + 78 * u, { size: 11.5 * u, weight: 500, color: MUTED, align: 'center', family: MONO, max: 320 * u });
-    drawQrBadge(x, qrData, W - M - 76 * u, fy + 14 * u, 76 * u, u);
-    T('Internal achievement certificate from dashboard records · Not an official prop-firm payout confirmation.', cx, H - 64 * u, {
+    T(certId, cx + 30 * u, fy + 56 * u, { size: 13.5 * u, weight: 600, color: TXT, align: 'center', family: MONO, max: 320 * u });
+    T(`Issued ${issuedStr}`, cx + 30 * u, fy + 80 * u, { size: 11.5 * u, weight: 500, color: MUTED, align: 'center', family: MONO, max: 320 * u });
+    drawQrBadge(x, qrData, W - M - 84 * u, fy + 14 * u, 84 * u, u);
+    T('Scan QR untuk melihat proof verifikasi di web · Bukan laporan resmi prop-firm.', cx, H - 60 * u, {
       size: 10.5 * u, weight: 400, color: FAINT, align: 'center', max: CW
     });
 
   } else {
-    // ===== PORTRAIT A4 (1200x1697) & PORTRAIT 3:4 (1200x1600) =====
     const cx = W / 2, CW = W - M * 2;
     drawGoldSeal(x, cx, 118 * u, 44 * u, u);
     T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 194 * u, { size: 14 * u, weight: 700, color: GOLD, align: 'center', ls: 3.4 * u, max: CW });
@@ -11553,7 +11497,6 @@ function drawCert(fmtKey, d, best){
     drawCertChart({ x: M, y: chartY, w: CW, h: chartH });
     drawDetailsBox(M, detailsY, CW, detailsH, 4);
 
-    // Footer Portrait
     x.strokeStyle = 'rgba(214,176,92,.32)'; x.lineWidth = 1.1 * u;
     x.beginPath(); x.moveTo(M, footerY); x.lineTo(W - M, footerY); x.stroke();
 
@@ -11565,13 +11508,14 @@ function drawCert(fmtKey, d, best){
     const qrS = 90 * u;
     drawQrBadge(x, qrData, W - M - qrS, footerY + 20 * u, qrS, u);
 
-    T('Internal achievement certificate based on dashboard records · Not an official prop-firm payout confirmation.', cx, H - 72 * u, {
+    T('Scan QR untuk melihat proof verifikasi di web · Bukan laporan resmi prop-firm.', cx, H - 70 * u, {
       size: 11.5 * u, weight: 400, color: FAINT, align: 'center', max: CW
     });
   }
 
   c._chartKind = drewCandle ? 'ohlc' : 'curve';
   c._certId = certId;
+  c._proofUrl = qrData;
   return c;
 }
 
