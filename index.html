@@ -18441,7 +18441,547 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   else document.addEventListener('DOMContentLoaded', mount);
 })();
 </script>
-   
+
+
+
+
+<style id="gbc-payout-wallet-css">
+.pp-panel{margin-top:16px}
+.pp-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.pp-head h3{margin:0;font:700 14px var(--fh);color:var(--gold);letter-spacing:.08em}
+.pp-head p{margin:4px 0 0;font-size:11.5px;color:var(--muted);line-height:1.5}
+.pp-badge-ok{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font:700 10.5px var(--fm);background:var(--green-soft);color:var(--green);border:1px solid color-mix(in srgb,var(--green) 45%,transparent)}
+.pp-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
+.pp-form label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:600;color:var(--muted);min-width:0}
+.pp-form label.span2{grid-column:span 2}
+.pp-form label.span4{grid-column:1/-1}
+.pp-form .sel,.pp-form input{width:100%;box-sizing:border-box;min-width:0}
+.pp-txrow{display:flex;gap:7px;align-items:stretch}
+.pp-txrow input{flex:1 1 auto;font-family:var(--fm);font-size:12px}
+.pp-txrow .btn{flex:0 0 auto;white-space:nowrap}
+.pp-status{margin-top:10px;padding:9px 12px;border-radius:9px;font-size:11.5px;line-height:1.5;border:1px solid var(--line);background:var(--surface2);color:var(--muted)}
+.pp-status[hidden]{display:none}
+.pp-status.ok{border-color:color-mix(in srgb,var(--green) 45%,transparent);background:var(--green-soft);color:var(--green)}
+.pp-status.warn{border-color:color-mix(in srgb,var(--amber) 50%,transparent);background:var(--amber-soft);color:var(--amber)}
+.pp-status.bad{border-color:color-mix(in srgb,var(--red) 50%,transparent);background:var(--red-soft);color:var(--red)}
+.pp-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 12px}
+.pp-sum-i{padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);min-width:0}
+.pp-sum-i small{display:block;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.pp-sum-i b{display:block;margin-top:5px;font:700 16px var(--fm);color:var(--text);overflow-wrap:anywhere}
+.pp-sum-i b.pos{color:var(--green)}
+.pp-list{display:grid;gap:8px}
+.pp-item{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:11px 13px;border-radius:11px;border:1px solid var(--line);background:var(--surface2);min-width:0}
+.pp-item-l{min-width:0}
+.pp-item-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.pp-item-top b{font:700 13px var(--fh);color:var(--text)}
+.pp-net{font:700 9.5px var(--fm);padding:2px 7px;border-radius:6px;background:var(--gold-soft);color:var(--gold);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent)}
+.pp-txlink{display:inline-flex;align-items:center;gap:5px;margin-top:4px;font:600 11px var(--fm);color:var(--cyan);text-decoration:none;word-break:break-all}
+.pp-txlink:hover{text-decoration:underline}
+.pp-sub{font-size:10.5px;color:var(--faint);margin-top:2px}
+.pp-amt{text-align:right;font:700 15px var(--fm);color:var(--green);white-space:nowrap}
+.pp-amt small{display:block;font-size:10px;color:var(--faint);font-weight:500}
+.pp-del{border:1px solid var(--line2);background:transparent;color:var(--red);width:32px;height:32px;border-radius:8px;cursor:pointer;font-weight:700}
+.pp-del:hover{background:var(--red-soft)}
+.pp-empty{padding:18px;border:1px dashed var(--line2);border-radius:10px;text-align:center;color:var(--faint);font-size:12px}
+@media(max-width:760px){
+  .pp-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pp-form label.span2{grid-column:1/-1}
+  .pp-txrow{flex-direction:column}
+  .pp-sum{grid-template-columns:1fr}
+  .pp-item{grid-template-columns:minmax(0,1fr) auto}
+  .pp-amt{grid-column:1;text-align:left}
+}
+@media(max-width:480px){.pp-form{grid-template-columns:1fr}}
+</style>
+
+<script id="gbc-payout-wallet-js">
+(function(){
+  const STORE_KEY = 'gbc_payouts_v1';
+
+  const NETS = {
+    T: { code:'T', name:'TRC20 (TRON)', token:'USDT', evm:false, exp:h => `https://tronscan.org/#/transaction/${h}` },
+    B: { code:'B', name:'BEP20 (BSC)', token:'USDT', evm:true, rpc:'https://bsc-rpc.publicnode.com', exp:h => `https://bscscan.com/tx/${h}` },
+    E: { code:'E', name:'ERC20 (Ethereum)', token:'USDT', evm:true, rpc:'https://ethereum-rpc.publicnode.com', exp:h => `https://etherscan.io/tx/${h}` },
+    A: { code:'A', name:'Arbitrum One', token:'USDC', evm:true, rpc:'https://arbitrum-one-rpc.publicnode.com', exp:h => `https://arbiscan.io/tx/${h}` },
+    P: { code:'P', name:'Polygon', token:'USDC', evm:true, rpc:'https://polygon-bor-rpc.publicnode.com', exp:h => `https://polygonscan.com/tx/${h}` },
+    S: { code:'S', name:'Base', token:'USDC', evm:true, rpc:'https://base-rpc.publicnode.com', exp:h => `https://basescan.org/tx/${h}` },
+    X: { code:'X', name:'Bitcoin (BTC)', token:'BTC', evm:false, exp:h => `https://mempool.space/tx/${h}` },
+    M: { code:'M', name:'Bank / Rise / Manual', token:'USD', evm:false, exp:() => '' }
+  };
+
+  const normId = v => String(v ?? '').trim().toLowerCase();
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+
+  function loadAll(){
+    try {
+      const arr = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch(e){ return []; }
+  }
+
+  function saveAll(arr){
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(arr)); } catch(e){}
+    try { window.__MR2?._reset?.(); window.__MR2?.tick?.(); } catch(e){}
+  }
+
+  function matchAccount(rec, ids){
+    const set = new Set((Array.isArray(ids) ? ids : [ids]).map(normId).filter(Boolean));
+    if(!set.size) return false;
+    return set.has(normId(rec.accountId)) || (rec.login && set.has(normId(rec.login)));
+  }
+
+  function listForAccount(ids){
+    return loadAll()
+      .filter(r => matchAccount(r, ids))
+      .sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  }
+
+  function summaryForAccount(ids){
+    const items = listForAccount(ids);
+    if(!items.length) return null;
+    const total = items.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+    const latest = items[0];
+    const net = NETS[latest.net] || NETS.M;
+    return {
+      total,
+      count: items.length,
+      latest,
+      txHash: latest.txHash || '',
+      netCode: net.code,
+      netName: net.name,
+      token: latest.token || net.token,
+      explorerUrl: latest.txHash && net.exp ? net.exp(latest.txHash) : '',
+      items,
+      sig: `${total.toFixed(2)}:${items.length}:${latest.txHash}:${latest.net}`
+    };
+  }
+
+  /* ---------- On-Chain TX Lookup (TronScan / EVM Public RPC / Mempool) ---------- */
+  async function rpcCall(rpcUrl, method, params){
+    const res = await fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+    });
+    if(!res.ok) throw new Error('RPC HTTP ' + res.status);
+    const j = await res.json();
+    if(j.error) throw new Error(j.error.message || 'RPC error');
+    return j.result;
+  }
+
+  function hexToBigInt(hex){
+    if(!hex || hex === '0x') return 0n;
+    return BigInt(hex);
+  }
+
+  function formatUnits(bi, dec){
+    const d = Math.max(0, Math.min(30, Number(dec) || 0));
+    const s = bi.toString().padStart(d + 1, '0');
+    const whole = s.slice(0, s.length - d) || '0';
+    const frac = d ? s.slice(s.length - d).replace(/0+$/, '') : '';
+    return Number(frac ? `${whole}.${frac.slice(0, 6)}` : whole);
+  }
+
+  function decodeAbiStr(hex){
+    if(!hex || hex === '0x') return '';
+    const clean = hex.slice(2);
+    const toAscii = h => {
+      let out = '';
+      for(let i = 0; i < h.length; i += 2){
+        const c = parseInt(h.slice(i, i + 2), 16);
+        if(c >= 32 && c <= 126) out += String.fromCharCode(c);
+      }
+      return out.trim();
+    };
+    if(clean.length >= 128){
+      const len = parseInt(clean.slice(64, 128), 16);
+      if(len > 0 && len <= 32) return toAscii(clean.slice(128, 128 + len * 2));
+    }
+    return toAscii(clean);
+  }
+
+  async function lookupEvm(netCode, rawHash){
+    const cfg = NETS[netCode];
+    const hash = rawHash.startsWith('0x') ? rawHash : ('0x' + rawHash);
+    const receipt = await rpcCall(cfg.rpc, 'eth_getTransactionReceipt', [hash]);
+    if(!receipt) return null;
+
+    const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+    const tLogs = (receipt.logs || []).filter(l => l.topics && l.topics[0]?.toLowerCase() === TRANSFER_TOPIC && l.data && l.data !== '0x');
+
+    let amount = null, token = cfg.token, isStable = false;
+    if(tLogs.length){
+      // Ambil log transfer bernilai terbesar
+      let bestLog = tLogs[0], bestVal = hexToBigInt(tLogs[0].data);
+      for(let i = 1; i < tLogs.length; i++){
+        const v = hexToBigInt(tLogs[i].data);
+        if(v > bestVal){ bestVal = v; bestLog = tLogs[i]; }
+      }
+      let dec = netCode === 'B' ? 18 : 6;
+      try {
+        const decHex = await rpcCall(cfg.rpc, 'eth_call', [{ to: bestLog.address, data: '0x313ce567' }, 'latest']);
+        const parsed = parseInt(decHex, 16);
+        if(Number.isFinite(parsed) && parsed >= 0 && parsed <= 24) dec = parsed;
+      } catch(e){}
+      try {
+        const symHex = await rpcCall(cfg.rpc, 'eth_call', [{ to: bestLog.address, data: '0x95d89b41' }, 'latest']);
+        const sym = decodeAbiStr(symHex);
+        if(sym) token = sym.toUpperCase();
+      } catch(e){}
+      amount = formatUnits(bestVal, dec);
+      isStable = /USD|DAI|FDUSD|TUSD/i.test(token);
+    } else {
+      const tx = await rpcCall(cfg.rpc, 'eth_getTransactionByHash', [hash]);
+      if(tx && tx.value){
+        amount = formatUnits(hexToBigInt(tx.value), 18);
+        token = netCode === 'B' ? 'BNB' : (netCode === 'P' ? 'POL' : 'ETH');
+      }
+    }
+
+    let ts = Date.now();
+    try {
+      if(receipt.blockNumber){
+        const blk = await rpcCall(cfg.rpc, 'eth_getBlockByNumber', [receipt.blockNumber, false]);
+        if(blk && blk.timestamp) ts = parseInt(blk.timestamp, 16) * 1000;
+      }
+    } catch(e){}
+
+    return { ok: true, net: netCode, txHash: hash, amount, token, isStable, ts };
+  }
+
+  async function lookupTron(rawHash){
+    const hash = rawHash.replace(/^0x/i, '');
+    const res = await fetch(`https://apilist.tronscanapi.com/api/transaction-info?hash=${encodeURIComponent(hash)}`);
+    if(!res.ok) return null;
+    const d = await res.json();
+    if(!d || (!d.hash && !d.contractRet)) return null;
+
+    let amount = null, token = 'USDT', isStable = false;
+    const t20 = Array.isArray(d.trc20TransferInfo) && d.trc20TransferInfo.length ? d.trc20TransferInfo : null;
+    if(t20){
+      const best = t20.reduce((a, b) => (Number(b.quant || 0) > Number(a.quant || 0) ? b : a), t20[0]);
+      const dec = Number(best.decimals ?? 6);
+      amount = formatUnits(BigInt(String(best.quant || '0').replace(/\D/g, '') || '0'), dec);
+      token = String(best.symbol || 'USDT').toUpperCase();
+      isStable = /USD|DAI/i.test(token);
+    } else if(d.contractData && d.contractData.amount != null){
+      amount = Number(d.contractData.amount) / 1e6;
+      token = 'TRX';
+    }
+    const ts = Number(d.timestamp) || Date.now();
+    return { ok: true, net: 'T', txHash: d.hash || hash, amount, token, isStable, ts };
+  }
+
+  async function lookupBtc(rawHash){
+    const hash = rawHash.replace(/^0x/i, '');
+    const res = await fetch(`https://mempool.space/api/tx/${encodeURIComponent(hash)}`);
+    if(!res.ok) return null;
+    const d = await res.json();
+    if(!d || !d.txid) return null;
+    const maxSats = (d.vout || []).reduce((m, o) => Math.max(m, Number(o.value || 0)), 0);
+    const amount = Number((maxSats / 1e8).toFixed(6));
+    const ts = d.status?.block_time ? d.status.block_time * 1000 : Date.now();
+    return { ok: true, net: 'X', txHash: d.txid, amount, token: 'BTC', isStable: false, ts };
+  }
+
+  async function lookupTx(rawInput, chosenNet){
+    const clean = String(rawInput || '').trim();
+    if(!clean) throw new Error('Masukkan TX Hash terlebih dahulu.');
+    const isEvmHash = /^0x[0-9a-fA-F]{64}$/.test(clean);
+    const isHex64 = /^[0-9a-fA-F]{64}$/.test(clean);
+
+    if(chosenNet === 'M') return { ok: false, manual: true, msg: 'Mode Manual / Bank dipilih — isi nominal payout secara manual.' };
+    if(chosenNet === 'T') return (await lookupTron(clean)) || { ok: false, msg: 'TX tidak ditemukan di TRON (TRC20).' };
+    if(chosenNet === 'X') return (await lookupBtc(clean)) || { ok: false, msg: 'TX tidak ditemukan di jaringan Bitcoin.' };
+    if(NETS[chosenNet]?.evm) return (await lookupEvm(chosenNet, clean)) || { ok: false, msg: `TX tidak ditemukan di ${NETS[chosenNet].name}.` };
+
+    // AUTO-DETECT
+    if(isEvmHash){
+      for(const code of ['B', 'A', 'E', 'P', 'S']){
+        try { const r = await lookupEvm(code, clean); if(r && r.ok) return r; } catch(e){}
+      }
+      return { ok: false, msg: 'TX EVM tidak ditemukan di BSC/Arbitrum/ETH/Polygon/Base — silakan pilih jaringan atau isi nominal manual.' };
+    }
+    if(isHex64){
+      try { const r = await lookupTron(clean); if(r && r.ok) return r; } catch(e){}
+      try { const r = await lookupBtc(clean); if(r && r.ok) return r; } catch(e){}
+      return { ok: false, msg: 'TX 64-karakter tidak ditemukan di TRON maupun Bitcoin — silakan isi nominal manual.' };
+    }
+    return { ok: false, msg: 'Format bukan TX hash blockchain standar — Anda tetap bisa menyimpan dengan nominal manual.' };
+  }
+
+  /* ---------- UI di dalam Tab Wallet (#view-wallet) ---------- */
+  function syncAccountOptions(selEl){
+    if(!selEl) return;
+    const mainSel = document.getElementById('accountSelect');
+    const prev = selEl.value;
+    const opts = [];
+    if(mainSel && mainSel.options.length){
+      [...mainSel.options].forEach(o => {
+        if(o.value) opts.push({ id: o.value, label: o.textContent.trim() });
+      });
+    }
+    const curLogin = document.getElementById('accLogin')?.textContent?.trim();
+    if(!opts.length && curLogin && curLogin !== '—'){
+      opts.push({ id: curLogin, label: `Akun ${curLogin}` });
+    }
+    selEl.innerHTML = opts.length
+      ? opts.map(o => `<option value="${esc(o.id)}">${esc(o.label)}</option>`).join('')
+      : '<option value="">Menunggu akun terhubung…</option>';
+    if(prev && opts.some(o => o.id === prev)) selEl.value = prev;
+    else if(mainSel?.value) selEl.value = mainSel.value;
+  }
+
+  function setStatus(kind, msg){
+    const st = document.getElementById('ppStatus');
+    if(!st) return;
+    if(!msg){ st.hidden = true; return; }
+    st.hidden = false;
+    st.className = 'pp-status ' + (kind || '');
+    st.textContent = msg;
+  }
+
+  function renderPayoutList(){
+    const sel = document.getElementById('ppAccSelect');
+    const listEl = document.getElementById('ppList');
+    const sumEl = document.getElementById('ppSum');
+    if(!sel || !listEl || !sumEl) return;
+
+    const accId = sel.value;
+    const curLogin = document.getElementById('accLogin')?.textContent?.trim();
+    const mainId = document.getElementById('accountSelect')?.value;
+    const lookupIds = accId === mainId ? [accId, curLogin] : [accId];
+    const items = accId ? listForAccount(lookupIds) : loadAll();
+    const total = items.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+    const latest = items[0];
+
+    sumEl.innerHTML = `
+      <div class="pp-sum-i"><small>Total Payout Akun Ini</small><b class="pos">$${total.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}</b></div>
+      <div class="pp-sum-i"><small>Jumlah Payout Tercatat</small><b>${items.length} transaksi</b></div>
+      <div class="pp-sum-i"><small>Status Sertifikat &amp; Web Proof</small><b style="color:${items.length ? 'var(--gold)' : 'var(--muted)'}">${items.length ? '✔ Otomatis Tampil' : 'Belum ada payout'}</b></div>
+    `;
+
+    if(!items.length){
+      listEl.innerHTML = '<div class="pp-empty">Belum ada payout proof untuk akun ini. Isi TX Hash &amp; nominal di atas agar otomatis masuk ke Sertifikat Achievement dan halaman Web Proof.</div>';
+      return;
+    }
+
+    listEl.innerHTML = items.map(r => {
+      const net = NETS[r.net] || NETS.M;
+      const url = r.txHash && net.exp ? net.exp(r.txHash) : '';
+      const shortTx = r.txHash && r.txHash.length > 26 ? `${r.txHash.slice(0, 12)}…${r.txHash.slice(-10)}` : (r.txHash || 'Manual Reference');
+      return `<div class="pp-item">
+        <div class="pp-item-l">
+          <div class="pp-item-top">
+            <b>${esc(r.accountLabel || r.accountId)}</b>
+            <span class="pp-net">${esc(net.name)}</span>
+            ${r.token ? `<span class="pp-net" style="color:var(--cyan);border-color:color-mix(in srgb,var(--cyan) 40%,transparent);background:var(--cyan-soft)">${esc(r.token)}</span>` : ''}
+          </div>
+          ${url ? `<a class="pp-txlink" href="${esc(url)}" target="_blank" rel="noopener noreferrer">↗ ${esc(shortTx)}</a>` : `<div class="pp-sub" style="font-family:var(--fm)">Ref: ${esc(shortTx)}</div>`}
+          <div class="pp-sub">${esc(r.date || '—')}${r.note ? ' · ' + esc(r.note) : ''}${r.auto ? ' · On-Chain Verified' : ' · Manual Entry'}</div>
+        </div>
+        <div class="pp-amt">+$${Number(r.amount || 0).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}<small>${esc(r.cur || 'USD')}</small></div>
+        <button type="button" class="pp-del" data-ppdel="${esc(r.id)}" title="Hapus payout proof">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  function mountWalletPanel(){
+    const walletView = document.getElementById('view-wallet');
+    if(!walletView || document.getElementById('gbcPayoutPanel')) return;
+
+    const today = new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
+    const panel = document.createElement('div');
+    panel.id = 'gbcPayoutPanel';
+    panel.className = 'card panel pp-panel';
+    panel.innerHTML = `
+      <div class="pp-head">
+        <div>
+          <h3>🧾 Payout Proof Registry (TX Hash → Sertifikat &amp; Web Proof)</h3>
+          <p>Pilih akun trading, tempel TX Hash payout (otomatis mendeteksi nominal on-chain untuk USDT/USDC atau isi manual). Akun yang memiliki payout akan otomatis menampilkannya di Sertifikat Achievement dan halaman Web Proof.</p>
+        </div>
+        <span class="pp-badge-ok">Auto-Sync Command Intel</span>
+      </div>
+
+      <div class="pp-form">
+        <label class="span2">Pilih Akun Trading
+          <select id="ppAccSelect" class="sel"></select>
+        </label>
+        <label>Jaringan Blockchain / Metode
+          <select id="ppNet" class="sel">
+            <option value="AUTO">Auto-Detect (TRC20 / EVM / BTC)</option>
+            <option value="T">TRC20 (TRON · USDT)</option>
+            <option value="B">BEP20 (BSC · USDT/USDC)</option>
+            <option value="E">ERC20 (Ethereum)</option>
+            <option value="A">Arbitrum One</option>
+            <option value="P">Polygon</option>
+            <option value="S">Base</option>
+            <option value="X">Bitcoin (BTC)</option>
+            <option value="M">Bank / Rise / Manual</option>
+          </select>
+        </label>
+        <label>Tanggal Payout
+          <input id="ppDate" type="date" class="sel" value="${today}">
+        </label>
+
+        <label class="span4">TX Hash / Transaction ID
+          <div class="pp-txrow">
+            <input id="ppTx" type="text" class="sel" autocomplete="off" placeholder="Tempel TX Hash (mis. 0x... atau 64 karakter TRC20/BTC)">
+            <button type="button" class="btn" id="ppFetchBtn">🔍 Cek On-Chain</button>
+          </div>
+        </label>
+
+        <label>Total Payout (USD) — otomatis / manual
+          <input id="ppAmount" type="number" step="0.01" min="0" class="sel" placeholder="mis. 2450.00">
+        </label>
+        <label>Token / Aset
+          <input id="ppToken" type="text" class="sel" value="USDT" placeholder="USDT / USDC / USD">
+        </label>
+        <label>Catatan (opsional)
+          <input id="ppNote" type="text" class="sel" maxlength="60" placeholder="mis. Payout #1 Prop Firm">
+        </label>
+        <button type="button" class="btn primary" id="ppSaveBtn">+ Simpan Payout Proof</button>
+      </div>
+
+      <div id="ppStatus" class="pp-status" hidden></div>
+      <div id="ppSum" class="pp-sum"></div>
+      <div id="ppList" class="pp-list"></div>
+    `;
+    walletView.appendChild(panel);
+
+    const selAcc = document.getElementById('ppAccSelect');
+    const selNet = document.getElementById('ppNet');
+    const inTx = document.getElementById('ppTx');
+    const inAmt = document.getElementById('ppAmount');
+    const inTok = document.getElementById('ppToken');
+    const inDate = document.getElementById('ppDate');
+    const inNote = document.getElementById('ppNote');
+    const btnFetch = document.getElementById('ppFetchBtn');
+    const btnSave = document.getElementById('ppSaveBtn');
+    let lastAutoMeta = null;
+
+    syncAccountOptions(selAcc);
+    renderPayoutList();
+
+    async function doLookup(){
+      const hash = inTx.value.trim();
+      if(!hash){ setStatus('warn', 'Tempel TX Hash terlebih dahulu untuk pengecekan otomatis.'); return; }
+      btnFetch.disabled = true;
+      btnFetch.textContent = '⏳ Memeriksa…';
+      setStatus('', 'Menghubungi blockchain explorer / RPC publik…');
+      try {
+        const res = await lookupTx(hash, selNet.value);
+        if(res && res.ok){
+          lastAutoMeta = res;
+          selNet.value = res.net;
+          if(res.token) inTok.value = res.token;
+          if(res.ts){
+            inDate.value = new Date(res.ts + 7 * 3600000).toISOString().slice(0, 10);
+          }
+          if(res.amount != null && res.isStable){
+            inAmt.value = Number(res.amount).toFixed(2);
+            setStatus('ok', `✔ TX terverifikasi di ${NETS[res.net].name}: ${res.amount.toLocaleString('en-US', { maximumFractionDigits: 4 })} ${res.token}. Total Payout USD terisi otomatis (tetap bisa diedit manual).`);
+          } else if(res.amount != null){
+            setStatus('warn', `✔ TX ditemukan di ${NETS[res.net].name}: ${res.amount} ${res.token}. Karena bukan stablecoin USD, silakan isi nominal USD payout secara manual.`);
+          } else {
+            setStatus('warn', `✔ TX ditemukan di ${NETS[res.net].name}, tetapi nominal token tidak terbaca otomatis — silakan isi Total Payout manual.`);
+          }
+        } else {
+          lastAutoMeta = null;
+          setStatus('warn', res?.msg || 'TX tidak ditemukan otomatis — Anda tetap bisa isi nominal payout secara manual.');
+        }
+      } catch(err){
+        lastAutoMeta = null;
+        setStatus('warn', `Gagal membaca on-chain (${err.message || 'koneksi dibatasi'}). Silakan isi nominal payout secara manual.`);
+      } finally {
+        btnFetch.disabled = false;
+        btnFetch.textContent = '🔍 Cek On-Chain';
+      }
+    }
+
+    btnFetch.onclick = doLookup;
+    inTx.addEventListener('paste', () => {
+      setTimeout(() => {
+        const v = inTx.value.trim();
+        if(/^0x[0-9a-fA-F]{64}$/.test(v) || /^[0-9a-fA-F]{64}$/.test(v)) doLookup();
+      }, 60);
+    });
+
+    selAcc.onchange = renderPayoutList;
+
+    btnSave.onclick = () => {
+      const accId = selAcc.value;
+      if(!accId){ setStatus('bad', 'Pilih akun trading terlebih dahulu.'); return; }
+      const amt = parseFloat(inAmt.value);
+      if(!Number.isFinite(amt) || amt <= 0){ setStatus('bad', 'Isi Total Payout ($) yang valid (lebih dari 0).'); return; }
+      const tx = inTx.value.trim();
+      let net = selNet.value;
+      if(net === 'AUTO'){
+        if(/^0x[0-9a-fA-F]{64}$/.test(tx)) net = 'B';
+        else if(/^[0-9a-fA-F]{64}$/.test(tx)) net = 'T';
+        else net = 'M';
+      }
+      const mainSel = document.getElementById('accountSelect');
+      const curLogin = mainSel && mainSel.value === accId ? (document.getElementById('accLogin')?.textContent?.trim() || '') : '';
+      const accLabel = selAcc.options[selAcc.selectedIndex]?.textContent || accId;
+
+      const all = loadAll();
+      all.push({
+        id: 'pp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        accountId: accId,
+        login: curLogin && curLogin !== '—' ? curLogin : '',
+        accountLabel: accLabel,
+        txHash: tx,
+        net,
+        amount: Number(amt.toFixed(2)),
+        token: (inTok.value || NETS[net]?.token || 'USDT').trim().toUpperCase(),
+        cur: 'USD',
+        date: inDate.value || today,
+        note: inNote.value.trim(),
+        auto: !!(lastAutoMeta && lastAutoMeta.txHash && lastAutoMeta.txHash.toLowerCase() === tx.toLowerCase()),
+        ts: Date.now()
+      });
+      saveAll(all);
+      inTx.value = ''; inAmt.value = ''; inNote.value = ''; lastAutoMeta = null;
+      setStatus('ok', '✔ Payout proof tersimpan! Sertifikat Achievement & QR Web Proof untuk akun ini otomatis diperbarui.');
+      renderPayoutList();
+    };
+
+    panel.addEventListener('click', e => {
+      const btn = e.target.closest('[data-ppdel]');
+      if(!btn) return;
+      const id = btn.getAttribute('data-ppdel');
+      saveAll(loadAll().filter(r => r.id !== id));
+      setStatus('', 'Payout proof dihapus.');
+      renderPayoutList();
+    });
+
+    // Sinkron saat dropdown akun utama berubah atau tab Wallet dibuka
+    document.addEventListener('change', e => {
+      if(e.target && e.target.id === 'accountSelect'){
+        syncAccountOptions(selAcc);
+        renderPayoutList();
+      }
+    });
+    document.addEventListener('click', e => {
+      if(e.target.closest('.tab[data-view="wallet"]')){
+        setTimeout(() => { syncAccountOptions(selAcc); renderPayoutList(); }, 80);
+      }
+    });
+    setInterval(() => {
+      const mainSel = document.getElementById('accountSelect');
+      if(mainSel && selAcc && mainSel.options.length > 0 && selAcc.options.length !== mainSel.options.length){
+        syncAccountOptions(selAcc);
+        renderPayoutList();
+      }
+    }, 2500);
+  }
+
+  window.__GBC_PAYOUT = { loadAll, listForAccount, summaryForAccount, NETS };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountWalletPanel);
+  else mountWalletPanel();
+})();
+</script>
 
 </body>
 </html>
