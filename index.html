@@ -3403,8 +3403,9 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 </style>
 
 <style id="trade-recap-png-css">
-.trp-wrap{margin-top:16px}
-.trp-grid{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:18px;align-items:start}
+.trp-wrap{margin-top:16px;overflow-anchor:none}
+.trp-grid{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:18px;align-items:stretch}
+.trp-grid>div:first-child{display:flex;flex-direction:column;justify-content:space-between;min-width:0}
 .trp-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .trp-form label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:600;color:var(--muted);min-width:0}
 .trp-form label.full{grid-column:1/-1}
@@ -3420,34 +3421,34 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 .trp-checks input{width:16px;height:16px;accent-color:var(--gold)}
 .trp-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .trp-actions .btn{flex:1 1 120px}
-.trp-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px;border:1px solid var(--line2);border-radius:14px;background:var(--bg0);min-width:0}
-.trp-stage canvas{display:block;width:100%;max-width:560px;height:auto;border-radius:10px;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.trp-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;border:1px solid var(--line2);border-radius:14px;background:var(--bg0);min-width:0;height:100%;box-sizing:border-box}
+.trp-stage canvas{display:block;width:100%;max-width:520px;height:auto;border-radius:10px;box-shadow:0 18px 50px rgba(0,0,0,.45)}
 .trp-meta{font:600 11px var(--fm);color:var(--faint);text-align:center}
-@media(max-width:980px){.trp-grid{grid-template-columns:1fr}}
-@media(max-width:520px){.trp-form,.trp-sliders{grid-template-columns:1fr}.trp-form label.full,.trp-bgbox{grid-column:auto}}
 
-.trp-wrap{overflow-anchor:none}
-.trp-right-col{display:flex;flex-direction:column;gap:14px;min-width:0;max-width:100%}
-.trp-calbox{padding:14px;border:1px solid var(--line2);border-radius:14px;background:var(--surface2,rgba(255,255,255,.025));min-width:0;max-width:100%;overflow:hidden}
+/* Kalender Input Manual (Full-Width di bawah Form & Preview) */
+.trp-calbox{margin-top:18px;padding:16px;border:1px solid var(--line2);border-radius:14px;background:var(--surface2,rgba(255,255,255,.025));width:100%;min-width:0;box-sizing:border-box;overflow:hidden}
 .trp-calbox[hidden]{display:none!important}
-.trp-calhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.trp-calhead b{font:700 13px var(--fh);color:var(--gold);letter-spacing:.04em}
+.trp-calhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.trp-calhead b{font:700 13.5px var(--fh);color:var(--gold);letter-spacing:.04em}
 .trp-calhead small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
-.trp-calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:68px;gap:6px;width:100%;min-width:0}
-.trp-caldow{display:flex;align-items:center;justify-content:center;height:22px;font:700 10px var(--fm);color:var(--faint)}
+.trp-calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:74px;gap:8px;width:100%;min-width:0}
+.trp-caldow{display:flex;align-items:center;justify-content:center;height:24px;font:700 10.5px var(--fm);color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
 .trp-calgrid>.trp-caldow{grid-row:1;align-self:end}
-.trp-calday{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:100%;height:100%;min-width:0;min-height:0;padding:6px;margin:0;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--text);text-align:left;cursor:pointer;overflow:hidden;box-sizing:border-box;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
+.trp-calday{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:100%;height:100%;min-width:0;min-height:0;padding:7px 8px;margin:0;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);text-align:left;cursor:pointer;overflow:hidden;box-sizing:border-box;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
 .trp-calday:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 8px 18px rgba(0,0,0,.32);z-index:2}
 .trp-calday.empty{opacity:.18;pointer-events:none;border-style:dashed}
 .trp-calday.win{background:color-mix(in srgb,var(--green) 14%,var(--surface));border-color:color-mix(in srgb,var(--green) 50%,transparent)}
 .trp-calday.loss{background:color-mix(in srgb,var(--red) 14%,var(--surface));border-color:color-mix(in srgb,var(--red) 50%,transparent)}
 .trp-calday .dn{font:700 10.5px var(--fm);color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:2px;line-height:1;min-width:0}
-.trp-calday .dc{font:700 8.5px var(--fm);padding:1px 4px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--text);flex:none}
-.trp-calday .dv{font:700 11.5px var(--fm);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.trp-calday .dc{font:700 8.5px var(--fm);padding:1px 5px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--text);flex:none}
+.trp-calday .dv{font:700 12px var(--fm);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .trp-calday.win .dv{color:var(--green)}
 .trp-calday.loss .dv{color:var(--red)}
-.trp-calday .da{font:600 9px var(--fm);color:var(--faint);line-height:1;opacity:0;transition:opacity .15s;white-space:nowrap}
+.trp-calday .da{font:600 9.5px var(--fm);color:var(--faint);line-height:1;opacity:0;transition:opacity .15s;white-space:nowrap}
 .trp-calday:hover .da{opacity:1;color:var(--gold)}
+
+@media(max-width:980px){.trp-grid{grid-template-columns:1fr}.trp-stage{height:auto}}
+@media(max-width:560px){.trp-form,.trp-sliders{grid-template-columns:1fr}.trp-form label.full,.trp-bgbox{grid-column:auto}.trp-calgrid{grid-auto-rows:54px;gap:4px}.trp-calday{padding:4px}.trp-calday .dv{font-size:10px}.trp-calday .da{display:none}}
 
 /* Pop-up Input Transaksi per Tanggal */
 .trp-modal{position:fixed;inset:0;z-index:9999;background:rgba(4,7,14,.78);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -4195,20 +4196,21 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 
 <div class="trp-right-col">
         <div class="trp-stage">
-          <canvas id="trpCanvas" width="1080" height="1350" aria-label="Preview PNG PnL Calendar Recap"></canvas>
-          <div class="trp-meta" id="trpMeta">1080 × 1350 px · PNG siap bagikan</div>
-        </div>
+        <canvas id="trpCanvas" width="1080" height="1350" aria-label="Preview PNG PnL Calendar Recap"></canvas>
+        <div class="trp-meta" id="trpMeta">1080 × 1350 px · PNG siap bagikan</div>
+      </div>
+    </div>
 
-        <div class="trp-calbox" id="trpCalEditor" hidden>
-          <div class="trp-calhead">
-            <div>
-              <b>🗓️ Kalender Input Manual — <span id="trpCalMonthTitle">—</span></b>
-              <small>Klik tanggal mana saja untuk input transaksi (Pair, Entry, SL, TP). Otomatis tersimpan &amp; update PNG.</small>
-            </div>
-            <button type="button" class="btn ghost" id="trpCalClearMonth" style="font-size:11px">🗑 Kosongkan Bulan Ini</button>
-          </div>
-          <div class="trp-calgrid" id="trpCalGrid"></div>
+    <div class="trp-calbox" id="trpCalEditor" hidden>
+      <div class="trp-calhead">
+        <div>
+          <b>🗓️ Kalender Input Manual — <span id="trpCalMonthTitle">—</span></b>
+          <small>Klik tanggal mana saja untuk input transaksi (Pair, Entry, SL, TP). Otomatis tersimpan &amp; update PNG di atas.</small>
         </div>
+        <button type="button" class="btn ghost" id="trpCalClearMonth" style="font-size:11px">🗑 Kosongkan Bulan Ini</button>
+      </div>
+      <div class="trp-calgrid" id="trpCalGrid"></div>
+    </div>
       </div>
        
     </div>
