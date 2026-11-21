@@ -2993,6 +2993,187 @@ html.mlite .card,html.mlite .gpanel{box-shadow:none!important}
 }
 #view-backtest .bt-form-set>.bt-consistency-custom:not(.on){display:none!important}
 </style>
+<style id="bt-dock-v1">
+/* ===== Backtest Lab · Dock — panel bertab, kartu ringkas, tanpa scroll panjang ===== */
+#view-backtest .btd-sentinel{display:none;height:0;margin:0;padding:0;pointer-events:none}
+#view-backtest .btd-tabs,#view-backtest .btd-tip{display:none}
+
+/* accordion & kotak catatan (semua lebar) */
+#view-backtest .btd-acc{border:1px solid var(--line);border-radius:12px;background:var(--surface2,rgba(255,255,255,.025));margin-top:10px;overflow:hidden}
+#view-backtest .btd-acc>summary,#view-backtest .btd-hintbox>summary{list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#view-backtest .btd-acc>summary::-webkit-details-marker,#view-backtest .btd-hintbox>summary::-webkit-details-marker{display:none}
+#view-backtest .btd-acc>summary{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;font:700 12.5px var(--fh,inherit);letter-spacing:.04em;color:var(--text)}
+#view-backtest .btd-acc>summary{white-space:nowrap}
+#view-backtest .btd-acc>summary small{flex:1 1 0;margin-left:auto;font:500 11px var(--fb,inherit);letter-spacing:0;color:var(--faint);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+#view-backtest .btd-acc>summary::after{content:"▾";flex:0 0 auto;color:var(--faint);font-size:12px;transition:transform .15s}
+#view-backtest .btd-acc[open]>summary::after{transform:rotate(180deg)}
+#view-backtest .btd-acc[open]>summary{border-bottom:1px solid var(--line)}
+#view-backtest .btd-acc>.bt-form{padding:12px 14px 14px}
+#view-backtest .btd-hintbox{margin-top:10px}
+#view-backtest .btd-hintbox>summary{display:flex;align-items:center;gap:8px;min-height:40px;font-size:12px;font-weight:700;color:var(--muted)}
+#view-backtest .btd-hintbox>summary::before{content:"ⓘ";color:var(--gold)}
+#view-backtest .btd-hintbox>summary::after{content:"▾";margin-left:auto;font-size:12px;transition:transform .15s}
+#view-backtest .btd-hintbox[open]>summary::after{transform:rotate(180deg)}
+#view-backtest .btd-hintbox .bt-hint{margin-top:4px}
+#view-backtest .btd-hintbox-set .bt-note{margin-top:10px}
+
+/* order ticket */
+#view-backtest .bt-form-t4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#view-backtest .bt-form-t4 .sel,#view-backtest .bt-form-t3 .sel{width:100%;min-width:0;box-sizing:border-box}
+#view-backtest .bt-form-t4 .bt-row .sel{flex:1 1 0}
+#view-backtest .bt-form-t4 .bt-row .btn{flex:0 0 44px;min-height:40px;padding:0}
+#view-backtest .bt-form-t3{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#view-backtest .bt-form-t3 label:last-child{grid-column:1/-1}
+#view-backtest .btd-adv{margin:0 0 12px}
+#view-backtest .bt-trade-btns{margin:0 0 12px}
+
+/* riwayat: bar ringkasan + filter */
+#view-backtest .btd-histbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line)}
+#view-backtest .btd-sum{display:flex;gap:4px 14px;flex-wrap:wrap;font:12px var(--fm);color:var(--muted)}
+#view-backtest .btd-sum b{color:var(--text)}
+#view-backtest .btd-sum .pos b{color:var(--green)}#view-backtest .btd-sum .neg b{color:var(--red)}
+#view-backtest .btd-sum b.pos{color:var(--green)}#view-backtest .btd-sum b.neg{color:var(--red)}
+#view-backtest .btd-seg{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line2);border-radius:10px;background:var(--surface2,rgba(255,255,255,.03))}
+#view-backtest .btd-seg button{border:0;background:transparent;color:var(--muted);font:700 12px var(--fb);padding:0 14px;min-height:32px;border-radius:7px;cursor:pointer}
+#view-backtest .btd-seg button.on{background:var(--gold-soft,rgba(217,176,104,.18));color:var(--gold)}
+#view-backtest .btd-hist[data-hf="w"] #btTrades tr.loss,#view-backtest .btd-hist[data-hf="w"] #btTrades tr.be,
+#view-backtest .btd-hist[data-hf="l"] #btTrades tr.win,#view-backtest .btd-hist[data-hf="l"] #btTrades tr.be{display:none!important}
+#view-backtest .btd-more{display:none;width:calc(100% - 20px);margin:6px 10px 10px;min-height:44px}
+#view-backtest .btd-hist[data-hf="w"] .btd-more,#view-backtest .btd-hist[data-hf="l"] .btd-more{display:none!important}
+@keyframes btdPulse{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+/* =========================  <= 1100px : mode tab  ========================= */
+@media(max-width:1100px){
+  #view-backtest .btd-sentinel{display:block}
+  #view-backtest .bt-main,#view-backtest .bt-side{display:contents}
+  #view-backtest>.section-head p,#view-backtest .btd-hide,#view-backtest .btd-hd-txt{display:none}
+  #view-backtest>.section-head{margin:8px 0 6px}
+  #view-backtest .btd-actions-head{display:flex;justify-content:flex-end;margin:10px 0 0}
+  #view-backtest .btd-actions-head .bt-actions{width:100%;grid-template-columns:minmax(0,1fr)}
+  #view-backtest .btd-actions-head .bt-actions .btn{width:100%}
+  #view-backtest[data-btd="hist"] #btExportPng,#view-backtest[data-btd="stat"] #btExportCsv{display:none}
+  #view-backtest .btx-card{margin-top:10px}
+  #view-backtest .bt-side>.card,#view-backtest .bt-results,#view-backtest .btd-hist,#view-backtest .table-card[data-btp],#view-backtest .bt-settings{margin-top:10px}
+
+  /* bar tab (menempel di atas saat scroll) */
+  #view-backtest .btd-tabs{display:flex;gap:6px;position:sticky;top:0;z-index:35;margin:10px 0 0;padding:8px 0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;background:color-mix(in srgb,var(--bg0,#080a0f) 97%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  #view-backtest .btd-tabs::-webkit-scrollbar{display:none}
+  #view-backtest .btd-tabs button{flex:1 0 auto;min-height:42px;padding:0 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface2,rgba(255,255,255,.03));color:var(--muted);font:700 12.5px var(--fb);display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #view-backtest .btd-tabs button.on{background:var(--gold-soft,rgba(217,176,104,.16));border-color:var(--gold);color:var(--gold)}
+  #view-backtest .btd-tabs i{font-style:normal;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--gold);color:#0b0d12;font:800 10.5px var(--fm);display:inline-flex;align-items:center;justify-content:center}
+  #view-backtest .btd-tabs i[hidden]{display:none}
+  #view-backtest .btd-tabs i.pulse{animation:btdPulse .5s ease}
+  #view-backtest .btd-tip{display:block;margin:10px 2px 0;font-size:11.5px;line-height:1.5;color:var(--faint)}
+
+  /* hanya panel aktif yang tampil */
+  #view-backtest[data-btd="order"] [data-btp]:not([data-btp~="order"]),
+  #view-backtest[data-btd="pos"]   [data-btp]:not([data-btp~="pos"]),
+  #view-backtest[data-btd="hist"]  [data-btp]:not([data-btp~="hist"]),
+  #view-backtest[data-btd="stat"]  [data-btp]:not([data-btp~="stat"]),
+  #view-backtest[data-btd="akun"]  [data-btp]:not([data-btp~="akun"]),
+  #view-backtest[data-btd="set"]   [data-btp]:not([data-btp~="set"]){display:none!important}
+
+  /* daftar drawing = satu baris geser; bantuan 2 baris (ketuk untuk buka) */
+  #view-backtest .btx-card:not(.full) .btx-dl{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  #view-backtest .btx-card:not(.full) .btx-dl::-webkit-scrollbar{display:none}
+  #view-backtest .btx-card:not(.full) .btx-dl .btx-chip{flex:0 0 auto}
+  #view-backtest .btx-card:not(.full) .btx-dl:has(.btx-dl-empty){display:block;overflow:visible}
+  #view-backtest .btx-card:not(.full) .btx-help{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;cursor:pointer}
+  #view-backtest .btx-card:not(.full) .btx-help.open{display:block}
+  #view-backtest .btx-card:not(.full) .btx-help:empty{display:none}
+
+  #view-backtest .bt-ticket .panel-title,#view-backtest [data-btp="akun"] .panel-title{margin-bottom:10px;padding-bottom:8px}
+  #view-backtest .bt-results{grid-template-columns:minmax(0,1fr);gap:10px}
+  #view-backtest .bt-results>:nth-child(2){order:-1}
+  #view-backtest .bt-eqwrap{height:210px}
+  #view-backtest .metric strong{overflow-wrap:anywhere}
+}
+
+/* =========================  <= 760px : HP  ========================= */
+@media(max-width:760px){
+  #view-backtest .table-card .table-scroll{max-height:none;overflow:visible}
+  #view-backtest .table-card{padding:10px;overflow:visible}
+  #view-backtest .btd-histbar{padding:2px 0 10px;border-bottom:1px solid var(--line);margin-bottom:10px}
+  #view-backtest .btd-seg{width:100%}
+  #view-backtest .btd-seg button{flex:1 1 0;min-height:38px}
+  #view-backtest .btd-hist:not([data-hf="w"]):not([data-hf="l"]) .btd-more:not([hidden]){display:block}
+  #view-backtest .btd-hist[data-hf="all"]:not([data-hall="1"]) #btTrades tr.btd-x{display:none!important}
+  #view-backtest .btd-acc>summary{min-height:50px}
+
+  /* ---- posisi & pending: kartu 4 baris ---- */
+  #view-backtest #btPosTable,#view-backtest #btPosTable tbody{display:block;width:100%}
+  #view-backtest #btPosTable tr{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;align-items:center;padding:12px;margin:0 0 8px;border-radius:14px}
+  #view-backtest #btPosTable tr.sel{border-color:var(--gold)}
+  #view-backtest #btPosTable td{display:block;min-width:0;padding:0;border:0;text-align:left;font-size:13px}
+  #view-backtest #btPosTable td::before{display:none}
+  #view-backtest #btPosTable td:nth-child(1){order:1;grid-column:span 1;color:var(--muted);font-size:12px}
+  #view-backtest #btPosTable td:nth-child(3){order:2;grid-column:span 2}
+  #view-backtest #btPosTable td:nth-child(2){order:3;grid-column:span 1}
+  #view-backtest #btPosTable td:nth-child(8){order:4;grid-column:span 2;text-align:right;font-size:17px;font-weight:700}
+  #view-backtest #btPosTable td:nth-child(4){order:5;grid-column:span 2}
+  #view-backtest #btPosTable td:nth-child(5){order:6;grid-column:span 4}
+  #view-backtest #btPosTable td:nth-child(6){order:7;grid-column:span 3}
+  #view-backtest #btPosTable td:nth-child(7){order:8;grid-column:span 3}
+  #view-backtest #btPosTable td:nth-child(9){order:9;grid-column:1/-1}
+  #view-backtest #btPosTable td:nth-child(n+4):nth-child(-n+7){display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+  #view-backtest #btPosTable td:nth-child(n+4):nth-child(-n+7)::before{display:block;color:var(--faint);font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+  #view-backtest #btPosTable td.btx-acts{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px}
+  #view-backtest #btPosTable td.btx-acts .btn{min-height:42px;padding:0 4px;font-size:12px;white-space:nowrap}
+  #view-backtest #btPosTable td .bt-mini{width:100%;min-width:0}
+  #view-backtest #btPosTable td[colspan]{display:block;grid-column:1/-1;order:0;text-align:center;font-size:12px;line-height:1.6}
+
+  /* ---- riwayat: satu baris ringkas, ketuk untuk detail ---- */
+  #view-backtest #btTrades,#view-backtest #btTrades tbody{display:block;width:100%}
+  #view-backtest #btTrades tr{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px 8px;align-items:center;padding:10px 12px;margin:0 0 6px;border-radius:12px;cursor:pointer;border-left:3px solid var(--line2);-webkit-tap-highlight-color:transparent}
+  #view-backtest #btTrades tr.win{border-left-color:var(--green)}
+  #view-backtest #btTrades tr.loss{border-left-color:var(--red)}
+  #view-backtest #btTrades td{display:block;min-width:0;padding:0;border:0;text-align:left;font-size:12.5px}
+  #view-backtest #btTrades td::before{display:none}
+  #view-backtest #btTrades td:nth-child(1){order:1;grid-column:span 1;display:flex;align-items:center;gap:4px;color:var(--muted)}
+  #view-backtest #btTrades td:nth-child(1)::after{content:"▾";font-size:10px;color:var(--faint)}
+  #view-backtest #btTrades tr.open td:nth-child(1)::after{content:"▴"}
+  #view-backtest #btTrades td:nth-child(2){order:2;grid-column:span 1}
+  #view-backtest #btTrades td:nth-child(3){order:3;grid-column:span 1}
+  #view-backtest #btTrades td:nth-child(9){order:4;grid-column:span 1;text-align:right;color:var(--muted)}
+  #view-backtest #btTrades td:nth-child(10){order:5;grid-column:span 2;text-align:right;font-size:14px;font-weight:700}
+  #view-backtest #btTrades td:nth-child(n+4):nth-child(-n+8){display:none}
+  #view-backtest #btTrades tr.open td:nth-child(n+4):nth-child(-n+8){display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+  #view-backtest #btTrades tr.open td:nth-child(n+4):nth-child(-n+8)::before{display:block;color:var(--faint);font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+  #view-backtest #btTrades tr.open td:nth-child(5){order:6;grid-column:span 3;border-top:1px dashed var(--line);padding-top:8px}
+  #view-backtest #btTrades tr.open td:nth-child(7){order:7;grid-column:span 3;border-top:1px dashed var(--line);padding-top:8px}
+  #view-backtest #btTrades tr.open td:nth-child(4){order:8;grid-column:span 3}
+  #view-backtest #btTrades tr.open td:nth-child(6){order:9;grid-column:span 3}
+  #view-backtest #btTrades tr.open td:nth-child(8){order:10;grid-column:1/-1}
+  #view-backtest #btTrades td[colspan]{display:block!important;grid-column:1/-1;order:0;text-align:center;font-size:12px;color:var(--faint)}
+  #view-backtest #btTrades td[colspan]::after{display:none}
+
+  /* --- penyempurnaan --- */
+  #view-backtest .btd-actions-head{justify-content:flex-end}
+  #view-backtest .table-card[data-btp="pos"]{background:transparent;border:0;box-shadow:none;padding:0}
+  #view-backtest .btd-actions-head .bt-actions{width:auto;display:flex}
+  #view-backtest .btd-actions-head .bt-actions .btn{width:auto;min-height:38px;padding:0 14px;font-size:12px}
+  #view-backtest .btd-histbar{border-bottom:0;padding-bottom:8px;margin-bottom:6px}
+  #view-backtest .bt-settings{padding:10px}
+  #view-backtest .metrics .metric{padding:9px 11px}
+  #view-backtest .metrics .metric strong{font-size:15px;margin-top:3px}
+  #view-backtest #btTrades tr{grid-template-columns:minmax(0,.85fr) minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) repeat(2,minmax(0,.9fr))}
+  #view-backtest #btTrades td:nth-child(1){justify-content:flex-start}
+  #view-backtest #btTrades td:nth-child(3){padding-left:6px}
+  #view-backtest #btTrades tr:has(td[colspan]),#view-backtest #btPosTable tr:has(td[colspan]){display:block;padding:14px 10px;border:1px dashed var(--line2);background:transparent}
+  #view-backtest #btTrades td[colspan],#view-backtest #btPosTable td[colspan]{white-space:normal;overflow-wrap:anywhere;padding:0!important}
+}
+@media(max-width:380px){
+  #view-backtest .btd-tabs button{padding:0 9px;font-size:12px}
+  #view-backtest #btTrades td{font-size:12px}
+  #view-backtest #btPosTable td.btx-acts .btn{font-size:11.5px}
+}
+
+@media(max-width:480px){
+  #view-backtest .btd-tabs{gap:4px}
+  #view-backtest .btd-tabs button{padding:0 7px;font-size:12px;gap:4px;min-height:40px}
+}
+
+</style>
 <style id="qd-dual-style">
 /* ===== Quantum DOM · Dual Market + Sinyal Realtime ===== */
 .qd-dualwrap{display:flex;flex-direction:column;gap:14px;margin-top:6px;min-width:0}
@@ -3705,7 +3886,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
       <div class="card table-card"><div class="table-scroll"><table id="positionsTable"></table></div></div>
     </section>
 
-    <section id="view-backtest" class="view">
+    <section id="view-backtest" class="view" data-btd="order">
       <div class="section-head"><div><h2>Backtest Lab</h2><p>Replay chart candle demi candle, buka posisi seperti live, lalu lihat statistik dan kurva equity. Terintegrasi dengan aturan prop firm: margin rule, daily loss, overall loss, dan target profit.</p></div></div>
 
       <div class="card panel bt-data">
@@ -3722,7 +3903,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
           <label class="bt-src bt-src-bin">Berakhir pada (opsional)<input id="btBinEnd" type="date" class="sel"></label>
           <button id="btLoadBin" class="btn primary bt-src bt-src-bin" type="button">Muat dari Binance</button>
         </div>
-        <p class="bt-hint">CSV yang didukung: ekspor MT5 (Tools → History Center → Export, atau Market Watch → Export Bars) dengan kolom tanggal, waktu, open, high, low, close; juga format <i>time,open,high,low,close</i> atau Unix timestamp. Data Binance bukan harga broker, jadi hasilnya hanya pendekatan.</p>
+        <details class="btd-hintbox"><summary>Format CSV yang didukung</summary><p class="bt-hint">CSV yang didukung: ekspor MT5 (Tools → History Center → Export, atau Market Watch → Export Bars) dengan kolom tanggal, waktu, open, high, low, close; juga format <i>time,open,high,low,close</i> atau Unix timestamp. Data Binance bukan harga broker, jadi hasilnya hanya pendekatan.</p></details>
         </div>
         <div id="btResume" class="bt-resume"></div>
       </div>
@@ -3775,27 +3956,41 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
           <div id="btDrawingList" class="btx-dl" aria-label="Daftar drawing"></div>
         </div>
 
+        <div id="btdSentinel" class="btd-sentinel" aria-hidden="true"></div>
+        <nav class="btd-tabs" id="btdTabs" role="tablist" aria-label="Panel Backtest">
+          <button type="button" role="tab" data-btd="order" class="on" aria-selected="true">Order</button>
+          <button type="button" role="tab" data-btd="pos" aria-selected="false">Posisi <i id="btdBadgePos" hidden>0</i></button>
+          <button type="button" role="tab" data-btd="hist" aria-selected="false">Riwayat <i id="btdBadgeHist" hidden>0</i></button>
+          <button type="button" role="tab" data-btd="stat" aria-selected="false">Statistik</button>
+          <button type="button" role="tab" data-btd="akun" aria-selected="false">Akun</button>
+          <button type="button" role="tab" data-btd="set" aria-selected="false">Setelan</button>
+        </nav>
         <div class="bt-side">
-          <div class="card panel bt-ticket">
+          <div class="card panel bt-ticket" data-btp="order">
             <div class="panel-title"><h3>Order Ticket<span id="btSelInfo"></span></h3><span id="btPrice" class="mono">—</span></div>
-            <div class="bt-form bt-form-ticket">
+            <div class="bt-form bt-form-t4">
               <label>Lot<input id="btLots" class="sel" type="number" min="0.01" step="0.01" value="0.10" inputmode="decimal"></label>
-              <label>Harga entry (kosong = market)<span class="bt-row"><input id="btEntry" class="sel" type="number" step="any" inputmode="decimal" placeholder="market"><button class="btn bt-pick" data-pick="entry" type="button" title="Pilih di chart">🎯</button></span></label>
+              <label>Entry (kosong = market)<span class="bt-row"><input id="btEntry" class="sel" type="number" step="any" inputmode="decimal" placeholder="market"><button class="btn bt-pick" data-pick="entry" type="button" title="Pilih di chart">🎯</button></span></label>
               <label>Stop Loss<span class="bt-row"><input id="btSL" class="sel" type="number" step="any" inputmode="decimal" placeholder="opsional"><button class="btn bt-pick" data-pick="sl" type="button" title="Pilih di chart">🎯</button></span></label>
               <label>Take Profit<span class="bt-row"><input id="btTP" class="sel" type="number" step="any" inputmode="decimal" placeholder="opsional"><button class="btn bt-pick" data-pick="tp" type="button" title="Pilih di chart">🎯</button></span></label>
-              <label>Preset Risk : Reward<select id="btRR" class="sel"><option value="custom">Custom / manual</option><option value="0.5">1 : 0.5</option><option value="1" selected>1 : 1</option><option value="1.5">1 : 1.5</option><option value="2">1 : 2</option></select></label>
-              <label>Jarak SL otomatis (satuan harga, kosong = ATR)<input id="btAutoSL" class="sel" type="number" min="0" step="any" inputmode="decimal" placeholder="mis. 5.00"></label>
-              <label>Risk % per trade<span class="bt-row"><input id="btRisk" class="sel" type="number" min="0.1" step="0.1" value="1" inputmode="decimal"><button id="btCalcLot" class="btn" type="button" title="Hitung lot dari jarak SL">Lot dari risk</button></span></label>
             </div>
             <div class="bt-maxlot" id="btMaxLot">—</div>
             <div class="bt-trade-btns">
               <button id="btBuy" class="bt-buy" type="button"><small>BUY</small><b>—</b></button>
               <button id="btSell" class="bt-sell" type="button"><small>SELL</small><b>—</b></button>
             </div>
+            <details class="btd-acc btd-adv" data-def="closed">
+              <summary>Risk &amp; SL otomatis<small>RR · jarak SL · risk %</small></summary>
+              <div class="bt-form bt-form-t3">
+                <label>Preset Risk : Reward<select id="btRR" class="sel"><option value="custom">Custom / manual</option><option value="0.5">1 : 0.5</option><option value="1" selected>1 : 1</option><option value="1.5">1 : 1.5</option><option value="2">1 : 2</option></select></label>
+                <label>Jarak SL otomatis (kosong = ATR)<input id="btAutoSL" class="sel" type="number" min="0" step="any" inputmode="decimal" placeholder="mis. 5.00"></label>
+                <label>Risk % per trade<span class="bt-row"><input id="btRisk" class="sel" type="number" min="0.1" step="0.1" value="1" inputmode="decimal"><button id="btCalcLot" class="btn" type="button" title="Hitung lot dari jarak SL">Lot dari risk</button></span></label>
+              </div>
+            </details>
             <button id="btCloseAll" class="btn danger bt-wide" type="button">Tutup semua posisi &amp; batalkan order</button>
           </div>
 
-          <div class="card panel">
+          <div class="card panel" data-btp="akun">
             <div class="panel-title"><h3>Akun &amp; Aturan Prop</h3><span id="btRuleState" class="tag">—</span></div>
             <div class="metrics bt-kpis" id="btKpis"></div>
             <div id="btRules" class="bt-rules"></div>
@@ -3803,24 +3998,39 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
         </div>
       </div>
 
-      <div class="section-head"><div><h2>Posisi &amp; Order</h2><p>Posisi terisi menampilkan floating P/L berdasarkan candle replay saat ini. Ketuk harga pada chart untuk membuka popup BUY/SELL LIMIT/STOP atau market; pending menunggu trigger sampai harga menyentuh level. Seret garis untuk mengubah level, dan gunakan ⇄ untuk membalik arah.</p></div></div>
-      <div class="card table-card"><div class="table-scroll"><table id="btPosTable" class="btx-tbl"></table></div></div>
+      <div class="section-head btd-hide" data-btp="pos"><div><h2>Posisi &amp; Order</h2><p>Posisi terisi menampilkan floating P/L berdasarkan candle replay saat ini. Ketuk harga pada chart untuk membuka popup BUY/SELL LIMIT/STOP atau market; pending menunggu trigger sampai harga menyentuh level. Seret garis untuk mengubah level, dan gunakan ⇄ untuk membalik arah.</p></div></div>
+      <div class="btd-tip" data-btp="pos">Ketuk baris untuk memilih di chart · SL/TP bisa diedit langsung · ⇄ membalik arah · ketuk harga di chart untuk pending order.</div>
+      <div class="card table-card" data-btp="pos"><div class="table-scroll"><table id="btPosTable" class="btx-tbl"></table></div></div>
 
-      <div class="section-head"><div><h2>Hasil Backtest</h2><p>Statistik dihitung dari trade yang sudah tertutup.</p></div><div class="bt-actions"><button id="btExportCsv" class="btn" type="button">↓ CSV trade</button><button id="btExportPng" class="btn primary" type="button">↓ Kartu PNG</button></div></div>
-      <div class="grid2 bt-results">
+      <div class="section-head btd-actions-head" data-btp="stat hist"><div class="btd-hd-txt"><h2>Hasil Backtest</h2><p>Statistik dihitung dari trade yang sudah tertutup.</p></div><div class="bt-actions"><button id="btExportCsv" class="btn" type="button">↓ CSV trade</button><button id="btExportPng" class="btn primary" type="button">↓ Kartu PNG</button></div></div>
+      <div class="grid2 bt-results" data-btp="stat">
         <div class="card panel"><div class="panel-title"><h3>Statistik</h3><span id="btStatInfo"></span></div><div class="metrics" id="btStats"></div></div>
         <div class="card panel"><div class="panel-title"><h3>Kurva Equity</h3><span id="btEqInfo"></span></div><div class="bt-eqwrap"><canvas id="btEq"></canvas></div></div>
       </div>
-      <div class="card table-card" style="margin-top:16px"><div class="table-scroll"><table id="btTrades" class="btx-tbl"></table></div></div>
+      <div class="card table-card btd-hist" id="btHistCard" data-btp="hist" data-hf="all" data-hall="0">
+        <div class="btd-histbar">
+          <div class="btd-sum" id="btHistSum"><span>Belum ada trade tertutup.</span></div>
+          <div class="btd-seg" id="btHistFilter" role="group" aria-label="Filter hasil trade"><button type="button" data-f="all" class="on">Semua</button><button type="button" data-f="w">Win</button><button type="button" data-f="l">Loss</button></div>
+        </div>
+        <div class="table-scroll"><table id="btTrades" class="btx-tbl"></table></div>
+        <button id="btHistMore" class="btn btd-more" type="button" hidden>Tampilkan lebih banyak</button>
+      </div>
 
-      <div class="section-head"><div><h2>Pengaturan Simulasi</h2><p>Atur akun dan aturan prop firm. Perubahan berlaku langsung, kecuali balance awal yang berlaku setelah Reset.</p></div></div>
-      <div class="card panel bt-settings">
-        <div class="bt-form bt-form-set">
+      <div class="section-head btd-hide" data-btp="set"><div><h2>Pengaturan Simulasi</h2><p>Atur akun dan aturan prop firm. Perubahan berlaku langsung, kecuali balance awal yang berlaku setelah Reset.</p></div></div>
+      <div class="card panel bt-settings" data-btp="set">
+        <details class="btd-acc" data-def="open" open>
+          <summary>Akun &amp; Biaya<small>balance · kontrak · spread</small></summary>
+          <div class="bt-form bt-form-set">
           <label>Balance awal ($)<input id="btBal" class="sel" type="number" min="100" step="100" inputmode="decimal"></label>
           <label>Contract size<input id="btContract" class="sel" type="number" min="0.0001" step="any" inputmode="decimal"></label>
           <label>Leverage (1:x)<input id="btLev" class="sel" type="number" min="1" step="1" inputmode="decimal"></label>
           <label>Spread (satuan harga)<input id="btSpread" class="sel" type="number" min="0" step="any" inputmode="decimal"></label>
           <label>Komisi per lot (round-turn, $)<input id="btComm" class="sel" type="number" min="0" step="0.1" inputmode="decimal"></label>
+          </div>
+        </details>
+        <details class="btd-acc" data-def="closed" open>
+          <summary>Margin &amp; Lot<small>margin rule · max FL · SL</small></summary>
+          <div class="bt-form bt-form-set">
           <label class="bt-check"><input id="btProp" type="checkbox"> Aktifkan aturan prop firm</label>
           <label>Margin rule (% dari dasar)<input id="btMPct" class="sel" type="number" min="1" step="0.5" inputmode="decimal"></label>
           <label>Dasar margin rule<select id="btMBase" class="sel"><option value="balance">Balance</option><option value="equity">Equity</option></select></label>
@@ -3828,6 +4038,12 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
           <label>Max floating loss per order (%)<input id="btMaxFL" class="sel" type="number" min="0" max="100" step="0.1" inputmode="decimal"></label>
           <label>Buffer floating loss / slippage (%)<input id="btFLBuffer" class="sel" type="number" min="0" max="99" step="0.1" inputmode="decimal"></label>
           <label>Batas waktu pasang SL setelah posisi terbuka (detik)<input id="btSlGrace" class="sel" type="number" min="5" max="600" step="1" inputmode="numeric"></label>
+          <label class="bt-check"><input id="btBlock" type="checkbox"> Tolak order yang melanggar margin rule</label>
+          </div>
+        </details>
+        <details class="btd-acc" data-def="closed" open>
+          <summary>Batas Prop Firm<small>daily · overall · target · konsistensi</small></summary>
+          <div class="bt-form bt-form-set">
           <label>Daily loss limit (%)<input id="btDaily" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
           <label>Overall loss limit (%)<input id="btOverall" class="sel" type="number" min="0" step="0.5" inputmode="decimal"></label>
           <label>Mode overall drawdown<select id="btDDMode" class="sel"><option value="static">Static DD — batas tetap</option><option value="trailing">Trailing DD — mengikuti peak</option></select></label>
@@ -3841,15 +4057,18 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
           </label>
           <label id="btConsistencyCustomWrap" class="bt-consistency-custom">Konsistensi custom (%)<input id="btConsistency" class="sel" type="number" min="1" max="100" step="1" inputmode="numeric" value="40" placeholder="1–100"></label>
           <div class="bt-consistency-state" id="btConsistencyState" style="grid-column:1/-1">Batas konsistensi: hari profit terbesar tidak boleh melebihi 40% dari total profit bersih saat target profit tercapai.</div>
-          <label class="bt-check"><input id="btBlock" type="checkbox"> Tolak order yang melanggar margin rule</label>
           <label class="bt-check"><input id="btStop" type="checkbox"> Hentikan akun saat rule dilanggar (breach)</label>
-        </div>
-        <p class="bt-hint">Contoh contract size: XAUUSD 100, BTC/ETH 1. Pair dengan quote non-USD tidak dikonversi ke dolar. Angka daily/overall/target hanya contoh awal, samakan dengan aturan firm kamu. Margin rule memakai pengaturan yang sama dengan Margin Rule Guard di tab Risk. Max FL efektif = Max FL per order dikurangi buffer slippage; order boleh dibuka tanpa SL, tetapi posisi ditutup otomatis bila SL belum dipasang dalam batas waktu di atas; SL dengan risiko di atas batas akan ditolak.</p>
+          </div>
+        </details>
         <div class="bt-apply-row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">
           <button id="btApplySettings" class="btn primary" type="button">✓ Terapkan Pengaturan</button>
           <span id="btApplyStatus" role="status" aria-live="polite" style="font-size:11px;color:var(--muted)">Pengaturan tersimpan lokal; tekan Terapkan untuk menyegarkan Akun &amp; Aturan Prop.</span>
         </div>
-        <div class="bt-note">Catatan eksekusi: simulasi berbasis candle (tanpa data tick). Bila SL dan TP sama-sama tersentuh dalam satu candle, SL dianggap kena lebih dulu. Gap melewati SL terisi di harga open candle. Hasil backtest hanyalah gambaran, bukan jaminan.</div>
+        <details class="btd-hintbox btd-hintbox-set">
+          <summary>Catatan &amp; penjelasan</summary>
+          <p class="bt-hint">Contoh contract size: XAUUSD 100, BTC/ETH 1. Pair dengan quote non-USD tidak dikonversi ke dolar. Angka daily/overall/target hanya contoh awal, samakan dengan aturan firm kamu. Margin rule memakai pengaturan yang sama dengan Margin Rule Guard di tab Risk. Max FL efektif = Max FL per order dikurangi buffer slippage; order boleh dibuka tanpa SL, tetapi posisi ditutup otomatis bila SL belum dipasang dalam batas waktu di atas; SL dengan risiko di atas batas akan ditolak.</p>
+          <div class="bt-note">Catatan eksekusi: simulasi berbasis candle (tanpa data tick). Bila SL dan TP sama-sama tersentuh dalam satu candle, SL dianggap kena lebih dulu. Gap melewati SL terisi di harga open candle. Hasil backtest hanyalah gambaran, bukan jaminan.</div>
+        </details>
       </div>
     </section>
 
@@ -10965,10 +11184,22 @@ function updateResults(){
   const m=(l,v,c)=>`<div class="metric"><label>${l}</label><strong class="${c||''}">${v}</strong></div>`;
   $('btStats').innerHTML=m('Net profit',fm(st.net,true),st.net>=0?'pos':'neg')+m('Return',pc(st.ret,true),st.ret>=0?'pos':'neg')+m('Win rate',st.n?f2(st.wr)+'%':'—')+m('Profit factor',st.n?(st.pf===Infinity?'∞':f2(st.pf)):'—')+m('Expectancy',st.n?fm(st.exp,true):'—',st.exp>=0?'pos':'neg')+m('Rata-rata win',st.n?fm(st.avgW):'—','pos')+m('Rata-rata loss',st.n?fm(st.avgL):'—','neg')+m('Avg R',st.avgR!=null?f2(st.avgR)+'R':'—')+m('Max drawdown',`${fm(S.maxDD)} (${f2(S.maxDDpct)}%)`,'neg')+m('Trade terbaik',st.n?fm(st.best,true):'—','pos')+m('Trade terburuk',st.n?fm(st.worst,true):'—','neg')+m('Loss beruntun maks',st.n?String(st.maxL):'—');
   $('btEqInfo').textContent=S.eq.length>1?`${fm(S.initial)} → ${fm(S.eq[S.eq.length-1][1])}`:'';
+  const tb=$('btTrades'),prevOpen=new Set();
+  tb.querySelectorAll('tr.open[data-tid]').forEach(r=>prevOpen.add(r.dataset.tid));
   let h='<thead><tr><th>#</th><th>Tipe</th><th>Lot</th><th>Buka</th><th>Entry</th><th>Tutup</th><th>Exit</th><th>Alasan</th><th>R</th><th>P/L</th></tr></thead><tbody>';
-  S.closed.slice(-200).reverse().forEach(t=>{h+=`<tr><td data-label="#" class="mono">${t.id}</td><td data-label="Tipe"><span class="tag ${t.side}">${t.side}</span></td><td data-label="Lot" class="mono">${f2(t.lots)}</td><td data-label="Buka" class="mono">${fdt(t.openT,true)}</td><td data-label="Entry" class="mono">${fp(t.entry)}</td><td data-label="Tutup" class="mono">${fdt(t.closeT,true)}</td><td data-label="Exit" class="mono">${fp(t.exit)}</td><td data-label="Alasan">${esc(t.reason)}</td><td data-label="R" class="mono">${(t.R!=null?Number(t.R):(t.sl>0&&t.entry>0&&t.lots>0&&nz(cfg.contract)>0?(t.pnl/(Math.abs(t.entry-t.sl)*t.lots*nz(cfg.contract))):NaN))!=null&&Number.isFinite(t.R!=null?Number(t.R):(t.sl>0&&t.entry>0&&t.lots>0&&nz(cfg.contract)>0?(t.pnl/(Math.abs(t.entry-t.sl)*t.lots*nz(cfg.contract))):NaN))?f2(t.R!=null?Number(t.R):(t.pnl/(Math.abs(t.entry-t.sl)*t.lots*nz(cfg.contract))))+'R':'—'}</td><td data-label="P/L" class="mono ${t.pnl>=0?'pos':'neg'}">${fm(t.pnl,true)}</td></tr>`;});
+  const rows=S.closed.slice(-200).reverse();
+  rows.forEach((t,ix)=>{
+    const rv=t.R!=null?Number(t.R):((t.sl>0&&t.entry>0&&t.lots>0&&nz(cfg.contract)>0)?(t.pnl/(Math.abs(t.entry-t.sl)*t.lots*nz(cfg.contract))):NaN);
+    const cls=(t.pnl>0?'win':t.pnl<0?'loss':'be')+(ix>=20?' btd-x':'')+(prevOpen.has(String(t.id))?' open':'');
+    h+=`<tr class="${cls}" data-tid="${t.id}"><td data-label="#" class="mono">${t.id}</td><td data-label="Tipe"><span class="tag ${t.side}">${t.side}</span></td><td data-label="Lot" class="mono">${f2(t.lots)}</td><td data-label="Buka" class="mono">${fdt(t.openT,true)}</td><td data-label="Entry" class="mono">${fp(t.entry)}</td><td data-label="Tutup" class="mono">${fdt(t.closeT,true)}</td><td data-label="Exit" class="mono">${fp(t.exit)}</td><td data-label="Alasan">${esc(t.reason)}</td><td data-label="R" class="mono ${Number.isFinite(rv)?(rv>0?'pos':rv<0?'neg':''):''}">${Number.isFinite(rv)?f2(rv)+'R':'—'}</td><td data-label="P/L" class="mono ${t.pnl>=0?'pos':'neg'}">${fm(t.pnl,true)}</td></tr>`;
+  });
   if(!S.closed.length)h+='<tr><td colspan="10" class="empty" style="color:var(--faint)">Belum ada trade tertutup.</td></tr>';
-  $('btTrades').innerHTML=h+'</tbody>';
+  tb.innerHTML=h+'</tbody>';
+  const sum=$('btHistSum');
+  if(sum){const w=S.closed.filter(t=>t.pnl>0).length,l=S.closed.filter(t=>t.pnl<0).length;sum.innerHTML=S.closed.length?`<span>Total <b>${S.closed.length}</b></span><span class="pos">Win <b>${w}</b></span><span class="neg">Loss <b>${l}</b></span><span>Net <b class="${st.net>=0?'pos':'neg'}">${fm(st.net,true)}</b></span>`:'<span>Belum ada trade tertutup.</span>';}
+  const bh=$('btdBadgeHist');if(bh){bh.textContent=S.closed.length;bh.hidden=!S.closed.length;}
+  const hc=$('btHistCard'),mo=$('btHistMore');
+  if(hc&&mo){const hid=Math.max(0,rows.length-20);mo.hidden=!hid||hc.dataset.hall==='1';mo.textContent=`Tampilkan ${hid} trade lainnya`;}
 }
 function setText(el,t){if(el&&el.__t!==t){el.__t=t;el.textContent=t;}}
 function updateMini(){
@@ -10997,6 +11228,8 @@ function updateStatus(){
 }
 function updatePos(){
   const sig=S.pos.map(p=>[p.id,p.side,p.lots,p.entry,p.sl,p.tp].join(':')).join(',')+'|'+S.pend.map(q=>[q.id,q.side,q.type,q.lots,q.price,q.sl,q.tp].join(':')).join(',')+'|'+(S.sel?S.sel.kind+S.sel.id:'');
+  const bp=$('btdBadgePos');
+  if(bp){const c=S.pos.length+S.pend.length;if(bp.__c!==c){const up=bp.__c!=null&&c>bp.__c;bp.__c=c;bp.textContent=c;bp.hidden=!c;if(up){bp.classList.remove('pulse');void bp.offsetWidth;bp.classList.add('pulse');}}}
   const tbl=$('btPosTable');
   if(sig!==S.sig.pos){
     S.sig.pos=sig;
@@ -15717,5 +15950,49 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 </script>
    
    
+<script id="bt-dock-js">
+(function(){
+  'use strict';
+  var root=document.getElementById('view-backtest'),tabs=document.getElementById('btdTabs');
+  if(!root||!tabs)return;
+  var KEY='gbt_dock_tab_v1',NAMES=['order','pos','hist','stat','akun','set'];
+  var mq=window.matchMedia('(max-width:1100px)');
+
+  function stuck(){var s=document.getElementById('btdSentinel');return !!s&&s.getBoundingClientRect().top<-1;}
+  function setTab(t,o){
+    o=o||{};if(NAMES.indexOf(t)<0)t='order';
+    var wasStuck=o.scroll!==false&&mq.matches&&stuck(),on=null;
+    root.dataset.btd=t;
+    tabs.querySelectorAll('[data-btd]').forEach(function(b){var a=b.dataset.btd===t;b.classList.toggle('on',a);b.setAttribute('aria-selected',a?'true':'false');if(a)on=b;});
+    if(on&&tabs.scrollTo)tabs.scrollTo({left:Math.max(0,on.offsetLeft-(tabs.clientWidth-on.offsetWidth)/2),behavior:o.instant?'auto':'smooth'});
+    if(wasStuck){var s=document.getElementById('btdSentinel');window.scrollTo(0,window.pageYOffset+s.getBoundingClientRect().top);}
+    try{localStorage.setItem(KEY,t);}catch(_){}
+  }
+  tabs.addEventListener('click',function(e){var b=e.target.closest('[data-btd]');if(b)setTab(b.dataset.btd);});
+  var saved='order';try{saved=localStorage.getItem(KEY)||'order';}catch(_){}
+  setTab(saved,{instant:true,scroll:false});
+
+  /* accordion: di HP hanya grup pertama yang terbuka; di layar lebar semua terbuka */
+  function initAcc(){
+    root.querySelectorAll('details.btd-acc[data-def]').forEach(function(d){d.open=mq.matches?d.dataset.def==='open':true;});
+    root.querySelectorAll('details.btd-hintbox').forEach(function(d){d.open=!mq.matches;});
+  }
+  initAcc();
+  if(mq.addEventListener)mq.addEventListener('change',initAcc);else if(mq.addListener)mq.addListener(initAcc);
+
+  /* teks bantuan drawing: ketuk untuk buka/tutup */
+  var hp=document.getElementById('btDrawHelp');
+  if(hp)hp.addEventListener('click',function(){hp.classList.toggle('open');});
+
+  /* riwayat: buka detail, filter, tampilkan lebih banyak */
+  var tb=document.getElementById('btTrades'),hc=document.getElementById('btHistCard');
+  if(tb)tb.addEventListener('click',function(e){var tr=e.target.closest('tr[data-tid]');if(tr)tr.classList.toggle('open');});
+  var hf=document.getElementById('btHistFilter');
+  if(hf&&hc)hf.addEventListener('click',function(e){var b=e.target.closest('[data-f]');if(!b)return;hc.dataset.hf=b.dataset.f;hf.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});});
+  var mo=document.getElementById('btHistMore');
+  if(mo&&hc)mo.addEventListener('click',function(){hc.dataset.hall='1';mo.hidden=true;});
+})();
+
+</script>
 </body>
 </html>
