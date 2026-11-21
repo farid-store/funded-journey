@@ -3416,7 +3416,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 .trp-bgrow input[type="file"]{flex:1;min-width:0;font-size:11.5px;padding:6px 8px}
 .trp-sliders{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .trp-sliders input[type="range"]{width:100%;accent-color:var(--gold);padding:0;min-height:auto}
-.trp-checks{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px 16px;padding:2px 0}
+.trp-checks{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px 16px;padding:2px 0;align-items:center}
 .trp-checks label{flex-direction:row;align-items:center;gap:7px;font-size:12px;color:var(--text);cursor:pointer}
 .trp-checks input{width:16px;height:16px;accent-color:var(--gold)}
 .trp-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -3425,56 +3425,74 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 .trp-stage canvas{display:block;width:100%;max-width:520px;height:auto;border-radius:10px;box-shadow:0 18px 50px rgba(0,0,0,.45)}
 .trp-meta{font:600 11px var(--fm);color:var(--faint);text-align:center}
 
-/* Kalender Input Manual (Full-Width di bawah Form & Preview) */
-.trp-calbox{margin-top:18px;padding:16px;border:1px solid var(--line2);border-radius:14px;background:var(--surface2,rgba(255,255,255,.025));width:100%;min-width:0;box-sizing:border-box;overflow:hidden}
-.trp-calbox[hidden]{display:none!important}
-.trp-calhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
-.trp-calhead b{font:700 13.5px var(--fh);color:var(--gold);letter-spacing:.04em}
-.trp-calhead small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
-.trp-calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:74px;gap:8px;width:100%;min-width:0}
-.trp-caldow{display:flex;align-items:center;justify-content:center;height:24px;font:700 10.5px var(--fm);color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
-.trp-calgrid>.trp-caldow{grid-row:1;align-self:end}
-.trp-calday{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:100%;height:100%;min-width:0;min-height:0;padding:7px 8px;margin:0;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);text-align:left;cursor:pointer;overflow:hidden;box-sizing:border-box;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
-.trp-calday:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 8px 18px rgba(0,0,0,.32);z-index:2}
-.trp-calday.empty{opacity:.18;pointer-events:none;border-style:dashed}
-.trp-calday.win{background:color-mix(in srgb,var(--green) 14%,var(--surface));border-color:color-mix(in srgb,var(--green) 50%,transparent)}
-.trp-calday.loss{background:color-mix(in srgb,var(--red) 14%,var(--surface));border-color:color-mix(in srgb,var(--red) 50%,transparent)}
-.trp-calday .dn{font:700 10.5px var(--fm);color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:2px;line-height:1;min-width:0}
-.trp-calday .dc{font:700 8.5px var(--fm);padding:1px 5px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--text);flex:none}
-.trp-calday .dv{font:700 12px var(--fm);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.trp-calday.win .dv{color:var(--green)}
-.trp-calday.loss .dv{color:var(--red)}
-.trp-calday .da{font:600 9.5px var(--fm);color:var(--faint);line-height:1;opacity:0;transition:opacity .15s;white-space:nowrap}
-.trp-calday:hover .da{opacity:1;color:var(--gold)}
-
-@media(max-width:980px){.trp-grid{grid-template-columns:1fr}.trp-stage{height:auto}}
-@media(max-width:560px){.trp-form,.trp-sliders{grid-template-columns:1fr}.trp-form label.full,.trp-bgbox{grid-column:auto}.trp-calgrid{grid-auto-rows:54px;gap:4px}.trp-calday{padding:4px}.trp-calday .dv{font-size:10px}.trp-calday .da{display:none}}
-
-/* Pop-up Input Transaksi per Tanggal */
-.trp-modal{position:fixed;inset:0;z-index:9999;background:rgba(4,7,14,.78);display:flex;align-items:center;justify-content:center;padding:16px}
+/* ===== FULL POPUP MANUAL STUDIO (KIRI: FORM · KANAN: KALENDER PORTRAIT) ===== */
+.trp-modal{position:fixed;inset:0;z-index:9999;background:rgba(4,7,14,.82);display:flex;align-items:center;justify-content:center;padding:16px}
 .trp-modal[hidden]{display:none!important}
-.trp-mdlg{width:100%;max-width:540px;max-height:88vh;display:flex;flex-direction:column;border:1px solid var(--gold);border-radius:16px;background:var(--surface,#121620);box-shadow:0 24px 70px rgba(0,0,0,.6);overflow:hidden}
-.trp-mhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
-.trp-mhead h4{margin:0;font:700 15px var(--fh);color:var(--gold)}
-.trp-mhead small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
-.trp-mbody{padding:14px 18px 18px;overflow:auto;display:grid;gap:12px}
-.trp-mform{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trp-mdlg{width:100%;max-width:1020px;max-height:92vh;display:flex;flex-direction:column;border:1px solid var(--gold);border-radius:16px;background:var(--surface,#121620);box-shadow:0 28px 80px rgba(0,0,0,.65);overflow:hidden}
+.trp-mhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--surface2,rgba(255,255,255,.02))}
+.trp-mhead h4{margin:0;font:700 15px var(--fh);color:var(--gold);letter-spacing:.04em}
+.trp-mhead small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+.trp-msplit{display:grid;grid-template-columns:minmax(320px,420px) minmax(0,1fr);gap:18px;padding:16px 20px 20px;overflow:auto;align-items:start}
+
+/* Kolom Kiri Modal: Form & Daftar Transaksi */
+.trp-mleft{display:grid;gap:12px;min-width:0}
+.trp-daybadge{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;border-radius:10px;border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);background:var(--gold-soft,rgba(217,176,104,.12));font:700 12px var(--fm);color:var(--gold)}
+.trp-mform{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .trp-mform label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:600;color:var(--muted);min-width:0}
 .trp-mform label.full{grid-column:1/-1}
 .trp-mform .sel,.trp-mform input{width:100%;box-sizing:border-box}
 .trp-qres{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.trp-qres button{min-height:32px;padding:4px 6px;border-radius:8px;border:1px solid var(--line2);background:var(--surface2);color:var(--muted);font:700 11px var(--fm);cursor:pointer}
+.trp-qres button{min-height:32px;padding:4px 6px;border-radius:8px;border:1px solid var(--line2);background:var(--surface2);color:var(--muted);font:700 10.5px var(--fm);cursor:pointer}
 .trp-qres button.on{border-color:var(--gold);background:var(--gold-soft);color:var(--gold)}
 .trp-prevcalc{padding:8px 12px;border-radius:9px;border:1px dashed var(--line2);background:var(--surface2);font:600 11.5px var(--fm);color:var(--muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .trp-prevcalc b{color:var(--text)}
-.trp-tlist{display:grid;gap:6px}
+.trp-tlist{display:grid;gap:6px;max-height:200px;overflow:auto;padding-right:2px}
 .trp-titem{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface2);font-size:11.5px}
 .trp-titem b{font-family:var(--fm)}
-.trp-titem small{display:block;color:var(--faint);font:500 10.5px var(--fm);margin-top:2px}
+.trp-titem small{display:block;color:var(--faint);font:500 10px var(--fm);margin-top:2px}
 .trp-titem .del{border:1px solid var(--line2);background:transparent;color:var(--red);width:28px;height:28px;border-radius:7px;cursor:pointer;font-weight:700}
 .trp-titem .del:hover{background:var(--red-soft)}
-@media(max-width:560px){.trp-calgrid{grid-auto-rows:54px;gap:4px}.trp-calday{padding:4px}.trp-calday .dv{font-size:10px}.trp-calday .da{display:none}.trp-mform{grid-template-columns:1fr}.trp-mform label.full{grid-column:auto}.trp-qres{grid-template-columns:repeat(2,1fr)}}
-   
+
+/* Kolom Kanan Modal: Kalender Portrait */
+.trp-mright{display:flex;flex-direction:column;gap:12px;padding:14px;border:1px solid var(--line2);border-radius:14px;background:var(--bg0,#080b12);min-width:0;max-width:520px;width:100%;justify-self:center;box-sizing:border-box}
+.trp-calhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.trp-calhead b{font:700 13.5px var(--fh);color:var(--gold);letter-spacing:.04em}
+.trp-calhead small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.trp-calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:84px;gap:6px;width:100%;min-width:0}
+.trp-caldow{display:flex;align-items:center;justify-content:center;height:22px;font:700 10px var(--fm);color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+.trp-calgrid>.trp-caldow{grid-row:1;align-self:end}
+.trp-calday{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:100%;height:100%;min-width:0;min-height:0;padding:6px;margin:0;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);text-align:left;cursor:pointer;overflow:hidden;box-sizing:border-box;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
+.trp-calday:hover{transform:translateY(-2px);border-color:var(--gold);z-index:2}
+.trp-calday.selected{border-color:var(--gold)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 35%,transparent),0 8px 18px rgba(0,0,0,.35);z-index:3}
+.trp-calday.empty{opacity:.16;pointer-events:none;border-style:dashed}
+.trp-calday.win{background:color-mix(in srgb,var(--green) 15%,var(--surface));border-color:color-mix(in srgb,var(--green) 50%,transparent)}
+.trp-calday.loss{background:color-mix(in srgb,var(--red) 15%,var(--surface));border-color:color-mix(in srgb,var(--red) 50%,transparent)}
+.trp-calday .dn{font:700 10.5px var(--fm);color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:2px;line-height:1;min-width:0}
+.trp-calday .dc{font:700 8.5px var(--fm);padding:1px 4px;border-radius:99px;background:rgba(255,255,255,.1);color:var(--text);flex:none}
+.trp-calday .dv{font:700 11.5px var(--fm);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.trp-calday.win .dv{color:var(--green)}
+.trp-calday.loss .dv{color:var(--red)}
+.trp-calday .da{font:600 9px var(--fm);color:var(--faint);line-height:1;opacity:0;transition:opacity .14s;white-space:nowrap}
+.trp-calday:hover .da,.trp-calday.selected .da{opacity:1;color:var(--gold)}
+
+@media(max-width:980px){
+  .trp-grid{grid-template-columns:1fr}
+  .trp-stage{height:auto}
+}
+@media(max-width:860px){
+  .trp-msplit{grid-template-columns:1fr;padding:14px}
+  .trp-mright{order:-1;max-width:none}
+  .trp-calgrid{grid-auto-rows:64px;gap:5px}
+}
+@media(max-width:560px){
+  .trp-form,.trp-sliders,.trp-mform{grid-template-columns:1fr}
+  .trp-form label.full,.trp-bgbox,.trp-mform label.full{grid-column:auto}
+  .trp-qres{grid-template-columns:repeat(2,1fr)}
+  .trp-calgrid{grid-auto-rows:56px;gap:4px}
+  .trp-calday{padding:4px}
+  .trp-calday .dv{font-size:10px}
+  .trp-calday .da{display:none}
+}
 </style>
    
 </head>
@@ -4178,10 +4196,11 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
             <input id="trpQrLabel" class="sel" type="text" value="SCAN TO JOIN" maxlength="24">
           </label>
 
-          <div class="trp-checks">
+         <div class="trp-checks">
             <label><input type="checkbox" id="trpHideUsd"> Sembunyikan nominal $</label>
             <label><input type="checkbox" id="trpShowSub" checked> Tampilkan jumlah trade di kalender</label>
             <label><input type="checkbox" id="trpManualToggle"> Edit data manual (opsional)</label>
+            <button type="button" class="btn ghost" id="trpOpenManualBtn" hidden style="padding:4px 10px;min-height:30px;font-size:11px">🗓️ Buka Editor Manual</button>
           </div>
 
          
@@ -4216,67 +4235,85 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
     </div>
   </div>
 
-   <div class="trp-modal" id="trpDayModal" hidden>
+<div class="trp-modal" id="trpDayModal" hidden>
     <div class="trp-mdlg" role="dialog" aria-modal="true" aria-labelledby="trpModalTitle">
       <div class="trp-mhead">
         <div>
-          <h4 id="trpModalTitle">Input Transaksi</h4>
-          <small id="trpModalSub">Tambah atau hapus transaksi pada tanggal ini</small>
+          <h4 id="trpModalTitle">📝 Manual Trade Recap Studio</h4>
+          <small id="trpModalSub">Pilih tanggal di kalender kanan, lalu isi detail transaksi di sebelah kiri</small>
         </div>
         <button type="button" class="x-close" id="trpModalClose" aria-label="Tutup">✕</button>
       </div>
-      <div class="trp-mbody">
-        <div class="trp-mform">
-          <label>Pair / Simbol
-            <input id="trpInPair" class="sel" type="text" value="XAUUSD" placeholder="mis. XAUUSD, NAS100">
-          </label>
-          <label>Arah
-            <select id="trpInSide" class="sel">
-              <option value="buy">BUY</option>
-              <option value="sell">SELL</option>
-            </select>
-          </label>
-          <label>Lot
-            <input id="trpInLot" class="sel" type="number" min="0.01" step="0.01" value="0.10">
-          </label>
-          <label>Entry Price
-            <input id="trpInEntry" class="sel" type="number" step="any" placeholder="mis. 2650.50">
-          </label>
-          <label>Stop Loss (SL)
-            <input id="trpInSL" class="sel" type="number" step="any" placeholder="mis. 2645.00">
-          </label>
-          <label>Take Profit (TP)
-            <input id="trpInTP" class="sel" type="number" step="any" placeholder="mis. 2662.00">
-          </label>
-          <label class="full">Hasil Transaksi (otomatis isi harga Exit)
-            <div class="trp-qres" id="trpQuickRes">
-              <button type="button" data-res="tp" class="on">✔ Hit TP</button>
-              <button type="button" data-res="sl">✕ Hit SL</button>
-              <button type="button" data-res="be">● BE</button>
-              <button type="button" data-res="custom">✎ Custom Exit</button>
+
+      <div class="trp-msplit">
+        <!-- KOLOM KIRI: INPUT HARGA, DETAIL, & LIST TRANSAKSI -->
+        <div class="trp-mleft">
+          <div class="trp-daybadge">
+            <span id="trpSelDateLabel">Pilih tanggal di kalender →</span>
+            <button type="button" class="btn danger" id="trpClearDayBtn" style="min-height:26px;padding:0 9px;font-size:10.5px">Hapus Hari Ini</button>
+          </div>
+
+          <div class="trp-mform">
+            <label>Pair / Simbol
+              <input id="trpInPair" class="sel" type="text" value="XAUUSD" placeholder="mis. XAUUSD, NAS100">
+            </label>
+            <label>Arah
+              <select id="trpInSide" class="sel">
+                <option value="buy">BUY</option>
+                <option value="sell">SELL</option>
+              </select>
+            </label>
+            <label>Lot
+              <input id="trpInLot" class="sel" type="number" min="0.01" step="0.01" value="0.10">
+            </label>
+            <label>Entry Price
+              <input id="trpInEntry" class="sel" type="number" step="any" placeholder="mis. 2650.50">
+            </label>
+            <label>Stop Loss (SL)
+              <input id="trpInSL" class="sel" type="number" step="any" placeholder="mis. 2645.00">
+            </label>
+            <label>Take Profit (TP)
+              <input id="trpInTP" class="sel" type="number" step="any" placeholder="mis. 2662.00">
+            </label>
+            <label class="full">Hasil Transaksi (otomatis isi harga Exit)
+              <div class="trp-qres" id="trpQuickRes">
+                <button type="button" data-res="tp" class="on">✔ Hit TP</button>
+                <button type="button" data-res="sl">✕ Hit SL</button>
+                <button type="button" data-res="be">● BE</button>
+                <button type="button" data-res="custom">✎ Custom</button>
+              </div>
+            </label>
+            <label>Exit / Close Price
+              <input id="trpInExit" class="sel" type="number" step="any" placeholder="otomatis dari TP/SL">
+            </label>
+            <label>P/L ($) — kosong = otomatis
+              <input id="trpInUsd" class="sel" type="number" step="0.01" placeholder="otomatis">
+            </label>
+          </div>
+
+          <div class="trp-prevcalc" id="trpPrevCalc">
+            <span>Estimasi: <b>0.0 pips</b></span>
+            <span>P/L: <b>$0.00</b></span>
+          </div>
+
+          <button type="button" class="btn primary" id="trpAddTradeBtn">+ Tambah Transaksi ke Tanggal Ini</button>
+
+          <div>
+            <div style="font:700 10.5px var(--fh);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Transaksi di Tanggal Terpilih</div>
+            <div class="trp-tlist" id="trpModalList"></div>
+          </div>
+        </div>
+
+        <!-- KOLOM KANAN: KALENDER PORTRAIT -->
+        <div class="trp-mright">
+          <div class="trp-calhead">
+            <div>
+              <b id="trpCalMonthTitle">—</b>
+              <small>Klik tanggal untuk memilih &amp; input trade</small>
             </div>
-          </label>
-          <label>Exit / Close Price
-            <input id="trpInExit" class="sel" type="number" step="any" placeholder="otomatis dari TP/SL">
-          </label>
-          <label>P/L ($) — kosongkan = hitung otomatis
-            <input id="trpInUsd" class="sel" type="number" step="0.01" placeholder="otomatis">
-          </label>
-        </div>
-
-        <div class="trp-prevcalc" id="trpPrevCalc">
-          <span>Estimasi: <b>0.0 pips</b></span>
-          <span>P/L: <b>$0.00</b></span>
-        </div>
-
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn primary" id="trpAddTradeBtn" style="flex:1">+ Tambah Transaksi</button>
-          <button type="button" class="btn danger" id="trpClearDayBtn">Hapus Tanggal Ini</button>
-        </div>
-
-        <div>
-          <div style="font:700 11px var(--fh);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Daftar Transaksi Tanggal Ini</div>
-          <div class="trp-tlist" id="trpModalList"></div>
+            <button type="button" class="btn ghost" id="trpCalClearMonth" style="min-height:30px;padding:0 10px;font-size:11px">🗑 Kosongkan Bulan</button>
+          </div>
+          <div class="trp-calgrid" id="trpCalGrid"></div>
         </div>
       </div>
     </div>
@@ -14051,7 +14088,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     if (/NAS|USTEC|US100|NDX|NQ100|^NQ|TECH100|US30|DJ30|WS30|US500|SPX|GER|DE40|DAX|BTC|ETH|SOL|BNB/.test(u)) {
       return (isSell ? (entry - exit) : (exit - entry)) * l;
     }
-    // Default forex: ~$10 per pip per 1.0 lot
     return pips * l * 10;
   }
 
@@ -14087,7 +14123,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return { year: y || now.getFullYear(), month: (m || (now.getMonth()+1)) - 1, key: v };
   }
 
-  // ===== VISUAL MANUAL CALENDAR & POPUP MODAL =====
+  // ===== FULL POPUP MANUAL STUDIO (KIRI: FORM · KANAN: KALENDER PORTRAIT) =====
   function getMonthManualObj(ymKey){
     if (!manualStore[ymKey] || typeof manualStore[ymKey] !== 'object') manualStore[ymKey] = {};
     return manualStore[ymKey];
@@ -14129,18 +14165,27 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return { map, count: totalTrades };
   }
 
+  function selectManualDay(dayNum){
+    activeModalDay = dayNum;
+    const { year, month } = getSelectedYM();
+    const label = new Date(year, month, dayNum).toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    if ($('trpSelDateLabel')) $('trpSelDateLabel').textContent = `📅 ${label}`;
+    if ($('trpInPair') && !$('trpInPair').value.trim()) $('trpInPair').value = ($('trpPair')?.value || 'XAUUSD').replace('/', '');
+    renderManualCalendarUI();
+    renderModalTradeList();
+    updateModalPreviewCalc();
+  }
+
   function renderManualCalendarUI(){
-    const box = $('trpCalEditor');
     const grid = $('trpCalGrid');
-    if (!box || !grid) return;
-
+    const openBtn = $('trpOpenManualBtn');
     const isManual = !!$('trpManualToggle')?.checked;
-    box.hidden = !isManual;
-    if (!isManual) return;
+    if (openBtn) openBtn.hidden = !isManual;
+    if (!grid) return;
 
-    const { year, month, key } = getSelectedYM();
+    const { year, month } = getSelectedYM();
     const monthLabel = new Date(year, month, 1).toLocaleDateString('id-ID', { month:'long', year:'numeric' });
-    if ($('trpCalMonthTitle')) $('trpCalMonthTitle').textContent = monthLabel;
+    if ($('trpCalMonthTitle')) $('trpCalMonthTitle').textContent = monthLabel.toUpperCase();
 
     const firstDay = new Date(year, month, 1);
     const startOffset = (firstDay.getDay() + 6) % 7;
@@ -14160,17 +14205,18 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         continue;
       }
       const data = map[dayNum];
+      const isSel = activeModalDay === dayNum ? ' selected' : '';
       if (data) {
         const win = isUsd ? (data.usd >= 0) : (data.pips !== 0 ? data.pips >= 0 : data.usd >= 0);
         const valTxt = isUsd ? fmtUsdShort(data.usd) : `${data.pips >= 0 ? '+' : ''}${data.pips.toFixed(1)}p`;
         const tip = `${dayNum} ${monthLabel}: ${data.trades} trade · ${data.pips >= 0 ? '+' : ''}${data.pips.toFixed(1)} pips · ${fmtUsdShort(data.usd)}`;
-        html += `<button type="button" class="trp-calday ${win ? 'win' : 'loss'}" data-day="${dayNum}" title="${tip}">
+        html += `<button type="button" class="trp-calday ${win ? 'win' : 'loss'}${isSel}" data-day="${dayNum}" title="${tip}">
           <div class="dn"><span>${dayNum}</span><span class="dc">${data.trades}T</span></div>
           <div class="dv">${valTxt}</div>
           <div class="da">✎ Edit</div>
         </button>`;
       } else {
-        html += `<button type="button" class="trp-calday" data-day="${dayNum}" title="Klik untuk input transaksi tanggal ${dayNum}">
+        html += `<button type="button" class="trp-calday${isSel}" data-day="${dayNum}" title="Klik untuk input transaksi tanggal ${dayNum}">
           <div class="dn"><span>${dayNum}</span></div>
           <div class="da">+ Input</div>
         </button>`;
@@ -14188,7 +14234,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const sl = parseNum($('trpInSL')?.value);
     const tp = parseNum($('trpInTP')?.value);
 
-    // Sinkronisasi Exit Price sesuai tombol hasil cepat
     if (activeResMode === 'tp' && tp > 0 && $('trpInExit')) $('trpInExit').value = tp;
     else if (activeResMode === 'sl' && sl > 0 && $('trpInExit')) $('trpInExit').value = sl;
     else if (activeResMode === 'be' && entry > 0 && $('trpInExit')) $('trpInExit').value = entry;
@@ -14244,18 +14289,14 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   }
 
   function openDayModal(dayNum){
-    activeModalDay = dayNum;
     const { year, month } = getSelectedYM();
-    const label = new Date(year, month, dayNum).toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-    if ($('trpModalTitle')) $('trpModalTitle').textContent = `Transaksi · ${label}`;
-    if ($('trpInPair') && !$('trpInPair').value.trim()) $('trpInPair').value = ($('trpPair')?.value || 'XAUUSD').replace('/', '');
-    renderModalTradeList();
-    updateModalPreviewCalc();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const pickDay = dayNum || activeModalDay || (now.getFullYear() === year && now.getMonth() === month ? now.getDate() : 1);
+    selectManualDay(Math.min(daysInMonth, Math.max(1, pickDay)));
     if ($('trpDayModal')) $('trpDayModal').hidden = false;
   }
 
   function closeDayModal(){
-    activeModalDay = null;
     if ($('trpDayModal')) $('trpDayModal').hidden = true;
   }
 
@@ -14416,6 +14457,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       }
       if ($('trpSource')) $('trpSource').value = 'import';
       if ($('trpManualToggle')) $('trpManualToggle').checked = false;
+      closeDayModal();
 
       if (info) {
         info.textContent = `Berhasil: ${file.name} · ${importedTrades.length} posisi terbaca` +
@@ -14654,7 +14696,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const isManual = !!$('trpManualToggle')?.checked;
     if ($('trpImportBox')) $('trpImportBox').hidden = (src !== 'import' || isManual);
 
-    // 1. MODE FULL MANUAL VISUAL
+    // 1. MODE FULL MANUAL VISUAL (POPUP)
     if (isManual) {
       const res = buildManualVisualMap();
       dayMap = res.map;
@@ -14662,8 +14704,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       if ($('trpPair')) $('trpPair').value = manualState.pair;
       if ($('trpSourceStatus')) {
         $('trpSourceStatus').textContent = res.count > 0
-          ? `Mode Manual Visual · ${res.count} trade (${Object.keys(dayMap).length} hari)`
-          : 'Mode Manual Visual · klik tanggal di bawah preview PNG untuk input';
+          ? `Mode Manual · ${res.count} trade (${Object.keys(dayMap).length} hari)`
+          : 'Mode Manual · klik "Buka Editor Manual" untuk input transaksi';
       }
       renderManualCalendarUI();
       render();
@@ -15469,14 +15511,21 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   $('trpReportFile')?.addEventListener('change', e => handleReportFile(e.target.files?.[0]));
 
-  // Toggle Mode Manual Visual
-  $('trpManualToggle')?.addEventListener('change', () => syncFromSource(true));
+  // Toggle Mode Manual -> langsung buka Full Popup (halaman utama tetap diam rapi)
+  $('trpManualToggle')?.addEventListener('change', e => {
+    syncFromSource(true);
+    if (e.target.checked) openDayModal();
+    else closeDayModal();
+  });
 
-  // Klik kotak tanggal di Kalender Visual -> buka Pop-up
+  // Tombol buka ulang pop-up kapan saja saat mode manual aktif
+  $('trpOpenManualBtn')?.addEventListener('click', () => openDayModal());
+
+  // Klik kotak tanggal di kalender kanan pop-up -> langsung pilih tanggal untuk diisi di kiri
   $('trpCalGrid')?.addEventListener('click', e => {
     const btn = e.target.closest('.trp-calday[data-day]');
     if (!btn) return;
-    openDayModal(parseInt(btn.dataset.day, 10));
+    selectManualDay(parseInt(btn.dataset.day, 10));
   });
 
   $('trpCalClearMonth')?.addEventListener('click', () => {
@@ -15484,6 +15533,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     if (!confirm(`Hapus semua transaksi manual di bulan ${key}?`)) return;
     manualStore[key] = {};
     saveManualStore();
+    renderModalTradeList();
     syncFromSource(false);
   });
 
@@ -15491,6 +15541,9 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   $('trpModalClose')?.addEventListener('click', closeDayModal);
   $('trpDayModal')?.addEventListener('click', e => {
     if (e.target === $('trpDayModal')) closeDayModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && $('trpDayModal') && !$('trpDayModal').hidden) closeDayModal();
   });
 
   $('trpQuickRes')?.addEventListener('click', e => {
@@ -15586,7 +15639,12 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     render();
   }));
   $('trpSource')?.addEventListener('change', () => syncFromSource(true));
-  ['trpMonth','trpPipSize'].forEach(id => $(id)?.addEventListener('change', () => syncFromSource(false)));
+  ['trpMonth','trpPipSize'].forEach(id => $(id)?.addEventListener('change', () => {
+    syncFromSource(false);
+    if (id === 'trpMonth' && $('trpDayModal') && !$('trpDayModal').hidden) {
+      openDayModal(activeModalDay);
+    }
+  }));
 
   $('trpSyncBtn')?.addEventListener('click', () => syncFromSource(true));
   $('trpDownloadBtn')?.addEventListener('click', async () => {
