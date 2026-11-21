@@ -4043,6 +4043,13 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
             </select>
           </label>
 
+           <label>Satuan Cetak
+            <select id="trpUnit" class="sel">
+              <option value="pips" selected>Pips (p)</option>
+              <option value="usd">USD ($)</option>
+            </select>
+          </label>
+
           <label>Bulan Kalender
             <input id="trpMonth" class="sel" type="month">
           </label>
@@ -13865,6 +13872,14 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return isFinite(n) ? n : 0;
   }
 
+  function fmtUsdShort(v){
+    const sign = v >= 0 ? '+' : '-';
+    const abs = Math.abs(v);
+    if (abs >= 10000) return `${sign}$${(abs / 1000).toFixed(1)}k`;
+    if (abs >= 1000)  return `${sign}$${(abs / 1000).toFixed(2)}k`;
+    return `${sign}$${abs.toFixed(0)}`;
+  }
+
   function detectPipSize(sym, refPrice){
     const pref = $('trpPipSize')?.value || 'auto';
     if (pref !== 'auto') return parseFloat(pref) || 0.1;
@@ -14232,7 +14247,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     let { year, month } = getSelectedYM();
     let matched = rawRows.filter(r => r.dt.getFullYear() === year && r.dt.getMonth() === month);
 
-    // Jika di bulan sekarang kosong tapi tabel punya transaksi di bulan lain, otomatis pindah ke bulan transaksi terbaru
     if (!matched.length && autoSwitchMonth) {
       const latest = rawRows.reduce((a, b) => (b.dt > a.dt ? b : a), rawRows[0]).dt;
       year = latest.getFullYear();
@@ -14266,7 +14280,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return { map, count: matched.length, topSym, totalInTable: rawRows.length };
   }
 
-   function buildBacktestMap(autoSwitchMonth){
+  function buildBacktestMap(autoSwitchMonth){
     const bt = window.__BT && window.__BT.state;
     const closed = (bt && Array.isArray(bt.closed)) ? bt.closed : [];
     const sym = (bt && bt.name) || $('btName')?.value?.trim() || $('btBinSym')?.value || 'BACKTEST';
@@ -14284,7 +14298,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       return d.getUTCFullYear() === year && d.getUTCMonth() === month;
     });
 
-    // Jika bulan terpilih kosong tapi sesi backtest punya trade di bulan lain, otomatis pindah ke bulan trade terbaru
     if (!matched.length && autoSwitchMonth) {
       const latest = closed.reduce((a, b) => (Number(b.closeT) > Number(a.closeT) ? b : a), closed[0]);
       const ld = getUtcDate(latest.closeT);
@@ -14331,13 +14344,14 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
     return { map, count: matched.length, totalClosed: closed.length, topSym: sym, startBal };
   }
+
   // ===== SINKRONISASI TERISOLASI PER SUMBER DATA =====
   function syncFromSource(isSourceSwitch){
     const src = $('trpSource')?.value || 'history';
     const isManual = !!$('trpManualToggle')?.checked;
     if ($('trpImportBox')) $('trpImportBox').hidden = (src !== 'import' || isManual);
 
-    // 1. MODE FULL MANUAL (berdiri sendiri, tidak mengambil apa pun dari EA/Backtest/Import)
+    // 1. MODE FULL MANUAL
     if (isManual) {
       dayMap = parseManualToMap();
       if ($('trpPct')) $('trpPct').value = manualState.pct;
@@ -14347,7 +14361,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       return;
     }
 
-    // 2. MODE IMPORT REPORT MT5 (berdiri sendiri dari file yang di-upload)
+    // 2. MODE IMPORT REPORT MT5
     if (src === 'import') {
       const res = buildImportedMap();
       dayMap = res.map;
@@ -14368,7 +14382,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       return;
     }
 
-    // 3. MODE HASIL BACKTEST (berdiri sendiri dari #btTrades & #btBal, tidak menyentuh data EA)
     // 3. MODE HASIL BACKTEST (langsung dari window.__BT.state.closed)
     if (src === 'backtest') {
       const res = buildBacktestMap(!!isSourceSwitch);
@@ -14389,7 +14402,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       return;
     }
 
-    // 4. MODE LIVE EA (berdiri sendiri dari historyCache & dailyPnlMap)
+    // 4. MODE LIVE EA
     const eaRes = buildEaMap();
     if (eaRes.count > 0) {
       dayMap = eaRes.map;
@@ -14398,7 +14411,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       if ($('trpPct')) $('trpPct').value = eaRes.startBal > 0 ? ((totalUsd / eaRes.startBal) * 100).toFixed(2) : '0.00';
       if ($('trpSourceStatus')) $('trpSourceStatus').textContent = `Live EA · ${eaRes.count} trade (${Object.keys(dayMap).length} hari)`;
     } else {
-      // Fallback baca tabel #historyTable jika bridge belum terpasang
       const tblRes = scrapeTableToMap('historyTable', false);
       dayMap = tblRes.map;
       const totalUsd = Object.values(dayMap).reduce((s, x) => s + x.usd, 0);
@@ -14627,6 +14639,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const hideUsd = !!$('trpHideUsd')?.checked;
     const showSub = $('trpShowSub') ? $('trpShowSub').checked : true;
     const viewMode = $('trpViewMode')?.value || 'day';
+    const unit = $('trpUnit')?.value || 'pips';
+    const isUsd = unit === 'usd';
     const qrLink = ($('trpQrLink')?.value || '').trim();
     const qrLabel = ($('trpQrLabel')?.value || 'SCAN TO JOIN').trim();
 
@@ -14649,17 +14663,19 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       netPips += d.pips; winPips += d.winPips; lossPips += d.lossPips;
       netUsd += d.usd; totalTrades += d.trades; totalWins += d.wins;
       grossWin += d.grossWin; grossLoss += d.grossLoss;
-      if (d.pips > 0 || (d.pips === 0 && d.usd > 0)) winDays++;
-      else if (d.pips < 0 || (d.pips === 0 && d.usd < 0)) lossDays++;
+      const dayVal = isUsd ? d.usd : (d.pips !== 0 ? d.pips : d.usd);
+      if (dayVal > 0) winDays++;
+      else if (dayVal < 0) lossDays++;
     });
     const tradingDays = entries.length;
     const winRate = totalTrades > 0 ? (totalWins / totalTrades) * 100 : (tradingDays > 0 ? (winDays / tradingDays) * 100 : 0);
     const pf = grossLoss > 0 ? grossWin / grossLoss : (grossWin > 0 ? 9.99 : 0);
     const pct = parseNum($('trpPct')?.value);
-    const isPos = netPips !== 0 ? netPips >= 0 : netUsd >= 0;
+    const isPos = isUsd ? (netUsd >= 0) : (netPips !== 0 ? netPips >= 0 : netUsd >= 0);
     const heroColor = isPos ? T.green : T.red;
 
     if (isWide) {
+      // ===== LAYOUT LANDSCAPE (2 KOLOM) =====
       const contentTop = pad + 76;
       const sigReserve = 138;
       const contentH = H - contentTop - sigReserve;
@@ -14681,19 +14697,32 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
       ctx.fillStyle = T.muted;
       ctx.font = '700 13px Inter, system-ui, sans-serif';
-      ctx.fillText('NET PIPS PERFORMANCE', pad + 26, contentTop + 42);
+      ctx.fillText(isUsd ? 'NET PROFIT PERFORMANCE' : 'NET PIPS PERFORMANCE', pad + 26, contentTop + 42);
 
       ctx.fillStyle = heroColor;
-      ctx.font = '800 50px "JetBrains Mono", monospace';
-      ctx.fillText(`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)}`, pad + 26, contentTop + 98);
-      ctx.font = '700 18px "JetBrains Mono", monospace';
-      ctx.fillText('PIPS', pad + 26, contentTop + 124);
+      ctx.font = '800 46px "JetBrains Mono", monospace';
+      if (isUsd) {
+        const usdMain = `${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:2})}`;
+        ctx.fillText(usdMain, pad + 26, contentTop + 98);
+        ctx.font = '700 18px "JetBrains Mono", monospace';
+        ctx.fillText('USD', pad + 26, contentTop + 124);
 
-      ctx.font = '700 15px "JetBrains Mono", monospace';
-      ctx.fillStyle = T.green;
-      ctx.fillText(`▲ WIN  +${winPips.toFixed(1)}p`, pad + 26, contentTop + 168);
-      ctx.fillStyle = T.red;
-      ctx.fillText(`▼ LOSS -${lossPips.toFixed(1)}p`, pad + 26, contentTop + 194);
+        ctx.font = '700 15px "JetBrains Mono", monospace';
+        ctx.fillStyle = T.green;
+        ctx.fillText(`▲ WIN  +$${grossWin.toLocaleString('en-US', {maximumFractionDigits:0})}`, pad + 26, contentTop + 168);
+        ctx.fillStyle = T.red;
+        ctx.fillText(`▼ LOSS -$${grossLoss.toLocaleString('en-US', {maximumFractionDigits:0})}`, pad + 26, contentTop + 194);
+      } else {
+        ctx.fillText(`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)}`, pad + 26, contentTop + 98);
+        ctx.font = '700 18px "JetBrains Mono", monospace';
+        ctx.fillText('PIPS', pad + 26, contentTop + 124);
+
+        ctx.font = '700 15px "JetBrains Mono", monospace';
+        ctx.fillStyle = T.green;
+        ctx.fillText(`▲ WIN  +${winPips.toFixed(1)}p`, pad + 26, contentTop + 168);
+        ctx.fillStyle = T.red;
+        ctx.fillText(`▼ LOSS -${lossPips.toFixed(1)}p`, pad + 26, contentTop + 194);
+      }
 
       ctx.strokeStyle = T.lineSoft;
       ctx.beginPath();
@@ -14701,9 +14730,13 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.lineTo(pad + leftW - 24, contentTop + 218);
       ctx.stroke();
 
+      const secondMetric = isUsd
+        ? { k:'NET PIPS', v:`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)}p`, c: netPips >= 0 ? T.green : T.red }
+        : { k: hideUsd ? 'WIN DAYS' : 'NET P/L', v: hideUsd ? `${winDays}W / ${lossDays}L` : `${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:0})}`, c: netUsd >= 0 ? T.green : T.red };
+
       const mItems = [
         { k:'RETURN', v:`${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`, c: pct >= 0 ? T.green : T.red },
-        { k: hideUsd ? 'WIN DAYS' : 'NET P/L', v: hideUsd ? `${winDays}W / ${lossDays}L` : `${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:0})}`, c: netUsd >= 0 ? T.green : T.red },
+        secondMetric,
         { k:'WIN RATE', v:`${winRate.toFixed(1)}%`, c: T.text },
         { k:'PROFIT FACTOR', v:`${pf.toFixed(2)}`, c: T.gold }
       ];
@@ -14738,15 +14771,16 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       }
 
       if (viewMode === 'day') {
-        drawDailyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd, showSub);
+        drawDailyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd, showSub, isUsd);
       } else {
-        drawWeeklyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd);
+        drawWeeklyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd, isUsd);
       }
 
       drawCeoSignature(T, W / 2, H - 56, true);
       return;
     }
 
+    // ===== LAYOUT PORTRAIT (1080x1350) & SQUARE (1080x1080) =====
     const heroY = pad + (isSquare ? 62 : 76);
     const heroH = isSquare ? 116 : 160;
     rrect(ctx, pad, heroY, W - pad * 2, heroH, 16);
@@ -14762,17 +14796,28 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
     ctx.fillStyle = T.muted;
     ctx.font = `700 ${isSquare ? 11.5 : 13}px Inter, system-ui, sans-serif`;
-    ctx.fillText('NET PIPS PERFORMANCE', pad + 24, heroY + (isSquare ? 26 : 34));
+    ctx.fillText(isUsd ? 'NET PROFIT PERFORMANCE' : 'NET PIPS PERFORMANCE', pad + 24, heroY + (isSquare ? 26 : 34));
 
     ctx.fillStyle = heroColor;
-    ctx.font = `800 ${isSquare ? 42 : 56}px "JetBrains Mono", monospace`;
-    ctx.fillText(`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)} PIPS`, pad + 24, heroY + (isSquare ? 72 : 98));
+    ctx.font = `800 ${isSquare ? 40 : 54}px "JetBrains Mono", monospace`;
+    if (isUsd) {
+      const usdMain = `${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:2})}`;
+      ctx.fillText(usdMain, pad + 24, heroY + (isSquare ? 72 : 98));
 
-    ctx.font = `700 ${isSquare ? 13.5 : 16}px "JetBrains Mono", monospace`;
-    ctx.fillStyle = T.green;
-    ctx.fillText(`▲ WIN +${winPips.toFixed(1)}p`, pad + 24, heroY + heroH - (isSquare ? 16 : 22));
-    ctx.fillStyle = T.red;
-    ctx.fillText(`▼ LOSS -${lossPips.toFixed(1)}p`, pad + (isSquare ? 190 : 218), heroY + heroH - (isSquare ? 16 : 22));
+      ctx.font = `700 ${isSquare ? 13.5 : 16}px "JetBrains Mono", monospace`;
+      ctx.fillStyle = T.green;
+      ctx.fillText(`▲ WIN +$${grossWin.toLocaleString('en-US', {maximumFractionDigits:0})}`, pad + 24, heroY + heroH - (isSquare ? 16 : 22));
+      ctx.fillStyle = T.red;
+      ctx.fillText(`▼ LOSS -$${grossLoss.toLocaleString('en-US', {maximumFractionDigits:0})}`, pad + (isSquare ? 190 : 228), heroY + heroH - (isSquare ? 16 : 22));
+    } else {
+      ctx.fillText(`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)} PIPS`, pad + 24, heroY + (isSquare ? 72 : 98));
+
+      ctx.font = `700 ${isSquare ? 13.5 : 16}px "JetBrains Mono", monospace`;
+      ctx.fillStyle = T.green;
+      ctx.fillText(`▲ WIN +${winPips.toFixed(1)}p`, pad + 24, heroY + heroH - (isSquare ? 16 : 22));
+      ctx.fillStyle = T.red;
+      ctx.fillText(`▼ LOSS -${lossPips.toFixed(1)}p`, pad + (isSquare ? 190 : 218), heroY + heroH - (isSquare ? 16 : 22));
+    }
 
     ctx.textAlign = 'right';
     ctx.fillStyle = pct >= 0 ? T.green : T.red;
@@ -14781,10 +14826,12 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
     ctx.fillStyle = T.text;
     ctx.font = `700 ${isSquare ? 14 : 16}px "JetBrains Mono", monospace`;
-    const usdLabel = hideUsd
-      ? `WIN RATE ${winRate.toFixed(1)}%`
-      : `NET ${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:0})}`;
-    ctx.fillText(usdLabel, W - pad - 24, heroY + (isSquare ? 70 : 88));
+    const subRightLabel = isUsd
+      ? `NET ${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)} PIPS`
+      : (hideUsd
+          ? `WIN RATE ${winRate.toFixed(1)}%`
+          : `NET ${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:0})}`);
+    ctx.fillText(subRightLabel, W - pad - 24, heroY + (isSquare ? 70 : 88));
 
     ctx.fillStyle = T.muted;
     ctx.font = `600 ${isSquare ? 12 : 14}px "JetBrains Mono", monospace`;
@@ -14797,9 +14844,9 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const calW = W - pad * 2;
 
     if (viewMode === 'day') {
-      drawDailyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd, showSub);
+      drawDailyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd, showSub, isUsd);
     } else {
-      drawWeeklyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd);
+      drawWeeklyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd, isUsd);
     }
 
     drawCeoSignature(T, W / 2, H - (isSquare ? 54 : 62), isSquare);
@@ -14813,7 +14860,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     }
   }
 
-  function drawDailyCalendar(T, x, y, w, h, year, month, hideUsd, showSub){
+  function drawDailyCalendar(T, x, y, w, h, year, month, hideUsd, showSub, isUsd){
     rrect(ctx, x, y, w, h, 18);
     ctx.fillStyle = T.glass;
     ctx.fill();
@@ -14861,7 +14908,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       rrect(ctx, cx, cy, cellW, cellH, 10);
 
       if (data) {
-        const win = data.pips !== 0 ? data.pips >= 0 : data.usd >= 0;
+        const win = isUsd ? (data.usd >= 0) : (data.pips !== 0 ? data.pips >= 0 : data.usd >= 0);
         ctx.fillStyle = win ? T.greenBg : T.redBg;
         ctx.fill();
         ctx.strokeStyle = win ? T.green : T.red;
@@ -14881,19 +14928,22 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.fillText(String(dayNum), cx + 8, cy + 18);
 
       if (data) {
-        const win = data.pips !== 0 ? data.pips >= 0 : data.usd >= 0;
+        const win = isUsd ? (data.usd >= 0) : (data.pips !== 0 ? data.pips >= 0 : data.usd >= 0);
         ctx.textAlign = 'center';
         ctx.fillStyle = win ? T.green : T.red;
         ctx.font = `800 ${pipsFont}px "JetBrains Mono", monospace`;
-        ctx.fillText(`${win ? '+' : ''}${data.pips.toFixed(1)}p`, cx + cellW / 2, cy + cellH * (showSub ? 0.57 : 0.62));
+        const mainVal = isUsd
+          ? fmtUsdShort(data.usd)
+          : `${data.pips >= 0 ? '+' : ''}${data.pips.toFixed(1)}p`;
+        ctx.fillText(mainVal, cx + cellW / 2, cy + cellH * (showSub ? 0.57 : 0.62));
 
         if (showSub && cellH >= 74) {
           ctx.fillStyle = T.text;
           ctx.globalAlpha = 0.82;
           ctx.font = `600 ${subFont}px "JetBrains Mono", monospace`;
-          const sub = hideUsd
-            ? `${data.trades}T`
-            : `${data.usd >= 0 ? '+' : '-'}$${Math.abs(data.usd).toFixed(0)} · ${data.trades}T`;
+          const sub = isUsd
+            ? `${data.pips >= 0 ? '+' : ''}${data.pips.toFixed(0)}p · ${data.trades}T`
+            : (hideUsd ? `${data.trades}T` : `${fmtUsdShort(data.usd)} · ${data.trades}T`);
           ctx.fillText(sub, cx + cellW / 2, cy + cellH - 10);
           ctx.globalAlpha = 1;
         }
@@ -14902,7 +14952,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.textAlign = 'left';
   }
 
-  function drawWeeklyCalendar(T, x, y, w, h, year, month, hideUsd){
+  function drawWeeklyCalendar(T, x, y, w, h, year, month, hideUsd, isUsd){
     rrect(ctx, x, y, w, h, 18);
     ctx.fillStyle = T.glass;
     ctx.fill();
@@ -14919,12 +14969,13 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     for (let wi = 0; wi < totalWeeks; wi++) {
       const startDay = Math.max(1, wi * 7 - firstOffset + 1);
       const endDay = Math.min(daysInMonth, (wi + 1) * 7 - firstOffset);
-      const wk = { label:`WEEK ${wi + 1}`, range:`${String(startDay).padStart(2,'0')} – ${String(endDay).padStart(2,'0')} ${shortMonth}`, pips:0, winPips:0, lossPips:0, usd:0, trades:0, wins:0, days:0 };
+      const wk = { label:`WEEK ${wi + 1}`, range:`${String(startDay).padStart(2,'0')} – ${String(endDay).padStart(2,'0')} ${shortMonth}`, pips:0, winPips:0, lossPips:0, usd:0, grossWin:0, grossLoss:0, trades:0, wins:0, days:0 };
       for (let d = startDay; d <= endDay; d++) {
         const it = dayMap[d];
         if (!it) continue;
         wk.pips += it.pips; wk.winPips += it.winPips; wk.lossPips += it.lossPips;
-        wk.usd += it.usd; wk.trades += it.trades; wk.wins += it.wins; wk.days++;
+        wk.usd += it.usd; wk.grossWin += it.grossWin; wk.grossLoss += it.grossLoss;
+        wk.trades += it.trades; wk.wins += it.wins; wk.days++;
       }
       weeks.push(wk);
     }
@@ -14932,14 +14983,14 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const innerPad = 18;
     const gap = 10;
     const rowH = (h - innerPad * 2 - gap * (weeks.length - 1)) / weeks.length;
-    const maxAbsPips = Math.max(10, ...weeks.map(k => Math.abs(k.pips)));
+    const maxAbsVal = Math.max(10, ...weeks.map(k => Math.abs(isUsd ? k.usd : k.pips)));
 
     weeks.forEach((wk, i) => {
       const ry = y + innerPad + i * (rowH + gap);
       const rx = x + innerPad;
       const rw = w - innerPad * 2;
       const hasData = wk.trades > 0;
-      const win = wk.pips !== 0 ? wk.pips >= 0 : wk.usd >= 0;
+      const win = isUsd ? (wk.usd >= 0) : (wk.pips !== 0 ? wk.pips >= 0 : wk.usd >= 0);
 
       rrect(ctx, rx, ry, rw, rowH, 14);
       ctx.fillStyle = hasData ? (win ? T.greenBg : T.redBg) : T.cell;
@@ -14966,7 +15017,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         ctx.fill();
 
         if (hasData) {
-          const fillW = Math.max(10, (Math.abs(wk.pips) / maxAbsPips) * barW);
+          const fillW = Math.max(10, (Math.abs(isUsd ? wk.usd : wk.pips) / maxAbsVal) * barW);
           rrect(ctx, barX, barY, fillW, 9, 4.5);
           ctx.fillStyle = win ? T.green : T.red;
           ctx.fill();
@@ -14974,7 +15025,11 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
         ctx.fillStyle = T.text;
         ctx.font = '600 12.5px "JetBrains Mono", monospace';
-        const info = hasData ? `${wk.trades} Trades • +${wk.winPips.toFixed(0)}p / -${wk.lossPips.toFixed(0)}p` : 'No trading activity';
+        const info = hasData
+          ? (isUsd
+              ? `${wk.trades} Trades • +$${wk.grossWin.toLocaleString('en-US', {maximumFractionDigits:0})} / -$${wk.grossLoss.toLocaleString('en-US', {maximumFractionDigits:0})}`
+              : `${wk.trades} Trades • +${wk.winPips.toFixed(0)}p / -${wk.lossPips.toFixed(0)}p`)
+          : 'No trading activity';
         ctx.fillText(info, barX, barY - 10);
       }
 
@@ -14982,11 +15037,16 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       if (hasData) {
         ctx.fillStyle = win ? T.green : T.red;
         ctx.font = '800 25px "JetBrains Mono", monospace';
-        ctx.fillText(`${win ? '+' : ''}${wk.pips.toFixed(1)} PIPS`, rx + rw - 20, ry + rowH * 0.48);
+        const mainTxt = isUsd
+          ? `${wk.usd >= 0 ? '+' : '-'}$${Math.abs(wk.usd).toLocaleString('en-US', {maximumFractionDigits:0})}`
+          : `${wk.pips >= 0 ? '+' : ''}${wk.pips.toFixed(1)} PIPS`;
+        ctx.fillText(mainTxt, rx + rw - 20, ry + rowH * 0.48);
 
         ctx.fillStyle = T.text;
         ctx.font = '600 13px "JetBrains Mono", monospace';
-        const sub = hideUsd ? `${wk.days} Active Days` : `${wk.usd >= 0 ? '+' : '-'}$${Math.abs(wk.usd).toLocaleString('en-US', {maximumFractionDigits:0})} • ${wk.days}d`;
+        const sub = isUsd
+          ? `${wk.pips >= 0 ? '+' : ''}${wk.pips.toFixed(1)}p • ${wk.days}d`
+          : (hideUsd ? `${wk.days} Active Days` : `${wk.usd >= 0 ? '+' : '-'}$${Math.abs(wk.usd).toLocaleString('en-US', {maximumFractionDigits:0})} • ${wk.days}d`);
         ctx.fillText(sub, rx + rw - 20, ry + rowH * 0.78);
       } else {
         ctx.fillStyle = T.muted;
@@ -15105,7 +15165,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     syncFromSource(true);
   });
 
-  // Simpan perubahan user khusus saat mode manual aktif
   ['trpPct','trpPair','trpTitle'].forEach(id => {
     $(id)?.addEventListener('input', () => {
       if ($('trpManualToggle')?.checked) {
@@ -15118,7 +15177,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   });
 
   ['trpBgDim','trpBgPos','trpQrLink','trpQrLabel'].forEach(id => $(id)?.addEventListener('input', render));
-  ['trpViewMode','trpRatio','trpTheme','trpHideUsd','trpShowSub'].forEach(id => $(id)?.addEventListener('change', render));
+  ['trpViewMode','trpUnit','trpRatio','trpTheme','trpHideUsd','trpShowSub'].forEach(id => $(id)?.addEventListener('change', render));
   $('trpSource')?.addEventListener('change', () => syncFromSource(true));
   ['trpMonth','trpPipSize'].forEach(id => $(id)?.addEventListener('change', () => syncFromSource(false)));
 
@@ -15135,8 +15194,9 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     render();
     const a = document.createElement('a');
     const mode = $('trpViewMode')?.value || 'day';
+    const unit = $('trpUnit')?.value || 'pips';
     const ym = $('trpMonth')?.value || 'recap';
-    a.download = `golden-break-${mode}-recap-${ym}.png`;
+    a.download = `golden-break-${mode}-${unit}-recap-${ym}.png`;
     a.href = canvas.toDataURL('image/png');
     a.click();
   });
