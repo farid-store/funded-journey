@@ -11106,11 +11106,11 @@ function initCloudAuthStatus(){
   const au=firebase.auth();
   finishCloudRedirect();
   if(cloudAuthUnsub)return;
-  cloudAuthUnsub=au.onAuthStateChanged(async u=>{
-   if(u){cloudStatus(u.isAnonymous?'Login anonim aktif · cloud tersedia di perangkat ini':'Login aktif ('+(u.email||u.displayName||'Firebase')+') · cloud siap','ok');}
-   else{
-    cloudStatus('Cloud: menunggu login','warn');
-    try{await au.signInAnonymously();}catch(e){cloudStatus('Cloud: login diperlukan ('+(e.code||'auth-error')+')','warn');}
+  cloudAuthUnsub=au.onAuthStateChanged(u=>{
+   if(u&&!u.isAnonymous){
+    cloudStatus('Login aktif ('+(u.email||u.displayName||'Firebase')+') · cloud siap','ok');
+   }else{
+    cloudStatus('Cloud: belum login (data tetap tersimpan lokal)','warn');
    }
   },e=>cloudStatus('Cloud auth gagal: '+(e.code||e.message||'unknown'),'err'));
  }catch(e){cloudStatus('Cloud auth tidak tersedia','warn');}
