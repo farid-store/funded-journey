@@ -3426,24 +3426,27 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 @media(max-width:980px){.trp-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.trp-form,.trp-sliders{grid-template-columns:1fr}.trp-form label.full,.trp-bgbox{grid-column:auto}}
 
-.trp-right-col{display:flex;flex-direction:column;gap:14px;min-width:0}
-.trp-calbox{padding:14px;border:1px solid var(--line2);border-radius:14px;background:var(--surface2,rgba(255,255,255,.025))}
+.trp-wrap{overflow-anchor:none}
+.trp-right-col{display:flex;flex-direction:column;gap:14px;min-width:0;max-width:100%}
+.trp-calbox{padding:14px;border:1px solid var(--line2);border-radius:14px;background:var(--surface2,rgba(255,255,255,.025));min-width:0;max-width:100%;overflow:hidden}
+.trp-calbox[hidden]{display:none!important}
 .trp-calhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .trp-calhead b{font:700 13px var(--fh);color:var(--gold);letter-spacing:.04em}
 .trp-calhead small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
-.trp-calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.trp-caldow{text-align:center;font:700 10px var(--fm);color:var(--faint);padding:2px 0 4px}
-.trp-calday{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:66px;padding:6px 7px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--text);text-align:left;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
-.trp-calday:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 8px 20px rgba(0,0,0,.32);z-index:2}
+.trp-calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:68px;gap:6px;width:100%;min-width:0}
+.trp-caldow{display:flex;align-items:center;justify-content:center;height:22px;font:700 10px var(--fm);color:var(--faint)}
+.trp-calgrid>.trp-caldow{grid-row:1;align-self:end}
+.trp-calday{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:100%;height:100%;min-width:0;min-height:0;padding:6px;margin:0;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--text);text-align:left;cursor:pointer;overflow:hidden;box-sizing:border-box;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease}
+.trp-calday:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 8px 18px rgba(0,0,0,.32);z-index:2}
 .trp-calday.empty{opacity:.18;pointer-events:none;border-style:dashed}
 .trp-calday.win{background:color-mix(in srgb,var(--green) 14%,var(--surface));border-color:color-mix(in srgb,var(--green) 50%,transparent)}
 .trp-calday.loss{background:color-mix(in srgb,var(--red) 14%,var(--surface));border-color:color-mix(in srgb,var(--red) 50%,transparent)}
-.trp-calday .dn{font:700 10.5px var(--fm);color:var(--muted);display:flex;justify-content:space-between;align-items:center}
-.trp-calday .dc{font:700 9px var(--fm);padding:1px 5px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--text)}
-.trp-calday .dv{font:700 12px var(--fm);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trp-calday .dn{font:700 10.5px var(--fm);color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:2px;line-height:1;min-width:0}
+.trp-calday .dc{font:700 8.5px var(--fm);padding:1px 4px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--text);flex:none}
+.trp-calday .dv{font:700 11.5px var(--fm);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .trp-calday.win .dv{color:var(--green)}
 .trp-calday.loss .dv{color:var(--red)}
-.trp-calday .da{font:600 9.5px var(--fm);color:var(--faint);margin-top:2px;opacity:0;transition:opacity .15s}
+.trp-calday .da{font:600 9px var(--fm);color:var(--faint);line-height:1;opacity:0;transition:opacity .15s;white-space:nowrap}
 .trp-calday:hover .da{opacity:1;color:var(--gold)}
 
 /* Pop-up Input Transaksi per Tanggal */
@@ -3469,7 +3472,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 .trp-titem small{display:block;color:var(--faint);font:500 10.5px var(--fm);margin-top:2px}
 .trp-titem .del{border:1px solid var(--line2);background:transparent;color:var(--red);width:28px;height:28px;border-radius:7px;cursor:pointer;font-weight:700}
 .trp-titem .del:hover{background:var(--red-soft)}
-@media(max-width:560px){.trp-calday{min-height:54px;padding:4px}.trp-calday .dv{font-size:10px}.trp-mform{grid-template-columns:1fr}.trp-mform label.full{grid-column:auto}.trp-qres{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.trp-calgrid{grid-auto-rows:54px;gap:4px}.trp-calday{padding:4px}.trp-calday .dv{font-size:10px}.trp-calday .da{display:none}.trp-mform{grid-template-columns:1fr}.trp-mform label.full{grid-column:auto}.trp-qres{grid-template-columns:repeat(2,1fr)}}
    
 </style>
    
