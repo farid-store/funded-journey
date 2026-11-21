@@ -18108,5 +18108,340 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
 
 
+<script id="gbc-proof-portal-js">
+(function(){
+  const qs = new URLSearchParams(location.search);
+  const compact = qs.get('gbc') || qs.get('p');
+  const legacyRaw = qs.get('verify');
+  const legacySig = qs.get('sig') || '';
+  if(!compact && !legacyRaw) return;
+
+  document.documentElement.classList.add('gbc-proof-mode');
+
+  const NET_META = {
+    T: { name:'TRC20 (TRON)', evm:false, exp:h => `https://tronscan.org/#/transaction/${h}` },
+    B: { name:'BEP20 (BSC)', evm:true, exp:h => `https://bscscan.com/tx/${h}` },
+    E: { name:'ERC20 (Ethereum)', evm:true, exp:h => `https://etherscan.io/tx/${h}` },
+    A: { name:'Arbitrum One', evm:true, exp:h => `https://arbiscan.io/tx/${h}` },
+    P: { name:'Polygon', evm:true, exp:h => `https://polygonscan.com/tx/${h}` },
+    S: { name:'Base', evm:true, exp:h => `https://basescan.org/tx/${h}` },
+    X: { name:'Bitcoin (BTC)', evm:false, exp:h => `https://mempool.space/tx/${h}` },
+    M: { name:'Bank / Rise / Manual', evm:false, exp:() => '' }
+  };
+
+  function hashFull(str){
+    let h = 0x811c9dc5;
+    const s = 'GBC::FARID_SIDDIQ::2026::' + str;
+    for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+    return (h >>> 0).toString(16).padStart(8, '0');
+  }
+  function decB64(b64){
+    const pad = b64.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((b64.length + 3) % 4);
+    const bin = atob(pad);
+    return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
+  }
+  const esc = v => String(v ?? '—').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+  const fmtMoney = (val, cur = 'USD', signed = false) => {
+    const num = Number(val);
+    if(!Number.isFinite(num)) return String(val || '—');
+    const sym = cur === 'EUR' ? '€' : cur === 'GBP' ? '£' : cur === 'IDR' ? 'Rp ' : '$';
+    const abs = Math.abs(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (num < 0 ? '-' : (signed && num > 0 ? '+' : '')) + sym + abs;
+  };
+  const fmtDate = code => {
+    const s = String(code || '');
+    if(s.length === 10) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)} · ${s.slice(6,8)}:${s.slice(8,10)} WIB`;
+    if(s.length === 6) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)}`;
+    return s || '—';
+  };
+
+  let data = null, valid = false, sigShown = 'INVALID';
+  if(compact){
+    try {
+      const parts = compact.split('~');
+      const sig = (parts.pop() || '').toLowerCase();
+      const body = parts.join('~');
+      const expected = hashFull(body).slice(0, 6);
+      valid = sig.length === 6 && sig === expected;
+      sigShown = sig.toUpperCase() || 'NONE';
+      if(parts[0] === 'C' && parts.length >= 11){
+        const [, lg, tr, fm, stRaw, eqRaw, tg, wr, ct, dt, cur, pAmt, pCnt, pNet, pTx] = parts;
+        const st = Number(stRaw), eq = Number(eqRaw), prof = eq - st;
+        const pct = st ? (prof / st * 100) : 0;
+        const tgNum = Number(tg) || 10;
+        let po = null;
+        if(pAmt && Number(pAmt) > 0){
+          const nm = NET_META[pNet] || NET_META.M;
+          const cleanTx = pTx && pTx !== '-' ? (nm.evm && !/^0x/i.test(pTx) ? '0x' + pTx : pTx) : '';
+          po = {
+            amount: fmtMoney(Number(pAmt), 'USD'),
+            count: Number(pCnt) || 1,
+            netName: nm.name,
+            txHash: cleanTx,
+            explorerUrl: cleanTx && nm.exp ? nm.exp(cleanTx) : ''
+          };
+        }
+        data = {
+          t: 'CERT',
+          id: `GBC-${lg.replace(/[^a-z0-9]/gi, '')}-20${dt}`,
+          tr, fm, lg, cur,
+          np: fmtMoney(prof, cur, true),
+          sb: fmtMoney(st, cur),
+          eq: fmtMoney(eq, cur),
+          pct, tgNum,
+          rt: `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`,
+          tg: `${tg}%`,
+          wr: `${wr}%`,
+          ct,
+          dt: fmtDate(dt),
+          gn: prof >= 0 ? 1 : 0,
+          po
+        };
+      } else if(parts[0] === 'P' && parts.length >= 14){
+        const [, id, lg, tr, sy, sd, vl, netRaw, en, ex, sl, tp, dt, cur] = parts;
+        const net = Number(netRaw);
+        data = {
+          t: 'PNL', id, lg, tr, fm: 'Golden Break Terminal', cur,
+          sy, sd: sd === 'S' ? 'SELL' : 'BUY', vl,
+          np: fmtMoney(net, cur, true),
+          gn: net >= 0 ? 1 : 0,
+          en: en === '-' ? 'Tidak tercatat' : en,
+          ex: ex === '-' ? 'Tidak tercatat' : ex,
+          sl: sl === '-' ? 'Tidak tercatat' : sl,
+          tp: tp === '-' ? 'Tidak tercatat' : tp,
+          dt: fmtDate(dt)
+        };
+      }
+    } catch(e){ valid = false; }
+  } else if(legacyRaw){
+    try {
+      const expected = hashFull(legacyRaw);
+      valid = legacySig.toLowerCase() === expected;
+      sigShown = legacySig.slice(0, 6).toUpperCase() || 'LEGACY';
+      data = JSON.parse(decB64(legacyRaw));
+      if(data && data.gn == null) data.gn = 1;
+    } catch(e){ valid = false; }
+  }
+
+  const isCert = data && data.t === 'CERT';
+  const sealSvg = `<svg class="gp-seal-svg" viewBox="0 0 120 120" aria-hidden="true">
+    <defs><linearGradient id="gpG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbf0cd"/><stop offset="50%" stop-color="#d6b05c"/><stop offset="100%" stop-color="#8c6620"/></linearGradient></defs>
+    <circle cx="60" cy="60" r="54" fill="url(#gpG)" opacity=".18"/>
+    <circle cx="60" cy="60" r="48" fill="#091020" stroke="url(#gpG)" stroke-width="3.2"/>
+    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6c572" stroke-width="1.2" stroke-dasharray="3 3" opacity=".75"/>
+    <polygon points="60,25 63,32 70,32 64.5,36.5 66.5,43 60,39 53.5,43 55.5,36.5 50,32 57,32" fill="#f2d996"/>
+    <text x="60" y="70" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="28" font-weight="700" fill="#fbf0cd">GB</text>
+    <text x="60" y="86" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="700" letter-spacing="2" fill="#d6b05c">VERIFIED</text>
+  </svg>`;
+
+  const checkSvg = valid
+    ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>`
+    : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+
+  const progPct = isCert && data?.tgNum > 0 ? Math.min(100, Math.max(0, (data.pct / data.tgNum) * 100)) : 100;
+
+  const kpisHtml = !data ? '' : (isCert ? `
+    <div class="gp-kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
+      <small>Verified Net Profit</small>
+      <strong>${esc(data.np)}</strong>
+      <span>Modal awal ${esc(data.sb)}</span>
+    </div>
+    <div class="gp-kpi" style="--ka:#f2d996">
+      <small>Achieved Return</small>
+      <strong>${esc(data.rt)}</strong>
+      <div class="gp-prog"><i style="width:${progPct.toFixed(0)}%"></i></div>
+      <span>Target challenge ${esc(data.tg)} tercapai</span>
+    </div>
+    <div class="gp-kpi" style="--ka:#eef3ff">
+      <small>Execution Consistency</small>
+      <strong>${esc(data.wr)}</strong>
+      <span>${esc(data.ct)} posisi tertutup tercatat</span>
+    </div>
+  ` : `
+    <div class="gp-kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
+      <small>Net Profit / Loss</small>
+      <strong>${esc(data.np)}</strong>
+      <span>${esc(data.sy)} · ${esc(data.sd)}</span>
+    </div>
+    <div class="gp-kpi" style="--ka:#f2d996">
+      <small>Entry → Exit</small>
+      <strong>${esc(data.en)} → ${esc(data.ex)}</strong>
+      <span>Volume ${esc(data.vl)} lot</span>
+    </div>
+    <div class="gp-kpi" style="--ka:#eef3ff">
+      <small>Risk Parameters</small>
+      <strong>SL ${esc(data.sl)}</strong>
+      <span>TP ${esc(data.tp)}</span>
+    </div>
+  `);
+
+  const payoutHtml = data?.po ? `
+    <section class="gp-payout">
+      <div class="gp-pay-top">
+        <div>
+          <small>✔ ON-CHAIN PAYOUT PROOF VERIFIED</small>
+          <strong>${esc(data.po.amount)}</strong>
+        </div>
+        <span class="gp-pay-net">${esc(data.po.count)}× Payout · ${esc(data.po.netName)}</span>
+      </div>
+      ${data.po.txHash ? `
+      <div class="gp-pay-tx">
+        <code id="gpTxVal">${esc(data.po.txHash)}</code>
+        <div class="gp-pay-acts">
+          <button type="button" class="gp-pay-copy" id="gpTxCopy">📋 Salin TX</button>
+          ${data.po.explorerUrl ? `<a class="gp-pay-link" href="${esc(data.po.explorerUrl)}" target="_blank" rel="noopener noreferrer">↗ Cek di Explorer</a>` : ''}
+        </div>
+      </div>` : ''}
+    </section>
+  ` : '';
+
+  const ledgerRows = !data ? [] : (isCert ? [
+    ['Account Holder', data.tr],
+    ['Prop Firm / Broker', data.fm],
+    ['Account Login', data.lg],
+    ['Account Currency', data.cur || 'USD'],
+    ['Starting Balance', data.sb],
+    ['Verified Equity', data.eq],
+    ['Profit Target', `${data.tg} (${data.rt})`],
+    ['Recorded Closed Trades', `${data.ct} trades · ${data.wr} WR`],
+    ...(data.po ? [['Verified Payout Total', `${data.po.amount} (${data.po.count}× ${data.po.netName})`]] : [])
+  ] : [
+    ['Trader', data.tr],
+    ['Account Login', data.lg],
+    ['Instrument & Side', `${data.sy} · ${data.sd}`],
+    ['Position Volume', `${data.vl} lot`],
+    ['Entry Price', data.en],
+    ['Exit Price', data.ex],
+    ['Stop Loss / Take Profit', `${data.sl} / ${data.tp}`],
+    ['Close Time (WIB)', data.dt]
+  ]);
+
+  const mount = () => {
+    if(document.getElementById('gbcProofPortal')) return;
+    if(!document.querySelector('link[href*="Cormorant+Garamond"]')){
+      const fl = document.createElement('link'); fl.rel = 'stylesheet';
+      fl.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap';
+      document.head.appendChild(fl);
+    }
+    const el = document.createElement('div');
+    el.id = 'gbcProofPortal';
+    el.innerHTML = `
+      <header class="gp-nav">
+        <div class="gp-nav-l">
+          <div class="gp-mark">GB</div>
+          <div class="gp-nav-title">
+            <b>GOLDEN BREAK CAPITAL</b>
+            <small>Certificate &amp; Payout Verification Registry</small>
+          </div>
+        </div>
+        <div class="gp-nav-r">
+          <button type="button" class="gp-nav-btn" id="gpNavClose">← Buka Terminal</button>
+        </div>
+      </header>
+
+      <main class="gp-shell">
+        <section class="gp-banner ${valid ? '' : 'bad'}">
+          <div class="gp-ban-l">
+            <div class="gp-shield">${checkSvg}</div>
+            <div class="gp-ban-txt">
+              <b>${valid ? (data?.po ? 'Authentic Credential &amp; Payout Proof' : 'Authentic &amp; Verified Credential') : 'Verification Failed · Data Modified'}</b>
+              <span>${valid ? 'Tanda tangan integritas cocok dengan catatan Golden Break Terminal.' : 'Parameter tautan telah diubah atau rusak sehingga gagal verifikasi.'}</span>
+            </div>
+          </div>
+          <span class="gp-hashpill"><i></i>SIG · 0x${esc(sigShown)}</span>
+        </section>
+
+        ${data ? `
+        <article class="gp-doc">
+          <div class="gp-doc-inner">
+            <svg class="gp-wm" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="88" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4"/><circle cx="100" cy="100" r="52" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+
+            <div class="gp-doc-head">
+              <div>
+                <div class="gp-doc-eyebrow">${isCert ? (data.po ? 'GOLDEN BREAK CAPITAL · TARGET & PAYOUT PROOF' : 'GOLDEN BREAK CAPITAL · CHALLENGE MILESTONE') : 'GOLDEN BREAK CAPITAL · AUDITED EXECUTION'}</div>
+                <h1 class="gp-doc-h1">${isCert ? (data.po ? 'Certificate of Achievement &amp; Payout' : 'Certificate of Target Achievement') : 'Verified Trade Performance Proof'}</h1>
+                <div class="gp-recipient-lbl">${isCert ? 'Officially presented to' : 'Recorded execution for'}</div>
+                <div class="gp-recipient-name">${esc(isCert ? data.tr : `${data.sy} · ${data.sd}`)}</div>
+                <div class="gp-tags">
+                  <span class="gp-tag gold">${esc(data.fm)}</span>
+                  <span class="gp-tag">Account #${esc(data.lg)}</span>
+                  <span class="gp-tag ${data.gn ? 'pos' : 'neg'}">${isCert ? 'TARGET PASSED' : (data.gn ? 'PROFITABLE EXIT' : 'CLOSED LOSS')}</span>
+                  ${data.po ? `<span class="gp-tag pos">✔ PAYOUT ${esc(data.po.amount)}</span>` : ''}
+                </div>
+              </div>
+              <div class="gp-seal-wrap">${sealSvg}<span class="gp-seal-cap">OFFICIAL SEAL</span></div>
+            </div>
+
+            <div class="gp-kpis">${kpisHtml}</div>
+            ${payoutHtml}
+
+            <div>
+              <div class="gp-sec-title">
+                ${isCert ? 'Audited Account Specifications' : 'Execution &amp; Audit Details'}
+                <span>Issued ${esc(data.dt)}</span>
+              </div>
+              <div class="gp-ledger">
+                ${ledgerRows.map(([k, v]) => `<div class="gp-row"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}
+              </div>
+            </div>
+
+            <div class="gp-auth">
+              <div class="gp-sign">
+                <div class="gp-calli">Farid Siddiq</div>
+                <div class="gp-sign-line"></div>
+                <b>FARID SIDDIQ</b>
+                <span>Chief Executive Officer · Golden Break Capital</span>
+              </div>
+              <div class="gp-registry">
+                <div><small>STATUS</small><b class="${valid ? 'ok' : 'bad'}">${valid ? 'VERIFIED' : 'INVALID'}</b></div>
+                <div><small>${isCert ? 'CERT ID' : 'TICKET'}</small><b>${esc(isCert ? data.id : '#' + data.id)}</b></div>
+                <div><small>ISSUED</small><b>${esc(data.dt)}</b></div>
+                <div><small>CHECKSUM</small><b>0x${esc(sigShown)}</b></div>
+              </div>
+            </div>
+          </div>
+        </article>
+        ` : `<article class="gp-doc"><div class="gp-doc-inner"><b>Data verifikasi tidak valid atau tautan QR terpotong.</b></div></article>`}
+
+        <div class="gp-actions">
+          <div class="gp-btns">
+            <button type="button" class="gp-btn pri" id="gpPrint">🖨 Cetak / Simpan PDF</button>
+            <button type="button" class="gp-btn" id="gpCopy">🔗 Salin Link Proof</button>
+            <button type="button" class="gp-btn" id="gpClose">↗ Buka Terminal</button>
+          </div>
+        </div>
+
+        <p class="gp-legal">Halaman verifikasi ini menampilkan catatan performa dan referensi TX payout yang diterbitkan oleh Golden Break Terminal. Keabsahan transaksi blockchain dapat diverifikasi langsung melalui tombol Blockchain Explorer di atas.</p>
+      </main>
+    `;
+    document.body.appendChild(el);
+
+    const closePortal = () => {
+      el.remove();
+      document.documentElement.classList.remove('gbc-proof-mode');
+      history.replaceState({}, '', location.pathname);
+    };
+    document.getElementById('gpClose').onclick = closePortal;
+    document.getElementById('gpNavClose').onclick = closePortal;
+    document.getElementById('gpPrint').onclick = () => window.print();
+    document.getElementById('gpCopy').onclick = () => {
+      navigator.clipboard?.writeText(location.href);
+      document.getElementById('gpCopy').textContent = '✔ Link Tersalin';
+    };
+    const txCopy = document.getElementById('gpTxCopy');
+    if(txCopy && data?.po?.txHash){
+      txCopy.onclick = () => {
+        navigator.clipboard?.writeText(data.po.txHash);
+        txCopy.textContent = '✔ Tersalin';
+      };
+    }
+  };
+
+  if(document.body) mount();
+  else document.addEventListener('DOMContentLoaded', mount);
+})();
+</script>
+   
+
 </body>
 </html>
