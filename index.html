@@ -11598,7 +11598,8 @@ document.addEventListener('change', e => { if(e.target && e.target.id === 'intel
 const prior = window.__FXUI?.update; if(window.__FXUI && typeof prior === 'function') window.__FXUI.update = function(){ try { return prior.apply(this, arguments); } finally { setTimeout(tick, 0); } };
 setInterval(tick, 3000);
 if(!document.querySelector('link[href*="Cormorant+Garamond"]')){ const fl = document.createElement('link'); fl.rel = 'stylesheet'; fl.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap'; document.head.appendChild(fl); }
-try { Promise.race([Promise.all([document.fonts.load('700 40px "Cormorant Garamond"'), document.fonts.load('italic 500 20px "Cormorant Garamond"'), document.fonts.load('700 20px "Chakra Petch"'), document.fonts.load('600 20px "JetBrains Mono"')]), new Promise(r => setTimeout(r, 2500))]).then(() => { lastSig = ''; tick(); }); } catch(e){}
+if(!document.querySelector('link[href*="Great+Vibes"]')){ const fg = document.createElement('link'); fg.rel = 'stylesheet'; fg.href = 'https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap'; document.head.appendChild(fg); }
+try { Promise.race([Promise.allSettled([document.fonts.load('700 40px "Cormorant Garamond"'), document.fonts.load('italic 500 20px "Cormorant Garamond"'), document.fonts.load('400 40px "Great Vibes"'), document.fonts.load('700 20px "Chakra Petch"'), document.fonts.load('600 20px "JetBrains Mono"')]), new Promise(r => setTimeout(r, 2500))]).then(() => { lastSig = ''; tick(); }); } catch(e){}
 document.addEventListener('DOMContentLoaded', () => setTimeout(tick, 400));
 window.__MR2 = { tick, drawTradeCard, drawCert, model, selectCandles, certificateData, _reset(){ lastSig = ''; } };
 })();
