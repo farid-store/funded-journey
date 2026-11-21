@@ -11130,10 +11130,17 @@ async function writeCloudRaw(uid,raw,sourceLabel){
  const ref=db.collection('users').doc(uid).collection('backtestSnapshots').doc('latest');
  const existing=await ref.get();
  if(existing.exists&&!confirm('Akun tujuan sudah memiliki backup Cloud. Ganti backup tujuan dengan data backtest dari '+sourceLabel+'?'))return false;
- const size=350000,chunks=[];for(let i=0;i<raw.length;i+=size)chunks.push(raw.slice(i,i+size));
+ const size=700000,chunks=[];for(let i=0;i<raw.length;i+=size)chunks.push(raw.slice(i,i+size));
+ const mb=(raw.length/1048576).toFixed(1);
+ cloudStatus(`Menyiapkan backup (${chunks.length} bagian · ${mb} MB)…`,'info');
  const old=await ref.collection('chunks').get();
  for(let i=0;i<old.docs.length;i+=450){const b=db.batch();old.docs.slice(i,i+450).forEach(d=>b.delete(d.ref));await b.commit();}
- for(let i=0;i<chunks.length;i++)await ref.collection('chunks').doc(String(i).padStart(5,'0')).set({i,data:chunks[i]});
+ // Upload 5 potongan sekaligus agar jauh lebih cepat
+ for(let i=0;i<chunks.length;i+=5){
+  const batch=chunks.slice(i,i+5);
+  await Promise.all(batch.map((data,j)=>ref.collection('chunks').doc(String(i+j).padStart(5,'0')).set({i:i+j,data})));
+  cloudStatus(`Mengupload backup ${Math.min(i+5,chunks.length)}/${chunks.length} (${mb} MB)…`,'info');
+ }
  let parsed;try{parsed=JSON.parse(raw)}catch(e){throw Error('Data backup tidak valid.');}
  await ref.set({v:2,name:parsed.name||'Backtest',savedAtMs:Date.now(),chunkCount:chunks.length,bytes:raw.length,n:parsed.n||0,i:parsed.i||0,drawingsCount:(parsed.drawings||[]).length,migratedFrom:sourceLabel});
  return true;
@@ -11308,8 +11315,13 @@ async function cloudEmailLogin(){
  }finally{setCloudAuthBusy(false);}
 }
 
-function cloudSnapshot(){return {v:2,name:S.name,baseSec:S.baseSec,dec:S.dec,n:S.n,B:S.B,i:S.i,start:S.start,pos:S.pos,pend:S.pend,closed:S.closed,balance:S.balance,initial:S.initial,nextId:S.nextId,eq:S.eq,eqStride:S.eqStride,peak:S.peak,balancePeak:S.balancePeak,maxDD:S.maxDD,maxDDpct:S.maxDDpct,drawings:S.drawings,dayKey:S.dayKey,dayStartEq:S.dayStartEq,breach:S.breach,violations:S.violations,vioKeys:S.vioKeys,targetHit:S.targetHit,tf:S.tf,view:S.view,ind:S.ind,cfg:cfg,savedAt:Date.now()};}
-async function cloudSaveNow(showToast=false){
+function cloudSnapshot(){
+ const b=S.B?{
+  t:Array.from(S.B.t),o:Array.from(S.B.o),h:Array.from(S.B.h),l:Array.from(S.B.l),c:Array.from(S.B.c)
+ }:null;
+ return {v:2,name:S.name,baseSec:S.baseSec,dec:S.dec,n:S.n,B:b,i:S.i,start:S.start,pos:S.pos,pend:S.pend,closed:S.closed,balance:S.balance,initial:S.initial,nextId:S.nextId,eq:S.eq,eqStride:S.eqStride,peak:S.peak,balancePeak:S.balancePeak,maxDD:S.maxDD,maxDDpct:S.maxDDpct,drawings:S.drawings,dayKey:S.dayKey,dayStartEq:S.dayStartEq,breach:S.breach,violations:S.violations,vioKeys:S.vioKeys,targetHit:S.targetHit,tf:S.tf,view:S.view,ind:S.ind,cfg:cfg,savedAt:Date.now()};
+}
+   async function cloudSaveNow(showToast=false){
  if(cloudBusy||!S.B)return;
  const db=cloudDb(),u=cloudUser();if(!db||!u){cloudStatus('Perlu login Firebase untuk sinkron lintas perangkat','warn');if(showToast)msg('Login dengan akun Firebase yang sama di kedua perangkat.','err');return;}
  cloudBusy=true;
