@@ -10570,212 +10570,938 @@ function drawLadder(x, box, m, info, opt = {}){
   x.restore();
 }
 
-/* ---------- chart: kurva saldo (fallback sertifikat) ---------- */
-function drawCurve(x, box, pts, cur, opt = {}){
-  const { T } = tools(x), fs = opt.fs || 15, r = opt.radius ?? 18, { x:bx, y:by, w:bw, h:bh } = box;
-  panel(x, box, r); x.save(); rr(x, bx, by, bw, bh, r); x.clip();
-  T('BALANCE CURVE', bx + 24, by + 14 + fs*1.2, { size:fs, weight:700, color:PAL.gold, ls:1 });
-  const data = (pts || []).filter(p => !p.gap && Number.isFinite(Number(p.balance)));
-  if(data.length < 2){ T('Data kurva saldo belum cukup', bx + bw/2, by + bh/2 + 24, { size:fs, color:PAL.axis, align:'center', max:bw - 40 }); x.restore(); return; }
-  const left = bx + 24, right = bx + bw - 24, top = by + fs*2.6 + 14, bottom = by + bh - fs*2.4 - 8;
-  let lo = Math.min(...data.map(p => p.balance)), hi = Math.max(...data.map(p => p.balance)); if(!(hi > lo)){ lo -= 1; hi += 1; } const pd = (hi - lo)*.12; lo -= pd; hi += pd;
-  const px = i => left + (right - left)*i/(data.length - 1), py = v => bottom - (v - lo)/(hi - lo)*(bottom - top), up = data[data.length-1].balance >= data[0].balance, c = up ? PAL.up : PAL.dn;
-  x.strokeStyle = PAL.grid; x.lineWidth = 1; for(let i = 0; i <= 3; i++){ const yy = top + (bottom - top)*i/3; x.beginPath(); x.moveTo(left, yy); x.lineTo(right, yy); x.stroke(); }
-  const g = x.createLinearGradient(0, top, 0, bottom); g.addColorStop(0, c + '55'); g.addColorStop(1, c + '00');
-  x.beginPath(); data.forEach((p, i) => i ? x.lineTo(px(i), py(p.balance)) : x.moveTo(px(i), py(p.balance))); x.lineTo(px(data.length-1), bottom); x.lineTo(px(0), bottom); x.closePath(); x.fillStyle = g; x.fill();
-  x.beginPath(); data.forEach((p, i) => i ? x.lineTo(px(i), py(p.balance)) : x.moveTo(px(i), py(p.balance))); x.strokeStyle = c; x.lineWidth = 3; x.lineJoin = 'round'; x.stroke();
-  const f = v => fmtMoney(v, cur), mid = bx + bw/2;
-  T(f(data[0].balance), left, bottom + fs + 8, { size:fs - 1, weight:700, color:PAL.text, max:(bw - 48)/2 - 8 });
-  T(f(data[data.length-1].balance), right, bottom + fs + 8, { size:fs - 1, weight:700, color:c, align:'right', max:(bw - 48)/2 - 8 });
-  T(`${data[0].date} → ${data[data.length-1].date}`, right, by + 14 + fs*1.2, { size:fs - 2, color:PAL.axis, align:'right', max:bw*.5 });
+/* ---------- helper visual premium (Obsidian & Champagne Gold) ---------- */
+const SIGN_FONT = '"Great Vibes","Cormorant Garamond",Georgia,serif';
+
+function goldGrad(x, x0, y0, x1, y1){
+  const g = x.createLinearGradient(x0, y0, x1, y1);
+  g.addColorStop(0, '#f7e4a8');
+  g.addColorStop(0.45, '#d6b05c');
+  g.addColorStop(1, '#9c752b');
+  return g;
+}
+
+function drawCornerBrackets(x, bx, by, bw, bh, len, color, lw){
+  x.save();
+  x.strokeStyle = color;
+  x.lineWidth = lw;
+  x.lineCap = 'square';
+  const corners = [
+    [bx, by, 1, 1],
+    [bx + bw, by, -1, 1],
+    [bx, by + bh, 1, -1],
+    [bx + bw, by + bh, -1, -1]
+  ];
+  corners.forEach(([cx, cy, sx, sy]) => {
+    x.beginPath();
+    x.moveTo(cx + sx * len, cy);
+    x.lineTo(cx, cy);
+    x.lineTo(cx, cy + sy * len);
+    x.stroke();
+    x.fillStyle = color;
+    x.beginPath();
+    x.arc(cx + sx * (len * 0.28), cy + sy * (len * 0.28), lw * 0.85, 0, Math.PI * 2);
+    x.fill();
+  });
   x.restore();
 }
+
+function drawMicroGrid(x, W, H, step, color){
+  x.save();
+  x.fillStyle = color;
+  for(let gx = step; gx < W; gx += step){
+    for(let gy = step; gy < H; gy += step){
+      x.fillRect(gx, gy, 1.5, 1.5);
+    }
+  }
+  x.restore();
+}
+
+function drawGuilloche(x, cx, cy, maxR, color){
+  x.save();
+  x.strokeStyle = color;
+  x.lineWidth = 1;
+  for(let r = maxR * 0.32; r <= maxR; r += maxR * 0.17){
+    x.beginPath();
+    for(let i = 0; i <= 180; i++){
+      const a = (i / 180) * Math.PI * 2;
+      const wave = Math.sin(a * 18) * (maxR * 0.014);
+      const px = cx + Math.cos(a) * (r + wave);
+      const py = cy + Math.sin(a) * (r + wave);
+      if(i === 0) x.moveTo(px, py); else x.lineTo(px, py);
+    }
+    x.closePath();
+    x.stroke();
+  }
+  x.restore();
+}
+
+function drawBrandMark(x, bx, by, size){
+  x.save();
+  rr(x, bx, by, size, size, size * 0.24);
+  x.fillStyle = goldGrad(x, bx, by, bx + size, by + size);
+  x.fill();
+  x.strokeStyle = 'rgba(255,248,220,.55)';
+  x.lineWidth = Math.max(1, size * 0.03);
+  x.stroke();
+  rr(x, bx + size * 0.1, by + size * 0.1, size * 0.8, size * 0.8, size * 0.16);
+  x.strokeStyle = 'rgba(10,14,24,.35)';
+  x.lineWidth = Math.max(1, size * 0.025);
+  x.stroke();
+  const { T } = tools(x);
+  T('GB', bx + size / 2, by + size * 0.67, {
+    size: size * 0.46, weight: 800, color: '#090e1a', align: 'center', family: FONT
+  });
+  x.restore();
+}
+
+function drawGoldSeal(x, cx, cy, r, u = 1){
+  x.save();
+  // outer scalloped medal ring
+  const spikes = 26;
+  x.beginPath();
+  for(let i = 0; i < spikes * 2; i++){
+    const rad = i % 2 === 0 ? r : r * 0.91;
+    const ang = -Math.PI / 2 + (i * Math.PI) / spikes;
+    const px = cx + Math.cos(ang) * rad;
+    const py = cy + Math.sin(ang) * rad;
+    if(i === 0) x.moveTo(px, py); else x.lineTo(px, py);
+  }
+  x.closePath();
+  x.shadowColor = 'rgba(0,0,0,.45)';
+  x.shadowBlur = 14 * u;
+  x.shadowOffsetY = 4 * u;
+  x.fillStyle = goldGrad(x, cx - r, cy - r, cx + r, cy + r);
+  x.fill();
+  x.shadowColor = 'transparent';
+
+  // inner obsidian disc
+  x.beginPath();
+  x.arc(cx, cy, r * 0.78, 0, Math.PI * 2);
+  x.fillStyle = '#09101f';
+  x.fill();
+  x.strokeStyle = '#f2da99';
+  x.lineWidth = 1.6 * u;
+  x.stroke();
+
+  // inner dashed gold ring
+  x.beginPath();
+  x.arc(cx, cy, r * 0.66, 0, Math.PI * 2);
+  x.setLineDash([2.5 * u, 2.5 * u]);
+  x.strokeStyle = 'rgba(232,198,109,.55)';
+  x.lineWidth = 1 * u;
+  x.stroke();
+  x.setLineDash([]);
+
+  // center monogram + star
+  const { T } = tools(x);
+  star(x, cx, cy - r * 0.34, r * 0.13, r * 0.055, 5);
+  x.fillStyle = '#f2da99';
+  x.fill();
+  T('GB', cx, cy + r * 0.15, {
+    size: r * 0.52, weight: 800, color: '#f5dfa0', align: 'center', family: SERIF
+  });
+  T('VERIFIED', cx, cy + r * 0.43, {
+    size: r * 0.17, weight: 700, color: '#c8a75a', align: 'center', ls: 1.1 * u, family: FONT
+  });
+  x.restore();
+}
+
+function drawQrBadge(x, text, bx, by, size, u = 1){
+  x.save();
+  rr(x, bx, by, size, size, 8 * u);
+  x.fillStyle = 'rgba(255,255,255,.04)';
+  x.fill();
+  x.strokeStyle = 'rgba(214,176,92,.45)';
+  x.lineWidth = 1.2 * u;
+  x.stroke();
+
+  let ok = false;
+  try {
+    if(typeof window.qrcode === 'function'){
+      const qr = window.qrcode(0, 'M');
+      qr.addData(String(text || 'GBC'));
+      qr.make();
+      const count = qr.getModuleCount();
+      const pad = Math.max(5 * u, size * 0.09);
+      const cell = (size - pad * 2) / count;
+      x.fillStyle = '#f3e5c0';
+      for(let r = 0; r < count; r++){
+        for(let c = 0; c < count; c++){
+          if(qr.isDark(r, c)){
+            x.fillRect(bx + pad + c * cell, by + pad + r * cell, Math.ceil(cell), Math.ceil(cell));
+          }
+        }
+      }
+      ok = true;
+    }
+  } catch(e){}
+
+  if(!ok){
+    const { T } = tools(x);
+    T('GBC', bx + size / 2, by + size * 0.48, { size: size * 0.24, weight: 700, color: '#e8c66d', align: 'center', family: MONO });
+    T('VERIFIED', bx + size / 2, by + size * 0.72, { size: size * 0.14, weight: 700, color: '#9caac5', align: 'center' });
+  }
+  x.restore();
+}
+
+/* ---------- chart: kurva saldo (fallback sertifikat) ---------- */
+function drawCurve(x, box, pts, cur, opt = {}){
+  const { T } = tools(x), fs = opt.fs || 15, r = opt.radius ?? 16, { x:bx, y:by, w:bw, h:bh } = box;
+  panel(x, box, r);
+  x.save();
+  rr(x, bx, by, bw, bh, r);
+  x.clip();
+  T('BALANCE CURVE', bx + 22, by + 14 + fs * 1.15, { size: fs, weight: 700, color: PAL.gold, ls: 1.4 });
+  const data = (pts || []).filter(p => !p.gap && Number.isFinite(Number(p.balance)));
+  if(data.length < 2){
+    T('Data kurva saldo belum cukup', bx + bw / 2, by + bh / 2 + 12, { size: fs, color: PAL.axis, align: 'center', max: bw - 40 });
+    x.restore();
+    return;
+  }
+  const firstB = data[0].balance, lastB = data[data.length - 1].balance;
+  const deltaPct = firstB ? ((lastB - firstB) / Math.abs(firstB)) * 100 : 0;
+  const up = lastB >= firstB, c = up ? PAL.up : PAL.dn;
+  const left = bx + 22, right = bx + bw - 22, top = by + fs * 2.5 + 16, bottom = by + bh - fs * 2.4 - 10;
+  let lo = Math.min(...data.map(p => p.balance)), hi = Math.max(...data.map(p => p.balance));
+  if(!(hi > lo)){ lo -= 1; hi += 1; }
+  const pd = (hi - lo) * 0.14; lo -= pd; hi += pd;
+  const px = i => left + (right - left) * i / (data.length - 1);
+  const py = v => bottom - (v - lo) / (hi - lo) * (bottom - top);
+
+  x.strokeStyle = PAL.grid;
+  x.lineWidth = 1;
+  for(let i = 0; i <= 3; i++){
+    const yy = top + (bottom - top) * i / 3;
+    x.beginPath(); x.moveTo(left, yy); x.lineTo(right, yy); x.stroke();
+  }
+
+  const g = x.createLinearGradient(0, top, 0, bottom);
+  g.addColorStop(0, c + '48');
+  g.addColorStop(1, c + '00');
+  x.beginPath();
+  data.forEach((p, i) => i ? x.lineTo(px(i), py(p.balance)) : x.moveTo(px(i), py(p.balance)));
+  x.lineTo(px(data.length - 1), bottom);
+  x.lineTo(px(0), bottom);
+  x.closePath();
+  x.fillStyle = g;
+  x.fill();
+
+  x.beginPath();
+  data.forEach((p, i) => i ? x.lineTo(px(i), py(p.balance)) : x.moveTo(px(i), py(p.balance)));
+  x.strokeStyle = c;
+  x.lineWidth = 3;
+  x.lineJoin = 'round';
+  x.stroke();
+
+  // glowing endpoint
+  const ex = px(data.length - 1), ey = py(lastB);
+  x.beginPath(); x.arc(ex, ey, 9, 0, Math.PI * 2); x.fillStyle = c + '33'; x.fill();
+  x.beginPath(); x.arc(ex, ey, 4.5, 0, Math.PI * 2); x.fillStyle = c; x.fill();
+
+  const f = v => fmtMoney(v, cur);
+  const pctStr = `${deltaPct >= 0 ? '+' : ''}${deltaPct.toFixed(2)}%`;
+  T(`${data[0].date} → ${data[data.length - 1].date}  ·  ${pctStr}`, right, by + 14 + fs * 1.15, {
+    size: fs - 2, weight: 600, color: c, align: 'right', max: bw * 0.56, family: MONO
+  });
+  T(f(firstB), left, bottom + fs + 10, { size: fs - 1, weight: 700, color: PAL.text, max: (bw - 48) / 2 - 8, family: MONO });
+  T(f(lastB), right, bottom + fs + 10, { size: fs - 1, weight: 700, color: c, align: 'right', max: (bw - 48) / 2 - 8, family: MONO });
+  x.restore();
+}
+
 function chartFor(x, box, m, opt){
   const sel = selectCandles(m, barState.get(keyOf(m.t))?.bars);
-  if(sel.candles.length >= 3) { const ax = afterExit(m, sel); drawCandleChart(x, box, m, sel, { ...opt, touch:ax.kind === 'tp' ? { time:ax.time, price:ax.price } : null }); return { ok:true, sel, ax }; }
+  if(sel.candles.length >= 3){
+    const ax = afterExit(m, sel);
+    drawCandleChart(x, box, m, sel, { ...opt, touch: ax.kind === 'tp' ? { time: ax.time, price: ax.price } : null });
+    return { ok: true, sel, ax };
+  }
   const st = barState.get(keyOf(m.t));
   let msg;
   if(st?.state === 'unsupported') msg = 'Dashboard belum bisa membaca koleksi candle (marketBars).';
   else if(st?.state === 'error') msg = 'Gagal membaca candle: ' + (st.err || 'tidak diketahui') + '. Cek aturan Firestore untuk koleksi marketBars.';
   else if(sel.candles.length) msg = 'Candle yang tersimpan terlalu sedikit untuk membentuk grafik trade ini.';
   else msg = 'Candle disimpan oleh EA saat trade ditutup. Trade lama (sebelum EA terbaru) tidak punya candle — perbarui EA & webhook, candle akan terisi otomatis.';
-  drawLadder(x, box, m, { loading:st?.state === 'loading', msg }, opt);
-  return { ok:false, sel, state:st?.state };
+  drawLadder(x, box, m, { loading: st?.state === 'loading', msg }, opt);
+  return { ok: false, sel, state: st?.state };
 }
 
 /* ---------- evaluasi pasca-exit: apakah TP tersentuh setelah SL kena? ---------- */
 function afterExit(m, sel){
-  if(m.sl == null || m.tp == null) return { kind:'nolevel' };
-  if(!sel || !sel.candles.length || !Number.isFinite(m.closeS)) return { kind:'nodata', n:0 };
+  if(m.sl == null || m.tp == null) return { kind: 'nolevel' };
+  if(!sel || !sel.candles.length || !Number.isFinite(m.closeS)) return { kind: 'nodata', n: 0 };
   const ps = sel.ps || 300, after = sel.candles.filter(c => c.time >= m.closeS);
-  if(after.length < 3) return { kind:'nodata', n:after.length, ps };
+  if(after.length < 3) return { kind: 'nodata', n: after.length, ps };
   let tpI = -1, slI = -1;
   for(let i = 0; i < after.length; i++){
     const c = after[i], hitTP = m.dir > 0 ? c.high >= m.tp : c.low <= m.tp, hitSL = m.dir > 0 ? c.low <= m.sl : c.high >= m.sl;
     if(hitTP && tpI < 0) tpI = i; if(hitSL && slI < 0) slI = i;
     if(tpI >= 0 && slI >= 0) break;
   }
-  const mins = after.length*ps/60, base = { n:after.length, ps, mins };
-  if(tpI >= 0 && slI >= 0 && tpI === slI) return { ...base, kind:'both', time:after[tpI].time };
-  if(tpI >= 0 && (slI < 0 || tpI < slI)) return { ...base, kind:'tp', time:after[tpI].time, idx:tpI, price:m.tp, after:Math.round((after[tpI].time - m.closeS)/60) };
-  if(slI >= 0) return { ...base, kind:'sl', time:after[slI].time, after:Math.round((after[slI].time - m.closeS)/60) };
-  return { ...base, kind:'none' };
+  const mins = after.length * ps / 60, base = { n: after.length, ps, mins };
+  if(tpI >= 0 && slI >= 0 && tpI === slI) return { ...base, kind: 'both', time: after[tpI].time };
+  if(tpI >= 0 && (slI < 0 || tpI < slI)) return { ...base, kind: 'tp', time: after[tpI].time, idx: tpI, price: m.tp, after: Math.round((after[tpI].time - m.closeS) / 60) };
+  if(slI >= 0) return { ...base, kind: 'sl', time: after[slI].time, after: Math.round((after[slI].time - m.closeS) / 60) };
+  return { ...base, kind: 'none' };
 }
-const fmtMin = v => v < 90 ? `${Math.max(1, Math.round(v))} menit` : (v < 2880 ? `${(v/60).toFixed(1).replace('.0','')} jam` : `${(v/1440).toFixed(1).replace('.0','')} hari`);
+const fmtMin = v => v < 90 ? `${Math.max(1, Math.round(v))} menit` : (v < 2880 ? `${(v / 60).toFixed(1).replace('.0', '')} jam` : `${(v / 1440).toFixed(1).replace('.0', '')} hari`);
 
-/* ---------- Kartu P/L ---------- */
+/* ---------- Kartu P/L (Institutional Obsidian Edition) ---------- */
 function drawTradeCard(t){
-  const m = model(t), a = m.a, cur = m.cur, W = 1080, H = 1744, P = 60, CW = W - P*2;
-  const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'), { T, wrap } = tools(x);
-  const good = m.net >= 0, accent = good ? '#34d399' : '#fb7185', pf = priceFmtFor([m.entry, m.exit, m.sl, m.tp], m.sym);
-  const bg = x.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#111c34'); bg.addColorStop(.5, '#080e1a'); bg.addColorStop(1, '#0f1829'); x.fillStyle = bg; x.fillRect(0, 0, W, H);
-  const glow = x.createRadialGradient(W*.85, 220, 10, W*.85, 220, 520); glow.addColorStop(0, good ? 'rgba(52,211,153,.16)' : 'rgba(251,113,133,.16)'); glow.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = glow; x.fillRect(0, 0, W, 760);
-  x.strokeStyle = '#c8a75a'; x.lineWidth = 3; rr(x, 22, 22, W - 44, H - 44, 14); x.stroke(); x.strokeStyle = 'rgba(200,167,90,.25)'; x.lineWidth = 1; rr(x, 36, 36, W - 72, H - 72, 8); x.stroke();
-  // header
-  T('GOLDEN BREAK TERMINAL', P, 98, { size:28, weight:700, color:'#e8c66d', ls:1.5, max:CW*.58 });
-  T('TRADE PERFORMANCE RECORD', W - P, 98, { size:15, weight:600, color:'#8d9bb7', align:'right', ls:1.5, max:CW*.5 });
-  x.strokeStyle = 'rgba(200,167,90,.35)'; x.lineWidth = 1; x.beginPath(); x.moveTo(P, 124); x.lineTo(W - P, 124); x.stroke();
-  // hero kiri: simbol + pill
-  const half = CW*.5 - 10;
-  T(m.sym, P, 206, { size:60, weight:700, color:'#fff', max:half });
-  const rs = { SL:['EXIT: SL HIT','rgba(251,113,133,.18)','#ff9db0'], TP:['EXIT: TP HIT','rgba(52,211,153,.18)','#7cf0c3'], MANUAL:['EXIT: MANUAL','rgba(255,255,255,.07)','#dfe6f5'], EA:['EXIT: EA','rgba(255,255,255,.07)','#dfe6f5'], STOPOUT:['STOP OUT','rgba(251,113,133,.18)','#ff9db0'] }[m.reason] || ['CLOSED','rgba(255,255,255,.07)','#9caac5'];
-  const pills = [[m.side, m.side === 'SELL' ? '#6b2a3d' : '#0d5f49', m.side === 'SELL' ? '#ffc1ce' : '#92f5d0'], [has(m.vol) ? `${m.vol} LOT` : 'VOLUME —', 'rgba(255,255,255,.07)', '#dfe6f5'], rs];
-  let pxx = P; pills.forEach(([txt, bgc, fg]) => { const w = tools(x).measure(txt, 17, 700) + 34; rr(x, pxx, 232, w, 44, 10); x.fillStyle = bgc; x.fill(); T(txt, pxx + w/2, 261, { size:17, weight:700, color:fg, align:'center' }); pxx += w + 10; });
-  // hero kanan: P/L
-  T('NET PROFIT / LOSS', W - P, 160, { size:15, weight:700, color:'#9caac5', align:'right', ls:1.5 });
-  T(fmtMoney(m.net, cur, true), W - P, 232, { size:72, weight:700, color:accent, align:'right', max:CW*.55, family:MONO, minScale:.5 });
-  const subBits = []; if(m.retPct != null) subBits.push(`${m.retPct >= 0 ? '+' : ''}${m.retPct.toFixed(2)}% dari modal awal`); if(m.rMult != null) subBits.push(`${m.rMult >= 0 ? '+' : ''}${m.rMult.toFixed(2)}R`);
-  T(subBits.join('  ·  ') || ' ', W - P, 268, { size:17, weight:600, color:'#aab6cf', align:'right', max:CW*.55 });
-  // chart
-  const chartBox = { x:P, y:304, w:CW, h:540 };
-  c._chart = chartFor(x, chartBox, m, { fs:16, radius:18 });
-  // tile
-  const gap = 14, tw = (CW - gap*3)/4;
-  const tile = (i, y, h, label, val, o = {}) => {
-    const tx0 = P + i*(tw + gap); rr(x, tx0, y, tw, h, 14); x.fillStyle = 'rgba(255,255,255,.045)'; x.fill(); x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1; x.stroke();
-    T(label, tx0 + 18, y + 30, { size:14, weight:700, color:'#8d9bb7', ls:1, max:tw - 36 });
-    if(o.two){ T(val[0], tx0 + 18, y + 62, { size:23, weight:700, color:'#f3f6fd', max:tw - 36 }); T(val[1], tx0 + 18, y + 85, { size:17, weight:600, color:'#aab6cf', max:tw - 36 }); }
-    else T(val, tx0 + 18, y + (h > 96 ? 70 : 66), { size:o.size || 28, weight:700, color:o.color || '#f3f6fd', family:o.mono === false ? FONT : MONO, max:tw - 36 });
+  const m = model(t), a = m.a, cur = m.cur, W = 1080, H = 1744, P = 56, CW = W - P * 2;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d'), { T, measure, wrap } = tools(x);
+  const good = m.net >= 0;
+  const accent = good ? '#34d399' : '#fb7185';
+  const accentSoft = good ? 'rgba(52,211,153,.13)' : 'rgba(251,113,133,.13)';
+  const accentLine = good ? 'rgba(52,211,153,.45)' : 'rgba(251,113,133,.45)';
+  const pf = priceFmtFor([m.entry, m.exit, m.sl, m.tp], m.sym);
+
+  // 1. Latar obsidian dalam + dot grid halus + ambient glow terkendali
+  const bg = x.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#0a101d');
+  bg.addColorStop(0.52, '#060912');
+  bg.addColorStop(1, '#0b1220');
+  x.fillStyle = bg;
+  x.fillRect(0, 0, W, H);
+  drawMicroGrid(x, W, H, 36, 'rgba(214,176,92,.045)');
+
+  const gGold = x.createRadialGradient(W * 0.14, 120, 20, W * 0.14, 120, 440);
+  gGold.addColorStop(0, 'rgba(214,176,92,.10)');
+  gGold.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = gGold;
+  x.fillRect(0, 0, W, 620);
+
+  const gRes = x.createRadialGradient(W * 0.86, 220, 20, W * 0.86, 220, 480);
+  gRes.addColorStop(0, accentSoft);
+  gRes.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = gRes;
+  x.fillRect(0, 0, W, 720);
+
+  // 2. Bingkai arsitektural ganda + siku emas
+  x.strokeStyle = goldGrad(x, 0, 0, W, H);
+  x.lineWidth = 2.5;
+  rr(x, 20, 20, W - 40, H - 40, 18);
+  x.stroke();
+  x.strokeStyle = 'rgba(255,255,255,.07)';
+  x.lineWidth = 1;
+  rr(x, 32, 32, W - 64, H - 64, 12);
+  x.stroke();
+  drawCornerBrackets(x, 38, 38, W - 76, H - 76, 24, 'rgba(232,198,109,.65)', 2);
+
+  // 3. Header Brand Bar
+  drawBrandMark(x, P, 62, 50);
+  T('GOLDEN BREAK CAPITAL', P + 66, 85, { size: 22, weight: 700, color: '#f2d996', ls: 2.2, max: CW * 0.56 });
+  T('TRADE PERFORMANCE RECORD  ·  BREAK YOUR LIMIT', P + 66, 107, { size: 12, weight: 600, color: '#7e8da8', ls: 1.6, max: CW * 0.58 });
+
+  const badgeTxt = m.ticket != null ? `VERIFIED  ·  #${m.ticket}` : 'VERIFIED RECORD';
+  const badgeW = Math.min(270, measure(badgeTxt, 12.5, 700, MONO) + 40);
+  rr(x, W - P - badgeW, 69, badgeW, 36, 99);
+  x.fillStyle = 'rgba(214,176,92,.09)';
+  x.fill();
+  x.strokeStyle = 'rgba(214,176,92,.38)';
+  x.lineWidth = 1;
+  x.stroke();
+  x.beginPath(); x.arc(W - P - badgeW + 17, 87, 4, 0, Math.PI * 2); x.fillStyle = '#34d399'; x.fill();
+  T(badgeTxt, W - P - 16, 92, { size: 12.5, weight: 700, color: '#e8c66d', align: 'right', family: MONO, max: badgeW - 34 });
+
+  const divG = x.createLinearGradient(P, 0, W - P, 0);
+  divG.addColorStop(0, 'rgba(214,176,92,.55)');
+  divG.addColorStop(0.5, 'rgba(214,176,92,.18)');
+  divG.addColorStop(1, 'rgba(214,176,92,.55)');
+  x.strokeStyle = divG;
+  x.lineWidth = 1;
+  x.beginPath(); x.moveTo(P, 132); x.lineTo(W - P, 132); x.stroke();
+
+  // 4. Hero Card (Simbol + Pill kiri | Net P/L kanan)
+  const hy = 148, hh = 150;
+  rr(x, P, hy, CW, hh, 16);
+  const hbg = x.createLinearGradient(P, hy, P + CW, hy + hh);
+  hbg.addColorStop(0, 'rgba(22,32,54,.82)');
+  hbg.addColorStop(1, 'rgba(11,17,30,.92)');
+  x.fillStyle = hbg;
+  x.fill();
+  x.strokeStyle = 'rgba(255,255,255,.09)';
+  x.lineWidth = 1;
+  x.stroke();
+
+  // aksen tepi kiri hero
+  rr(x, P + 1, hy + 16, 5, hh - 32, 3);
+  x.fillStyle = accent;
+  x.fill();
+
+  const hxL = P + 28, hxR = W - P - 28;
+  T(m.sym, hxL, hy + 68, { size: 54, weight: 700, color: '#ffffff', max: CW * 0.45 });
+  const sideIsSell = m.side === 'SELL';
+  const rsMap = {
+    SL: ['SL HIT', 'rgba(251,113,133,.15)', 'rgba(251,113,133,.45)', '#ff9db0'],
+    TP: ['TP HIT', 'rgba(52,211,153,.15)', 'rgba(52,211,153,.45)', '#7cf0c3'],
+    MANUAL: ['MANUAL EXIT', 'rgba(255,255,255,.06)', 'rgba(255,255,255,.16)', '#dfe6f5'],
+    EA: ['EA EXIT', 'rgba(214,176,92,.12)', 'rgba(214,176,92,.4)', '#f2d996'],
+    STOPOUT: ['STOP OUT', 'rgba(251,113,133,.18)', 'rgba(251,113,133,.5)', '#ff9db0']
   };
-  // banner evaluasi pasca-exit
-  const ax = c._chart?.ax || afterExit(m, null), by0 = 862, bh0 = 70;
+  const rs = rsMap[m.reason] || ['CLOSED', 'rgba(255,255,255,.06)', 'rgba(255,255,255,.15)', '#9caac5'];
+  const pills = [
+    [sideIsSell ? '▼ SELL' : '▲ BUY', sideIsSell ? 'rgba(251,113,133,.18)' : 'rgba(52,211,153,.18)', sideIsSell ? 'rgba(251,113,133,.55)' : 'rgba(52,211,153,.55)', sideIsSell ? '#ffb4c3' : '#7cf0c3'],
+    [has(m.vol) ? `${m.vol} LOT` : 'VOL —', 'rgba(255,255,255,.05)', 'rgba(255,255,255,.14)', '#e2e8f5'],
+    rs
+  ];
+  let pxx = hxL;
+  pills.forEach(([txt, bgc, bdc, fg]) => {
+    const pw = measure(txt, 14.5, 700, MONO) + 28;
+    rr(x, pxx, hy + 92, pw, 36, 9);
+    x.fillStyle = bgc; x.fill();
+    x.strokeStyle = bdc; x.lineWidth = 1; x.stroke();
+    T(txt, pxx + pw / 2, hy + 115, { size: 14.5, weight: 700, color: fg, align: 'center', family: MONO });
+    pxx += pw + 10;
+  });
+
+  // Hero kanan: Net P/L
+  T('NET PROFIT / LOSS', hxR, hy + 38, { size: 12.5, weight: 700, color: '#8d9bb7', align: 'right', ls: 2 });
+  x.save();
+  x.shadowColor = accent;
+  x.shadowBlur = 18;
+  T(fmtMoney(m.net, cur, true), hxR, hy + 98, { size: 64, weight: 700, color: accent, align: 'right', max: CW * 0.48, family: MONO, minScale: 0.48 });
+  x.restore();
+  const subBits = [];
+  if(m.retPct != null) subBits.push(`${m.retPct >= 0 ? '+' : ''}${m.retPct.toFixed(2)}% Equity`);
+  if(m.rMult != null) subBits.push(`${m.rMult >= 0 ? '+' : ''}${m.rMult.toFixed(2)}R`);
+  T(subBits.join('   ·   ') || 'Recorded Closed Position', hxR, hy + 129, { size: 15, weight: 600, color: '#b4c0d8', align: 'right', max: CW * 0.48, family: MONO });
+
+  // 5. Area Chart OHLC / Ladder (tetap 540px agar detail candle maksimal)
+  const chartBox = { x: P, y: 314, w: CW, h: 540 };
+  c._chart = chartFor(x, chartBox, m, { fs: 16, radius: 16 });
+  x.strokeStyle = 'rgba(214,176,92,.28)';
+  x.lineWidth = 1.2;
+  rr(x, chartBox.x, chartBox.y, chartBox.w, chartBox.h, 16);
+  x.stroke();
+
+  // 6. Banner Evaluasi Pasca-Exit (lebih lega, 84px)
+  const ax = c._chart?.ax || afterExit(m, null), by0 = 870, bh0 = 84;
   const exitedLoss = m.reason === 'SL' || m.net < 0;
   const B = ({
-    nolevel:['SL/TP tidak tercatat', 'Broker/EA tidak menyimpan level SL/TP untuk trade ini, evaluasi pasca-exit tidak dapat dihitung.', '#8d9bb7'],
-    nodata:['Evaluasi pasca-exit belum tersedia', `Candle setelah exit belum cukup (${ax.n ?? 0} bar). EA melengkapi candle pasca-exit beberapa saat setelah trade ditutup.`, '#8d9bb7'],
-    tp:[exitedLoss ? 'SETUP VALID: TP tersentuh setelah exit' : 'Harga lanjut ke TP setelah exit', `TP ${pf(m.tp)} tersentuh ${fmtMin(ax.after ?? 0)} setelah close${ax.kind === 'tp' ? ', sebelum SL tersentuh' : ''} (${ax.n} candle dipantau).`, '#e8c66d'],
-    sl:[exitedLoss ? 'Exit tepat: harga lanjut menyentuh SL' : 'SL tersentuh setelah exit', `SL ${pf(m.sl)} tersentuh ${fmtMin(ax.after ?? 0)} setelah close, TP tidak tersentuh lebih dulu (${ax.n} candle dipantau).`, '#fb7185'],
-    both:['Ambigu: TP & SL tersentuh di candle yang sama', 'Urutan tidak bisa dipastikan dari data OHLC pada timeframe ini.', '#8d9bb7'],
-    none:['Belum ada TP/SL setelah exit', `Dalam ${ax.n} candle (${fmtMin(ax.mins || 0)}) setelah close, harga belum menyentuh TP maupun SL.`, '#aab6cf']
+    nolevel: ['SL / TP tidak tercatat', 'Broker/EA tidak menyimpan level SL/TP untuk trade ini, sehingga evaluasi pasca-exit belum dapat dihitung.', '#8d9bb7'],
+    nodata: ['Evaluasi pasca-exit belum tersedia', `Candle pasca-exit belum cukup (${ax.n ?? 0} bar). EA melengkapi candle otomatis setelah posisi ditutup.`, '#8d9bb7'],
+    tp: [exitedLoss ? 'SETUP VALID · TP tersentuh setelah exit' : 'Harga berlanjut ke TP setelah exit', `TP ${pf(m.tp)} tersentuh ${fmtMin(ax.after ?? 0)} setelah close${ax.kind === 'tp' ? ', sebelum SL tersentuh' : ''} (${ax.n} bar dipantau).`, '#e8c66d'],
+    sl: [exitedLoss ? 'EXIT TEPAT · Harga lanjut menyentuh SL' : 'SL tersentuh setelah exit', `SL ${pf(m.sl)} tersentuh ${fmtMin(ax.after ?? 0)} setelah close, TP tidak tersentuh lebih dulu (${ax.n} bar dipantau).`, '#fb7185'],
+    both: ['Ambigu · TP & SL di candle yang sama', 'Urutan sentuhan tidak dapat dipastikan dari data OHLC pada timeframe ini.', '#8d9bb7'],
+    none: ['Belum menyentuh TP / SL pasca-exit', `Dalam ${ax.n} bar (${fmtMin(ax.mins || 0)}) setelah close, harga belum mencapai TP maupun SL.`, '#aab6cf']
   })[ax.kind] || ['', '', '#8d9bb7'];
-  rr(x, P, by0, CW, bh0, 14); x.fillStyle = 'rgba(255,255,255,.04)'; x.fill(); x.strokeStyle = B[2]; x.globalAlpha = .55; x.lineWidth = 1.5; x.stroke(); x.globalAlpha = 1;
-  rr(x, P, by0, 8, bh0, 4); x.fillStyle = B[2]; x.fill();
-  T('EVALUASI PASCA-EXIT', P + 28, by0 + 22, { size:12, weight:700, color:'#8d9bb7', ls:1.2 });
-  T(B[0], P + 28, by0 + 44, { size:20, weight:700, color:B[2], max:CW - 48 });
-  T(B[1], P + 28, by0 + 63, { size:14, weight:500, color:'#aab6cf', max:CW - 48, minScale:.8 });
-  let y = 868 + bh0 + 22; const th = 100;
+
+  rr(x, P, by0, CW, bh0, 14);
+  x.fillStyle = 'rgba(18,27,46,.82)';
+  x.fill();
+  x.strokeStyle = B[2];
+  x.globalAlpha = 0.4;
+  x.lineWidth = 1.2;
+  x.stroke();
+  x.globalAlpha = 1;
+  rr(x, P + 1, by0 + 12, 5, bh0 - 24, 3);
+  x.fillStyle = B[2];
+  x.fill();
+
+  T('POST-EXIT INTELLIGENCE', P + 24, by0 + 25, { size: 11, weight: 700, color: '#7e8da8', ls: 1.8 });
+  T(B[0], P + 24, by0 + 50, { size: 19, weight: 700, color: B[2], max: CW - 44 });
+  T(B[1], P + 24, by0 + 72, { size: 13.5, weight: 500, color: '#aebbd3', max: CW - 44, minScale: 0.78 });
+
+  // 7. 4 Kartu Harga Utama (beraksen garis atas)
+  const gap = 14, tw = (CW - gap * 3) / 4;
   const NA = 'Tidak tercatat';
-  const tl = (lbl, v, color) => [lbl, v == null ? NA : pf(v), color];
-  [tl('ENTRY', m.entry, '#e8c66d'), tl('EXIT', m.exit, '#9cb4ff'), tl('STOP LOSS', m.sl, '#fb7185'), tl('TAKE PROFIT', m.tp, '#34d399')].forEach((r, i) => tile(i, y, th, r[0], r[1], { color:r[1] === NA ? '#6b7a96' : r[2], size:r[1] === NA ? 17 : 26, mono:r[1] === NA ? false : undefined }));
-  y += th + gap;
+  const drawPriceTile = (i, y, h, label, val, topColor, isMuted) => {
+    const tx0 = P + i * (tw + gap);
+    rr(x, tx0, y, tw, h, 14);
+    x.fillStyle = 'rgba(17,25,43,.85)';
+    x.fill();
+    x.strokeStyle = 'rgba(255,255,255,.08)';
+    x.lineWidth = 1;
+    x.stroke();
+    // accent top bar
+    rr(x, tx0 + 18, y + 1, tw - 36, 3, 2);
+    x.fillStyle = isMuted ? 'rgba(255,255,255,.15)' : topColor;
+    x.fill();
+    T(label, tx0 + 18, y + 32, { size: 12, weight: 700, color: '#8494b2', ls: 1.5, max: tw - 36 });
+    T(val, tx0 + 18, y + 73, {
+      size: isMuted ? 16 : 27, weight: 700, color: isMuted ? '#62718d' : topColor,
+      family: isMuted ? FONT : MONO, max: tw - 36
+    });
+  };
+  let y = 972;
+  const priceRows = [
+    ['ENTRY', m.entry, '#f0d283'],
+    ['EXIT', m.exit, '#8cb4ff'],
+    ['STOP LOSS', m.sl, '#fb7185'],
+    ['TAKE PROFIT', m.tp, '#34d399']
+  ];
+  priceRows.forEach(([lbl, v, col], i) => {
+    const empty = v == null;
+    drawPriceTile(i, y, 102, lbl, empty ? NA : pf(v), col, empty);
+  });
+
+  // 8. 2 Baris Metrik Eksekusi & P/L
+  const drawMetricTile = (i, ty, h, label, val, o = {}) => {
+    const tx0 = P + i * (tw + gap);
+    rr(x, tx0, ty, tw, h, 12);
+    x.fillStyle = o.highlight ? accentSoft : 'rgba(255,255,255,.032)';
+    x.fill();
+    x.strokeStyle = o.highlight ? accentLine : 'rgba(255,255,255,.075)';
+    x.lineWidth = 1;
+    x.stroke();
+    T(label, tx0 + 16, ty + 27, { size: 11.5, weight: 700, color: '#7e8da8', ls: 1.4, max: tw - 32 });
+    if(o.two){
+      T(val[0], tx0 + 16, ty + 56, { size: 19, weight: 700, color: '#eef3ff', max: tw - 32, family: MONO });
+      T(val[1], tx0 + 16, ty + 78, { size: 14, weight: 600, color: '#97a6c2', max: tw - 32, family: MONO });
+    } else {
+      T(val, tx0 + 16, ty + 66, {
+        size: o.size || 23, weight: 700, color: o.color || '#eef3ff',
+        family: o.mono === false ? FONT : MONO, max: tw - 32
+      });
+    }
+  };
+
+  y = 1088;
   const ow = wib(m.openS), cw2 = wib(m.closeS);
-  tile(0, y, th, 'VOLUME', has(m.vol) ? `${m.vol} lot` : '—', { size:26 });
-  tile(1, y, th, 'DURASI', Number.isFinite(m.dur) ? fmtDur(m.dur) : '—', { size:26, mono:false });
-  tile(2, y, th, 'WAKTU OPEN', ow ? [ow.d, ow.t + ' WIB'] : ['—', ''], { two:true });
-  tile(3, y, th, 'WAKTU CLOSE', cw2 ? [cw2.d, cw2.t + ' WIB'] : ['—', ''], { two:true });
-  y += th + gap;
-  tile(0, y, th, 'GROSS P/L', fmtMoney(m.gross, cur, true), { size:24, color:n(m.gross) >= 0 ? '#34d399' : '#fb7185' });
-  tile(1, y, th, 'KOMISI', fmtMoney(m.comm, cur, true), { size:24, color:'#dfe6f5' });
-  tile(2, y, th, 'SWAP', fmtMoney(m.swap, cur, true), { size:24, color:'#dfe6f5' });
-  tile(3, y, th, 'NET P/L', fmtMoney(m.net, cur, true), { size:24, color:accent });
-  y += th + 34;
-  // akun
-  T('AKUN', P, y + 4, { size:15, weight:700, color:'#e8c66d', ls:2 }); x.strokeStyle = 'rgba(200,167,90,.3)'; x.beginPath(); x.moveTo(P + 70, y); x.lineTo(W - P, y); x.stroke(); y += 22;
-  const ah = 92, accItems = [
-    ['TRADER', a.name || a.displayName || a.accountLabel || '—'], ['PROP FIRM', inferFirm(a, readConfig().custom) || 'Tidak terdeteksi'], ['LOGIN', a.login ?? a.account ?? fxData().accountId ?? '—'], ['BROKER', a.company || a.broker || '—'],
-    ['SERVER', a.server || '—'], ['SALDO', fmtMoney(a.balance, cur)], ['EKUITAS', fmtMoney(a.equity, cur)], ['LEVERAGE', a.leverage ? `1:${a.leverage}` : '—']];
-  accItems.forEach((it, i) => { const row = Math.floor(i/4), col = i%4, tx0 = P + col*(tw + gap), ty = y + row*(ah + gap);
-    rr(x, tx0, ty, tw, ah, 12); x.fillStyle = 'rgba(255,255,255,.03)'; x.fill(); x.strokeStyle = 'rgba(255,255,255,.07)'; x.lineWidth = 1; x.stroke();
-    T(it[0], tx0 + 18, ty + 28, { size:13, weight:700, color:'#8190ad', ls:1, max:tw - 36 });
-    const val = String(it[1]), one = tools(x).measure(val, 22, 600) <= tw - 36;
-    if(one) T(val, tx0 + 18, ty + 64, { size:22, weight:600, color:'#f1f4fb' });
-    else wrap(val, tw - 36, 18, 600, FONT, 2).forEach((ln, k) => T(ln, tx0 + 18, ty + 56 + k*22, { size:18, weight:600, color:'#f1f4fb' })); });
-  y += ah*2 + gap + 28;
-  // ticket + catatan (satu baris, dipotong otomatis)
-  const meta = [m.ticket != null ? `Ticket ${m.ticket}` : '', m.comment ? `Catatan: ${m.comment}` : ''].filter(Boolean).join('   ·   ');
-  if(meta) T(meta, P, y, { size:16, weight:500, color:'#9caac5', max:CW });
-  // footer
-  const fy = H - 128; x.strokeStyle = 'rgba(200,167,90,.35)'; x.beginPath(); x.moveTo(P, fy); x.lineTo(W - P, fy); x.stroke();
-  T('GOLDEN BREAK TERMINAL · TRADE PERFORMANCE RECORD', P, fy + 42, { size:15, weight:700, color:'#c9a85a', ls:1, max:CW*.6 });
-  T(`Akun ${a.login ?? a.account ?? '—'}`, W - P, fy + 42, { size:15, weight:500, color:'#9caac5', align:'right', max:CW*.35 });
-  T('Kartu dibuat dari catatan dashboard; bukan laporan resmi broker.', P, fy + 72, { size:13, weight:400, color:'#7384a0', max:CW });
+  drawMetricTile(0, y, 92, 'VOLUME', has(m.vol) ? `${m.vol} lot` : '—');
+  drawMetricTile(1, y, 92, 'DURASI', Number.isFinite(m.dur) ? fmtDur(m.dur) : '—', { mono: false });
+  drawMetricTile(2, y, 92, 'OPEN (WIB)', ow ? [ow.d, ow.t] : ['—', ''], { two: true });
+  drawMetricTile(3, y, 92, 'CLOSE (WIB)', cw2 ? [cw2.d, cw2.t] : ['—', ''], { two: true });
+
+  y = 1194;
+  drawMetricTile(0, y, 92, 'GROSS P/L', fmtMoney(m.gross, cur, true), { color: n(m.gross) >= 0 ? '#34d399' : '#fb7185' });
+  drawMetricTile(1, y, 92, 'KOMISI', fmtMoney(m.comm, cur, true), { color: '#dfe6f5' });
+  drawMetricTile(2, y, 92, 'SWAP', fmtMoney(m.swap, cur, true), { color: '#dfe6f5' });
+  drawMetricTile(3, y, 92, 'NET P/L', fmtMoney(m.net, cur, true), { color: accent, highlight: true });
+
+  // 9. Unified Account Dossier Card (rapi, 1 kotak 4x2 dengan hairline internal)
+  const dy = 1306, dh = 254, dhHead = 44;
+  rr(x, P, dy, CW, dh, 16);
+  x.fillStyle = 'rgba(14,21,37,.82)';
+  x.fill();
+  x.strokeStyle = 'rgba(214,176,92,.22)';
+  x.lineWidth = 1;
+  x.stroke();
+
+  // header dossier
+  x.strokeStyle = 'rgba(255,255,255,.07)';
+  x.beginPath(); x.moveTo(P, dy + dhHead); x.lineTo(P + CW, dy + dhHead); x.stroke();
+  T('ACCOUNT DOSSIER', P + 20, dy + 28, { size: 12.5, weight: 700, color: '#e8c66d', ls: 2 });
+  const noteRight = [m.ticket != null ? `Ticket #${m.ticket}` : '', m.comment ? m.comment : ''].filter(Boolean).join('  ·  ');
+  if(noteRight) T(noteRight, P + CW - 20, dy + 28, { size: 12.5, weight: 500, color: '#92a1bd', align: 'right', max: CW * 0.65, family: MONO });
+
+  const accItems = [
+    ['TRADER', a.name || a.displayName || a.accountLabel || '—'],
+    ['PROP FIRM', inferFirm(a, readConfig().custom) || 'Tidak terdeteksi'],
+    ['ACCOUNT LOGIN', a.login ?? a.account ?? fxData().accountId ?? '—'],
+    ['BROKER', a.company || a.broker || '—'],
+    ['SERVER', a.server || '—'],
+    ['BALANCE', fmtMoney(a.balance, cur)],
+    ['EQUITY', fmtMoney(a.equity, cur)],
+    ['LEVERAGE', a.leverage ? `1:${a.leverage}` : '—']
+  ];
+  const cellW = CW / 4, cellH = (dh - dhHead) / 2;
+  // garis pemisah internal 4x2
+  x.strokeStyle = 'rgba(255,255,255,.06)';
+  x.beginPath(); x.moveTo(P + 16, dy + dhHead + cellH); x.lineTo(P + CW - 16, dy + dhHead + cellH); x.stroke();
+  for(let col = 1; col < 4; col++){
+    const lx = P + col * cellW;
+    x.beginPath(); x.moveTo(lx, dy + dhHead + 12); x.lineTo(lx, dy + dh - 12); x.stroke();
+  }
+  accItems.forEach((it, i) => {
+    const row = Math.floor(i / 4), col = i % 4;
+    const cx0 = P + col * cellW, cy0 = dy + dhHead + row * cellH;
+    T(it[0], cx0 + 20, cy0 + 30, { size: 11, weight: 700, color: '#7888a6', ls: 1.3, max: cellW - 34 });
+    const val = String(it[1]);
+    const isNum = i === 2 || i === 5 || i === 6 || i === 7;
+    const fam = isNum ? MONO : FONT;
+    if(measure(val, 19.5, 600, fam) <= cellW - 34){
+      T(val, cx0 + 20, cy0 + 66, { size: 19.5, weight: 600, color: '#eef3ff', family: fam });
+    } else {
+      wrap(val, cellW - 34, 16, 600, fam, 2).forEach((ln, k) =>
+        T(ln, cx0 + 20, cy0 + 57 + k * 21, { size: 16, weight: 600, color: '#eef3ff', family: fam })
+      );
+    }
+  });
+
+  // 10. Footer + Mini Seal + QR Verifikasi
+  const fy = 1584;
+  x.strokeStyle = divG;
+  x.lineWidth = 1;
+  x.beginPath(); x.moveTo(P, fy); x.lineTo(W - P, fy); x.stroke();
+
+  drawGoldSeal(x, P + 34, fy + 60, 32, 1);
+  T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE RECORD', P + 84, fy + 46, { size: 15, weight: 700, color: '#e8c66d', ls: 1.5, max: CW * 0.62 });
+  T(`Account ${a.login ?? a.account ?? '—'}  ·  Recorded ${dtFull(m.closeS || Math.floor(Date.now() / 1000))}`, P + 84, fy + 71, {
+    size: 13.5, weight: 500, color: '#a8b5ce', family: MONO, max: CW * 0.64
+  });
+  T('Kartu dibuat otomatis dari catatan dashboard; bukan laporan resmi broker.', P + 84, fy + 95, {
+    size: 12, weight: 400, color: '#6b7b99', max: CW * 0.68
+  });
+
+  const qrPayload = `GBC|PNL|${a.login ?? a.account ?? '-'}|${m.ticket ?? '-'}|${m.sym}|${fmtMoney(m.net, cur, true)}`;
+  drawQrBadge(x, qrPayload, W - P - 82, fy + 18, 82, 1);
+
   return c;
 }
 
-/* ---------- Sertifikat ---------- */
-const CERT_FORMATS = { landscape:{label:'Landscape 16:9', w:1600, h:900}, classic43:{label:'Landscape 4:3', w:1600, h:1200}, portrait:{label:'Portrait A4', w:1200, h:1697}, portrait34:{label:'Portrait 3:4', w:1200, h:1600}, square:{label:'Square 1:1', w:1200, h:1200} };
+/* ---------- Sertifikat Pencapaian (Obsidian & Champagne Gold Institutional Edition) ---------- */
+const CERT_FORMATS = {
+  landscape: { label: 'Landscape 16:9', w: 1600, h: 900 },
+  classic43: { label: 'Landscape 4:3', w: 1600, h: 1200 },
+  portrait: { label: 'Portrait A4', w: 1200, h: 1697 },
+  portrait34: { label: 'Portrait 3:4', w: 1200, h: 1600 },
+  square: { label: 'Square 1:1', w: 1200, h: 1200 }
+};
+
 function readConfig(){
   const a = account(), fx = fxData(), id = fx.accountId || a.login || ''; let p = {}, custom = {};
   try { p = JSON.parse(localStorage.getItem('ffx_p_' + id) || '{}'); } catch(e){}
   try { custom = JSON.parse(localStorage.getItem('ffx_share_profile_' + id) || '{}'); } catch(e){}
   return { p, custom, id };
 }
+
 function certificateData(){
   const fx = fxData(), a = account(), hist = Array.isArray(fx.history) ? fx.history : [], { p, custom } = readConfig();
-  const start = n(a.startingBalance ?? a.initialBalance ?? p.start ?? a.balance), equity = n(a.equity ?? a.balance), target = n(a.profitTargetPct ?? p.target ?? 10), profit = equity - start, pct = start ? profit/start*100 : 0;
+  const start = n(a.startingBalance ?? a.initialBalance ?? p.start ?? a.balance);
+  const equity = n(a.equity ?? a.balance);
+  const target = n(a.profitTargetPct ?? p.target ?? 10);
+  const profit = equity - start, pct = start ? profit / start * 100 : 0;
   const wins = hist.filter(t => n(t.netProfit ?? t.profit) > 0).length;
-  return { fx, a, hist, p, custom, start, equity, target, profit, pct, wr:hist.length ? wins/hist.length*100 : 0, hasAcc:!!(a && (a.login || a.balance != null)), reached:target > 0 && pct >= target };
+  return {
+    fx, a, hist, p, custom, start, equity, target, profit, pct,
+    wr: hist.length ? wins / hist.length * 100 : 0,
+    hasAcc: !!(a && (a.login || a.balance != null)),
+    reached: target > 0 && pct >= target
+  };
 }
-function bestTradeOf(hist){ let b = null, bv = 0; hist.forEach(t => { const v = n(t.netProfit ?? t.profit); if(v > bv){ bv = v; b = t; } }); return b; }
-function star(x, cx, cy, ro, ri, pts){ x.beginPath(); for(let i = 0; i < pts*2; i++){ const r = i % 2 ? ri : ro, ang = -Math.PI/2 + i*Math.PI/pts; x.lineTo(cx + Math.cos(ang)*r, cy + Math.sin(ang)*r); } x.closePath(); }
+
+function bestTradeOf(hist){
+  let b = null, bv = 0;
+  hist.forEach(t => { const v = n(t.netProfit ?? t.profit); if(v > bv){ bv = v; b = t; } });
+  return b;
+}
+
+function star(x, cx, cy, ro, ri, pts){
+  x.beginPath();
+  for(let i = 0; i < pts * 2; i++){
+    const r = i % 2 ? ri : ro, ang = -Math.PI / 2 + i * Math.PI / pts;
+    x.lineTo(cx + Math.cos(ang) * r, cy + Math.sin(ang) * r);
+  }
+  x.closePath();
+}
+
 function drawCert(fmtKey, d, best){
-  const f = CERT_FORMATS[fmtKey] || CERT_FORMATS.landscape, W = f.w, H = f.h, wide = W/H > 1.2, square = Math.abs(W - H) < 2, u = wide ? H/900 : W/1200;
-  const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'), { T, measure, wrap } = tools(x);
-  const NAVY = '#10213c', GOLD = '#a17c2f', MUTED = '#5d6a82', cur = d.a.currency || 'USD';
-  const bg = x.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#fbf8f0'); bg.addColorStop(1, '#ece5d3'); x.fillStyle = bg; x.fillRect(0, 0, W, H);
-  x.strokeStyle = NAVY; x.lineWidth = 6*u; x.strokeRect(26*u, 26*u, W - 52*u, H - 52*u); x.strokeStyle = '#b99850'; x.lineWidth = 2*u; x.strokeRect(42*u, 42*u, W - 84*u, H - 84*u);
-  [[42,42,1,1],[W/u - 42,42,-1,1],[42,H/u - 42,1,-1],[W/u - 42,H/u - 42,-1,-1]].forEach(([cx0, cy0, sx, sy]) => { x.strokeStyle = '#b99850'; x.lineWidth = 3*u; x.beginPath(); x.moveTo(cx0*u + sx*34*u, cy0*u + sy*10*u); x.lineTo(cx0*u + sx*10*u, cy0*u + sy*10*u); x.lineTo(cx0*u + sx*10*u, cy0*u + sy*34*u); x.stroke(); });
-  const M = 84*u, L = wide
-    ? { cx:M + (W*.5 - M - 10*u)/2, colX:M, colW:W*.5 - M - 10*u, rx:W*.54, rw:W - M - W*.54, seal:[W - M - 38*u, H*.092, 33*u], eyebrow:.15, title:.27, title2:.345, orn:.385, recog:.445, name:.545, nameLine:.575, st1:.63, st2:.668, metrics:[.72,.855], chart:[.15,.47], details:[.52,.83], cols:2, fl:.875, f1:.905, f2:.935 }
-    : { cx:W/2, colX:M, colW:W - M*2, rx:M, rw:W - M*2, seal:[W/2, (square ? .068 : .088)*H, (square ? 30 : 42)*u], eyebrow:square ? .122 : .155, title:square ? .192 : .207, title2:square ? .238 : .252, orn:square ? .262 : .277, recog:square ? .297 : .312, name:square ? .355 : .362, nameLine:square ? .376 : .384, st1:square ? .412 : .423, st2:square ? .437 : .448,
-        metrics:square ? [.465,.545] : [.48,.57], chart:square ? [.56,.765] : [.585,.725], details:square ? [.78,.865] : [.745,.885], cols:square ? 4 : 2, fl:square ? .89 : .905, f1:square ? .917 : .932, f2:square ? .947 : .958 };
-  const sx = L.seal; x.beginPath(); x.arc(sx[0], sx[1], sx[2], 0, Math.PI*2); x.fillStyle = NAVY; x.fill(); x.strokeStyle = '#b99850'; x.lineWidth = 3*u; x.stroke(); x.beginPath(); x.arc(sx[0], sx[1], sx[2]*.82, 0, Math.PI*2); x.strokeStyle = 'rgba(232,198,109,.6)'; x.lineWidth = 1.5*u; x.stroke(); star(x, sx[0], sx[1], sx[2]*.52, sx[2]*.22, 5); x.fillStyle = '#e8c66d'; x.fill();
-  T('GOLDEN BREAK TERMINAL  ·  PERFORMANCE SERIES', L.cx, L.eyebrow*H, { size:15*u, weight:700, color:GOLD, align:'center', ls:3*u, max:L.colW });
-  T('CERTIFICATE', L.cx, L.title*H, { size:(wide ? 78 : 68)*u, weight:700, color:NAVY, align:'center', family:SERIF, ls:4*u, max:L.colW });
-  T('OF TARGET ACHIEVEMENT', L.cx, L.title2*H, { size:(wide ? 30 : 30)*u, weight:700, color:NAVY, align:'center', family:SERIF, ls:3*u, max:L.colW });
-  x.strokeStyle = '#b99850'; x.lineWidth = 1.5*u; const ow = Math.min(L.colW*.5, 300*u); x.beginPath(); x.moveTo(L.cx - ow/2, L.orn*H); x.lineTo(L.cx - 10*u, L.orn*H); x.moveTo(L.cx + 10*u, L.orn*H); x.lineTo(L.cx + ow/2, L.orn*H); x.stroke(); x.save(); x.translate(L.cx, L.orn*H); x.rotate(Math.PI/4); x.fillStyle = '#b99850'; x.fillRect(-4*u, -4*u, 8*u, 8*u); x.restore();
-  T('This certificate recognizes the recorded trading performance of', L.cx, L.recog*H, { size:20*u, italic:true, weight:500, color:MUTED, align:'center', family:SERIF, max:L.colW });
+  const f = CERT_FORMATS[fmtKey] || CERT_FORMATS.landscape;
+  const W = f.w, H = f.h, wide = W / H > 1.2, square = Math.abs(W - H) < 2;
+  const u = wide ? Math.min(W / 1600, H / 900) : W / 1200;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d'), { T, wrap } = tools(x);
+
+  const cur = d.a.currency || 'USD';
+  const GOLD = '#e6c572', GOLD_DIM = 'rgba(214,176,92,.45)', TXT = '#f3f6fd', MUTED = '#95a4c0', FAINT = '#6e7e9c';
   const trader = d.custom.trader || d.a.name || d.a.displayName || d.a.accountLabel || 'TRADER';
-  T(trader, L.cx, L.name*H, { size:(wide ? 62 : 56)*u, weight:700, color:NAVY, align:'center', family:SERIF, max:L.colW, minScale:.4 });
-  x.strokeStyle = '#b99850'; x.lineWidth = 1.5*u; x.beginPath(); x.moveTo(L.cx - L.colW*.36, L.nameLine*H); x.lineTo(L.cx + L.colW*.36, L.nameLine*H); x.stroke();
-  const st = `for achieving the profit target of ${d.target}% on trading account ${d.a.login ?? d.a.account ?? d.fx.accountId ?? '—'}${inferFirm(d.a, d.custom) ? ' with ' + inferFirm(d.a, d.custom) : ''}.`;
-  wrap(st, L.colW, 20*u, 500, SERIF, 2).forEach((ln, i) => T(ln, L.cx, (i ? L.st2 : L.st1)*H, { size:20*u, weight:500, color:MUTED, align:'center', family:SERIF }));
-  // metrik utama
-  const my0 = L.metrics[0]*H, mh = (L.metrics[1] - L.metrics[0])*H, gap = 14*u, mw = (L.colW - gap*2)/3;
-  const metr = [['NET PROFIT', fmtMoney(d.profit, cur, true), `Modal awal ${fmtMoney(d.start, cur)}`, '#0e7a54'], ['ACHIEVED RETURN', `${d.pct.toFixed(2)}%`, `Target ${d.target}%`, NAVY], ['CLOSED TRADES', String(d.hist.length), `${d.wr.toFixed(0)}% win rate`, NAVY]];
-  metr.forEach((r, i) => { const mx = L.colX + i*(mw + gap); rr(x, mx, my0, mw, mh, 10*u); x.fillStyle = 'rgba(16,33,60,.045)'; x.fill(); x.strokeStyle = 'rgba(161,124,47,.45)'; x.lineWidth = 1.5*u; x.stroke();
-    T(r[0], mx + mw/2, my0 + mh*.26, { size:12*u, weight:700, color:GOLD, align:'center', ls:1.5*u, max:mw - 20*u });
-    T(r[1], mx + mw/2, my0 + mh*.62, { size:32*u, weight:700, color:r[3], align:'center', family:SERIF, max:mw - 22*u, minScale:.45 });
-    T(r[2], mx + mw/2, my0 + mh*.88, { size:12*u, weight:500, color:MUTED, align:'center', max:mw - 20*u }); });
-  // chart (OHLC trade terbaik, atau kurva saldo bila candle belum ada)
-  const cbox = { x:L.rx, y:L.chart[0]*H, w:L.rw, h:(L.chart[1] - L.chart[0])*H };
+  const firm = inferFirm(d.a, d.custom) || d.a.company || d.a.broker || 'Not specified';
+  const accLogin = d.a.login ?? d.a.account ?? d.fx.accountId ?? '—';
+  const certId = 'GBC-' + String(accLogin).replace(/[^a-z0-9]/gi, '') + '-' + new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const issuedStr = dtFull(Math.floor(Date.now() / 1000));
+
+  // 1. Latar Obsidian Mewah + Guilloché Watermark + Cahaya Emas Terkendali
+  const bg = x.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#0b1120');
+  bg.addColorStop(0.5, '#060a14');
+  bg.addColorStop(1, '#0c1324');
+  x.fillStyle = bg;
+  x.fillRect(0, 0, W, H);
+
+  drawMicroGrid(x, W, H, Math.round(42 * u), 'rgba(214,176,92,.038)');
+  drawGuilloche(x, wide ? W * 0.28 : W * 0.5, wide ? H * 0.42 : H * 0.26, (wide ? 310 : 340) * u, 'rgba(214,176,92,.055)');
+
+  const amb = x.createRadialGradient(wide ? W * 0.27 : W * 0.5, wide ? H * 0.30 : H * 0.22, 10, wide ? W * 0.27 : W * 0.5, wide ? H * 0.30 : H * 0.22, (wide ? 500 : 540) * u);
+  amb.addColorStop(0, 'rgba(214,176,92,.13)');
+  amb.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = amb;
+  x.fillRect(0, 0, W, H);
+
+  // 2. Bingkai Ganda Metallic Gold + Filigree Corner
+  const padOut = 24 * u, padIn = 38 * u;
+  x.strokeStyle = goldGrad(x, 0, 0, W, H);
+  x.lineWidth = 3.2 * u;
+  rr(x, padOut, padOut, W - padOut * 2, H - padOut * 2, 16 * u);
+  x.stroke();
+
+  x.strokeStyle = 'rgba(214,176,92,.32)';
+  x.lineWidth = 1.2 * u;
+  rr(x, padIn, padIn, W - padIn * 2, H - padIn * 2, 10 * u);
+  x.stroke();
+  drawCornerBrackets(x, padIn + 8 * u, padIn + 8 * u, W - (padIn + 8 * u) * 2, H - (padIn + 8 * u) * 2, 30 * u, '#e6c572', 2.2 * u);
+
+  // Helper gambar 3 kartu metrik
+  const drawMetrics = (bx, by, bw, bh) => {
+    const gap = 14 * u, mw = (bw - gap * 2) / 3;
+    const metr = [
+      ['NET PROFIT', fmtMoney(d.profit, cur, true), `Start ${fmtMoney(d.start, cur)}`, '#34d399'],
+      ['ACHIEVED RETURN', `+${d.pct.toFixed(2)}%`, `Target ${d.target}%`, '#f2d996'],
+      ['CLOSED TRADES', String(d.hist.length), `${d.wr.toFixed(1)}% Win Rate`, '#eef3ff']
+    ];
+    metr.forEach((r, i) => {
+      const mx = bx + i * (mw + gap);
+      rr(x, mx, by, mw, bh, 12 * u);
+      x.fillStyle = 'rgba(17,25,44,.82)';
+      x.fill();
+      x.strokeStyle = 'rgba(214,176,92,.28)';
+      x.lineWidth = 1.1 * u;
+      x.stroke();
+      rr(x, mx + 20 * u, by + 1, mw - 40 * u, 2.5 * u, 2 * u);
+      x.fillStyle = r[3];
+      x.fill();
+      T(r[0], mx + mw / 2, by + bh * 0.27, { size: 11 * u, weight: 700, color: '#9caac5', align: 'center', ls: 1.6 * u, max: mw - 20 * u });
+      T(r[1], mx + mw / 2, by + bh * 0.64, { size: Math.min(31 * u, bh * 0.30), weight: 700, color: r[3], align: 'center', family: MONO, max: mw - 22 * u, minScale: 0.45 });
+      T(r[2], mx + mw / 2, by + bh * 0.87, { size: 11.5 * u, weight: 500, color: FAINT, align: 'center', max: mw - 20 * u });
+    });
+  };
+
+  // Helper gambar tabel detail akun terpadu
+  const drawDetailsBox = (bx, by, bw, bh, cols) => {
+    const items = [
+      ['PROP FIRM', firm],
+      ['ACCOUNT LOGIN', accLogin],
+      ['BROKER / COMPANY', d.a.company || d.a.broker || '—'],
+      ['SERVER', d.a.server || '—'],
+      ['CURRENCY', cur],
+      ['STARTING BALANCE', fmtMoney(d.start, cur)],
+      ['CURRENT EQUITY', fmtMoney(d.equity, cur)],
+      ['PROFIT TARGET', `${d.target}%`]
+    ];
+    rr(x, bx, by, bw, bh, 14 * u);
+    x.fillStyle = 'rgba(14,21,38,.78)';
+    x.fill();
+    x.strokeStyle = 'rgba(214,176,92,.24)';
+    x.lineWidth = 1.1 * u;
+    x.stroke();
+
+    const rows = Math.ceil(items.length / cols), cw = bw / cols, rh = bh / rows;
+    x.strokeStyle = 'rgba(255,255,255,.06)';
+    x.lineWidth = 1;
+    for(let r = 1; r < rows; r++){
+      x.beginPath(); x.moveTo(bx + 14 * u, by + r * rh); x.lineTo(bx + bw - 14 * u, by + r * rh); x.stroke();
+    }
+    for(let col = 1; col < cols; col++){
+      x.beginPath(); x.moveTo(bx + col * cw, by + 12 * u); x.lineTo(bx + col * cw, by + bh - 12 * u); x.stroke();
+    }
+    items.forEach((it, i) => {
+      const col = i % cols, row = Math.floor(i / cols);
+      const ix = bx + col * cw, iy = by + row * rh;
+      const isMono = i === 1 || i >= 4;
+      T(it[0], ix + 16 * u, iy + rh * 0.36, { size: 10.5 * u, weight: 700, color: GOLD, ls: 1.2 * u, max: cw - 28 * u });
+      T(String(it[1]), ix + 16 * u, iy + rh * 0.74, {
+        size: Math.min(16.5 * u, rh * 0.28), weight: 600, color: TXT,
+        family: isMono ? MONO : FONT, max: cw - 28 * u, minScale: 0.52
+      });
+    });
+  };
+
+  // Helper gambar ornament divider
+  const drawOrnament = (cx, oy, width) => {
+    const g = x.createLinearGradient(cx - width / 2, 0, cx + width / 2, 0);
+    g.addColorStop(0, 'rgba(214,176,92,0)');
+    g.addColorStop(0.5, '#e6c572');
+    g.addColorStop(1, 'rgba(214,176,92,0)');
+    x.strokeStyle = g;
+    x.lineWidth = 1.4 * u;
+    x.beginPath();
+    x.moveTo(cx - width / 2, oy); x.lineTo(cx - 12 * u, oy);
+    x.moveTo(cx + 12 * u, oy); x.lineTo(cx + width / 2, oy);
+    x.stroke();
+    x.save();
+    x.translate(cx, oy);
+    x.rotate(Math.PI / 4);
+    x.fillStyle = '#f2d996';
+    x.fillRect(-4.5 * u, -4.5 * u, 9 * u, 9 * u);
+    x.restore();
+  };
+
+  // Helper gambar tanda tangan kaligrafi
+  const drawSignature = (cx, baseY, lineW) => {
+    T('Golden Break', cx, baseY - 12 * u, { size: 38 * u, weight: 400, color: '#f5dfa0', align: 'center', family: SIGN_FONT, max: lineW });
+    x.strokeStyle = GOLD_DIM;
+    x.lineWidth = 1.2 * u;
+    x.beginPath(); x.moveTo(cx - lineW / 2, baseY); x.lineTo(cx + lineW / 2, baseY); x.stroke();
+    T('GOLDEN BREAK CAPITAL', cx, baseY + 18 * u, { size: 10.5 * u, weight: 700, color: GOLD, align: 'center', ls: 2 * u, max: lineW });
+    T('Authorized Performance Record', cx, baseY + 34 * u, { size: 10 * u, weight: 500, color: FAINT, align: 'center', max: lineW });
+  };
+
+  // Helper gambar grafik (OHLC trade terbaik / fallback Balance Curve)
   let drewCandle = false;
-  if(best){ const bm = model(best), sel = selectCandles(bm, barState.get(keyOf(best))?.bars); if(sel.candles.length >= 3){ drawCandleChart(x, cbox, bm, sel, { fs:13*u, radius:12*u, title:'BEST TRADE · OHLC' }); drewCandle = true; } }
-  if(!drewCandle) drawCurve(x, cbox, typeof d.fx.balanceCurve === 'function' ? d.fx.balanceCurve() : [], cur, { fs:13*u, radius:12*u });
-  // detail akun
-  const items = [['PROP FIRM', inferFirm(d.a, d.custom) || d.a.company || d.a.broker || 'Not specified'], ['ACCOUNT LOGIN', d.a.login ?? d.a.account ?? d.fx.accountId ?? '—'], ['BROKER / COMPANY', d.a.company || d.a.broker || '—'], ['SERVER', d.a.server || '—'], ['ACCOUNT CURRENCY', cur], ['STARTING BALANCE', fmtMoney(d.start, cur)], ['CURRENT EQUITY', fmtMoney(d.equity, cur)], ['PROFIT TARGET', `${d.target}%`]];
-  const dy0 = L.details[0]*H, rows = Math.ceil(items.length/L.cols), rh = (L.details[1]*H - dy0)/rows, cw = L.rw/L.cols;
-  items.forEach((it, i) => { const col = i % L.cols, row = Math.floor(i/L.cols), ix = L.rx + col*cw, iy = dy0 + row*rh;
-    x.strokeStyle = 'rgba(16,33,60,.12)'; x.lineWidth = 1*u; x.beginPath(); x.moveTo(ix + 4*u, iy + rh - 4*u); x.lineTo(ix + cw - 12*u, iy + rh - 4*u); x.stroke();
-    T(it[0], ix + 4*u, iy + rh*.34, { size:11.5*u, weight:700, color:GOLD, ls:1*u, max:cw - 18*u }); T(String(it[1]), ix + 4*u, iy + rh*.72, { size:17*u, weight:600, color:NAVY, max:cw - 18*u, minScale:.55 }); });
-  // footer
-  const certId = 'FFX-' + String(d.a.login ?? d.fx.accountId ?? 'ACCOUNT') + '-' + new Date().toISOString().slice(0,10).replace(/-/g,'');
-  x.strokeStyle = 'rgba(16,33,60,.25)'; x.lineWidth = 1*u; x.beginPath(); x.moveTo(M, L.fl*H); x.lineTo(W - M, L.fl*H); x.stroke();
-  const fw = (W - M*2)/3 - 12*u;
-  T('CERTIFICATE ID', M, L.f1*H, { size:11*u, weight:700, color:GOLD, ls:1*u, max:fw }); T(certId, M, L.f2*H, { size:14*u, weight:600, color:NAVY, family:MONO, max:fw });
-  T('ACHIEVEMENT BASED ON DASHBOARD RECORDS', W/2, L.f1*H, { size:11*u, weight:700, color:MUTED, align:'center', max:fw + 60*u, ls:.5*u }); T('Not an official prop-firm payout confirmation', W/2, L.f2*H, { size:12*u, weight:500, color:MUTED, align:'center', max:fw + 60*u });
-  T('ISSUED', W - M, L.f1*H, { size:11*u, weight:700, color:GOLD, ls:1*u, align:'right', max:fw }); T(dtFull(Math.floor(Date.now()/1000)), W - M, L.f2*H, { size:13*u, weight:600, color:NAVY, align:'right', max:fw });
-  c._chartKind = drewCandle ? 'ohlc' : 'curve'; c._certId = certId; return c;
+  const drawCertChart = cbox => {
+    if(best){
+      const bm = model(best), sel = selectCandles(bm, barState.get(keyOf(best))?.bars);
+      if(sel.candles.length >= 3){
+        drawCandleChart(x, cbox, bm, sel, { fs: 13 * u, radius: 14 * u, title: 'BEST TRADE · OHLC' });
+        drewCandle = true;
+      }
+    }
+    if(!drewCandle){
+      drawCurve(x, cbox, typeof d.fx.balanceCurve === 'function' ? d.fx.balanceCurve() : [], cur, { fs: 13 * u, radius: 14 * u });
+    }
+    x.strokeStyle = 'rgba(214,176,92,.32)';
+    x.lineWidth = 1.2 * u;
+    rr(x, cbox.x, cbox.y, cbox.w, cbox.h, 14 * u);
+    x.stroke();
+  };
+
+  const stText = `for successfully achieving the ${d.target}% profit target on trading account ${accLogin}${inferFirm(d.a, d.custom) ? ' with ' + inferFirm(d.a, d.custom) : ''}.`;
+  const qrData = `GBC|CERT|${certId}|${trader}|${d.pct.toFixed(2)}%|${fmtMoney(d.profit, cur, true)}`;
+  const M = 74 * u;
+
+  if(wide){
+    // ===== LANDSCAPE 16:9 (1600x900) & 4:3 (1600x1200) =====
+    const lx = M, lw = W * 0.47, lcx = lx + lw / 2;
+    const rx = lx + lw + 34 * u, rw = W - M - rx;
+    const footerY = H - 134 * u;
+    const contentTop = 74 * u;
+    const contentBot = footerY - 22 * u;
+    const ch = contentBot - contentTop;
+
+    // Eyebrow pill
+    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', lcx, contentTop + ch * 0.045, {
+      size: 13 * u, weight: 700, color: GOLD, align: 'center', ls: 3.2 * u, max: lw
+    });
+
+    // Metallic Gold Title
+    x.save();
+    const tg = goldGrad(x, lcx - 220 * u, contentTop + ch * 0.08, lcx + 220 * u, contentTop + ch * 0.19);
+    T('CERTIFICATE', lcx, contentTop + ch * 0.165, { size: 70 * u, weight: 700, color: tg, align: 'center', family: SERIF, ls: 5 * u, max: lw });
+    x.restore();
+    T('OF TARGET ACHIEVEMENT', lcx, contentTop + ch * 0.225, { size: 22 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: lw });
+
+    drawOrnament(lcx, contentTop + ch * 0.262, Math.min(lw * 0.54, 340 * u));
+
+    T('This certificate proudly recognizes the verified performance of', lcx, contentTop + ch * 0.32, {
+      size: 19 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: lw
+    });
+    T(trader, lcx, contentTop + ch * 0.425, {
+      size: 58 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: lw, minScale: 0.42
+    });
+    const nlG = x.createLinearGradient(lcx - lw * 0.36, 0, lcx + lw * 0.36, 0);
+    nlG.addColorStop(0, 'rgba(214,176,92,0)'); nlG.addColorStop(0.5, '#e6c572'); nlG.addColorStop(1, 'rgba(214,176,92,0)');
+    x.strokeStyle = nlG; x.lineWidth = 1.6 * u;
+    x.beginPath(); x.moveTo(lcx - lw * 0.36, contentTop + ch * 0.452); x.lineTo(lcx + lw * 0.36, contentTop + ch * 0.452); x.stroke();
+
+    wrap(stText, lw * 0.94, 18.5 * u, 500, SERIF, 2).forEach((ln, i) =>
+      T(ln, lcx, contentTop + ch * (0.502 + i * 0.044), { size: 18.5 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
+    );
+
+    // 3 Metric Cards
+    const my = contentTop + ch * 0.59, mh = Math.min(126 * u, ch * 0.195);
+    drawMetrics(lx, my, lw, mh);
+
+    // Seal + Signature row
+    const sigCenterY = my + mh + (contentBot - (my + mh)) * 0.56;
+    drawGoldSeal(x, lx + 74 * u, sigCenterY - 4 * u, Math.min(46 * u, (contentBot - (my + mh)) * 0.39), u);
+    drawSignature(lx + lw * 0.58, sigCenterY + 2 * u, lw * 0.52);
+
+    // Right column: Chart + Unified Account Details
+    const chartH = ch * 0.54;
+    drawCertChart({ x: rx, y: contentTop, w: rw, h: chartH });
+    drawDetailsBox(rx, contentTop + chartH + 18 * u, rw, ch - chartH - 18 * u, 2);
+
+    // Footer band
+    x.strokeStyle = 'rgba(214,176,92,.32)';
+    x.lineWidth = 1 * u;
+    x.beginPath(); x.moveTo(M, footerY); x.lineTo(W - M, footerY); x.stroke();
+
+    const qrS = 68 * u;
+    drawQrBadge(x, qrData, W - M - qrS, footerY + 14 * u, qrS, u);
+
+    T('CERTIFICATE ID', M, footerY + 30 * u, { size: 10.5 * u, weight: 700, color: GOLD, ls: 1.4 * u });
+    T(certId, M, footerY + 52 * u, { size: 14 * u, weight: 600, color: TXT, family: MONO, max: 360 * u });
+    T('Internal achievement certificate based on dashboard records · Not an official prop-firm payout confirmation.', M, footerY + 76 * u, {
+      size: 11 * u, weight: 400, color: FAINT, max: W - M * 2 - qrS - 320 * u
+    });
+
+    const isX = W - M - qrS - 24 * u;
+    T('ISSUED (WIB)', isX, footerY + 30 * u, { size: 10.5 * u, weight: 700, color: GOLD, align: 'right', ls: 1.4 * u });
+    T(issuedStr, isX, footerY + 52 * u, { size: 13.5 * u, weight: 600, color: TXT, align: 'right', family: MONO, max: 280 * u });
+    T('GOLDEN BREAK TERMINAL', isX, footerY + 76 * u, { size: 11 * u, weight: 700, color: FAINT, align: 'right', ls: 1.5 * u });
+
+  } else if(square){
+    // ===== SQUARE 1:1 (1200x1200) =====
+    const cx = W / 2, CW = W - M * 2;
+    drawGoldSeal(x, cx, 92 * u, 33 * u, u);
+    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 148 * u, { size: 12.5 * u, weight: 700, color: GOLD, align: 'center', ls: 3 * u, max: CW });
+    T('CERTIFICATE', cx, 208 * u, { size: 62 * u, weight: 700, color: goldGrad(x, cx - 200 * u, 160 * u, cx + 200 * u, 215 * u), align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
+    T('OF TARGET ACHIEVEMENT', cx, 240 * u, { size: 19 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4 * u, max: CW });
+    drawOrnament(cx, 260 * u, 300 * u);
+    T('This certificate proudly recognizes the verified performance of', cx, 294 * u, { size: 17.5 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: CW });
+    T(trader, cx, 348 * u, { size: 50 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: CW, minScale: 0.42 });
+    x.strokeStyle = GOLD_DIM; x.lineWidth = 1.4 * u;
+    x.beginPath(); x.moveTo(cx - CW * 0.3, 364 * u); x.lineTo(cx + CW * 0.3, 364 * u); x.stroke();
+    wrap(stText, CW * 0.9, 17 * u, 500, SERIF, 2).forEach((ln, i) =>
+      T(ln, cx, (394 + i * 24) * u, { size: 17 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
+    );
+
+    drawMetrics(M, 442 * u, CW, 100 * u);
+    drawCertChart({ x: M, y: 558 * u, w: CW, h: 256 * u });
+    drawDetailsBox(M, 828 * u, CW, 146 * u, 4);
+
+    // Footer Square
+    const fy = 994 * u;
+    x.strokeStyle = 'rgba(214,176,92,.32)'; x.lineWidth = 1 * u;
+    x.beginPath(); x.moveTo(M, fy); x.lineTo(W - M, fy); x.stroke();
+    drawSignature(M + 165 * u, fy + 64 * u, 280 * u);
+    T('CERTIFICATE ID', cx + 30 * u, fy + 34 * u, { size: 10 * u, weight: 700, color: GOLD, align: 'center', ls: 1.4 * u });
+    T(certId, cx + 30 * u, fy + 55 * u, { size: 13.5 * u, weight: 600, color: TXT, align: 'center', family: MONO, max: 320 * u });
+    T(`Issued ${issuedStr}`, cx + 30 * u, fy + 78 * u, { size: 11.5 * u, weight: 500, color: MUTED, align: 'center', family: MONO, max: 320 * u });
+    drawQrBadge(x, qrData, W - M - 76 * u, fy + 14 * u, 76 * u, u);
+    T('Internal achievement certificate from dashboard records · Not an official prop-firm payout confirmation.', cx, H - 64 * u, {
+      size: 10.5 * u, weight: 400, color: FAINT, align: 'center', max: CW
+    });
+
+  } else {
+    // ===== PORTRAIT A4 (1200x1697) & PORTRAIT 3:4 (1200x1600) =====
+    const cx = W / 2, CW = W - M * 2;
+    drawGoldSeal(x, cx, 118 * u, 44 * u, u);
+    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 194 * u, { size: 14 * u, weight: 700, color: GOLD, align: 'center', ls: 3.4 * u, max: CW });
+    T('CERTIFICATE', cx, 274 * u, { size: 74 * u, weight: 700, color: goldGrad(x, cx - 230 * u, 215 * u, cx + 230 * u, 280 * u), align: 'center', family: SERIF, ls: 5 * u, max: CW });
+    T('OF TARGET ACHIEVEMENT', cx, 316 * u, { size: 23 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
+    drawOrnament(cx, 344 * u, 360 * u);
+    T('This certificate proudly recognizes the verified trading performance of', cx, 388 * u, { size: 21 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: CW });
+    T(trader, cx, 460 * u, { size: 62 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: CW, minScale: 0.4 });
+    x.strokeStyle = GOLD_DIM; x.lineWidth = 1.5 * u;
+    x.beginPath(); x.moveTo(cx - CW * 0.34, 480 * u); x.lineTo(cx + CW * 0.34, 480 * u); x.stroke();
+    wrap(stText, CW * 0.9, 20 * u, 500, SERIF, 2).forEach((ln, i) =>
+      T(ln, cx, (520 + i * 29) * u, { size: 20 * u, weight: 500, color: MUTED, align: 'center', family: SERIF })
+    );
+
+    drawMetrics(M, 582 * u, CW, 126 * u);
+
+    const footerY = H - 224 * u;
+    const detailsH = 172 * u;
+    const detailsY = footerY - detailsH - 22 * u;
+    const chartY = 730 * u;
+    const chartH = detailsY - chartY - 22 * u;
+
+    drawCertChart({ x: M, y: chartY, w: CW, h: chartH });
+    drawDetailsBox(M, detailsY, CW, detailsH, 4);
+
+    // Footer Portrait
+    x.strokeStyle = 'rgba(214,176,92,.32)'; x.lineWidth = 1.1 * u;
+    x.beginPath(); x.moveTo(M, footerY); x.lineTo(W - M, footerY); x.stroke();
+
+    drawSignature(M + 175 * u, footerY + 78 * u, 310 * u);
+    T('CERTIFICATE ID', cx + 28 * u, footerY + 42 * u, { size: 11 * u, weight: 700, color: GOLD, align: 'center', ls: 1.5 * u });
+    T(certId, cx + 28 * u, footerY + 66 * u, { size: 15 * u, weight: 600, color: TXT, align: 'center', family: MONO, max: 350 * u });
+    T(`ISSUED · ${issuedStr}`, cx + 28 * u, footerY + 94 * u, { size: 12 * u, weight: 500, color: MUTED, align: 'center', family: MONO, max: 350 * u });
+
+    const qrS = 90 * u;
+    drawQrBadge(x, qrData, W - M - qrS, footerY + 20 * u, qrS, u);
+
+    T('Internal achievement certificate based on dashboard records · Not an official prop-firm payout confirmation.', cx, H - 72 * u, {
+      size: 11.5 * u, weight: 400, color: FAINT, align: 'center', max: CW
+    });
+  }
+
+  c._chartKind = drewCandle ? 'ohlc' : 'curve';
+  c._certId = certId;
+  return c;
 }
 
 /* ---------- UI ---------- */
