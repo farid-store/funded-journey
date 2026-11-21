@@ -4304,7 +4304,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
           </div>
         </div>
 
-        <!-- KOLOM KANAN: KALENDER PORTRAIT -->
+<!-- KOLOM KANAN: KALENDER PORTRAIT + PILIH BULAN/TAHUN -->
         <div class="trp-mright">
           <div class="trp-calhead">
             <div>
@@ -4312,6 +4312,11 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
               <small>Klik tanggal untuk memilih &amp; input trade</small>
             </div>
             <button type="button" class="btn ghost" id="trpCalClearMonth" style="min-height:30px;padding:0 10px;font-size:11px">🗑 Kosongkan Bulan</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button type="button" class="btn ghost" id="trpCalPrevM" style="min-height:34px;padding:0 11px" title="Bulan sebelumnya">‹</button>
+            <input type="month" id="trpModalMonth" class="sel" style="flex:1;min-width:0;text-align:center">
+            <button type="button" class="btn ghost" id="trpCalNextM" style="min-height:34px;padding:0 11px" title="Bulan berikutnya">›</button>
           </div>
           <div class="trp-calgrid" id="trpCalGrid"></div>
         </div>
@@ -13994,6 +13999,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 <script id="trade-recap-png-js">
 (function(){
   const $ = id => document.getElementById(id);
+  const mQ = sel => $('trpDayModal')?.querySelector(sel) || null;
   const canvas = $('trpCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -14169,7 +14175,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     activeModalDay = dayNum;
     const { year, month } = getSelectedYM();
     const label = new Date(year, month, dayNum).toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-    if ($('trpSelDateLabel')) $('trpSelDateLabel').textContent = `📅 ${label}`;
+    const lblEl = mQ('#trpSelDateLabel');
+    if (lblEl) lblEl.textContent = `📅 ${label}`;
     if ($('trpInPair') && !$('trpInPair').value.trim()) $('trpInPair').value = ($('trpPair')?.value || 'XAUUSD').replace('/', '');
     renderManualCalendarUI();
     renderModalTradeList();
@@ -14177,15 +14184,20 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   }
 
   function renderManualCalendarUI(){
-    const grid = $('trpCalGrid');
     const openBtn = $('trpOpenManualBtn');
     const isManual = !!$('trpManualToggle')?.checked;
     if (openBtn) openBtn.hidden = !isManual;
+
+    const grid = mQ('#trpCalGrid');
     if (!grid) return;
 
-    const { year, month } = getSelectedYM();
+    const { year, month, key } = getSelectedYM();
     const monthLabel = new Date(year, month, 1).toLocaleDateString('id-ID', { month:'long', year:'numeric' });
-    if ($('trpCalMonthTitle')) $('trpCalMonthTitle').textContent = monthLabel.toUpperCase();
+    const titleEl = mQ('#trpCalMonthTitle');
+    if (titleEl) titleEl.textContent = monthLabel.toUpperCase();
+
+    const mPicker = mQ('#trpModalMonth');
+    if (mPicker && mPicker.value !== key) mPicker.value = key;
 
     const firstDay = new Date(year, month, 1);
     const startOffset = (firstDay.getDay() + 6) % 7;
@@ -14226,6 +14238,17 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     grid.innerHTML = html;
   }
 
+  function shiftModalMonth(delta){
+    const { year, month } = getSelectedYM();
+    const d = new Date(year, month + delta, 1);
+    const nextVal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    if ($('trpMonth')) $('trpMonth').value = nextVal;
+    const mPicker = mQ('#trpModalMonth');
+    if (mPicker) mPicker.value = nextVal;
+    syncFromSource(false);
+    openDayModal(1);
+  }
+
   function updateModalPreviewCalc(){
     const pair = ($('trpInPair')?.value || 'XAUUSD').trim();
     const isSell = $('trpInSide')?.value === 'sell';
@@ -14260,7 +14283,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   }
 
   function renderModalTradeList(){
-    const listEl = $('trpModalList');
+    const listEl = mQ('#trpModalList');
     if (!listEl || activeModalDay == null) return;
     const { key } = getSelectedYM();
     const mObj = getMonthManualObj(key);
@@ -15522,13 +15545,23 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   $('trpOpenManualBtn')?.addEventListener('click', () => openDayModal());
 
   // Klik kotak tanggal di kalender kanan pop-up -> langsung pilih tanggal untuk diisi di kiri
-  $('trpCalGrid')?.addEventListener('click', e => {
+  mQ('#trpCalGrid')?.addEventListener('click', e => {
     const btn = e.target.closest('.trp-calday[data-day]');
     if (!btn) return;
     selectManualDay(parseInt(btn.dataset.day, 10));
   });
 
-  $('trpCalClearMonth')?.addEventListener('click', () => {
+  // Ganti bulan & tahun langsung dari dalam pop-up
+  mQ('#trpCalPrevM')?.addEventListener('click', () => shiftModalMonth(-1));
+  mQ('#trpCalNextM')?.addEventListener('click', () => shiftModalMonth(1));
+  mQ('#trpModalMonth')?.addEventListener('change', e => {
+    if (!e.target.value) return;
+    if ($('trpMonth')) $('trpMonth').value = e.target.value;
+    syncFromSource(false);
+    openDayModal(1);
+  });
+
+  mQ('#trpCalClearMonth')?.addEventListener('click', () => {
     const { key } = getSelectedYM();
     if (!confirm(`Hapus semua transaksi manual di bulan ${key}?`)) return;
     manualStore[key] = {};
@@ -15596,7 +15629,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     syncFromSource(false);
   });
 
-  $('trpModalList')?.addEventListener('click', e => {
+  mQ('#trpModalList')?.addEventListener('click', e => {
     const del = e.target.closest('[data-del-tid]');
     if (!del || activeModalDay == null) return;
     const tid = Number(del.dataset.delTid);
