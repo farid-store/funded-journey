@@ -5549,8 +5549,10 @@ html.gbc-proof-mode body {
   // Jangan ganggu mode Web Verification Proof (?gbc / ?p / ?verify)
   if(qs.has('gbc') || qs.has('p') || qs.has('verify')) return;
 
-  // 1) Satukan ?admin=1 dan ?owner=1 sebelum semua script <body> dijalankan
-  const isUnlock = qs.get('admin') === '1' || qs.get('owner') === '1' || sessionStorage.getItem(KEY) === '1';
+// 1) Satukan ?admin=1 dan ?owner=1 sebelum semua script <body> dijalankan
+  let savedUnlock = false;
+  try { savedUnlock = sessionStorage.getItem(KEY) === '1'; } catch(e){}
+  const isUnlock = qs.get('admin') === '1' || qs.get('owner') === '1' || savedUnlock;
   if(isUnlock){
     try { sessionStorage.setItem(KEY, '1'); } catch(e){}
     if(qs.get('admin') !== '1' || qs.get('owner') !== '1'){
