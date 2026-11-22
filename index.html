@@ -19121,6 +19121,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 <script id="gbc-payout-wallet-js">
 (function(){
   const STORE_KEY = 'gbc_payouts_v1';
+  const FS_COL = 'gbcPublic';
+  const FS_DOC = 'payoutRegistry';
 
   const NETS = {
     T: { code:'T', name:'TRC20 (TRON)', token:'USDT', evm:false, exp:h => `https://tronscan.org/#/transaction/${h}` },
@@ -19135,23 +19137,150 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   const normId = v => String(v ?? '').trim().toLowerCase();
   const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+  let memCache = null;
 
   function loadAll(){
+    if(Array.isArray(memCache)) return memCache.slice();
     try {
       const arr = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
-      return Array.isArray(arr) ? arr : [];
-    } catch(e){ return []; }
+      memCache = Array.isArray(arr) ? arr : [];
+    } catch(e){ memCache = []; }
+    return memCache.slice();
   }
 
-  function saveAll(arr){
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(arr)); } catch(e){}
+  function notifyApp(){
     try { window.__MR2?._reset?.(); window.__MR2?.tick?.(); } catch(e){}
+    try { document.dispatchEvent(new CustomEvent('gbc:payout-updated')); } catch(e){}
+    try { renderPayoutList(); } catch(e){}
+  }
+
+  function saveLocal(arr){
+    memCache = Array.isArray(arr) ? arr.slice() : [];
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(memCache)); } catch(e){}
+    notifyApp();
+  }
+
+  /* ---------- Firestore Adapter (Modular __GBC_FS / Compat SDK) ---------- */
+  function getFsAdapter(){
+    const m = window.__GBC_FS;
+    if(m && m.db && m.doc && m.getDoc && m.setDoc){
+      return {
+        read: async () => {
+          const snap = await m.getDoc(m.doc(m.db, FS_COL, FS_DOC));
+          return snap.exists() ? (snap.data() || null) : null;
+        },
+        write: async payload => {
+          await m.setDoc(m.doc(m.db, FS_COL, FS_DOC), payload, { merge: true });
+        }
+      };
+    }
+    if(window.firebase && typeof window.firebase.firestore === 'function'){
+      const db = window.firebase.firestore();
+      return {
+        read: async () => {
+          const snap = await db.collection(FS_COL).doc(FS_DOC).get();
+          return snap.exists ? (snap.data() || null) : null;
+        },
+        write: async payload => {
+          await db.collection(FS_COL).doc(FS_DOC).set(payload, { merge: true });
+        }
+      };
+    }
+    return null;
+  }
+
+  function setCloudBadge(text, ok){
+    const b = document.getElementById('ppCloudBadge');
+    if(!b) return;
+    b.textContent = text;
+    b.style.color = ok === true ? 'var(--green)' : (ok === false ? 'var(--amber)' : 'var(--muted)');
+  }
+
+  async function pullFromCloud(silent = true){
+    const fs = getFsAdapter();
+    if(!fs){
+      setCloudBadge('Local Only', false);
+      return { ok: false, reason: 'no-fs' };
+    }
+    try {
+      const docData = await fs.read();
+      if(docData && Array.isArray(docData.items)){
+        saveLocal(docData.items);
+        setCloudBadge(`☁ Cloud (${docData.items.length})`, true);
+        if(!silent) setStatus('ok', `✔ Berhasil sinkron ${docData.items.length} payout dari Firestore.`);
+        return { ok: true, count: docData.items.length };
+      }
+      // Dokumen cloud belum dibuat; pertahankan data lokal agar bisa diunggah sekali klik
+      const local = loadAll();
+      setCloudBadge(local.length ? '☁ Belum Upload' : '☁ Cloud Siap', local.length ? false : true);
+      if(!silent && local.length){
+        return await pushToCloud(local, false);
+      }
+      if(!silent) setStatus('', 'Cloud Firestore terhubung, belum ada data payout tersimpan.');
+      return { ok: true, count: 0 };
+    } catch(err){
+      setCloudBadge('☁ Gagal Baca', false);
+      if(!silent) setStatus('warn', `Gagal membaca Firestore (${err.code || err.message || 'error'}). Memakai cache lokal.`);
+      return { ok: false, err };
+    }
+  }
+
+  async function pushToCloud(arr, silent = false){
+    const fs = getFsAdapter();
+    if(!fs){
+      setCloudBadge('Local Only', false);
+      if(!silent) setStatus('warn', 'Tersimpan di perangkat ini. Pasang window.__GBC_FS agar otomatis sinkron ke HP via Firestore.');
+      return { ok: false, reason: 'no-fs' };
+    }
+    try {
+      const cleanItems = (arr || []).map(r => ({
+        id: String(r.id || ''),
+        accountId: String(r.accountId || ''),
+        login: String(r.login || ''),
+        accountLabel: String(r.accountLabel || ''),
+        txHash: String(r.txHash || ''),
+        net: String(r.net || 'M'),
+        amount: Number(r.amount) || 0,
+        token: String(r.token || 'USDT'),
+        cur: String(r.cur || 'USD'),
+        date: String(r.date || ''),
+        note: String(r.note || ''),
+        auto: !!r.auto,
+        ts: Number(r.ts) || Date.now()
+      }));
+      await fs.write({ items: cleanItems, updatedAt: Date.now() });
+      setCloudBadge(`☁ Synced (${cleanItems.length})`, true);
+      if(!silent) setStatus('ok', `✔ Tersimpan ke Firestore (${cleanItems.length} payout). HP & Desktop otomatis sinkron!`);
+      return { ok: true };
+    } catch(err){
+      setCloudBadge('☁ Perlu Login Admin', false);
+      const isDenied = /permission|denied|unauth/i.test(String(err?.code || err?.message || ''));
+      if(!silent){
+        setStatus('warn', isDenied
+          ? 'Tersimpan lokal, tapi Firestore menolak tulis: login dulu memakai akun admin (Google/Email) di tab Backtest/Partner lalu klik "☁ Sync Cloud".'
+          : `Tersimpan lokal. Gagal kirim ke Firestore: ${err.message || err.code || 'error'}`);
+      }
+      return { ok: false, err };
+    }
   }
 
   function matchAccount(rec, ids){
-    const set = new Set((Array.isArray(ids) ? ids : [ids]).map(normId).filter(Boolean));
-    if(!set.size) return false;
-    return set.has(normId(rec.accountId)) || (rec.login && set.has(normId(rec.login)));
+    const rawList = (Array.isArray(ids) ? ids : [ids]).map(normId).filter(v => v && v !== '—' && v !== '-');
+    if(!rawList.length) return false;
+    const recVals = [normId(rec.accountId), normId(rec.login), normId(rec.accountLabel)].filter(Boolean);
+    for(const a of rawList){
+      if(recVals.includes(a)) return true;
+    }
+    const digits = s => (String(s).match(/\d{4,}/g) || []);
+    const qDig = new Set(rawList.flatMap(digits));
+    if(qDig.size){
+      for(const rv of recVals){
+        for(const d of digits(rv)){
+          if(qDig.has(d)) return true;
+        }
+      }
+    }
+    return false;
   }
 
   function listForAccount(ids){
@@ -19165,22 +19294,25 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     if(!items.length) return null;
     const total = items.reduce((s, r) => s + (Number(r.amount) || 0), 0);
     const latest = items[0];
+    const initial = items[items.length - 1];
     const net = NETS[latest.net] || NETS.M;
     return {
       total,
       count: items.length,
       latest,
-      txHash: latest.txHash || '',
+      initial,
+      txHash: latest.txHash || initial.txHash || '',
+      initialTxHash: initial.txHash || '',
       netCode: net.code,
       netName: net.name,
       token: latest.token || net.token,
       explorerUrl: latest.txHash && net.exp ? net.exp(latest.txHash) : '',
       items,
-      sig: `${total.toFixed(2)}:${items.length}:${latest.txHash}:${latest.net}`
+      sig: `${total.toFixed(2)}:${items.length}:${latest.txHash}:${initial.txHash}:${latest.net}`
     };
   }
 
-  /* ---------- On-Chain TX Lookup (TronScan / EVM Public RPC / Mempool) ---------- */
+  /* ---------- On-Chain TX Lookup ---------- */
   async function rpcCall(rpcUrl, method, params){
     const res = await fetch(rpcUrl, {
       method: 'POST',
@@ -19193,10 +19325,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return j.result;
   }
 
-  function hexToBigInt(hex){
-    if(!hex || hex === '0x') return 0n;
-    return BigInt(hex);
-  }
+  function hexToBigInt(hex){ return (!hex || hex === '0x') ? 0n : BigInt(hex); }
 
   function formatUnits(bi, dec){
     const d = Math.max(0, Math.min(30, Number(dec) || 0));
@@ -19235,7 +19364,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
     let amount = null, token = cfg.token, isStable = false;
     if(tLogs.length){
-      // Ambil log transfer bernilai terbesar
       let bestLog = tLogs[0], bestVal = hexToBigInt(tLogs[0].data);
       for(let i = 1; i < tLogs.length; i++){
         const v = hexToBigInt(tLogs[i].data);
@@ -19319,7 +19447,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     if(chosenNet === 'X') return (await lookupBtc(clean)) || { ok: false, msg: 'TX tidak ditemukan di jaringan Bitcoin.' };
     if(NETS[chosenNet]?.evm) return (await lookupEvm(chosenNet, clean)) || { ok: false, msg: `TX tidak ditemukan di ${NETS[chosenNet].name}.` };
 
-    // AUTO-DETECT
     if(isEvmHash){
       for(const code of ['B', 'A', 'E', 'P', 'S']){
         try { const r = await lookupEvm(code, clean); if(r && r.ok) return r; } catch(e){}
@@ -19377,7 +19504,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const lookupIds = accId === mainId ? [accId, curLogin] : [accId];
     const items = accId ? listForAccount(lookupIds) : loadAll();
     const total = items.reduce((s, r) => s + (Number(r.amount) || 0), 0);
-    const latest = items[0];
 
     sumEl.innerHTML = `
       <div class="pp-sum-i"><small>Total Payout Akun Ini</small><b class="pos">$${total.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}</b></div>
@@ -19386,14 +19512,14 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     `;
 
     if(!items.length){
-      listEl.innerHTML = '<div class="pp-empty">Belum ada payout proof untuk akun ini. Isi TX Hash &amp; nominal di atas agar otomatis masuk ke Sertifikat Achievement dan halaman Web Proof.</div>';
+      listEl.innerHTML = '<div class="pp-empty">Belum ada payout proof untuk akun ini. Isi TX Hash &amp; nominal di atas agar otomatis masuk ke Sertifikat Achievement, Web Proof, dan tersinkron ke HP.</div>';
       return;
     }
 
     listEl.innerHTML = items.map(r => {
       const net = NETS[r.net] || NETS.M;
       const url = r.txHash && net.exp ? net.exp(r.txHash) : '';
-      const shortTx = r.txHash && r.txHash.length > 26 ? `${r.txHash.slice(0, 12)}…${r.txHash.slice(-10)}` : (r.txHash || 'Manual Reference');
+      const shortTx = r.txHash && r.txHash.length > 26 ? `${r.txHash.slice(0, 12)}...${r.txHash.slice(-10)}` : (r.txHash || 'Manual Reference');
       return `<div class="pp-item">
         <div class="pp-item-l">
           <div class="pp-item-top">
@@ -19421,10 +19547,13 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     panel.innerHTML = `
       <div class="pp-head">
         <div>
-          <h3>🧾 Payout Proof Registry (TX Hash → Sertifikat &amp; Web Proof)</h3>
-          <p>Pilih akun trading, tempel TX Hash payout (otomatis mendeteksi nominal on-chain untuk USDT/USDC atau isi manual). Akun yang memiliki payout akan otomatis menampilkannya di Sertifikat Achievement dan halaman Web Proof.</p>
+          <h3>🧾 Payout Proof Registry (Firestore Sync · Desktop &amp; Mobile)</h3>
+          <p>Pilih akun trading, tempel TX Hash payout lalu simpan. Data tersinkron otomatis lewat Firestore (1 dokumen) sehingga Sertifikat Achievement di Desktop &amp; HP selalu sama.</p>
         </div>
-        <span class="pp-badge-ok">Auto-Sync Command Intel</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button type="button" class="btn" id="ppSyncCloudBtn">☁ Sync Cloud</button>
+          <span class="pp-badge-ok" id="ppCloudBadge">☁ Menghubungkan…</span>
+        </div>
       </div>
 
       <div class="pp-form">
@@ -19456,13 +19585,13 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         </label>
 
         <label>Total Payout (USD) — otomatis / manual
-          <input id="ppAmount" type="number" step="0.01" min="0" class="sel" placeholder="mis. 2450.00">
+          <input id="ppAmount" type="number" step="0.01" min="0" class="sel" placeholder="mis. 297.00">
         </label>
         <label>Token / Aset
-          <input id="ppToken" type="text" class="sel" value="USDT" placeholder="USDT / USDC / USD">
+          <input id="ppToken" type="text" class="sel" value="USDC" placeholder="USDT / USDC / USD">
         </label>
         <label>Catatan (opsional)
-          <input id="ppNote" type="text" class="sel" maxlength="60" placeholder="mis. Payout #1 Prop Firm">
+          <input id="ppNote" type="text" class="sel" maxlength="60" placeholder="mis. First Payout">
         </label>
         <button type="button" class="btn primary" id="ppSaveBtn">+ Simpan Payout Proof</button>
       </div>
@@ -19482,10 +19611,42 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const inNote = document.getElementById('ppNote');
     const btnFetch = document.getElementById('ppFetchBtn');
     const btnSave = document.getElementById('ppSaveBtn');
+    const btnSync = document.getElementById('ppSyncCloudBtn');
     let lastAutoMeta = null;
 
     syncAccountOptions(selAcc);
     renderPayoutList();
+
+    btnSync.onclick = async () => {
+      btnSync.disabled = true;
+      btnSync.textContent = '⏳ Sync…';
+      try {
+        const fs = getFsAdapter();
+        if(!fs){
+          setStatus('warn', 'Bridge Firestore (window.__GBC_FS) belum terdeteksi.');
+          return;
+        }
+        const cloud = await fs.read();
+        const local = loadAll();
+        // Gabungkan data cloud + data lokal (supaya $297 lama di Desktop langsung naik ke Cloud)
+        const merged = new Map();
+        (cloud?.items || []).forEach(r => { if(r && r.id) merged.set(r.id, r); });
+        local.forEach(r => { if(r && r.id) merged.set(r.id, r); });
+        const list = [...merged.values()].sort((a, b) => (b.ts || 0) - (a.ts || 0));
+        saveLocal(list);
+        if(list.length > (cloud?.items?.length || 0)){
+          await pushToCloud(list, false);
+        } else {
+          setCloudBadge(`☁ Synced (${list.length})`, true);
+          setStatus('ok', `✔ Sinkronisasi selesai (${list.length} payout aktif).`);
+        }
+      } catch(err){
+        setStatus('warn', `Gagal sinkron Firestore: ${err.message || err.code || 'error'}`);
+      } finally {
+        btnSync.disabled = false;
+        btnSync.textContent = '☁ Sync Cloud';
+      }
+    };
 
     async function doLookup(){
       const hash = inTx.value.trim();
@@ -19499,16 +19660,14 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
           lastAutoMeta = res;
           selNet.value = res.net;
           if(res.token) inTok.value = res.token;
-          if(res.ts){
-            inDate.value = new Date(res.ts + 7 * 3600000).toISOString().slice(0, 10);
-          }
+          if(res.ts) inDate.value = new Date(res.ts + 7 * 3600000).toISOString().slice(0, 10);
           if(res.amount != null && res.isStable){
             inAmt.value = Number(res.amount).toFixed(2);
-            setStatus('ok', `✔ TX terverifikasi di ${NETS[res.net].name}: ${res.amount.toLocaleString('en-US', { maximumFractionDigits: 4 })} ${res.token}. Total Payout USD terisi otomatis (tetap bisa diedit manual).`);
+            setStatus('ok', `✔ TX terverifikasi di ${NETS[res.net].name}: ${res.amount.toLocaleString('en-US', { maximumFractionDigits: 4 })} ${res.token}. Total Payout USD terisi otomatis.`);
           } else if(res.amount != null){
-            setStatus('warn', `✔ TX ditemukan di ${NETS[res.net].name}: ${res.amount} ${res.token}. Karena bukan stablecoin USD, silakan isi nominal USD payout secara manual.`);
+            setStatus('warn', `✔ TX ditemukan di ${NETS[res.net].name}: ${res.amount} ${res.token}. Silakan isi nominal USD payout secara manual.`);
           } else {
-            setStatus('warn', `✔ TX ditemukan di ${NETS[res.net].name}, tetapi nominal token tidak terbaca otomatis — silakan isi Total Payout manual.`);
+            setStatus('warn', `✔ TX ditemukan di ${NETS[res.net].name}, tetapi nominal tidak terbaca otomatis — silakan isi manual.`);
           }
         } else {
           lastAutoMeta = null;
@@ -19533,7 +19692,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
     selAcc.onchange = renderPayoutList;
 
-    btnSave.onclick = () => {
+    btnSave.onclick = async () => {
       const accId = selAcc.value;
       if(!accId){ setStatus('bad', 'Pilih akun trading terlebih dahulu.'); return; }
       const amt = parseFloat(inAmt.value);
@@ -19565,22 +19724,22 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         auto: !!(lastAutoMeta && lastAutoMeta.txHash && lastAutoMeta.txHash.toLowerCase() === tx.toLowerCase()),
         ts: Date.now()
       });
-      saveAll(all);
+      saveLocal(all);
       inTx.value = ''; inAmt.value = ''; inNote.value = ''; lastAutoMeta = null;
-      setStatus('ok', '✔ Payout proof tersimpan! Sertifikat Achievement & QR Web Proof untuk akun ini otomatis diperbarui.');
-      renderPayoutList();
+      btnSave.disabled = true;
+      await pushToCloud(all, false);
+      btnSave.disabled = false;
     };
 
-    panel.addEventListener('click', e => {
+    panel.addEventListener('click', async e => {
       const btn = e.target.closest('[data-ppdel]');
       if(!btn) return;
       const id = btn.getAttribute('data-ppdel');
-      saveAll(loadAll().filter(r => r.id !== id));
-      setStatus('', 'Payout proof dihapus.');
-      renderPayoutList();
+      const next = loadAll().filter(r => r.id !== id);
+      saveLocal(next);
+      await pushToCloud(next, false);
     });
 
-    // Sinkron saat dropdown akun utama berubah atau tab Wallet dibuka
     document.addEventListener('change', e => {
       if(e.target && e.target.id === 'accountSelect'){
         syncAccountOptions(selAcc);
@@ -19592,7 +19751,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         setTimeout(() => { syncAccountOptions(selAcc); renderPayoutList(); }, 80);
       }
     });
-setInterval(() => {
+    setInterval(() => {
       const mainSel = document.getElementById('accountSelect');
       if(mainSel && selAcc && mainSel.options.length > 0 && (selAcc.options.length !== mainSel.options.length || (!selAcc.value && mainSel.value))){
         syncAccountOptions(selAcc);
@@ -19601,9 +19760,28 @@ setInterval(() => {
     }, 2500);
   }
 
-  window.__GBC_PAYOUT = { loadAll, listForAccount, summaryForAccount, NETS };
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountWalletPanel);
-  else mountWalletPanel();
+  // Tunggu Firebase module siap (maks 12 detik), lalu tarik data 1x dari Firestore
+  function bootstrapCloud(){
+    let tries = 0;
+    const poll = setInterval(() => {
+      tries++;
+      if(getFsAdapter()){
+        clearInterval(poll);
+        pullFromCloud(true);
+      } else if(tries >= 40){
+        clearInterval(poll);
+        setCloudBadge('Local Only', false);
+      }
+    }, 300);
+  }
+
+  window.__GBC_PAYOUT = { loadAll, listForAccount, summaryForAccount, pullFromCloud, pushToCloud, NETS };
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', () => { mountWalletPanel(); bootstrapCloud(); });
+  } else {
+    mountWalletPanel();
+    bootstrapCloud();
+  }
 })();
 </script>
 
