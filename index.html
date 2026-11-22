@@ -4623,97 +4623,267 @@ html.gbc-proof-mode body {
 .gp-prog { height: 5px; border-radius: 99px; background: rgba(255,255,255,.09); overflow: hidden; margin-top: 8px; }
 .gp-prog i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #34d399, #f2d996); }
 
-/* ===== ON-CHAIN WITHDRAWAL / PAYOUT PROOF VAULT CARD ===== */
+/* ===== ON-CHAIN WITHDRAWAL / PAYOUT PROOF VAULT CARD (REVISED) ===== */
 .gp-payout {
-  position: relative; z-index: 1;
-  display: flex; flex-direction: column; gap: 14px;
-  padding: 18px 20px; border-radius: 15px;
-  border: 1.5px solid rgba(46,230,196,.48);
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 20px 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(52, 211, 153, .28);
   background:
-    radial-gradient(460px 180px at 0% 0%, rgba(46,230,196,.16), transparent 65%),
-    linear-gradient(155deg, rgba(13, 34, 38, .92), rgba(9, 15, 28, .95));
-  box-shadow: 0 12px 34px rgba(0,0,0,.35), inset 0 1px 0 rgba(140,255,235,.12);
+    radial-gradient(420px 160px at 0% 0%, rgba(52, 211, 153, .08), transparent 70%),
+    linear-gradient(180deg, rgba(14, 23, 38, .94), rgba(8, 13, 24, .98));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .38), inset 0 1px 0 rgba(255, 255, 255, .06);
+  overflow: hidden;
 }
+.gp-payout::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #34d399, rgba(230, 197, 114, .65), transparent 85%);
+}
+
+/* Header */
 .gp-pay-head {
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, .07);
 }
-.gp-pay-title { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.gp-pay-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 220px;
+}
 .gp-pay-ico {
-  width: 40px; height: 40px; border-radius: 11px; flex: none;
-  display: grid; place-items: center;
-  background: rgba(46,230,196,.16); color: #2ee6c4;
-  border: 1px solid rgba(46,230,196,.42);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: rgba(52, 211, 153, .1);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, .28);
 }
 .gp-pay-title small {
-  display: block; font: 700 10px "Chakra Petch", sans-serif;
-  letter-spacing: .18em; color: #2ee6c4; text-transform: uppercase;
+  display: block;
+  font: 700 10px "Chakra Petch", sans-serif;
+  letter-spacing: .16em;
+  color: #34d399;
+  text-transform: uppercase;
 }
-.gp-pay-title b { display: block; font-size: 14.5px; color: #ffffff; margin-top: 2px; }
+.gp-pay-title b {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #f3f6fd;
+  margin-top: 2px;
+  line-height: 1.25;
+}
 .gp-pay-pill {
-  display: inline-flex; align-items: center; gap: 7px; flex: none;
-  padding: 6px 12px; border-radius: 999px;
-  font: 700 10.5px "JetBrains Mono", monospace; letter-spacing: .08em;
-  background: rgba(46,230,196,.15); color: #7efce4;
-  border: 1px solid rgba(46,230,196,.45);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font: 700 10px "JetBrains Mono", monospace;
+  letter-spacing: .08em;
+  background: rgba(52, 211, 153, .1);
+  color: #6ee7b7;
+  border: 1px solid rgba(52, 211, 153, .32);
 }
-.gp-pay-pill i { width: 7px; height: 7px; border-radius: 50%; background: #2ee6c4; box-shadow: 0 0 8px #2ee6c4; }
+.gp-pay-pill i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, .75);
+}
 
+/* 3 Metrik Utama */
 .gp-pay-stats {
-  display: grid; grid-template-columns: 1.45fr 1fr 1fr; gap: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
 }
 .gp-pay-stat {
-  padding: 12px 14px; border-radius: 11px;
-  background: rgba(5, 10, 20, .62); border: 1px solid rgba(46,230,196,.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 13px 15px;
+  border-radius: 11px;
+  background: rgba(6, 10, 20, .72);
+  border: 1px solid rgba(255, 255, 255, .07);
   min-width: 0;
 }
+.gp-pay-stat:first-child {
+  border-color: rgba(52, 211, 153, .24);
+  background: linear-gradient(180deg, rgba(52, 211, 153, .06), rgba(6, 10, 20, .78));
+}
 .gp-pay-stat small {
-  display: block; font: 700 9.5px "Chakra Petch", sans-serif;
-  letter-spacing: .14em; color: #7fa8a3; text-transform: uppercase;
+  display: block;
+  font: 700 9.5px "Chakra Petch", sans-serif;
+  letter-spacing: .13em;
+  color: #8494b0;
+  text-transform: uppercase;
 }
 .gp-pay-stat strong {
-  display: block; margin-top: 5px;
-  font: 700 clamp(22px, 3vw, 28px)/1.15 "JetBrains Mono", monospace;
-  color: #5ef5d8; overflow-wrap: anywhere;
+  display: block;
+  margin-top: 6px;
+  font: 700 clamp(22px, 2.8vw, 28px)/1.12 "JetBrains Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+  color: #34d399;
+  overflow-wrap: anywhere;
 }
 .gp-pay-stat b {
-  display: block; margin-top: 6px;
-  font: 700 14.5px/1.3 "JetBrains Mono", monospace;
-  color: #eef8f7; overflow-wrap: anywhere;
+  display: block;
+  margin-top: 6px;
+  font: 600 14.5px/1.3 "JetBrains Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  color: #eef3ff;
+  overflow-wrap: anywhere;
 }
-.gp-pay-stat span { display: block; margin-top: 3px; font-size: 11px; color: #84a8a5; }
+.gp-pay-stat span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #7c8ca8;
+  line-height: 1.4;
+}
 
+/* Kotak TX Hash */
 .gp-pay-txbox {
-  display: flex; flex-direction: column; gap: 8px;
-  padding: 12px 14px; border-radius: 11px;
-  background: rgba(4, 8, 16, .78); border: 1px solid rgba(255,255,255,.1);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 13px 15px;
+  border-radius: 11px;
+  background: #050912;
+  border: 1px solid rgba(255, 255, 255, .08);
 }
 .gp-pay-txlbl {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
-  font: 700 10px "Chakra Petch", sans-serif; letter-spacing: .14em; color: #91b3b0; text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font: 700 9.5px "Chakra Petch", sans-serif;
+  letter-spacing: .14em;
+  color: #8b9bb8;
+  text-transform: uppercase;
+}
+.gp-pay-txlbl span:last-child {
+  font: 500 10.5px "Inter", system-ui, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #6b7c99;
 }
 .gp-pay-txrow {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
 }
 .gp-pay-txrow code {
-  font: 600 12px/1.5 "JetBrains Mono", monospace; color: #e2eeff;
-  word-break: break-all; flex: 1 1 240px; min-width: 0;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  padding: 7px 11px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .035);
+  border: 1px solid rgba(255, 255, 255, .07);
+  font: 600 12.5px/1.45 "JetBrains Mono", monospace;
+  color: #dce6fa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
 }
-.gp-pay-acts { display: flex; gap: 8px; flex-wrap: wrap; flex: none; }
-.gp-pay-copy {
-  min-height: 36px; padding: 0 12px; border-radius: 8px; cursor: pointer;
-  border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06);
-  color: #e4edfc; font: 600 12px inherit; transition: border-color .15s, background .15s;
+.gp-pay-txrow code:hover {
+  border-color: rgba(214, 176, 92, .45);
+  background: rgba(214, 176, 92, .06);
 }
-.gp-pay-copy:hover { border-color: #2ee6c4; background: rgba(46,230,196,.12); }
-.gp-pay-link {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  min-height: 36px; padding: 0 14px; border-radius: 8px; text-decoration: none;
-  font: 700 12px inherit;
-  background: linear-gradient(135deg, #2ee6c4, #14b8a6); color: #041d19;
-  box-shadow: 0 4px 14px rgba(46,230,196,.24); transition: filter .15s;
+.gp-pay-txrow code.expanded {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-all;
 }
-.gp-pay-link:hover { filter: brightness(1.08); }
 
+/* Tombol Aksi TX */
+.gp-pay-acts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.gp-pay-copy,
+.gp-pay-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 13px;
+  border-radius: 8px;
+  font: 600 12px "Inter", system-ui, sans-serif;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, filter .15s;
+}
+.gp-pay-copy {
+  border: 1px solid rgba(255, 255, 255, .14);
+  background: rgba(255, 255, 255, .05);
+  color: #dce6fa;
+}
+.gp-pay-copy:hover {
+  border-color: rgba(230, 197, 114, .5);
+  background: rgba(230, 197, 114, .1);
+  color: #f5dfa0;
+}
+.gp-pay-link {
+  border: 1px solid rgba(52, 211, 153, .45);
+  background: rgba(52, 211, 153, .14);
+  color: #6ee7b7;
+  font-weight: 700;
+}
+.gp-pay-link:hover {
+  background: rgba(52, 211, 153, .22);
+  color: #a7f3d0;
+}
+
+/* Responsif Tablet & HP */
+@media (max-width: 740px) {
+  .gp-payout { padding: 15px; gap: 12px; }
+  .gp-pay-head { padding-bottom: 12px; }
+  .gp-pay-stats { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .gp-pay-txrow { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .gp-pay-acts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .gp-pay-copy,
+  .gp-pay-link { min-height: 40px; width: 100%; }
+}
+   
 /* Audited Ledger Table */
 .gp-sec-wrap { position: relative; z-index: 1; }
 .gp-sec-title {
@@ -4849,6 +5019,10 @@ html.gbc-proof-mode body {
     const sym = cur === 'EUR' ? '€' : cur === 'GBP' ? '£' : cur === 'IDR' ? 'Rp ' : '$';
     const abs = Math.abs(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     return (num < 0 ? '-' : (signed && num > 0 ? '+' : '')) + sym + abs;
+  };
+   const shortTx = (h, a = 10, b = 8) => {
+    const s = String(h || '');
+    return s.length > a + b + 3 ? `${s.slice(0, a)}…${s.slice(-b)}` : s;
   };
   const fmtDate = code => {
     const s = String(code || '');
@@ -5011,14 +5185,14 @@ html.gbc-proof-mode body {
         </div>
       </div>
 
-      ${data.po.txHash ? `
+${data.po.txHash ? `
       <div class="gp-pay-txbox">
         <div class="gp-pay-txlbl">
           <span>Transaction Hash (TXID)</span>
-          <span>Verifikasi publik langsung di blockchain</span>
+          <span>Ketuk hash untuk lihat penuh</span>
         </div>
         <div class="gp-pay-txrow">
-          <code id="gpTxVal">${esc(data.po.txHash)}</code>
+          <code id="gpTxVal" title="${esc(data.po.txHash)}" data-short="1">${esc(shortTx(data.po.txHash))}</code>
           <div class="gp-pay-acts">
             <button type="button" class="gp-pay-copy" id="gpTxCopy">📋 Salin TX</button>
             ${data.po.explorerUrl ? `<a class="gp-pay-link" href="${esc(data.po.explorerUrl)}" target="_blank" rel="noopener noreferrer">↗ Cek di Explorer</a>` : ''}
@@ -5164,10 +5338,47 @@ html.gbc-proof-mode body {
       document.getElementById('gpCopy').textContent = '✔ Link Tersalin';
     };
     const txCopy = document.getElementById('gpTxCopy');
-    if(txCopy && data?.po?.txHash){
-      txCopy.onclick = () => {
-        navigator.clipboard?.writeText(data.po.txHash);
-        txCopy.textContent = '✔ TX Tersalin';
+    const txVal = document.getElementById('gpTxVal');
+    const fullTx = data?.po?.txHash || '';
+    const clipTx = h => (h.length > 21 ? `${h.slice(0, 10)}…${h.slice(-8)}` : h);
+
+    if(txVal && fullTx){
+      txVal.title = fullTx;
+      txVal.dataset.short = '1';
+      txVal.textContent = clipTx(fullTx);
+      txVal.onclick = () => {
+        const expand = txVal.dataset.short === '1';
+        txVal.dataset.short = expand ? '0' : '1';
+        txVal.textContent = expand ? fullTx : clipTx(fullTx);
+        txVal.classList.toggle('expanded', expand);
+      };
+    }
+
+    if(txCopy && fullTx){
+      let resetT = 0;
+      const origLabel = txCopy.textContent || '📋 Salin TX';
+      txCopy.onclick = async () => {
+        let copied = false;
+        try {
+          if(navigator.clipboard?.writeText){
+            await navigator.clipboard.writeText(fullTx);
+            copied = true;
+          }
+        } catch(e){}
+        if(!copied){
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = fullTx;
+            ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+            document.body.appendChild(ta);
+            ta.select();
+            copied = document.execCommand('copy');
+            ta.remove();
+          } catch(e){}
+        }
+        txCopy.textContent = copied ? '✔ TX Tersalin' : '✕ Gagal Salin';
+        clearTimeout(resetT);
+        resetT = setTimeout(() => { txCopy.textContent = origLabel; }, 2000);
       };
     }
   };
