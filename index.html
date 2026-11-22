@@ -11825,7 +11825,6 @@ function drawQrBadge(x, url, bx, by, maxSlot, u = 1, opt = {}){
       qr.addData(String(url || PROOF_BASE_URL));
       qr.make();
       const count = qr.getModuleCount();
-      // Quiet zone ramping 2.2 modul + ukuran modul integer tajam (tanpa padding putih tebal)
       const quietRatio = 2.2;
       let mod = Math.floor(maxSlot / (count + quietRatio * 2));
       if(mod < 2) mod = 2;
@@ -11907,13 +11906,12 @@ function drawCurve(x, box, pts, cur, opt = {}){
   const up = lastB >= firstB;
   const lineCol = up ? '#34d399' : '#fb7185';
 
-  // Badge pertumbuhan di kanan atas grafik
-  const pctStr = `${deltaPct >= 0 ? '+' : ''}${deltaPct.toFixed(2)}\%`; const rangeStr = `${data[0].date || ''} → ${data[data.length - 1].date \vert{}\vert{} ''}  ·${pctStr}`;
+  const pctStr = `${deltaPct >= 0 ? '+' : ''}${deltaPct.toFixed(2)}%`;
+  const rangeStr = `${data[0].date || ''} → ${data[data.length - 1].date || ''}  ·  ${pctStr}`;
   T(rangeStr, bx + bw - padX, headY, {
     size: fs * 0.86, weight: 700, color: lineCol, align: 'right', max: bw * 0.44, family: MONO
   });
 
-  // Area plot
   const left = bx + padX;
   const right = bx + bw - padX;
   const top = headY + Math.round(fs * 1.35);
@@ -11927,7 +11925,6 @@ function drawCurve(x, box, pts, cur, opt = {}){
   const px = i => left + (right - left) * i / (data.length - 1);
   const py = v => bottom - (v - lo) / (hi - lo) * (bottom - top);
 
-  // Grid horizontal halus + label referensi
   x.strokeStyle = 'rgba(255,255,255,.065)';
   x.lineWidth = 1;
   for(let i = 0; i <= 3; i++){
@@ -11935,7 +11932,6 @@ function drawCurve(x, box, pts, cur, opt = {}){
     x.beginPath(); x.moveTo(left, yy); x.lineTo(right, yy); x.stroke();
   }
 
-  // Garis baseline modal awal (putus-putus emas tipis)
   const baseY = py(firstB);
   x.save();
   x.setLineDash([5, 5]);
@@ -11944,7 +11940,6 @@ function drawCurve(x, box, pts, cur, opt = {}){
   x.beginPath(); x.moveTo(left, baseY); x.lineTo(right, baseY); x.stroke();
   x.restore();
 
-  // Fill gradien di bawah kurva
   const areaG = x.createLinearGradient(0, top, 0, bottom);
   areaG.addColorStop(0, up ? 'rgba(52,211,153,.32)' : 'rgba(251,113,133,.32)');
   areaG.addColorStop(0.75, up ? 'rgba(52,211,153,.06)' : 'rgba(251,113,133,.06)');
@@ -11957,7 +11952,6 @@ function drawCurve(x, box, pts, cur, opt = {}){
   x.fillStyle = areaG;
   x.fill();
 
-  // Garis kurva dengan glow halus
   x.save();
   x.shadowColor = lineCol;
   x.shadowBlur = 10;
@@ -11970,13 +11964,11 @@ function drawCurve(x, box, pts, cur, opt = {}){
   x.stroke();
   x.restore();
 
-  // Titik awal & titik akhir bercahaya
   x.beginPath(); x.arc(px(0), py(firstB), 3.5, 0, Math.PI * 2); x.fillStyle = '#e6c572'; x.fill();
   const ex = px(vals.length - 1), ey = py(lastB);
   x.beginPath(); x.arc(ex, ey, 9.5, 0, Math.PI * 2); x.fillStyle = up ? 'rgba(52,211,153,.24)' : 'rgba(251,113,133,.24)'; x.fill();
   x.beginPath(); x.arc(ex, ey, 4.5, 0, Math.PI * 2); x.fillStyle = lineCol; x.fill();
 
-  // Strip footer kurva (Start · Peak · Current)
   const footLineY = bottom + Math.round(fs * 0.75);
   x.strokeStyle = 'rgba(255,255,255,.07)';
   x.lineWidth = 1;
@@ -12099,7 +12091,6 @@ function drawTradeCard(t){
   x.lineWidth = 1;
   x.beginPath(); x.moveTo(P, 130); x.lineTo(W - P, 130); x.stroke();
 
-  // Hero card
   const hy = 144, hh = 144;
   rr(x, P, hy, CW, hh, 16);
   const hbg = x.createLinearGradient(P, hy, P + CW, hy + hh);
@@ -12151,7 +12142,6 @@ function drawTradeCard(t){
   if(m.rMult != null) subBits.push(`${m.rMult >= 0 ? '+' : ''}${m.rMult.toFixed(2)}R`);
   T(subBits.join('   ·   ') || 'Recorded Closed Position', hxR, hy + 126, { size: 15, weight: 600, color: '#b4c0d8', align: 'right', max: CW * 0.48, family: MONO });
 
-  // Chart OHLC / Ladder
   const chartBox = { x: P, y: 300, w: CW, h: 508 };
   c._chart = chartFor(x, chartBox, m, { fs: 16, radius: 16 });
   x.strokeStyle = 'rgba(214,176,92,.28)';
@@ -12159,7 +12149,6 @@ function drawTradeCard(t){
   rr(x, chartBox.x, chartBox.y, chartBox.w, chartBox.h, 16);
   x.stroke();
 
-  // Banner Evaluasi Pasca-Exit
   const ax = c._chart?.ax || afterExit(m, null), by0 = 822, bh0 = 80;
   const exitedLoss = m.reason === 'SL' || m.net < 0;
   const B = ({
@@ -12186,7 +12175,6 @@ function drawTradeCard(t){
   T(B[0], P + 24, by0 + 47, { size: 18.5, weight: 700, color: B[2], max: CW - 44 });
   T(B[1], P + 24, by0 + 68, { size: 13, weight: 500, color: '#aebbd3', max: CW - 44, minScale: 0.78 });
 
-  // 4 Kartu Harga Utama
   const gap = 14, tw = (CW - gap * 3) / 4, NA = 'Tidak tercatat';
   const drawPriceTile = (i, ty, h, label, val, topColor, isMuted) => {
     const tx0 = P + i * (tw + gap);
@@ -12211,7 +12199,6 @@ function drawTradeCard(t){
     drawPriceTile(i, y, 96, lbl, empty ? NA : pf(v), col, empty);
   });
 
-  // 2 Baris Metrik Eksekusi & P/L
   const drawMetricTile = (i, ty, h, label, val, o = {}) => {
     const tx0 = P + i * (tw + gap);
     rr(x, tx0, ty, tw, h, 12);
@@ -12245,7 +12232,6 @@ function drawTradeCard(t){
   drawMetricTile(2, y, 86, 'SWAP', fmtMoney(m.swap, cur, true), { color: '#dfe6f5' });
   drawMetricTile(3, y, 86, 'NET P/L', fmtMoney(m.net, cur, true), { color: accent, highlight: true });
 
-  // Unified Account Dossier Card
   const dy = 1224, dh = 248, dhHead = 42;
   rr(x, P, dy, CW, dh, 16);
   x.fillStyle = 'rgba(14,21,37,.82)';
@@ -12292,7 +12278,6 @@ function drawTradeCard(t){
     }
   });
 
-  // Footer Lega + Mini Seal + Tanda Tangan CEO Farid Siddiq + QR Besar 166px Tajam
   const fy = 1494;
   x.strokeStyle = divG;
   x.lineWidth = 1;
@@ -12318,7 +12303,6 @@ function drawTradeCard(t){
   T('FARID SIDDIQ', scx, fy + 114, { size: 10.5, weight: 700, color: '#e8c66d', align: 'center', ls: 2 });
   T('CEO · GOLDEN BREAK CAPITAL', scx, fy + 130, { size: 9, weight: 600, color: '#7e8da8', align: 'center', ls: 1 });
 
-  // URL proof super ringkas (hanya ~125-145 karakter -> QR kotak besar mudah scan!)
   const pnlProofUrl = buildCompactProofUrl([
     'P',
     cleanSeg(m.ticket ?? 'REC', 14),
@@ -12336,9 +12320,9 @@ function drawTradeCard(t){
     cleanSeg(cur, 4)
   ]);
 
-  const qrSize = 166;
-  drawQrBadge(x, pnlProofUrl, W - P - qrSize, fy + 16, qrSize, 1);
-  T('SCAN WEB PROOF', W - P - qrSize / 2, fy + 16 + qrSize + 16, {
+  const qrSlot = 152;
+  const qrBox = drawQrBadge(x, pnlProofUrl, W - P - qrSlot - 4, fy + 18, qrSlot, 1, { alignRight: true }) || { x: W - P - qrSlot - 4, y: fy + 18, size: qrSlot };
+  T('SCAN WEB PROOF', qrBox.x + qrBox.size / 2, qrBox.y + qrBox.size + 16, {
     size: 10, weight: 700, color: '#e8c66d', align: 'center', ls: 1.4, family: MONO
   });
   c._proofUrl = pnlProofUrl;
@@ -12346,7 +12330,7 @@ function drawTradeCard(t){
   return c;
 }
 
-/* ---------- Sertifikat Pencapaian (Obsidian & Champagne Gold + CEO Signature + Crisp QR) ---------- */
+/* ---------- Sertifikat Pencapaian (Balance Curve + Total WD + Initial TX + Crisp QR) ---------- */
 const CERT_FORMATS = {
   landscape: { label: 'Landscape 16:9', w: 1600, h: 900 },
   classic43: { label: 'Landscape 4:3', w: 1600, h: 1200 },
@@ -12408,7 +12392,6 @@ function drawCert(fmtKey, d, best){
   const certId = 'GBC-' + String(accLogin).replace(/[^a-z0-9]/gi, '') + '-20' + yymmdd;
   const issuedStr = dtFull(Math.floor(Date.now() / 1000));
 
-  // Deteksi otomatis Payout Proof untuk akun aktif
   const payIds = [
     d.fx?.accountId,
     d.a?.login,
@@ -12421,7 +12404,7 @@ function drawCert(fmtKey, d, best){
   const payItems = Array.isArray(pay?.items) ? pay.items : [];
   const initRaw = pay?.initialTxHash || payItems[payItems.length - 1]?.txHash || pay?.txHash || '';
   const latestRaw = pay?.txHash || payItems[0]?.txHash || '';
-  const fmtTx = h => h ? (h.length > 22 ? `${h.slice(0, 10)}…${h.slice(-8)}` : h) : 'Verified Manual';
+  const fmtTx = h => h ? (h.length > 22 ? `${h.slice(0, 10)}...${h.slice(-8)}` : h) : 'Verified Manual';
   const initTx = fmtTx(initRaw);
   const latestTx = fmtTx(latestRaw);
 
@@ -12463,16 +12446,16 @@ function drawCert(fmtKey, d, best){
         'TOTAL WD / PAYOUT',
         fmtMoney(pay.total, 'USD'),
         `${pay.count}× ${pay.token} · ${pay.netName.split(' ')[0]}`,
-        '#2ee6c4'
+        '#34d399'
       ]);
     }
     const gap = (hasPay ? 10 : 14) * u, mw = (bw - gap * (metr.length - 1)) / metr.length;
     metr.forEach((r, i) => {
       const mx = bx + i * (mw + gap);
       rr(x, mx, by, mw, bh, 12 * u);
-      x.fillStyle = hasPay && i === 1 ? 'rgba(46,230,196,.09)' : 'rgba(17,25,44,.82)';
+      x.fillStyle = hasPay && i === 1 ? 'rgba(52,211,153,.09)' : 'rgba(17,25,44,.82)';
       x.fill();
-      x.strokeStyle = hasPay && i === 1 ? 'rgba(46,230,196,.48)' : 'rgba(214,176,92,.28)';
+      x.strokeStyle = hasPay && i === 1 ? 'rgba(52,211,153,.45)' : 'rgba(214,176,92,.28)';
       x.lineWidth = 1.1 * u;
       x.stroke();
       rr(x, mx + 16 * u, by + 1, mw - 32 * u, 2.5 * u, 2 * u);
@@ -12525,9 +12508,9 @@ function drawCert(fmtKey, d, best){
       const ix = bx + col * cw, iy = by + row * rh;
       const isPayCell = hasPay && i >= 5;
       const isMono = i === 1 || i >= 4 || isPayCell;
-      T(it[0], ix + 16 * u, iy + rh * 0.36, { size: 10.5 * u, weight: 700, color: isPayCell ? '#2ee6c4' : GOLD, ls: 1.2 * u, max: cw - 28 * u });
+      T(it[0], ix + 16 * u, iy + rh * 0.36, { size: 10.5 * u, weight: 700, color: isPayCell ? '#34d399' : GOLD, ls: 1.2 * u, max: cw - 28 * u });
       T(String(it[1]), ix + 16 * u, iy + rh * 0.74, {
-        size: Math.min(16 * u, rh * 0.28), weight: 600, color: isPayCell ? '#9bfae8' : TXT,
+        size: Math.min(16 * u, rh * 0.28), weight: 600, color: isPayCell ? '#a7f3d0' : TXT,
         family: isMono ? MONO : FONT, max: cw - 28 * u, minScale: 0.48
       });
     });
@@ -12561,7 +12544,6 @@ function drawCert(fmtKey, d, best){
     T('CEO · GOLDEN BREAK CAPITAL', cx, baseY + 34 * u, { size: 9.5 * u, weight: 600, color: MUTED, align: 'center', ls: 1.3 * u, max: lineW });
   };
 
-  // SELALU gambar Balance Curve (bukan Best Trade OHLC)
   const drawCertChart = cbox => {
     const pts = typeof d.fx.balanceCurve === 'function' ? d.fx.balanceCurve() : [];
     drawCurve(x, cbox, pts, cur, { fs: 13 * u, radius: 14 * u });
@@ -12604,7 +12586,7 @@ function drawCert(fmtKey, d, best){
     const ch = contentBot - contentTop;
 
     T(hasPay ? 'GOLDEN BREAK CAPITAL  ·  TARGET & PAYOUT VERIFIED' : 'GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', lcx, contentTop + ch * 0.04, {
-      size: 12.5 * u, weight: 700, color: hasPay ? '#2ee6c4' : GOLD, align: 'center', ls: 3 * u, max: lw
+      size: 12.5 * u, weight: 700, color: hasPay ? '#34d399' : GOLD, align: 'center', ls: 3 * u, max: lw
     });
     const tg = goldGrad(x, lcx - 220 * u, contentTop + ch * 0.07, lcx + 220 * u, contentTop + ch * 0.18);
     T('CERTIFICATE', lcx, contentTop + ch * 0.16, { size: 64 * u, weight: 700, color: tg, align: 'center', family: SERIF, ls: 5 * u, max: lw });
@@ -12662,7 +12644,7 @@ function drawCert(fmtKey, d, best){
   } else if(square){
     const M = 84 * u, cx = W / 2, CW = W - M * 2;
     drawGoldSeal(x, cx, 94 * u, 32 * u, u);
-    T(hasPay ? 'GOLDEN BREAK CAPITAL  ·  TARGET & PAYOUT VERIFIED' : 'GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 148 * u, { size: 12.5 * u, weight: 700, color: hasPay ? '#2ee6c4' : GOLD, align: 'center', ls: 3 * u, max: CW });
+    T(hasPay ? 'GOLDEN BREAK CAPITAL  ·  TARGET & PAYOUT VERIFIED' : 'GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 148 * u, { size: 12.5 * u, weight: 700, color: hasPay ? '#34d399' : GOLD, align: 'center', ls: 3 * u, max: CW });
     T('CERTIFICATE', cx, 206 * u, { size: 58 * u, weight: 700, color: goldGrad(x, cx - 200 * u, 160 * u, cx + 200 * u, 212 * u), align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
     T(hasPay ? 'OF ACHIEVEMENT & PAYOUT' : 'OF TARGET ACHIEVEMENT', cx, 238 * u, { size: 19 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4 * u, max: CW });
     drawOrnament(cx, 258 * u, 300 * u);
@@ -12695,7 +12677,7 @@ function drawCert(fmtKey, d, best){
   } else {
     const M = 84 * u, cx = W / 2, CW = W - M * 2;
     drawGoldSeal(x, cx, 118 * u, 42 * u, u);
-    T(hasPay ? 'GOLDEN BREAK CAPITAL  ·  TARGET & PAYOUT VERIFIED' : 'GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 192 * u, { size: 14 * u, weight: 700, color: hasPay ? '#2ee6c4' : GOLD, align: 'center', ls: 3.2 * u, max: CW });
+    T(hasPay ? 'GOLDEN BREAK CAPITAL  ·  TARGET & PAYOUT VERIFIED' : 'GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 192 * u, { size: 14 * u, weight: 700, color: hasPay ? '#34d399' : GOLD, align: 'center', ls: 3.2 * u, max: CW });
     T('CERTIFICATE', cx, 268 * u, { size: 70 * u, weight: 700, color: goldGrad(x, cx - 230 * u, 212 * u, cx + 230 * u, 276 * u), align: 'center', family: SERIF, ls: 5 * u, max: CW });
     T(hasPay ? 'OF ACHIEVEMENT & PAYOUT' : 'OF TARGET ACHIEVEMENT', cx, 310 * u, { size: 22 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
     drawOrnament(cx, 338 * u, 360 * u);
