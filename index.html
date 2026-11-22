@@ -11906,6 +11906,23 @@ function drawCert(fmtKey, d, best){
   const certId = 'GBC-' + String(accLogin).replace(/[^a-z0-9]/gi, '') + '-20' + yymmdd;
   const issuedStr = dtFull(Math.floor(Date.now() / 1000));
 
+  // Deteksi otomatis Payout Proof untuk akun aktif (langsung cocok dengan output Wallet)
+  const payIds = [
+    d.fx?.accountId,
+    d.a?.login,
+    d.a?.account,
+    document.getElementById('accountSelect')?.value,
+    document.getElementById('accLogin')?.textContent?.trim()
+  ];
+  const pay = window.__GBC_PAYOUT?.summaryForAccount(payIds) || null;
+  const hasPay = !!(pay && pay.total > 0);
+  const payItems = Array.isArray(pay?.items) ? pay.items : [];
+  const initRaw = pay?.initialTxHash || payItems[payItems.length - 1]?.txHash || pay?.txHash || '';
+  const latestRaw = pay?.txHash || payItems[0]?.txHash || '';
+  const fmtTx = h => h ? (h.length > 22 ? `${h.slice(0, 10)}…${h.slice(-8)}` : h) : 'Verified Manual';
+  const initTx = fmtTx(initRaw);
+  const latestTx = fmtTx(latestRaw);
+
   const bg = x.createLinearGradient(0, 0, W, H);
   bg.addColorStop(0, '#0b1120');
   bg.addColorStop(0.5, '#060a14');
@@ -11934,31 +11951,48 @@ function drawCert(fmtKey, d, best){
   drawCornerBrackets(x, padIn + 8 * u, padIn + 8 * u, W - (padIn + 8 * u) * 2, H - (padIn + 8 * u) * 2, 28 * u, '#e6c572', 2 * u);
 
   const drawMetrics = (bx, by, bw, bh) => {
-    const gap = 14 * u, mw = (bw - gap * 2) / 3;
     const metr = [
       ['NET PROFIT', fmtMoney(d.profit, cur, true), `Start ${fmtMoney(d.start, cur)}`, '#34d399'],
       ['ACHIEVED RETURN', `+${d.pct.toFixed(2)}%`, `Target ${d.target}%`, '#f2d996'],
       ['CLOSED TRADES', String(d.hist.length), `${d.wr.toFixed(1)}% Win Rate`, '#eef3ff']
     ];
+    if(hasPay){
+      metr.splice(1, 0, [
+        'TOTAL WD / PAYOUT',
+        fmtMoney(pay.total, 'USD'),
+        `${pay.count}× ${pay.token} · ${pay.netName.split(' ')[0]}`,
+        '#2ee6c4'
+      ]);
+    }
+    const gap = (hasPay ? 10 : 14) * u, mw = (bw - gap * (metr.length - 1)) / metr.length;
     metr.forEach((r, i) => {
       const mx = bx + i * (mw + gap);
       rr(x, mx, by, mw, bh, 12 * u);
-      x.fillStyle = 'rgba(17,25,44,.82)';
+      x.fillStyle = hasPay && i === 1 ? 'rgba(46,230,196,.09)' : 'rgba(17,25,44,.82)';
       x.fill();
-      x.strokeStyle = 'rgba(214,176,92,.28)';
+      x.strokeStyle = hasPay && i === 1 ? 'rgba(46,230,196,.48)' : 'rgba(214,176,92,.28)';
       x.lineWidth = 1.1 * u;
       x.stroke();
-      rr(x, mx + 20 * u, by + 1, mw - 40 * u, 2.5 * u, 2 * u);
+      rr(x, mx + 16 * u, by + 1, mw - 32 * u, 2.5 * u, 2 * u);
       x.fillStyle = r[3];
       x.fill();
-      T(r[0], mx + mw / 2, by + bh * 0.27, { size: 11 * u, weight: 700, color: '#9caac5', align: 'center', ls: 1.6 * u, max: mw - 20 * u });
-      T(r[1], mx + mw / 2, by + bh * 0.64, { size: Math.min(29 * u, bh * 0.30), weight: 700, color: r[3], align: 'center', family: MONO, max: mw - 22 * u, minScale: 0.45 });
-      T(r[2], mx + mw / 2, by + bh * 0.87, { size: 11.5 * u, weight: 500, color: FAINT, align: 'center', max: mw - 20 * u });
+      T(r[0], mx + mw / 2, by + bh * 0.27, { size: (hasPay ? 9.8 : 11) * u, weight: 700, color: '#9caac5', align: 'center', ls: 1.2 * u, max: mw - 14 * u });
+      T(r[1], mx + mw / 2, by + bh * 0.64, { size: Math.min((hasPay ? 24 : 29) * u, bh * 0.29), weight: 700, color: r[3], align: 'center', family: MONO, max: mw - 16 * u, minScale: 0.42 });
+      T(r[2], mx + mw / 2, by + bh * 0.87, { size: (hasPay ? 10.2 : 11.5) * u, weight: 500, color: FAINT, align: 'center', max: mw - 14 * u });
     });
   };
 
   const drawDetailsBox = (bx, by, bw, bh, cols) => {
-    const items = [
+    const items = hasPay ? [
+      ['PROP FIRM', firm],
+      ['ACCOUNT LOGIN', accLogin],
+      ['STARTING BALANCE', fmtMoney(d.start, cur)],
+      ['CURRENT EQUITY', fmtMoney(d.equity, cur)],
+      ['PROFIT TARGET', `${d.target}% (+${d.pct.toFixed(2)}%)`],
+      ['TOTAL WITHDRAWAL', `${fmtMoney(pay.total, 'USD')} (${pay.count}× ${pay.token})`],
+      ['INITIAL TX HASH', initTx],
+      [pay.count > 1 ? 'LATEST TX HASH' : 'PAYOUT NETWORK', pay.count > 1 ? latestTx : pay.netName]
+    ] : [
       ['PROP FIRM', firm],
       ['ACCOUNT LOGIN', accLogin],
       ['BROKER / COMPANY', d.a.company || d.a.broker || '—'],
@@ -11987,11 +12021,12 @@ function drawCert(fmtKey, d, best){
     items.forEach((it, i) => {
       const col = i % cols, row = Math.floor(i / cols);
       const ix = bx + col * cw, iy = by + row * rh;
-      const isMono = i === 1 || i >= 4;
-      T(it[0], ix + 16 * u, iy + rh * 0.36, { size: 10.5 * u, weight: 700, color: GOLD, ls: 1.2 * u, max: cw - 28 * u });
+      const isPayCell = hasPay && i >= 5;
+      const isMono = i === 1 || i >= 4 || isPayCell;
+      T(it[0], ix + 16 * u, iy + rh * 0.36, { size: 10.5 * u, weight: 700, color: isPayCell ? '#2ee6c4' : GOLD, ls: 1.2 * u, max: cw - 28 * u });
       T(String(it[1]), ix + 16 * u, iy + rh * 0.74, {
-        size: Math.min(16 * u, rh * 0.28), weight: 600, color: TXT,
-        family: isMono ? MONO : FONT, max: cw - 28 * u, minScale: 0.52
+        size: Math.min(16 * u, rh * 0.28), weight: 600, color: isPayCell ? '#9bfae8' : TXT,
+        family: isMono ? MONO : FONT, max: cw - 28 * u, minScale: 0.48
       });
     });
   };
@@ -12042,9 +12077,11 @@ function drawCert(fmtKey, d, best){
     x.stroke();
   };
 
-  const stText = `for successfully achieving the ${d.target}% profit target on trading account ${accLogin}${inferFirm(d.a, d.custom) ? ' with ' + inferFirm(d.a, d.custom) : ''}.`;
+  const stText = hasPay
+    ? `for achieving the ${d.target}% target with verified payout of ${fmtMoney(pay.total, 'USD')} on account ${accLogin}${inferFirm(d.a, d.custom) ? ' (' + inferFirm(d.a, d.custom) + ')' : ''}.`
+    : `for successfully achieving the ${d.target}% profit target on trading account ${accLogin}${inferFirm(d.a, d.custom) ? ' with ' + inferFirm(d.a, d.custom) : ''}.`;
 
-  const qrData = buildCompactProofUrl([
+  const qrFields = [
     'C',
     cleanSeg(accLogin, 16),
     cleanSeg(trader, 22),
@@ -12056,10 +12093,14 @@ function drawCert(fmtKey, d, best){
     String(d.hist.length || 0),
     yymmdd,
     cleanSeg(cur, 4)
-  ]);
+  ];
+  if(hasPay){
+    const cleanHash = String(latestRaw || initRaw || '-').replace(/^0x/i, '').replace(/[~|\s]/g, '').slice(0, 66) || '-';
+    qrFields.push(cleanNum(pay.total, 2), String(pay.count || 1), cleanSeg(pay.netCode || 'M', 2), cleanHash);
+  }
+  const qrData = buildCompactProofUrl(qrFields);
 
   if(wide){
-    // ===== LANDSCAPE 16:9 & 4:3 — Margin lega dari bingkai & siku sudut =====
     const M = 90 * u;
     const lx = M, lw = (W - M * 2) * 0.495, lcx = lx + lw / 2;
     const rx = lx + lw + 34 * u, rw = W - M - rx;
@@ -12068,12 +12109,12 @@ function drawCert(fmtKey, d, best){
     const contentBot = footerY - 18 * u;
     const ch = contentBot - contentTop;
 
-    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', lcx, contentTop + ch * 0.04, {
-      size: 12.5 * u, weight: 700, color: GOLD, align: 'center', ls: 3.2 * u, max: lw
+    T(hasPay ? 'GOLDEN BREAK CAPITAL  ·  TARGET & PAYOUT VERIFIED' : 'GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', lcx, contentTop + ch * 0.04, {
+      size: 12.5 * u, weight: 700, color: hasPay ? '#2ee6c4' : GOLD, align: 'center', ls: 3 * u, max: lw
     });
     const tg = goldGrad(x, lcx - 220 * u, contentTop + ch * 0.07, lcx + 220 * u, contentTop + ch * 0.18);
     T('CERTIFICATE', lcx, contentTop + ch * 0.16, { size: 64 * u, weight: 700, color: tg, align: 'center', family: SERIF, ls: 5 * u, max: lw });
-    T('OF TARGET ACHIEVEMENT', lcx, contentTop + ch * 0.22, { size: 20.5 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: lw });
+    T(hasPay ? 'OF ACHIEVEMENT & PAYOUT' : 'OF TARGET ACHIEVEMENT', lcx, contentTop + ch * 0.22, { size: 20.5 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: lw });
     drawOrnament(lcx, contentTop + ch * 0.256, Math.min(lw * 0.54, 330 * u));
 
     T('This certificate proudly recognizes the verified performance of', lcx, contentTop + ch * 0.314, {
@@ -12102,19 +12143,17 @@ function drawCert(fmtKey, d, best){
     drawCertChart({ x: rx, y: contentTop, w: rw, h: chartH });
     drawDetailsBox(rx, contentTop + chartH + 16 * u, rw, ch - chartH - 16 * u, 2);
 
-    // Footer: QR aman di dalam area [footerY + 14 .. H - 72] & [.. W - M - 6]
     x.strokeStyle = 'rgba(214,176,92,.32)';
     x.lineWidth = 1 * u;
     x.beginPath(); x.moveTo(M, footerY); x.lineTo(W - M, footerY); x.stroke();
 
-    const qrSlot = 132 * u;
-    const qrTop = footerY + 14 * u;
-    const qrBox = drawQrBadge(x, qrData, W - M - qrSlot - 6 * u, qrTop, qrSlot, u, { alignRight: true });
-
+    const qrSlot = 132 * u, qrX0 = W - M - qrSlot - 6 * u, qrY0 = footerY + 14 * u;
+    const qrBox = drawQrBadge(x, qrData, qrX0, qrY0, qrSlot, u, { alignRight: true }) || { x: qrX0, y: qrY0, size: qrSlot };
     const txtMid = qrBox.y + qrBox.size * 0.5;
+
     T('CERTIFICATE ID', M, txtMid - 28 * u, { size: 10.5 * u, weight: 700, color: GOLD, ls: 1.5 * u });
     T(certId, M, txtMid - 2 * u, { size: 15.5 * u, weight: 600, color: TXT, family: MONO, max: 420 * u });
-    T('Scan QR di kanan untuk membuka halaman verifikasi resmi di web.', M, txtMid + 24 * u, {
+    T(hasPay ? `Scan QR untuk verifikasi sertifikat & TX Payout (${initTx}) di web.` : 'Scan QR di kanan untuk membuka halaman verifikasi resmi di web.', M, txtMid + 24 * u, {
       size: 12 * u, weight: 500, color: MUTED, max: qrBox.x - M - 300 * u
     });
     T('Catatan performa internal Golden Break Terminal · Bukan bukti payout resmi prop-firm.', M, txtMid + 44 * u, {
@@ -12129,9 +12168,9 @@ function drawCert(fmtKey, d, best){
   } else if(square){
     const M = 84 * u, cx = W / 2, CW = W - M * 2;
     drawGoldSeal(x, cx, 94 * u, 32 * u, u);
-    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 148 * u, { size: 12.5 * u, weight: 700, color: GOLD, align: 'center', ls: 3 * u, max: CW });
+    T(hasPay ? 'GOLDEN BREAK CAPITAL  ·  TARGET & PAYOUT VERIFIED' : 'GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 148 * u, { size: 12.5 * u, weight: 700, color: hasPay ? '#2ee6c4' : GOLD, align: 'center', ls: 3 * u, max: CW });
     T('CERTIFICATE', cx, 206 * u, { size: 58 * u, weight: 700, color: goldGrad(x, cx - 200 * u, 160 * u, cx + 200 * u, 212 * u), align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
-    T('OF TARGET ACHIEVEMENT', cx, 238 * u, { size: 19 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4 * u, max: CW });
+    T(hasPay ? 'OF ACHIEVEMENT & PAYOUT' : 'OF TARGET ACHIEVEMENT', cx, 238 * u, { size: 19 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4 * u, max: CW });
     drawOrnament(cx, 258 * u, 300 * u);
     T('This certificate proudly recognizes the verified performance of', cx, 290 * u, { size: 17.5 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: CW });
     T(trader, cx, 342 * u, { size: 48 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: CW, minScale: 0.42 });
@@ -12150,7 +12189,7 @@ function drawCert(fmtKey, d, best){
     x.beginPath(); x.moveTo(M, fy); x.lineTo(W - M, fy); x.stroke();
 
     const qrSlot = 136 * u;
-    const qrBox = drawQrBadge(x, qrData, W - M - qrSlot - 4 * u, fy + 14 * u, qrSlot, u, { alignRight: true });
+    drawQrBadge(x, qrData, W - M - qrSlot - 4 * u, fy + 14 * u, qrSlot, u, { alignRight: true });
     drawSignature(M + 150 * u, fy + 84 * u, 255 * u);
     T('CERTIFICATE ID', cx + 4 * u, fy + 52 * u, { size: 10.5 * u, weight: 700, color: GOLD, align: 'center', ls: 1.4 * u });
     T(certId, cx + 4 * u, fy + 76 * u, { size: 14 * u, weight: 600, color: TXT, align: 'center', family: MONO, max: 300 * u });
@@ -12162,9 +12201,9 @@ function drawCert(fmtKey, d, best){
   } else {
     const M = 84 * u, cx = W / 2, CW = W - M * 2;
     drawGoldSeal(x, cx, 118 * u, 42 * u, u);
-    T('GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 192 * u, { size: 14 * u, weight: 700, color: GOLD, align: 'center', ls: 3.4 * u, max: CW });
+    T(hasPay ? 'GOLDEN BREAK CAPITAL  ·  TARGET & PAYOUT VERIFIED' : 'GOLDEN BREAK CAPITAL  ·  PERFORMANCE SERIES', cx, 192 * u, { size: 14 * u, weight: 700, color: hasPay ? '#2ee6c4' : GOLD, align: 'center', ls: 3.2 * u, max: CW });
     T('CERTIFICATE', cx, 268 * u, { size: 70 * u, weight: 700, color: goldGrad(x, cx - 230 * u, 212 * u, cx + 230 * u, 276 * u), align: 'center', family: SERIF, ls: 5 * u, max: CW });
-    T('OF TARGET ACHIEVEMENT', cx, 310 * u, { size: 22 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
+    T(hasPay ? 'OF ACHIEVEMENT & PAYOUT' : 'OF TARGET ACHIEVEMENT', cx, 310 * u, { size: 22 * u, weight: 600, color: TXT, align: 'center', family: SERIF, ls: 4.5 * u, max: CW });
     drawOrnament(cx, 338 * u, 360 * u);
     T('This certificate proudly recognizes the verified trading performance of', cx, 382 * u, { size: 20.5 * u, italic: true, weight: 500, color: MUTED, align: 'center', family: SERIF, max: CW });
     T(trader, cx, 452 * u, { size: 60 * u, weight: 700, color: '#ffffff', align: 'center', family: SERIF, max: CW, minScale: 0.4 });
@@ -12292,6 +12331,12 @@ function tick(){
   const a = d.a, tn = $('mrTraderName'), fn = $('mrFirmName');
   const sig = [t ? keyOf(t) : '-', t ? (t.netProfit ?? t.profit) : '', a.login, a.balance, a.equity, a.startingBalance, d.reached ? 1 : 0, d.hist.length, barEpoch.v, (fxData().marketBars || []).length, certFmt, tn?.value, fn?.value, profileFor].join('|');
   if(sig === lastSig) return; lastSig = sig; paint(t, d, best);
+   const paySig = window.__GBC_PAYOUT?.summaryForAccount([
+    d.fx?.accountId, a.login, a.account,
+    document.getElementById('accountSelect')?.value,
+    document.getElementById('accLogin')?.textContent?.trim()
+  ])?.sig || '';
+  const sig = [t ? keyOf(t) : '-', t ? (t.netProfit ?? t.profit) : '', a.login, a.balance, a.equity, a.startingBalance, d.reached ? 1 : 0, d.hist.length, barEpoch.v, (fxData().marketBars || []).length, certFmt, tn?.value, fn?.value, profileFor, paySig].join('|');
 }
 // pastikan chart tersimpan untuk status UI
 const _chartFor = chartFor;
