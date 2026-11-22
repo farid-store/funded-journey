@@ -4946,6 +4946,108 @@ html.gbc-proof-mode body { overflow: hidden !important; background: #050811 !imp
   else document.addEventListener('DOMContentLoaded', mount);
 })();
 </script>
+
+<script id="gbc-unified-admin">
+(function(){
+  const KEY = 'gbc_admin_unlock';
+  const TAB_KEY = 'gbc_admin_tab';
+  const MSG_KEY = 'gbc_admin_msg';
+  const qs = new URLSearchParams(location.search);
+
+  // Jangan ganggu mode Web Verification Proof (?gbc / ?p / ?verify)
+  if(qs.has('gbc') || qs.has('p') || qs.has('verify')) return;
+
+  // 1) Satukan ?admin=1 dan ?owner=1 sebelum semua script <body> dijalankan
+  const isUnlock = qs.get('admin') === '1' || qs.get('owner') === '1' || sessionStorage.getItem(KEY) === '1';
+  if(isUnlock){
+    try { sessionStorage.setItem(KEY, '1'); } catch(e){}
+    if(qs.get('admin') !== '1' || qs.get('owner') !== '1'){
+      qs.set('admin', '1');
+      qs.set('owner', '1');
+      try {
+        history.replaceState(null, '', `${location.pathname}?${qs.toString()}${location.hash}`);
+      } catch(e){}
+    }
+  }
+
+  function showMiniToast(msg){
+    const old = document.getElementById('gbcAdmToast');
+    if(old) old.remove();
+    const el = document.createElement('div');
+    el.id = 'gbcAdmToast';
+    el.textContent = msg;
+    el.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483500;padding:9px 16px;border-radius:10px;border:1px solid var(--gold,#d9b068);background:var(--surface,#151922);color:var(--gold,#d9b068);font:700 12px "JetBrains Mono",monospace;box-shadow:0 12px 32px rgba(0,0,0,.5);pointer-events:none;white-space:nowrap';
+    document.body.appendChild(el);
+    setTimeout(() => { el.style.transition = 'opacity .3s'; el.style.opacity = '0'; setTimeout(() => el.remove(), 320); }, 2400);
+  }
+
+  function toggleAdminMode(){
+    const activeTab = document.querySelector('.tab.active')?.dataset?.view;
+    if(activeTab) try { sessionStorage.setItem(TAB_KEY, activeTab); } catch(e){}
+
+    const nextQs = new URLSearchParams(location.search);
+    if(isUnlock){
+      try {
+        sessionStorage.removeItem(KEY);
+        sessionStorage.setItem(MSG_KEY, 'Mode Publik Aktif');
+      } catch(e){}
+      nextQs.delete('admin');
+      nextQs.delete('owner');
+      const qStr = nextQs.toString();
+      location.href = `${location.pathname}${qStr ? '?' + qStr : ''}${location.hash}`;
+    } else {
+      try {
+        sessionStorage.setItem(KEY, '1');
+        sessionStorage.setItem(MSG_KEY, 'Mode Admin & Owner Aktif · Klik logo 3× untuk keluar');
+      } catch(e){}
+      nextQs.set('admin', '1');
+      nextQs.set('owner', '1');
+      location.href = `${location.pathname}?${nextQs.toString()}${location.hash}`;
+    }
+  }
+
+  function initTrigger(){
+    const logo = document.querySelector('.brand .logo');
+    if(!logo) return;
+    // Biarkan cursor default agar benar-benar tersembunyi bagi pengunjung biasa
+    logo.style.userSelect = 'none';
+    logo.style.webkitUserSelect = 'none';
+    logo.style.touchAction = 'manipulation';
+
+    let taps = 0, timer = 0;
+    logo.addEventListener('click', () => {
+      taps++;
+      clearTimeout(timer);
+      if(taps >= 3){
+        taps = 0;
+        showMiniToast(isUnlock ? 'Menutup Mode Admin…' : 'Membuka Mode Admin & Owner…');
+        setTimeout(toggleAdminMode, 160);
+        return;
+      }
+      timer = setTimeout(() => { taps = 0; }, 1200);
+    });
+
+    // Kembalikan ke tab terakhir & tampilkan notifikasi status
+    let retTab = '', msg = '';
+    try {
+      retTab = sessionStorage.getItem(TAB_KEY) || '';
+      msg = sessionStorage.getItem(MSG_KEY) || '';
+      if(retTab) sessionStorage.removeItem(TAB_KEY);
+      if(msg) sessionStorage.removeItem(MSG_KEY);
+    } catch(e){}
+
+    if(retTab || msg){
+      setTimeout(() => {
+        if(retTab) document.querySelector(`.tab[data-view="${retTab}"]`)?.click();
+        if(msg) showMiniToast(msg);
+      }, 260);
+    }
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initTrigger);
+  else initTrigger();
+})();
+</script>
    
 </head>
 <body>
