@@ -12329,14 +12329,15 @@ function tick(){
   if(t) ensureBars(model(t));
   if(d.reached){ best = bestTradeOf(d.hist); if(best) ensureBars(model(best)); }
   const a = d.a, tn = $('mrTraderName'), fn = $('mrFirmName');
-  const sig = [t ? keyOf(t) : '-', t ? (t.netProfit ?? t.profit) : '', a.login, a.balance, a.equity, a.startingBalance, d.reached ? 1 : 0, d.hist.length, barEpoch.v, (fxData().marketBars || []).length, certFmt, tn?.value, fn?.value, profileFor].join('|');
-  if(sig === lastSig) return; lastSig = sig; paint(t, d, best);
-   const paySig = window.__GBC_PAYOUT?.summaryForAccount([
+  const paySig = window.__GBC_PAYOUT?.summaryForAccount([
     d.fx?.accountId, a.login, a.account,
     document.getElementById('accountSelect')?.value,
     document.getElementById('accLogin')?.textContent?.trim()
   ])?.sig || '';
   const sig = [t ? keyOf(t) : '-', t ? (t.netProfit ?? t.profit) : '', a.login, a.balance, a.equity, a.startingBalance, d.reached ? 1 : 0, d.hist.length, barEpoch.v, (fxData().marketBars || []).length, certFmt, tn?.value, fn?.value, profileFor, paySig].join('|');
+  if(sig === lastSig) return;
+  lastSig = sig;
+  paint(t, d, best);
 }
 // pastikan chart tersimpan untuk status UI
 const _chartFor = chartFor;
