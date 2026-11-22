@@ -4915,7 +4915,7 @@ html.gbc-proof-mode body {
 }
 </style>
 
-<script id="gbc-proof-portal-js">
+<script id="gbc-proof-portal-v4">
 (function(){
   const qs = new URLSearchParams(location.search);
   const compact = qs.get('gbc') || qs.get('p');
@@ -4924,6 +4924,25 @@ html.gbc-proof-mode body {
   if(!compact && !legacyRaw) return;
 
   document.documentElement.classList.add('gbc-proof-mode');
+
+  // Suntikkan aturan minimal untuk menyembunyikan dashboard di belakang portal
+  if(!document.getElementById('gbc-proof-lock-css')){
+    const st = document.createElement('style');
+    st.id = 'gbc-proof-lock-css';
+    st.textContent = `
+      html.gbc-proof-mode .app,
+      html.gbc-proof-mode .world,
+      html.gbc-proof-mode .toast,
+      html.gbc-proof-mode .modal-overlay { display:none !important; }
+      html.gbc-proof-mode,
+      html.gbc-proof-mode body {
+        margin:0 !important; padding:0 !important;
+        width:100% !important; height:100% !important;
+        overflow:hidden !important; background:#060911 !important;
+      }
+    `;
+    (document.head || document.documentElement).appendChild(st);
+  }
 
   const NET_META = {
     T: { name:'TRC20 (TRON)', host:'tronscan.org', token:'USDT', evm:false, exp:h => `https://tronscan.org/#/transaction/${h}` },
@@ -5039,21 +5058,6 @@ html.gbc-proof-mode body {
   const isCert = data && data.t === 'CERT';
   const progPct = isCert && data?.tgNum > 0 ? Math.min(100, Math.max(0, (data.pct / data.tgNum) * 100)) : 100;
 
-  const icClip = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-  const icOk = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-  const icExt = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
-  const icDown = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
-
-  const sealSvg = `<svg class="gp-seal" viewBox="0 0 120 120" aria-hidden="true">
-    <defs><linearGradient id="gpSG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbf0cd"/><stop offset="50%" stop-color="#d6b05c"/><stop offset="100%" stop-color="#8c6620"/></linearGradient></defs>
-    <circle cx="60" cy="60" r="54" fill="url(#gpSG)" opacity=".15"/>
-    <circle cx="60" cy="60" r="48" fill="#091020" stroke="url(#gpSG)" stroke-width="3"/>
-    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6c572" stroke-width="1.2" stroke-dasharray="3 3" opacity=".7"/>
-    <polygon points="60,24 63,31 70,31 64.5,35.5 66.5,42 60,38 53.5,42 55.5,35.5 50,31 57,31" fill="#f2d996"/>
-    <text x="60" y="70" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="28" font-weight="700" fill="#fbf0cd">GB</text>
-    <text x="60" y="86" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="700" letter-spacing="2" fill="#d6b05c">VERIFIED</text>
-  </svg>`;
-
   async function copyText(str){
     try {
       if(navigator.clipboard?.writeText){ await navigator.clipboard.writeText(str); return true; }
@@ -5069,7 +5073,7 @@ html.gbc-proof-mode body {
     } catch(e){ return false; }
   }
 
-  /* ===== HD 3:4 PNG EXPORTER (1200 x 1600) — Tata Letak Presisi Anti-Tumpuk ===== */
+  /* ===== HD 3:4 PNG EXPORTER (1200 x 1600) ===== */
   async function exportProofPng34(){
     try { if(document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){}
     const W = 1200, H = 1600;
@@ -5099,7 +5103,7 @@ html.gbc-proof-mode body {
       x.font = `${o.italic ? 'italic ' : ''}${weight} ${size}px ${fam}`;
       let txt = String(str ?? '—');
       if(o.max && x.measureText(txt).width > o.max){
-        const scale = Math.max(0.58, o.max / x.measureText(txt).width);
+        const scale = Math.max(0.6, o.max / x.measureText(txt).width);
         x.font = `${o.italic ? 'italic ' : ''}${weight} ${Math.round(size * scale)}px ${fam}`;
         if(x.measureText(txt).width > o.max){
           while(txt.length > 3 && x.measureText(txt + '...').width > o.max) txt = txt.slice(0, -1);
@@ -5108,7 +5112,7 @@ html.gbc-proof-mode body {
       }
       x.fillStyle = o.color || '#eef3ff';
       x.textAlign = o.align || 'left';
-      x.textBaseline = o.base || 'alphabetic';
+      x.textBaseline = 'alphabetic';
       x.fillText(txt, tx, ty);
       x.restore();
     };
@@ -5120,69 +5124,56 @@ html.gbc-proof-mode body {
       return g;
     };
 
-    // 1. Background & Bingkai
+    // Background & bingkai
     const bg = x.createLinearGradient(0, 0, W, H);
     bg.addColorStop(0, '#0f172a');
     bg.addColorStop(0.52, '#060a14');
     bg.addColorStop(1, '#0b1323');
-    x.fillStyle = bg;
-    x.fillRect(0, 0, W, H);
+    x.fillStyle = bg; x.fillRect(0, 0, W, H);
 
-    const radTop = x.createRadialGradient(W * 0.25, 120, 20, W * 0.25, 120, 620);
-    radTop.addColorStop(0, 'rgba(214,176,92,.13)');
-    radTop.addColorStop(1, 'rgba(0,0,0,0)');
-    x.fillStyle = radTop;
-    x.fillRect(0, 0, W, 760);
+    const glow = x.createRadialGradient(W * 0.25, 110, 20, W * 0.25, 110, 620);
+    glow.addColorStop(0, 'rgba(214,176,92,.13)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = glow; x.fillRect(0, 0, W, 740);
 
-    rr(34, 34, W - 68, H - 68, 28);
+    rr(36, 36, W - 72, H - 72, 28);
     x.strokeStyle = valid ? gGold(0, 0, W, H) : 'rgba(251,113,133,.7)';
-    x.lineWidth = 3;
-    x.stroke();
-
-    rr(52, 52, W - 104, H - 104, 18);
+    x.lineWidth = 3; x.stroke();
+    rr(54, 54, W - 108, H - 108, 18);
     x.strokeStyle = 'rgba(214,176,92,.24)';
-    x.lineWidth = 1.4;
-    x.stroke();
+    x.lineWidth = 1.4; x.stroke();
 
     const P = 92, CW = W - P * 2;
 
-    // 2. Top Brand & Status
-    rr(P, 92, 56, 56, 13);
-    x.fillStyle = gGold(P, 92, P + 56, 148);
-    x.fill();
-    T('GB', P + 28, 130, { size: 25, weight: 800, color: '#070b15', align: 'center', family: DISP });
-    T('GOLDEN BREAK CAPITAL', P + 72, 116, { size: 22, weight: 700, color: '#f2d996', family: DISP });
-    T('OFFICIAL VERIFICATION REGISTRY', P + 72, 140, { size: 14, weight: 600, color: '#7e8da8', family: MONO });
+    // 1. Header Registry
+    rr(P, 90, 56, 56, 13);
+    x.fillStyle = gGold(P, 90, P + 56, 146); x.fill();
+    T('GB', P + 28, 128, { size: 25, weight: 800, color: '#070b15', align: 'center', family: DISP });
+    T('GOLDEN BREAK CAPITAL', P + 72, 114, { size: 22, weight: 700, color: '#f2d996', family: DISP });
+    T('OFFICIAL VERIFICATION REGISTRY', P + 72, 138, { size: 14, weight: 600, color: '#7e8da8', family: MONO });
 
     const stTxt = valid ? `VERIFIED · 0x${sigShown}` : 'INVALID RECORD';
-    const stW = 280, stX = W - P - stW, stY = 98;
+    const stW = 282, stX = W - P - stW, stY = 96;
     rr(stX, stY, stW, 44, 99);
-    x.fillStyle = valid ? 'rgba(52,211,153,.13)' : 'rgba(251,113,133,.15)';
-    x.fill();
-    x.strokeStyle = valid ? 'rgba(52,211,153,.42)' : 'rgba(251,113,133,.5)';
-    x.lineWidth = 1.4;
-    x.stroke();
+    x.fillStyle = valid ? 'rgba(52,211,153,.13)' : 'rgba(251,113,133,.15)'; x.fill();
+    x.strokeStyle = valid ? 'rgba(52,211,153,.42)' : 'rgba(251,113,133,.5)'; x.lineWidth = 1.4; x.stroke();
     x.beginPath(); x.arc(stX + 24, stY + 22, 5.5, 0, Math.PI * 2);
     x.fillStyle = valid ? '#34d399' : '#fb7185'; x.fill();
     T(stTxt, stX + stW - 20, stY + 28, { size: 15, weight: 700, color: valid ? '#6ee7b7' : '#fda4af', align: 'right', family: MONO });
 
-    x.strokeStyle = 'rgba(214,176,92,.22)';
-    x.lineWidth = 1.2;
-    x.beginPath(); x.moveTo(P, 176); x.lineTo(W - P, 176); x.stroke();
+    x.strokeStyle = 'rgba(214,176,92,.22)'; x.lineWidth = 1.2;
+    x.beginPath(); x.moveTo(P, 174); x.lineTo(W - P, 174); x.stroke();
 
-    // 3. Hero Title + Trader + Official Seal
+    // 2. Hero Title & Official Seal
     const h1 = isCert
       ? (data.po ? 'Certificate of Achievement & Payout' : 'Certificate of Target Achievement')
       : 'Verified Trade Performance Proof';
-    T(isCert ? 'OFFICIAL PERFORMANCE CREDENTIAL' : 'AUDITED EXECUTION RECORD', P, 224, {
-      size: 15, weight: 700, color: '#d6b05c', family: DISP, max: CW - 170
-    });
-    T(h1, P, 278, { size: 46, weight: 700, color: '#f3dc9b', family: SERIF, max: CW - 170 });
-    T(isCert ? 'PRESENTED TO' : 'ACCOUNT HOLDER', P, 324, { size: 14, weight: 700, color: '#7e8da8', family: DISP });
-    T(isCert ? data.tr : `${data.sy} · ${data.sd}`, P, 374, { size: 46, weight: 700, color: '#ffffff', family: SANS, max: CW - 170 });
-    T(`${data.fm}  ·  Account #${data.lg}`, P, 412, { size: 19, weight: 500, color: '#94a5c2', family: MONO, max: CW - 170 });
+    T(isCert ? 'OFFICIAL PERFORMANCE CREDENTIAL' : 'AUDITED EXECUTION RECORD', P, 224, { size: 15, weight: 700, color: '#d6b05c', family: DISP, max: CW - 176 });
+    T(h1, P, 278, { size: 46, weight: 700, color: '#f3dc9b', family: SERIF, max: CW - 176 });
+    T(isCert ? 'PRESENTED TO' : 'RECORDED EXECUTION', P, 324, { size: 14, weight: 700, color: '#7e8da8', family: DISP });
+    T(isCert ? data.tr : `${data.sy} · ${data.sd}`, P, 376, { size: 46, weight: 700, color: '#ffffff', family: SANS, max: CW - 176 });
+    T(`${data.fm}  ·  Account #${data.lg}`, P, 414, { size: 19, weight: 500, color: '#94a5c2', family: MONO, max: CW - 176 });
 
-    const scx = W - P - 68, scy = 304, sr = 64;
+    const scx = W - P - 68, scy = 306, sr = 64;
     x.save();
     x.beginPath(); x.arc(scx, scy, sr + 8, 0, Math.PI * 2); x.fillStyle = 'rgba(214,176,92,.14)'; x.fill();
     x.beginPath(); x.arc(scx, scy, sr, 0, Math.PI * 2); x.fillStyle = '#091020'; x.fill();
@@ -5194,112 +5185,123 @@ html.gbc-proof-mode body {
     T('VERIFIED', scx, scy + 37, { size: 11, weight: 700, color: '#d6b05c', align: 'center', family: MONO });
     x.restore();
 
-    // 4. 2-Column Highlight Box (y: 448 .. 608)
-    const stY0 = 448, stH = 160, stGap = 20, stCardW = (CW - stGap) / 2;
-    const cards2 = data.po ? [
-      { lbl: 'VERIFIED PAYOUT', val: data.po.amount, sub: `${data.po.count}× ${data.po.token} · ${data.po.netName}`, col: '#34d399', em: true, bar: false },
-      { lbl: 'VERIFIED NET PROFIT', val: data.np, sub: `${data.rt} Return · Target ${data.tg} Passed`, col: '#f3dc9b', em: false, bar: true }
-    ] : (isCert ? [
-      { lbl: 'VERIFIED NET PROFIT', val: data.np, sub: `Starting Balance ${data.sb}`, col: data.gn ? '#34d399' : '#fb7185', em: true, bar: false },
-      { lbl: 'ACHIEVED RETURN', val: data.rt, sub: `Target ${data.tg} · ${data.wr} Win Rate`, col: '#f3dc9b', em: false, bar: true }
-    ] : [
-      { lbl: 'NET PROFIT / LOSS', val: data.np, sub: `${data.sy} · ${data.sd} (${data.vl} lot)`, col: data.gn ? '#34d399' : '#fb7185', em: true, bar: false },
-      { lbl: 'ENTRY → EXIT', val: `${data.en} → ${data.ex}`, sub: `SL ${data.sl} · TP ${data.tp}`, col: '#f3dc9b', em: false, bar: false }
-    ]);
+    let curY = 450;
 
-    cards2.forEach((c2, i) => {
-      const cx0 = P + i * (stCardW + stGap);
-      rr(cx0, stY0, stCardW, stH, 16);
-      x.fillStyle = c2.em ? 'rgba(52,211,153,.09)' : 'rgba(255,255,255,.03)';
-      x.fill();
-      x.strokeStyle = c2.em ? 'rgba(52,211,153,.4)' : 'rgba(255,255,255,.1)';
-      x.lineWidth = 1.4; x.stroke();
-      T(c2.lbl, cx0 + 26, stY0 + 38, { size: 15, weight: 700, color: c2.em ? '#34d399' : '#8494b0', family: DISP });
-      T(c2.val, cx0 + 26, stY0 + 100, { size: 44, weight: 700, color: c2.col, family: MONO, max: stCardW - 52 });
-      if(c2.bar){
-        rr(cx0 + 26, stY0 + 114, stCardW - 52, 6, 4);
-        x.fillStyle = 'rgba(255,255,255,.09)'; x.fill();
-        rr(cx0 + 26, stY0 + 114, Math.max(16, (stCardW - 52) * (progPct / 100)), 6, 4);
-        x.fillStyle = '#34d399'; x.fill();
-        T(c2.sub, cx0 + 26, stY0 + 144, { size: 15.5, weight: 500, color: '#90a0bd', max: stCardW - 52 });
-      } else {
-        T(c2.sub, cx0 + 26, stY0 + 138, { size: 16, weight: 500, color: '#90a0bd', max: stCardW - 52 });
-      }
-    });
+    // 3. Payout Vault Card (bila ada payout)
+    if(data.po){
+      const poH = data.po.txHash ? 222 : 138;
+      rr(P, curY, CW, poH, 18);
+      const pbg = x.createLinearGradient(P, curY, P + CW, curY + poH);
+      pbg.addColorStop(0, 'rgba(13,30,42,.95)'); pbg.addColorStop(1, 'rgba(7,12,23,.98)');
+      x.fillStyle = pbg; x.fill();
+      x.strokeStyle = 'rgba(52,211,153,.38)'; x.lineWidth = 1.6; x.stroke();
 
-    // 5. On-Chain TX Bar (y: 628 .. 706) jika ada payout TX
-    let nextY = stY0 + stH + 22;
-    if(data.po && data.po.txHash){
-      const txH = 78;
-      rr(P, nextY, CW, txH, 14);
-      x.fillStyle = '#050912'; x.fill();
-      x.strokeStyle = 'rgba(52,211,153,.32)'; x.lineWidth = 1.4; x.stroke();
-      T('ON-CHAIN TX HASH', P + 24, nextY + 30, { size: 13, weight: 700, color: '#34d399', family: DISP });
-      T(clipTx(data.po.txHash, 14, 12), P + 24, nextY + 60, { size: 22, weight: 600, color: '#6ee7b7', family: MONO, max: CW - 280 });
-      if(data.po.host){
-        T(`↗ ${data.po.host}`, W - P - 24, nextY + 46, { size: 16, weight: 600, color: '#8ea0bd', align: 'right', family: MONO });
+      T('VERIFIED ON-CHAIN PAYOUT', P + 26, curY + 38, { size: 14, weight: 700, color: '#34d399', family: DISP });
+      T(data.po.amount, P + 26, curY + 98, { size: 48, weight: 700, color: '#34d399', family: MONO, max: CW * 0.54 });
+
+      const pillW = 248, pillX = P + CW - 26 - pillW;
+      rr(pillX, curY + 24, pillW, 38, 99);
+      x.fillStyle = 'rgba(52,211,153,.12)'; x.fill();
+      x.strokeStyle = 'rgba(52,211,153,.38)'; x.lineWidth = 1.2; x.stroke();
+      x.beginPath(); x.arc(pillX + 22, curY + 43, 5, 0, Math.PI * 2); x.fillStyle = '#34d399'; x.fill();
+      T(data.po.explorerUrl ? 'ON-CHAIN SETTLED' : 'PAYOUT RECORDED', pillX + pillW - 18, curY + 49, { size: 14, weight: 700, color: '#6ee7b7', align: 'right', family: MONO });
+      T(`${data.po.count}× ${data.po.token} · ${data.po.netName}`, P + CW - 26, curY + 94, { size: 17, weight: 600, color: '#b4c3dc', align: 'right', family: MONO, max: CW * 0.48 });
+
+      if(data.po.txHash){
+        const txY = curY + 128;
+        rr(P + 24, txY, CW - 48, 68, 12);
+        x.fillStyle = '#050912'; x.fill();
+        x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
+        T('TX HASH', P + 44, txY + 41, { size: 13.5, weight: 700, color: '#7485a3', family: DISP });
+        T(clipTx(data.po.txHash, 14, 12), P + 148, txY + 42, { size: 22, weight: 600, color: '#6ee7b7', family: MONO, max: CW - 380 });
+        if(data.po.host){
+          T(`↗ ${data.po.host}`, P + CW - 44, txY + 41, { size: 15, weight: 600, color: '#8c9db8', align: 'right', family: MONO });
+        }
       }
-      nextY += txH + 26;
-    } else {
-      nextY += 12;
+      curY += poH + 24;
     }
 
-    // 6. Audited Specifications Receipt List (terisi proporsional sampai y: 1218)
-    const specRows = isCert ? [
-      ['Account Holder', data.tr, false],
-      ['Prop Firm / Broker', data.fm, false],
-      ['Account Login', `#${data.lg}`, false],
-      ['Starting Balance', data.sb, false],
-      ['Verified Equity', data.eq, false],
-      ['Execution Consistency', `${data.ct} trades · ${data.wr} Win Rate`, false],
-      ...(data.po ? [['Settlement Network', `${data.po.netName} (${data.po.token})`, true]] : [['Profit Target', `${data.tg} (${data.rt})`, true]])
+    // 4. 3 KPI Strip
+    const kpiH = data.po ? 140 : 164, kpiGap = 18, kpiW = (CW - kpiGap * 2) / 3;
+    const kpis = isCert ? [
+      ['NET PROFIT', data.np, `Start ${data.sb}`, data.gn ? '#34d399' : '#fb7185', false],
+      ['ACHIEVED RETURN', data.rt, `Target ${data.tg} passed`, '#f3dc9b', true],
+      ['WIN RATE', data.wr, `${data.ct} closed trades`, '#eef3ff', false]
     ] : [
-      ['Trader', data.tr, false],
-      ['Account Login', `#${data.lg}`, false],
-      ['Instrument & Side', `${data.sy} · ${data.sd}`, false],
-      ['Position Volume', `${data.vl} lot`, false],
-      ['Entry / Exit Price', `${data.en} / ${data.ex}`, false],
-      ['Stop Loss / Take Profit', `${data.sl} / ${data.tp}`, false],
-      ['Close Time (WIB)', data.dt, false]
+      ['NET P/L', data.np, `${data.sy} · ${data.sd}`, data.gn ? '#34d399' : '#fb7185', false],
+      ['ENTRY → EXIT', `${data.en} → ${data.ex}`, `Volume ${data.vl} lot`, '#f3dc9b', false],
+      ['RISK LEVELS', `SL ${data.sl}`, `TP ${data.tp}`, '#eef3ff', false]
     ];
-
-    T(isCert ? 'AUDITED ACCOUNT SPECIFICATIONS' : 'EXECUTION & AUDIT DETAILS', P, nextY + 14, {
-      size: 14.5, weight: 700, color: '#e6c572', family: DISP
-    });
-    T(`Issued ${data.dt}`, W - P, nextY + 14, { size: 14.5, weight: 500, color: '#7e8da8', align: 'right', family: MONO });
-
-    const listY = nextY + 30;
-    const sigTop = 1262;
-    const listH = Math.min(476, Math.max(360, sigTop - listY - 34));
-    rr(P, listY, CW, listH, 16);
-    x.fillStyle = 'rgba(7,12,23,.82)'; x.fill();
-    x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.3; x.stroke();
-
-    const rowH = listH / specRows.length;
-    specRows.forEach(([k, v, hi], idx) => {
-      const ry0 = listY + idx * rowH;
-      if(idx > 0){
-        x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
-        x.beginPath(); x.moveTo(P + 22, ry0); x.lineTo(W - P - 22, ry0); x.stroke();
+    kpis.forEach(([lbl, val, sub, col, showBar], i) => {
+      const kx = P + i * (kpiW + kpiGap);
+      rr(kx, curY, kpiW, kpiH, 16);
+      x.fillStyle = 'rgba(15,23,42,.82)'; x.fill();
+      x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
+      rr(kx + 22, curY + 1, kpiW - 44, 3.5, 2); x.fillStyle = col; x.fill();
+      T(lbl, kx + 22, curY + 36, { size: 13.5, weight: 700, color: '#8494b0', family: DISP, max: kpiW - 44 });
+      T(val, kx + 22, curY + (data.po ? 84 : 94), { size: 32, weight: 700, color: col, family: MONO, max: kpiW - 44 });
+      if(showBar){
+        const by = curY + (data.po ? 98 : 112);
+        rr(kx + 22, by, kpiW - 44, 5.5, 4); x.fillStyle = 'rgba(255,255,255,.09)'; x.fill();
+        rr(kx + 22, by, Math.max(14, (kpiW - 44) * (progPct / 100)), 5.5, 4); x.fillStyle = '#34d399'; x.fill();
+        T(sub, kx + 22, by + 26, { size: 14, weight: 500, color: '#7e8da8', max: kpiW - 44 });
+      } else {
+        T(sub, kx + 22, curY + (data.po ? 118 : 134), { size: 14.5, weight: 500, color: '#7e8da8', max: kpiW - 44 });
       }
-      const midY = ry0 + rowH * 0.57;
-      T(k, P + 26, midY, { size: 18, weight: 500, color: '#8b9bb8' });
-      T(v, W - P - 26, midY, { size: 19.5, weight: 700, color: hi ? '#6ee7b7' : '#eef3ff', align: 'right', family: MONO, max: CW * 0.56 });
+    });
+    curY += kpiH + 34;
+
+    // 5. Audited Account Specifications (2 Kolom)
+    const rows = isCert ? [
+      ['Account Holder', data.tr],
+      ['Prop Firm / Broker', data.fm],
+      ['Account Login', `#${data.lg}`],
+      ['Starting Balance', data.sb],
+      ['Verified Equity', data.eq],
+      ['Execution', `${data.ct} trades · ${data.wr} WR`]
+    ] : [
+      ['Account Holder', data.tr],
+      ['Account Login', `#${data.lg}`],
+      ['Instrument', `${data.sy} · ${data.sd}`],
+      ['Volume', `${data.vl} lot`],
+      ['Entry / Exit', `${data.en} / ${data.ex}`],
+      ['SL / TP', `${data.sl} / ${data.tp}`]
+    ];
+    T(isCert ? 'AUDITED ACCOUNT SPECIFICATIONS' : 'EXECUTION & AUDIT DETAILS', P, curY, { size: 14.5, weight: 700, color: '#e6c572', family: DISP });
+    T(`Issued ${data.dt}`, W - P, curY, { size: 14.5, weight: 500, color: '#7e8da8', align: 'right', family: MONO });
+
+    const ledY = curY + 18, sigTop = 1252;
+    const ledH = Math.min(360, Math.max(240, sigTop - ledY - 34));
+    rr(P, ledY, CW, ledH, 16);
+    x.fillStyle = 'rgba(8,13,25,.82)'; x.fill();
+    x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
+
+    const rowCnt = Math.ceil(rows.length / 2), cellW = CW / 2, cellH = ledH / rowCnt;
+    x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(P + cellW, ledY + 14); x.lineTo(P + cellW, ledY + ledH - 14); x.stroke();
+    for(let r = 1; r < rowCnt; r++){
+      x.beginPath(); x.moveTo(P + 16, ledY + r * cellH); x.lineTo(P + CW - 16, ledY + r * cellH); x.stroke();
+    }
+    rows.forEach(([k, v], i) => {
+      const col = i % 2, row = Math.floor(i / 2);
+      const rx0 = P + col * cellW, ry0 = ledY + row * cellH;
+      T(k, rx0 + 24, ry0 + cellH * 0.39, { size: 14.5, weight: 600, color: '#7e8ea9', max: cellW - 48 });
+      T(v, rx0 + 24, ry0 + cellH * 0.76, { size: 21, weight: 700, color: '#eef3ff', family: MONO, max: cellW - 48 });
     });
 
-    // 7. CEO Signature & Registry Stamp (y: 1262 .. 1456)
+    // 6. CEO Signature & Registry Stamp
     x.strokeStyle = 'rgba(214,176,92,.26)'; x.lineWidth = 1.2;
     x.beginPath(); x.moveTo(P, sigTop); x.lineTo(W - P, sigTop); x.stroke();
 
-    T('Farid Siddiq', P + 6, sigTop + 98, { size: 62, weight: 400, color: '#f5e1a4', family: SIGN });
+    T('Farid Siddiq', P + 6, sigTop + 102, { size: 64, weight: 400, color: '#f5e1a4', family: SIGN });
     const sigL = x.createLinearGradient(P, 0, P + 360, 0);
     sigL.addColorStop(0, '#d6b05c'); sigL.addColorStop(1, 'rgba(214,176,92,0)');
     x.strokeStyle = sigL; x.lineWidth = 1.6;
-    x.beginPath(); x.moveTo(P, sigTop + 114); x.lineTo(P + 360, sigTop + 114); x.stroke();
-    T('FARID SIDDIQ', P, sigTop + 144, { size: 17, weight: 700, color: '#e6c572', family: DISP });
-    T('Chief Executive Officer · Golden Break Capital', P, sigTop + 168, { size: 15, weight: 500, color: '#8393b0' });
+    x.beginPath(); x.moveTo(P, sigTop + 120); x.lineTo(P + 360, sigTop + 120); x.stroke();
+    T('FARID SIDDIQ', P, sigTop + 150, { size: 17, weight: 700, color: '#e6c572', family: DISP });
+    T('Chief Executive Officer · Golden Break Capital', P, sigTop + 176, { size: 15, weight: 500, color: '#8393b0' });
 
-    const regW = 430, regH = 148, regX = W - P - regW, regY = sigTop + 26;
+    const regW = 430, regH = 152, regX = W - P - regW, regY = sigTop + 30;
     rr(regX, regY, regW, regH, 14);
     x.fillStyle = 'rgba(214,176,92,.06)'; x.fill();
     x.strokeStyle = 'rgba(214,176,92,.28)'; x.lineWidth = 1.2; x.stroke();
@@ -5309,13 +5311,12 @@ html.gbc-proof-mode body {
       ['ISSUED', data.dt, '#eef3ff'],
       ['CHECKSUM', `0x${sigShown}`, '#f2d996']
     ].forEach(([rk, rv, rc], idx) => {
-      const yy = regY + 34 + idx * 31;
+      const yy = regY + 35 + idx * 32;
       T(rk, regX + 20, yy, { size: 14, weight: 600, color: '#8393b0', family: MONO });
       T(rv, regX + regW - 20, yy, { size: 14.5, weight: 700, color: rc, align: 'right', family: MONO, max: regW - 140 });
     });
 
-    // Footer
-    T('Golden Break Capital · Official Verification Proof · funded-journey-nu.vercel.app', W / 2, H - 72, {
+    T('Golden Break Capital · Official Verification Proof · funded-journey-nu.vercel.app', W / 2, 1512, {
       size: 13.5, weight: 500, color: '#657592', align: 'center', family: MONO
     });
 
@@ -5340,170 +5341,496 @@ html.gbc-proof-mode body {
     });
   }
 
-  /* ===== BUILD LIVE DOM ===== */
-  const statsHtml = !data ? '' : (data.po ? `
-    <div class="gp-stats">
-      <div class="gp-stat em">
-        <small>Verified Payout</small>
-        <strong class="pos">${esc(data.po.amount)}</strong>
-        <span>${esc(data.po.count)}× ${esc(data.po.token)} · ${esc(data.po.netName)}</span>
-      </div>
-      <div class="gp-stat">
-        <small>Net Profit</small>
-        <strong class="gold">${esc(data.np)}</strong>
-        <div class="gp-prog"><i style="width:${progPct.toFixed(0)}%"></i></div>
-        <span>${esc(data.rt)} · Target ${esc(data.tg)}</span>
-      </div>
-    </div>
-  ` : (isCert ? `
-    <div class="gp-stats">
-      <div class="gp-stat em">
-        <small>Verified Net Profit</small>
-        <strong class="${data.gn ? 'pos' : 'neg'}">${esc(data.np)}</strong>
-        <span>Start ${esc(data.sb)}</span>
-      </div>
-      <div class="gp-stat">
-        <small>Achieved Return</small>
-        <strong class="gold">${esc(data.rt)}</strong>
-        <div class="gp-prog"><i style="width:${progPct.toFixed(0)}%"></i></div>
-        <span>Target ${esc(data.tg)} Passed</span>
-      </div>
-    </div>
-  ` : `
-    <div class="gp-stats">
-      <div class="gp-stat em">
-        <small>Net Profit / Loss</small>
-        <strong class="${data.gn ? 'pos' : 'neg'}">${esc(data.np)}</strong>
-        <span>${esc(data.sy)} · ${esc(data.sd)} (${esc(data.vl)} lot)</span>
-      </div>
-      <div class="gp-stat">
-        <small>Entry → Exit</small>
-        <strong class="gold">${esc(data.ex)}</strong>
-        <span>Entry ${esc(data.en)} · SL ${esc(data.sl)}</span>
-      </div>
-    </div>
-  `));
+  /* ===== SHADOW DOM CSS (100% Terisolasi dari Tema Dashboard) ===== */
+  const SHADOW_CSS = `
+    :host {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483640;
+      display: block;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      background:
+        radial-gradient(640px 360px at 50% -6%, rgba(214,176,92,.14), transparent 68%),
+        radial-gradient(500px 340px at 95% 100%, rgba(52,211,153,.07), transparent 65%),
+        #060911;
+      color: #eef3ff;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      font-size: 13px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
 
-  const txHtml = data?.po?.txHash ? `
-    <div class="gp-txbox">
-      <div class="gp-tx-left">
-        <span class="gp-tx-lbl">On-Chain Transaction Hash</span>
-        ${data.po.explorerUrl
-          ? `<a class="gp-tx-link" href="${esc(data.po.explorerUrl)}" target="_blank" rel="noopener noreferrer" title="Lihat transaksi di ${esc(data.po.host || 'Explorer')}"><span>${esc(clipTx(data.po.txHash))}</span>${icExt}</a>`
-          : `<span class="gp-tx-plain" title="${esc(data.po.txHash)}">${esc(clipTx(data.po.txHash))}</span>`}
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: max(10px, env(safe-area-inset-top)) clamp(14px, 3vw, 28px) 10px;
+      background: rgba(6, 9, 17, .9);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+    }
+    .nav-l { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .mark {
+      width: 30px; height: 30px; border-radius: 8px; flex: none;
+      background: linear-gradient(145deg, #f5e1a4, #b98b3f);
+      color: #080c16; font: 800 13px/1 "Chakra Petch", sans-serif;
+      display: grid; place-items: center;
+    }
+    .nav-t { min-width: 0; }
+    .nav-t b {
+      display: block; font: 700 12px/1.2 "Chakra Petch", sans-serif;
+      letter-spacing: .12em; color: #f2d996;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .nav-t small { display: block; font-size: 10.5px; color: #7e8ea8; }
+    .nav-btn {
+      min-height: 34px; padding: 0 12px; border-radius: 8px; cursor: pointer; flex: none;
+      border: 1px solid rgba(255, 255, 255, .13); background: rgba(255, 255, 255, .04);
+      color: #d5e0f5; font: 600 12px/1 inherit;
+    }
+    .nav-btn:hover { border-color: rgba(214, 176, 92, .55); color: #f5e1a4; }
+
+    .shell {
+      width: 100%; max-width: 500px; margin: 0 auto;
+      padding: 18px 14px calc(44px + env(safe-area-inset-bottom, 0px));
+      display: flex; flex-direction: column; gap: 12px;
+    }
+
+    /* Prop Firm Verification Card (~3:4 compact proportion) */
+    .card {
+      position: relative; width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(214, 176, 92, .42);
+      background: linear-gradient(170deg, #0e1628 0%, #070b15 56%, #0b1324 100%);
+      box-shadow: 0 22px 64px rgba(0, 0, 0, .62), inset 0 1px 0 rgba(255, 255, 255, .05);
+      overflow: hidden;
+    }
+    .card.bad { border-color: rgba(251, 113, 133, .58); }
+    .topline {
+      height: 3px;
+      background: linear-gradient(90deg, #8e6924, #f5e1a4 50%, #8e6924);
+    }
+    .card.bad .topline { background: linear-gradient(90deg, #9f1239, #fb7185 50%, #9f1239); }
+
+    .inner {
+      margin: 8px; padding: 18px 18px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(214, 176, 92, .18);
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .head {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      padding-bottom: 11px; border-bottom: 1px solid rgba(255, 255, 255, .07);
+    }
+    .issuer {
+      font: 700 10px/1.2 "Chakra Petch", sans-serif;
+      letter-spacing: .16em; color: #d6b05c; text-transform: uppercase;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px; flex: none;
+      padding: 3.5px 9px; border-radius: 999px;
+      font: 700 10px/1.2 "JetBrains Mono", monospace; letter-spacing: .05em;
+      background: rgba(52, 211, 153, .12); color: #34d399;
+      border: 1px solid rgba(52, 211, 153, .36);
+    }
+    .badge i { width: 6px; height: 6px; border-radius: 50%; background: #34d399; }
+    .badge.bad { background: rgba(251, 113, 133, .12); color: #fb7185; border-color: rgba(251, 113, 133, .42); }
+    .badge.bad i { background: #fb7185; }
+
+    .hero { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .hero-l { min-width: 0; flex: 1 1 auto; }
+    .h1 {
+      margin: 0; font: 700 22px/1.18 "Cormorant Garamond", Georgia, serif; color: #f3dc9b;
+    }
+    .for {
+      margin: 6px 0 1px; font-size: 10px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase; color: #7b8ba8;
+    }
+    .name {
+      margin: 0; font: 700 20px/1.2 "Inter", system-ui, sans-serif;
+      color: #ffffff; letter-spacing: -.01em; overflow-wrap: anywhere;
+    }
+    .submeta {
+      margin-top: 4px; font: 500 11.5px/1.35 "JetBrains Mono", monospace;
+      color: #93a4c2; overflow-wrap: anywhere;
+    }
+    .seal { width: 58px; height: 58px; flex: none; display: block; }
+
+    /* Payout Block */
+    .payout {
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 13px 14px; border-radius: 11px;
+      border: 1px solid rgba(52, 211, 153, .32);
+      background:
+        radial-gradient(240px 90px at 0% 0%, rgba(52, 211, 153, .1), transparent 72%),
+        linear-gradient(180deg, rgba(13, 25, 39, .94), rgba(7, 12, 22, .98));
+    }
+    .pay-top {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    }
+    .pay-amt small {
+      display: block; font: 700 9px/1.2 "Chakra Petch", sans-serif;
+      letter-spacing: .14em; color: #34d399; text-transform: uppercase;
+    }
+    .pay-amt strong {
+      display: block; margin-top: 3px;
+      font: 700 24px/1.1 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;
+      color: #34d399; letter-spacing: -.02em;
+    }
+    .pay-meta { text-align: right; }
+    .pay-net {
+      display: inline-block; padding: 3px 8px; border-radius: 6px;
+      font: 700 10px/1.2 "JetBrains Mono", monospace;
+      background: rgba(52, 211, 153, .12); color: #6ee7b7;
+      border: 1px solid rgba(52, 211, 153, .3);
+    }
+    .pay-sub {
+      display: block; margin-top: 4px;
+      font: 500 10.5px/1.2 "JetBrains Mono", monospace; color: #8c9db8;
+    }
+
+    /* TX Bar: Address klik langsung Explorer + Ikon Clipboard kecil */
+    .txbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 7px 9px 7px 11px; border-radius: 8px;
+      background: #050912; border: 1px solid rgba(255, 255, 255, .08);
+      min-width: 0;
+    }
+    .tx-l { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto; }
+    .tx-k {
+      flex: none; font: 700 9px/1 "Chakra Petch", sans-serif;
+      letter-spacing: .12em; color: #7485a3; text-transform: uppercase;
+    }
+    .tx-link {
+      display: inline-flex; align-items: center; gap: 5px; min-width: 0;
+      font: 600 12px/1.3 "JetBrains Mono", monospace;
+      color: #6ee7b7; text-decoration: none;
+    }
+    .tx-link span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tx-link:hover { color: #f5e1a4; text-decoration: underline; }
+    .tx-link svg { width: 12px; height: 12px; flex: none; opacity: .85; }
+    .tx-plain {
+      font: 600 12px/1.3 "JetBrains Mono", monospace; color: #dce6fa;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .tx-cp {
+      width: 28px; height: 28px; padding: 0; flex: none; border-radius: 7px;
+      border: 1px solid rgba(255, 255, 255, .13); background: rgba(255, 255, 255, .04);
+      color: #9fb0cc; display: grid; place-items: center; cursor: pointer;
+    }
+    .tx-cp:hover { border-color: rgba(214, 176, 92, .55); color: #f5e1a4; background: rgba(214, 176, 92, .1); }
+    .tx-cp.ok { border-color: rgba(52, 211, 153, .55); color: #34d399; background: rgba(52, 211, 153, .14); }
+    .tx-cp svg { width: 14px; height: 14px; display: block; }
+
+    /* KPI Strip */
+    .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .kpi {
+      position: relative; padding: 10px 10px 9px; border-radius: 10px;
+      background: rgba(255, 255, 255, .028); border: 1px solid rgba(255, 255, 255, .075);
+      min-width: 0;
+    }
+    .kpi::before {
+      content: ""; position: absolute; left: 10px; right: 10px; top: 0; height: 2px;
+      border-radius: 0 0 2px 2px; background: var(--ka, #e6c572);
+    }
+    .kpi small {
+      display: block; font: 700 8.5px/1.2 "Chakra Petch", sans-serif;
+      letter-spacing: .1em; color: #8494b0; text-transform: uppercase;
+    }
+    .kpi strong {
+      display: block; margin-top: 4px;
+      font: 700 15px/1.15 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;
+      color: var(--ka, #ffffff); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .kpi span {
+      display: block; margin-top: 3px; font-size: 9.5px; color: #7e8ea8;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .prog { height: 3.5px; border-radius: 99px; background: rgba(255, 255, 255, .09); overflow: hidden; margin-top: 5px; }
+    .prog i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #34d399, #f3dc9b); }
+
+    /* Account Specs 2-Column Compact Grid */
+    .specs {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      border: 1px solid rgba(255, 255, 255, .075); border-radius: 10px;
+      background: rgba(5, 9, 18, .68); overflow: hidden;
+    }
+    .srow {
+      padding: 8px 11px; border-bottom: 1px solid rgba(255, 255, 255, .055);
+      min-width: 0;
+    }
+    .srow:nth-child(odd) { border-right: 1px solid rgba(255, 255, 255, .055); }
+    .srow:nth-last-child(-n+2) { border-bottom: 0; }
+    .srow small { display: block; font-size: 9.5px; color: #7d8da8; }
+    .srow b {
+      display: block; margin-top: 2px;
+      font: 600 11.5px/1.3 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;
+      color: #eef3ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Signature & Registry Footer */
+    .auth {
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
+      padding-top: 10px; border-top: 1px solid rgba(214, 176, 92, .2);
+    }
+    .calli {
+      font: 400 30px/1.05 "Great Vibes", "Cormorant Garamond", cursive;
+      color: #f5e1a4;
+    }
+    .sline {
+      width: 150px; height: 1px; margin: 2px 0 5px;
+      background: linear-gradient(90deg, #d6b05c, transparent);
+    }
+    .sign b {
+      display: block; font: 700 10px/1.2 "Chakra Petch", sans-serif;
+      letter-spacing: .16em; color: #e6c572;
+    }
+    .sign span { display: block; font-size: 9.5px; color: #7d8da8; margin-top: 1px; }
+    .reg {
+      text-align: right; font: 500 9.5px/1.55 "JetBrains Mono", monospace;
+      color: #7d8da8; flex: none;
+    }
+    .reg b { color: #dce6fa; font-weight: 600; }
+
+    /* Actions */
+    .actions { display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; }
+    .btn {
+      min-height: 44px; padding: 0 14px; border-radius: 10px; cursor: pointer;
+      border: 1px solid rgba(214, 176, 92, .38); background: rgba(214, 176, 92, .08);
+      color: #f3dc9b; font: 600 12.5px/1 inherit;
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .btn:hover { background: rgba(214, 176, 92, .16); }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    .btn.pri {
+      background: linear-gradient(135deg, #f3dc9b, #c5963a);
+      color: #090d18; border: 0; font-weight: 700;
+    }
+    .btn.pri:hover { filter: brightness(1.07); }
+    .btn svg { width: 15px; height: 15px; flex: none; }
+
+    .legal {
+      margin: 0; text-align: center; font-size: 10.5px; color: #677794; line-height: 1.5;
+    }
+
+    @media (max-width: 440px) {
+      .inner { margin: 6px; padding: 14px 13px; gap: 12px; }
+      .h1 { font-size: 19px; }
+      .name { font-size: 18px; }
+      .seal { width: 48px; height: 48px; }
+      .kpi strong { font-size: 13.5px; }
+      .pay-meta { text-align: left; }
+      .specs { grid-template-columns: 1fr; }
+      .srow { border-right: 0 !important; border-bottom: 1px solid rgba(255, 255, 255, .055) !important; }
+      .srow:last-child { border-bottom: 0 !important; }
+      .auth { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .reg { text-align: left; }
+      .actions { grid-template-columns: 1fr; }
+    }
+  `;
+
+  const icClip = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+  const icOk = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  const icExt = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+  const icDown = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+
+  const sealSvg = `<svg class="seal" width="58" height="58" viewBox="0 0 120 120" aria-hidden="true">
+    <defs><linearGradient id="gpSG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbf0cd"/><stop offset="50%" stop-color="#d6b05c"/><stop offset="100%" stop-color="#8c6620"/></linearGradient></defs>
+    <circle cx="60" cy="60" r="54" fill="url(#gpSG)" opacity=".15"/>
+    <circle cx="60" cy="60" r="48" fill="#091020" stroke="url(#gpSG)" stroke-width="3"/>
+    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6c572" stroke-width="1.2" stroke-dasharray="3 3" opacity=".7"/>
+    <polygon points="60,24 63,31 70,31 64.5,35.5 66.5,42 60,38 53.5,42 55.5,35.5 50,31 57,31" fill="#f2d996"/>
+    <text x="60" y="70" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="28" font-weight="700" fill="#fbf0cd">GB</text>
+    <text x="60" y="86" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="700" letter-spacing="2" fill="#d6b05c">VERIFIED</text>
+  </svg>`;
+
+  function buildBodyHtml(){
+    if(!data){
+      return `<article class="card bad"><div class="topline"></div><div class="inner"><b>Data verifikasi tidak valid atau tautan QR terpotong.</b></div></article>`;
+    }
+
+    const payoutHtml = data.po ? `
+      <section class="payout">
+        <div class="pay-top">
+          <div class="pay-amt">
+            <small>Verified On-Chain Payout</small>
+            <strong>${esc(data.po.amount)}</strong>
+          </div>
+          <div class="pay-meta">
+            <span class="pay-net">${esc(data.po.netName)}</span>
+            <span class="pay-sub">${esc(data.po.count)}× Payout · ${esc(data.po.token)}</span>
+          </div>
+        </div>
+        ${data.po.txHash ? `
+        <div class="txbar">
+          <div class="tx-l">
+            <span class="tx-k">TX</span>
+            ${data.po.explorerUrl
+              ? `<a class="tx-link" href="${esc(data.po.explorerUrl)}" target="_blank" rel="noopener noreferrer" title="Cek di ${esc(data.po.host || 'Explorer')}"><span>${esc(clipTx(data.po.txHash))}</span>${icExt}</a>`
+              : `<span class="tx-plain" title="${esc(data.po.txHash)}">${esc(clipTx(data.po.txHash))}</span>`}
+          </div>
+          <button type="button" class="tx-cp" id="gpTxCopy" title="Salin TX Hash" aria-label="Salin TX Hash">${icClip}</button>
+        </div>` : ''}
+      </section>
+    ` : '';
+
+    const kpisHtml = isCert ? `
+      <div class="kpis">
+        <div class="kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
+          <small>Net Profit</small>
+          <strong>${esc(data.np)}</strong>
+          <span>Start ${esc(data.sb)}</span>
+        </div>
+        <div class="kpi" style="--ka:#f3dc9b">
+          <small>Return</small>
+          <strong>${esc(data.rt)}</strong>
+          <div class="prog"><i style="width:${progPct.toFixed(0)}%"></i></div>
+          <span>Target ${esc(data.tg)}</span>
+        </div>
+        <div class="kpi" style="--ka:#eef3ff">
+          <small>Win Rate</small>
+          <strong>${esc(data.wr)}</strong>
+          <span>${esc(data.ct)} trades</span>
+        </div>
       </div>
-      <button type="button" class="gp-tx-cp" id="gpTxCopy" title="Salin TX Hash" aria-label="Salin TX Hash">${icClip}</button>
-    </div>
-  ` : '';
+    ` : `
+      <div class="kpis">
+        <div class="kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
+          <small>Net P/L</small>
+          <strong>${esc(data.np)}</strong>
+          <span>${esc(data.sy)} · ${esc(data.sd)}</span>
+        </div>
+        <div class="kpi" style="--ka:#f3dc9b">
+          <small>Entry / Exit</small>
+          <strong>${esc(data.ex)}</strong>
+          <span>In ${esc(data.en)}</span>
+        </div>
+        <div class="kpi" style="--ka:#eef3ff">
+          <small>Volume</small>
+          <strong>${esc(data.vl)} lot</strong>
+          <span>SL ${esc(data.sl)}</span>
+        </div>
+      </div>
+    `;
 
-  const listRows = !data ? [] : (isCert ? [
-    ['Prop Firm / Broker', data.fm, false],
-    ['Account Login', `#${data.lg}`, false],
-    ['Starting Balance', data.sb, false],
-    ['Verified Equity', data.eq, false],
-    ['Execution', `${data.ct} trades · ${data.wr} WR`, false],
-    ...(data.po ? [['Settlement Network', `${data.po.netName} (${data.po.token})`, true]] : []),
-    ['Checksum', `0x${sigShown}`, false]
-  ] : [
-    ['Account Holder', data.tr, false],
-    ['Account Login', `#${data.lg}`, false],
-    ['Instrument', `${data.sy} · ${data.sd}`, false],
-    ['Volume', `${data.vl} lot`, false],
-    ['Entry / Exit', `${data.en} / ${data.ex}`, false],
-    ['SL / TP', `${data.sl} / ${data.tp}`, false],
-    ['Checksum', `0x${sigShown}`, false]
-  ]);
+    const specs = isCert ? [
+      ['Prop Firm / Broker', data.fm],
+      ['Account Login', `#${data.lg}`],
+      ['Starting Balance', data.sb],
+      ['Verified Equity', data.eq]
+    ] : [
+      ['Account Holder', data.tr],
+      ['Account Login', `#${data.lg}`],
+      ['Entry / Exit', `${data.en} / ${data.ex}`],
+      ['SL / TP', `${data.sl} / ${data.tp}`]
+    ];
 
-  const mount = () => {
-    if(document.getElementById('gbcProofPortal')) return;
+    return `
+      <article class="card ${valid ? '' : 'bad'}">
+        <div class="topline"></div>
+        <div class="inner">
+          <div class="head">
+            <span class="issuer">${isCert ? (data.po ? 'Achievement &amp; Payout Proof' : 'Target Achievement Proof') : 'Audited Execution Proof'}</span>
+            <span class="badge ${valid ? '' : 'bad'}"><i></i>${valid ? 'VERIFIED' : 'INVALID'}</span>
+          </div>
+
+          <div class="hero">
+            <div class="hero-l">
+              <h1 class="h1">${isCert ? (data.po ? 'Certificate of Achievement &amp; Payout' : 'Certificate of Target Achievement') : 'Verified Trade Performance'}</h1>
+              <div class="for">${isCert ? 'Presented to' : 'Recorded execution'}</div>
+              <div class="name">${esc(isCert ? data.tr : `${data.sy} · ${data.sd}`)}</div>
+              <div class="submeta">${esc(data.fm)} · #${esc(data.lg)}</div>
+            </div>
+            ${sealSvg}
+          </div>
+
+          ${payoutHtml}
+          ${kpisHtml}
+
+          <div class="specs">
+            ${specs.map(([k, v]) => `<div class="srow"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}
+          </div>
+
+          <div class="auth">
+            <div class="sign">
+              <div class="calli">Farid Siddiq</div>
+              <div class="sline"></div>
+              <b>FARID SIDDIQ</b>
+              <span>CEO · Golden Break Capital</span>
+            </div>
+            <div class="reg">
+              <div>${isCert ? 'ID' : 'TICKET'} <b>${esc(isCert ? data.id : '#' + data.id)}</b></div>
+              <div>ISSUED <b>${esc(data.dt)}</b></div>
+              <div>SIG <b>0x${esc(sigShown)}</b></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function mount(){
+    // Bersihkan portal versi lama jika ada duplikat skrip yang telanjur jalan
+    const old = document.getElementById('gbcProofPortal');
+    if(old){
+      if(old.dataset.v === '4') return;
+      old.remove();
+    }
+    const oldCss = document.getElementById('gbc-proof-portal-css');
+    if(oldCss) oldCss.remove();
+
     if(!document.querySelector('link[href*="Cormorant+Garamond"]')){
       const fl = document.createElement('link'); fl.rel = 'stylesheet';
       fl.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap';
       document.head.appendChild(fl);
     }
 
-    const el = document.createElement('div');
-    el.id = 'gbcProofPortal';
-    el.innerHTML = `
-      <header class="gp-nav">
-        <div class="gp-nav-l">
-          <div class="gp-mark">GB</div>
-          <div class="gp-nav-title">
+    const host = document.createElement('div');
+    host.id = 'gbcProofPortal';
+    host.dataset.v = '4';
+    const sr = host.attachShadow({ mode: 'open' });
+
+    sr.innerHTML = `
+      <style>${SHADOW_CSS}</style>
+      <header class="nav">
+        <div class="nav-l">
+          <div class="mark">GB</div>
+          <div class="nav-t">
             <b>GOLDEN BREAK CAPITAL</b>
             <small>Official Verification Registry</small>
           </div>
         </div>
-        <button type="button" class="gp-nav-btn" id="gpNavClose">← Terminal</button>
+        <button type="button" class="nav-btn" id="gpNavClose">← Terminal</button>
       </header>
-
-      <main class="gp-shell">
-        ${data ? `
-        <article class="gp-card ${valid ? '' : 'invalid'}">
-          <div class="gp-topline"></div>
-          <div class="gp-body">
-            <div class="gp-head">
-              <span class="gp-issuer">${isCert ? (data.po ? 'Achievement &amp; Payout Proof' : 'Target Achievement Proof') : 'Audited Trade Proof'}</span>
-              <span class="gp-badge ${valid ? '' : 'bad'}"><i></i>${valid ? 'VERIFIED' : 'INVALID'}</span>
-            </div>
-
-            <div class="gp-hero">
-              <div class="gp-hero-txt">
-                <h1 class="gp-h1">${isCert ? (data.po ? 'Certificate of Achievement &amp; Payout' : 'Certificate of Target Achievement') : 'Verified Trade Performance'}</h1>
-                <div class="gp-for">${isCert ? 'Officially presented to' : 'Recorded execution'}</div>
-                <div class="gp-name">${esc(isCert ? data.tr : `${data.sy} · ${data.sd}`)}</div>
-                <div class="gp-submeta">${esc(data.fm)} · Account #${esc(data.lg)}</div>
-              </div>
-              ${sealSvg}
-            </div>
-
-            ${statsHtml}
-            ${txHtml}
-
-            <div class="gp-list">
-              ${listRows.map(([k, v, hi]) => `<div class="gp-row${hi ? ' hi' : ''}"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}
-            </div>
-
-            <div class="gp-sign-wrap">
-              <div class="gp-sign">
-                <div class="gp-calli">Farid Siddiq</div>
-                <div class="gp-sign-line"></div>
-                <b>FARID SIDDIQ</b>
-                <span>CEO · Golden Break Capital</span>
-              </div>
-              <div class="gp-reg">
-                <div>${isCert ? 'CERT ID' : 'TICKET'} <b>${esc(isCert ? data.id : '#' + data.id)}</b></div>
-                <div>ISSUED <b>${esc(data.dt)}</b></div>
-              </div>
-            </div>
-          </div>
-        </article>
-        ` : `<article class="gp-card invalid"><div class="gp-body"><b>Data verifikasi tidak valid atau tautan QR terpotong.</b></div></article>`}
-
-        <div class="gp-actions">
-          ${data ? `<button type="button" class="gp-btn pri" id="gpExportPng">${icDown} Unduh Proof 3:4 (PNG)</button>` : ''}
-          <button type="button" class="gp-btn" id="gpCopy">Salin Link</button>
+      <main class="shell">
+        ${buildBodyHtml()}
+        <div class="actions">
+          ${data ? `<button type="button" class="btn pri" id="gpExportPng">${icDown} Unduh Proof 3:4 (PNG)</button>` : ''}
+          <button type="button" class="btn" id="gpCopy">Salin Link</button>
         </div>
-
-        <p class="gp-legal">Verifikasi resmi Golden Break Terminal. Klik alamat TX untuk memeriksa transaksi langsung di Blockchain Explorer publik.</p>
+        <p class="legal">Verifikasi resmi Golden Break Terminal. Klik alamat TX untuk memeriksa transaksi langsung di Blockchain Explorer publik.</p>
       </main>
     `;
-    document.body.appendChild(el);
+    document.body.appendChild(host);
 
     const closePortal = () => {
-      el.remove();
+      host.remove();
       document.documentElement.classList.remove('gbc-proof-mode');
       history.replaceState({}, '', location.pathname);
     };
-    document.getElementById('gpNavClose').onclick = closePortal;
+    sr.getElementById('gpNavClose').onclick = closePortal;
 
-    const btnCopyLink = document.getElementById('gpCopy');
-    btnCopyLink.onclick = async () => {
+    const btnCopy = sr.getElementById('gpCopy');
+    btnCopy.onclick = async () => {
       const ok = await copyText(location.href);
-      btnCopyLink.textContent = ok ? '✔ Link Tersalin' : 'Gagal Salin';
-      setTimeout(() => { btnCopyLink.textContent = 'Salin Link'; }, 2000);
+      btnCopy.textContent = ok ? '✔ Tersalin' : 'Gagal Salin';
+      setTimeout(() => { btnCopy.textContent = 'Salin Link'; }, 1800);
     };
 
-    const btnExp = document.getElementById('gpExportPng');
+    const btnExp = sr.getElementById('gpExportPng');
     if(btnExp && data){
       btnExp.onclick = async () => {
         btnExp.disabled = true;
@@ -5516,7 +5843,7 @@ html.gbc-proof-mode body {
       };
     }
 
-    const txCopy = document.getElementById('gpTxCopy');
+    const txCopy = sr.getElementById('gpTxCopy');
     if(txCopy && data?.po?.txHash){
       let resetT = 0;
       txCopy.onclick = async () => {
@@ -5532,10 +5859,11 @@ html.gbc-proof-mode body {
         }
       };
     }
-  };
+  }
 
   if(document.body) mount();
   else document.addEventListener('DOMContentLoaded', mount);
+  window.addEventListener('load', mount);
 })();
 </script>
 
