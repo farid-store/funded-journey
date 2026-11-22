@@ -19070,9 +19070,9 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         setTimeout(() => { syncAccountOptions(selAcc); renderPayoutList(); }, 80);
       }
     });
-    setInterval(() => {
+setInterval(() => {
       const mainSel = document.getElementById('accountSelect');
-      if(mainSel && selAcc && mainSel.options.length > 0 && selAcc.options.length !== mainSel.options.length){
+      if(mainSel && selAcc && mainSel.options.length > 0 && (selAcc.options.length !== mainSel.options.length || (!selAcc.value && mainSel.value))){
         syncAccountOptions(selAcc);
         renderPayoutList();
       }
