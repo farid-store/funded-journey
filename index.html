@@ -19550,2569 +19550,1017 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
 
 
-<script id="gbc-proof-portal-v5">
+<style id="gbc-payout-wallet-css">
+.pp-panel{margin-top:16px;display:flex;flex-direction:column;gap:14px}
+.pp-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pp-head h3{margin:0;font:700 14.5px var(--fh);color:var(--gold);letter-spacing:.06em}
+.pp-head p{margin:4px 0 0;font-size:11.5px;color:var(--muted);line-height:1.5;max-width:640px}
+.pp-head-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pp-badge-ok{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font:700 10.5px var(--fm);background:var(--surface2);color:var(--muted);border:1px solid var(--line2)}
+
+/* Global Lifetime Reward (Khusus Tab Wallet) */
+.pp-life{display:flex;flex-direction:column;gap:11px;padding:15px 17px;border-radius:13px;border:1px solid color-mix(in srgb,var(--gold) 42%,transparent);background:radial-gradient(400px 140px at 0% 0%,color-mix(in srgb,var(--gold) 13%,transparent),transparent 70%),linear-gradient(160deg,var(--surface2),var(--surface))}
+.pp-life-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.pp-life-k{display:block;font:700 10px var(--fh);letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+.pp-life-val{display:block;margin-top:4px;font:800 clamp(24px,3vw,32px)/1.1 var(--fm);color:var(--green);font-variant-numeric:tabular-nums}
+.pp-life-sub{display:block;margin-top:4px;font:500 11.5px var(--fm);color:var(--muted)}
+.pp-life-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pp-firms{display:flex;gap:7px;flex-wrap:wrap}
+.pp-fchip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;border:1px solid var(--line2);background:rgba(255,255,255,.03);font:600 11px var(--fm);color:var(--text)}
+.pp-fchip small{color:var(--muted);font-weight:500}
+.pp-fchip b{color:var(--green)}
+
+/* Form */
+.pp-editbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:9px;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent);background:var(--gold-soft);color:var(--gold);font:600 11.5px var(--fm)}
+.pp-editbar[hidden]{display:none!important}
+.pp-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
+.pp-form label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:600;color:var(--muted);min-width:0}
+.pp-form label.span2{grid-column:span 2}
+.pp-form label.span4{grid-column:1/-1}
+.pp-form .sel,.pp-form input{width:100%;box-sizing:border-box;min-width:0}
+.pp-manual-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;grid-column:1/-1}
+.pp-manual-row[hidden]{display:none!important}
+.pp-txrow{display:flex;gap:7px;align-items:stretch}
+.pp-txrow input{flex:1 1 auto;font-family:var(--fm);font-size:12px}
+.pp-txrow .btn{flex:0 0 auto;white-space:nowrap}
+.pp-save-row{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+.pp-save-row .btn.primary{flex:1 1 220px}
+
+.pp-status{padding:9px 12px;border-radius:9px;font-size:11.5px;line-height:1.5;border:1px solid var(--line);background:var(--surface2);color:var(--muted)}
+.pp-status[hidden]{display:none!important}
+.pp-status.ok{border-color:color-mix(in srgb,var(--green) 45%,transparent);background:var(--green-soft);color:var(--green)}
+.pp-status.warn{border-color:color-mix(in srgb,var(--amber) 50%,transparent);background:var(--amber-soft);color:var(--amber)}
+.pp-status.bad{border-color:color-mix(in srgb,var(--red) 50%,transparent);background:var(--red-soft);color:var(--red)}
+
+.pp-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pp-sum-i{padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);min-width:0}
+.pp-sum-i small{display:block;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.pp-sum-i b{display:block;margin-top:5px;font:700 16px var(--fm);color:var(--text);overflow-wrap:anywhere}
+.pp-sum-i b.pos{color:var(--green)}
+
+.pp-list{display:grid;gap:8px}
+.pp-item{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:11px 13px;border-radius:11px;border:1px solid var(--line);background:var(--surface2);min-width:0}
+.pp-item.editing{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 8%,var(--surface2))}
+.pp-item-l{min-width:0}
+.pp-item-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pp-item-top b{font:700 13px var(--fh);color:var(--text)}
+.pp-net{font:700 9.5px var(--fm);padding:2px 7px;border-radius:6px;background:var(--gold-soft);color:var(--gold);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent)}
+.pp-net.firm{background:var(--green-soft);color:var(--green);border-color:color-mix(in srgb,var(--green) 40%,transparent)}
+.pp-net.tok{background:var(--cyan-soft);color:var(--cyan);border-color:color-mix(in srgb,var(--cyan) 40%,transparent)}
+.pp-txlink{display:inline-flex;align-items:center;gap:5px;margin-top:4px;font:600 11px var(--fm);color:var(--cyan);text-decoration:none;word-break:break-all}
+.pp-txlink:hover{text-decoration:underline;color:var(--gold)}
+.pp-sub{font-size:10.5px;color:var(--faint);margin-top:2px}
+.pp-amt{text-align:right;font:700 15px var(--fm);color:var(--green);white-space:nowrap}
+.pp-amt small{display:block;font-size:10px;color:var(--faint);font-weight:500}
+.pp-row-acts{display:flex;gap:6px;align-items:center}
+.pp-edit,.pp-del{border:1px solid var(--line2);background:transparent;width:32px;height:32px;border-radius:8px;cursor:pointer;font-weight:700;display:grid;place-items:center}
+.pp-edit{color:var(--gold)}
+.pp-edit:hover{background:var(--gold-soft);border-color:var(--gold)}
+.pp-del{color:var(--red)}
+.pp-del:hover{background:var(--red-soft);border-color:var(--red)}
+.pp-empty{padding:18px;border:1px dashed var(--line2);border-radius:10px;text-align:center;color:var(--faint);font-size:12px;line-height:1.6}
+
+@media(max-width:760px){
+  .pp-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pp-form label.span2{grid-column:1/-1}
+  .pp-manual-row{grid-template-columns:1fr}
+  .pp-txrow{flex-direction:column}
+  .pp-sum{grid-template-columns:1fr}
+  .pp-item{grid-template-columns:minmax(0,1fr) auto}
+  .pp-amt{grid-column:1;text-align:left}
+  .pp-row-acts{grid-row:1/span 2;grid-column:2}
+  .pp-life-acts{width:100%}
+  .pp-life-acts .btn{flex:1 1 150px}
+}
+@media(max-width:480px){.pp-form{grid-template-columns:1fr}}
+</style>
+
+<script id="gbc-payout-wallet-js">
 (function(){
-  const qs = new URLSearchParams(location.search);
-  const compact = qs.get('gbc') || qs.get('p');
-  const legacyRaw = qs.get('verify');
-  const legacySig = qs.get('sig') || '';
-  if(!compact && !legacyRaw) return;
+  if(window.__GBC_PAYOUT_INIT) return;
+  window.__GBC_PAYOUT_INIT = true;
 
-  document.documentElement.classList.add('gbc-proof-mode');
+  const STORE_KEY = 'gbc_payouts_v1';
+  const FS_COL = 'gbcPublic';
+  const FS_DOC = 'payoutRegistry';
+  const PROOF_BASE = /^https:/i.test(location.protocol) && !/localhost|127\.0\.0\.1/i.test(location.hostname)
+    ? (location.origin + location.pathname.replace(/index\.html$/i, ''))
+    : 'https://funded-journey-nu.vercel.app/';
 
-  if(!document.getElementById('gbc-proof-lock-css')){
-    const st = document.createElement('style');
-    st.id = 'gbc-proof-lock-css';
-    st.textContent = `
-      html.gbc-proof-mode .app,
-      html.gbc-proof-mode .world,
-      html.gbc-proof-mode .toast,
-      html.gbc-proof-mode .modal-overlay { display:none !important; }
-      html.gbc-proof-mode,
-      html.gbc-proof-mode body {
-        margin:0 !important; padding:0 !important;
-        width:100% !important; height:100% !important;
-        overflow:hidden !important; background:#060911 !important;
-      }
-    `;
-    (document.head || document.documentElement).appendChild(st);
-  }
-
-  const FS_REST_URL = 'https://firestore.googleapis.com/v1/projects/funded-journey/databases/(default)/documents/gbcPublic/payoutRegistry';
-
-  const NET_META = {
-    T: { name:'TRC20 (TRON)', host:'tronscan.org', token:'USDT', evm:false, exp:h => `https://tronscan.org/#/transaction/${h}` },
-    B: { name:'BEP20 (BSC)', host:'bscscan.com', token:'USDT', evm:true, exp:h => `https://bscscan.com/tx/${h}` },
-    E: { name:'ERC20 (Ethereum)', host:'etherscan.io', token:'USDT', evm:true, exp:h => `https://etherscan.io/tx/${h}` },
-    A: { name:'Arbitrum One', host:'arbiscan.io', token:'USDC', evm:true, exp:h => `https://arbiscan.io/tx/${h}` },
-    P: { name:'Polygon', host:'polygonscan.com', token:'USDC', evm:true, exp:h => `https://polygonscan.com/tx/${h}` },
-    S: { name:'Base', host:'basescan.org', token:'USDC', evm:true, exp:h => `https://basescan.org/tx/${h}` },
-    X: { name:'Bitcoin (BTC)', host:'mempool.space', token:'BTC', evm:false, exp:h => `https://mempool.space/tx/${h}` },
-    M: { name:'Bank / Manual', host:'', token:'USD', evm:false, exp:() => '' }
+  const NETS = {
+    T: { code:'T', name:'TRC20 (TRON)', token:'USDT', evm:false, exp:h => `https://tronscan.org/#/transaction/${h}` },
+    B: { code:'B', name:'BEP20 (BSC)', token:'USDT', evm:true, rpc:'https://bsc-rpc.publicnode.com', exp:h => `https://bscscan.com/tx/${h}` },
+    E: { code:'E', name:'ERC20 (Ethereum)', token:'USDT', evm:true, rpc:'https://ethereum-rpc.publicnode.com', exp:h => `https://etherscan.io/tx/${h}` },
+    A: { code:'A', name:'Arbitrum One', token:'USDC', evm:true, rpc:'https://arbitrum-one-rpc.publicnode.com', exp:h => `https://arbiscan.io/tx/${h}` },
+    P: { code:'P', name:'Polygon', token:'USDC', evm:true, rpc:'https://polygon-bor-rpc.publicnode.com', exp:h => `https://polygonscan.com/tx/${h}` },
+    S: { code:'S', name:'Base', token:'USDC', evm:true, rpc:'https://base-rpc.publicnode.com', exp:h => `https://basescan.org/tx/${h}` },
+    X: { code:'X', name:'Bitcoin (BTC)', token:'BTC', evm:false, exp:h => `https://mempool.space/tx/${h}` },
+    M: { code:'M', name:'Bank / Rise / Manual', token:'USD', evm:false, exp:() => '' }
   };
 
-  function hashFull(str){
+  const normId = v => String(v ?? '').trim().toLowerCase();
+  const normTx = v => String(v ?? '').trim().toLowerCase().replace(/^0x/, '');
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+  const cleanSeg = (v, max = 22) => String(v ?? '').replace(/[~|\r\n]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max) || '-';
+  const cleanNum = (v, dec = 2) => Number.isFinite(Number(v)) ? Number(Number(v).toFixed(dec)).toString() : '0';
+  const urlSeg = s => encodeURIComponent(s).replace(/%20/g, '+');
+
+  function proofHash(str){
     let h = 0x811c9dc5;
     const s = 'GBC::FARID_SIDDIQ::2026::' + str;
     for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
-    return (h >>> 0).toString(16).padStart(8, '0');
+    return (h >>> 0).toString(16).padStart(8, '0').slice(0, 6);
   }
-  function decB64(b64){
-    const pad = b64.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((b64.length + 3) % 4);
-    const bin = atob(pad);
-    return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
-  }
-  const esc = v => String(v ?? '—').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
-  const normId = v => String(v ?? '').trim().toLowerCase();
-  const clipTx = (h, a = 10, b = 8) => {
-    const s = String(h || '').trim();
-    return s.length > a + b + 3 ? `${s.slice(0, a)}...${s.slice(-b)}` : s;
-  };
-  const fmtMoney = (val, cur = 'USD', signed = false) => {
-    const num = Number(val);
-    if(!Number.isFinite(num)) return String(val || '—');
-    const sym = cur === 'EUR' ? '€' : cur === 'GBP' ? '£' : cur === 'IDR' ? 'Rp ' : '$';
-    const abs = Math.abs(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return (num < 0 ? '-' : (signed && num > 0 ? '+' : '')) + sym + abs;
-  };
-  const fmtDate = code => {
-    const s = String(code || '');
-    if(s.length === 10) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)} ${s.slice(6,8)}:${s.slice(8,10)} WIB`;
-    if(s.length === 6) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)}`;
-    return s || '—';
-  };
-
-  /* ---------- Parser Firestore REST (1x baca publik, tanpa tunggu SDK body) ---------- */
-  function fromFsVal(v){
-    if(!v || typeof v !== 'object') return null;
-    if('stringValue' in v) return v.stringValue;
-    if('integerValue' in v) return Number(v.integerValue);
-    if('doubleValue' in v) return Number(v.doubleValue);
-    if('booleanValue' in v) return !!v.booleanValue;
-    if('nullValue' in v) return null;
-    if('arrayValue' in v) return (v.arrayValue.values || []).map(fromFsVal);
-    if('mapValue' in v){
-      const o = {};
-      const f = v.mapValue.fields || {};
-      Object.keys(f).forEach(k => { o[k] = fromFsVal(f[k]); });
-      return o;
-    }
-    return null;
+  function compactWibDate(){
+    const d = new Date(Date.now() + 7 * 3600000);
+    const p2 = v => String(v).padStart(2, '0');
+    return String(d.getUTCFullYear()).slice(-2) + p2(d.getUTCMonth() + 1) + p2(d.getUTCDate());
   }
 
-  async function fetchCloudPayouts(){
-    // 1. Coba REST API langsung (sangat cepat & tidak bergantung init script body)
-    try {
-      const res = await fetch(FS_REST_URL, { cache: 'no-store' });
-      if(res.ok){
-        const j = await res.json();
-        const items = fromFsVal(j?.fields?.items);
-        if(Array.isArray(items)) return items;
+  function sanitizeRecord(r){
+    const net = NETS[r?.net] ? r.net : 'M';
+    const rawId = String(r?.accountId ?? '').trim();
+    const rawLogin = String(r?.login ?? '').trim() || rawId;
+    const rawLabel = String(r?.accountLabel ?? '').trim() || (rawLogin ? `Account ${rawLogin}` : 'Trading Account');
+    const rawFirm = String(r?.firm ?? '').trim();
+    return {
+      id: String(r?.id || ('pp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6))),
+      accountId: rawId || rawLogin,
+      login: rawLogin,
+      accountLabel: rawLabel,
+      firm: rawFirm,
+      txHash: String(r?.txHash ?? '').trim(),
+      net,
+      amount: Number(Number(r?.amount || 0).toFixed(2)),
+      token: String(r?.token || NETS[net]?.token || 'USDT').trim().toUpperCase(),
+      cur: String(r?.cur || 'USD').trim().toUpperCase(),
+      date: String(r?.date || '').trim(),
+      note: String(r?.note || '').trim(),
+      auto: !!r?.auto,
+      ts: Number(r?.ts) || Date.now()
+    };
+  }
+
+  /* ---------- Anti-Duplikasi: dedupe berdasarkan ID dan TX Hash ---------- */
+  function dedupeItems(arr){
+    const byId = new Map();
+    const byTx = new Map();
+    const sorted = (Array.isArray(arr) ? arr : [])
+      .filter(r => r && Number(r.amount) > 0)
+      .map(sanitizeRecord)
+      .sort((a, b) => (b.ts || 0) - (a.ts || 0));
+
+    const out = [];
+    for(const item of sorted){
+      if(byId.has(item.id)) continue;
+      const txKey = normTx(item.txHash);
+      if(txKey && txKey.length >= 16){
+        const existing = byTx.get(txKey);
+        if(existing){
+          // Lengkapi metadata firm/label jika entri lama lebih lengkap
+          if(!existing.firm && item.firm) existing.firm = item.firm;
+          if(!existing.note && item.note) existing.note = item.note;
+          continue;
+        }
+        byTx.set(txKey, item);
       }
-    } catch(e){}
-    // 2. Fallback Compat SDK jika tersedia
+      byId.set(item.id, item);
+      out.push(item);
+    }
+    return out;
+  }
+
+  let memCache = null;
+
+  function loadAll(){
+    if(Array.isArray(memCache)) return memCache.slice();
+    try {
+      const arr = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
+      memCache = dedupeItems(arr);
+    } catch(e){ memCache = []; }
+    return memCache.slice();
+  }
+
+  function notifyApp(){
+    try { window.__MR2?._reset?.(); window.__MR2?.tick?.(); } catch(e){}
+    try { document.dispatchEvent(new CustomEvent('gbc:payout-updated')); } catch(e){}
+    try { renderPayoutList(); } catch(e){}
+  }
+
+  function saveLocal(arr){
+    memCache = dedupeItems(arr);
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(memCache)); } catch(e){}
+    notifyApp();
+  }
+
+  /* ---------- Firestore Adapter Aman (Modular __GBC_FS / Compat SDK) ---------- */
+  let _fsCache = null;
+  function getFsAdapter(){
+    if(_fsCache) return _fsCache;
+    const m = window.__GBC_FS;
+    if(m && m.db && m.doc && m.getDoc && m.setDoc){
+      _fsCache = {
+        read: async () => {
+          const snap = await m.getDoc(m.doc(m.db, FS_COL, FS_DOC));
+          const exists = typeof snap.exists === 'function' ? snap.exists() : !!snap.exists;
+          return exists ? (snap.data() || null) : null;
+        },
+        write: async payload => { await m.setDoc(m.doc(m.db, FS_COL, FS_DOC), payload, { merge: true }); }
+      };
+      return _fsCache;
+    }
     try {
       const fb = window.firebase;
       if(fb && Array.isArray(fb.apps) && fb.apps.length > 0 && typeof fb.firestore === 'function'){
-        const snap = await fb.firestore().collection('gbcPublic').doc('payoutRegistry').get();
-        if(snap.exists && Array.isArray(snap.data()?.items)) return snap.data().items;
+        const db = fb.firestore();
+        if(db && typeof db.collection === 'function'){
+          _fsCache = {
+            read: async () => {
+              const snap = await db.collection(FS_COL).doc(FS_DOC).get();
+              return snap.exists ? (snap.data() || null) : null;
+            },
+            write: async payload => { await db.collection(FS_COL).doc(FS_DOC).set(payload, { merge: true }); }
+          };
+          return _fsCache;
+        }
       }
     } catch(e){}
-    // 3. Fallback cache lokal di perangkat yang sama
-    try {
-      const local = JSON.parse(localStorage.getItem('gbc_payouts_v1') || '[]');
-      if(Array.isArray(local)) return local;
-    } catch(e){}
-    return [];
+    return null;
   }
 
-  function matchAccountItem(rec, accId){
-    const q = normId(accId);
-    if(!q || q === '—' || q === '-') return false;
-    const vals = [normId(rec.accountId), normId(rec.login), normId(rec.accountLabel)].filter(Boolean);
-    if(vals.includes(q)) return true;
+  function setCloudBadge(text, ok){
+    const b = document.getElementById('ppCloudBadge');
+    if(!b) return;
+    b.textContent = text;
+    b.style.color = ok === true ? 'var(--green)' : (ok === false ? 'var(--amber)' : 'var(--muted)');
+  }
+
+  async function pullFromCloud(silent = true){
+    const fs = getFsAdapter();
+    if(!fs){ setCloudBadge('Local Only', false); return { ok: false, reason: 'no-fs' }; }
+    try {
+      const docData = await fs.read();
+      if(docData && Array.isArray(docData.items)){
+        const clean = dedupeItems(docData.items);
+        saveLocal(clean);
+        setCloudBadge(`☁ Cloud (${clean.length})`, true);
+        if(!silent) setStatus('ok', `✔ Sinkron ${clean.length} payout dari Firestore.`);
+        return { ok: true, count: clean.length };
+      }
+      const local = loadAll();
+      setCloudBadge(local.length ? '☁ Belum Upload' : '☁ Cloud Siap', local.length ? false : true);
+      if(!silent && local.length) return await pushToCloud(local, false);
+      if(!silent) setStatus('', 'Cloud Firestore terhubung, belum ada data payout.');
+      return { ok: true, count: 0 };
+    } catch(err){
+      setCloudBadge('☁ Gagal Baca', false);
+      if(!silent) setStatus('warn', `Gagal membaca Firestore (${err.code || err.message || 'error'}). Memakai cache lokal.`);
+      return { ok: false, err };
+    }
+  }
+
+  async function pushToCloud(arr, silent = false){
+    const fs = getFsAdapter();
+    const clean = dedupeItems(arr);
+    if(!fs){
+      setCloudBadge('Local Only', false);
+      if(!silent) setStatus('warn', 'Tersimpan lokal. Koneksi Firestore belum aktif.');
+      return { ok: false, reason: 'no-fs' };
+    }
+    try {
+      await fs.write({ items: clean, updatedAt: Date.now() });
+      setCloudBadge(`☁ Synced (${clean.length})`, true);
+      if(!silent) setStatus('ok', `✔ Tersimpan ke Firestore (${clean.length} payout). Desktop, HP & QR Proof otomatis sinkron!`);
+      return { ok: true };
+    } catch(err){
+      setCloudBadge('☁ Perlu Login Admin', false);
+      const isDenied = /permission|denied|unauth/i.test(String(err?.code || err?.message || ''));
+      if(!silent){
+        setStatus('warn', isDenied
+          ? 'Tersimpan lokal, tapi Firestore menolak tulis: login dulu memakai akun admin (Google/Email) lalu klik "☁ Sync Cloud".'
+          : `Tersimpan lokal. Gagal kirim ke Firestore: ${err.message || err.code || 'error'}`);
+      }
+      return { ok: false, err };
+    }
+  }
+
+  /* ---------- Query Akun & Global Lifetime ---------- */
+  function matchAccount(rec, ids){
+    const rawList = (Array.isArray(ids) ? ids : [ids]).map(normId).filter(v => v && v !== '—' && v !== '-');
+    if(!rawList.length) return false;
+    const recVals = [normId(rec.accountId), normId(rec.login), normId(rec.accountLabel)].filter(Boolean);
+    for(const a of rawList){ if(recVals.includes(a)) return true; }
     const digits = s => (String(s).match(/\d{4,}/g) || []);
-    const qDig = new Set(digits(q));
+    const qDig = new Set(rawList.flatMap(digits));
     if(qDig.size){
-      for(const rv of vals){
+      for(const rv of recVals){
         for(const d of digits(rv)){ if(qDig.has(d)) return true; }
       }
     }
     return false;
   }
 
-  function normalizePayoutItem(r){
-    const nm = NET_META[r.net] || NET_META.M;
-    const rawTx = String(r.txHash || '').trim();
-    const txHash = rawTx && rawTx !== '-' ? (nm.evm && !/^0x/i.test(rawTx) ? '0x' + rawTx : rawTx) : '';
+  function listForAccount(ids){
+    return loadAll()
+      .filter(r => matchAccount(r, ids))
+      .sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  }
+
+  function summaryForAccount(ids){
+    const items = listForAccount(ids);
+    if(!items.length) return null;
+    const total = items.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+    const latest = items[0];
+    const initial = items[items.length - 1];
+    const net = NETS[latest.net] || NETS.M;
     return {
-      id: r.id || '',
-      accountId: r.accountId || '',
-      login: r.login || r.accountId || '',
-      accountLabel: r.accountLabel || r.accountId || '',
-      firm: r.firm || '',
-      amountNum: Number(r.amount) || 0,
-      amount: fmtMoney(Number(r.amount) || 0, 'USD'),
-      netCode: r.net || 'M',
-      netName: nm.name,
-      host: nm.host,
-      token: r.token || nm.token,
-      txHash,
-      explorerUrl: txHash && nm.exp ? nm.exp(txHash) : '',
-      date: r.date || '—',
-      note: r.note || '',
-      ts: Number(r.ts) || 0
+      total,
+      count: items.length,
+      latest,
+      initial,
+      txHash: latest.txHash || initial.txHash || '',
+      initialTxHash: initial.txHash || '',
+      netCode: net.code,
+      netName: net.name,
+      token: latest.token || net.token,
+      explorerUrl: latest.txHash && net.exp ? net.exp(latest.txHash) : '',
+      items,
+      sig: `${total.toFixed(2)}:${items.length}:${latest.txHash}:${initial.txHash}:${latest.net}`
     };
   }
 
-  /* ---------- Decode Parameter URL ---------- */
-  let data = null, valid = false, sigShown = 'INVALID';
-  if(compact){
-    try {
-      const parts = compact.split('~');
-      const sig = (parts.pop() || '').toLowerCase();
-      const body = parts.join('~');
-      const expected = hashFull(body).slice(0, 6);
-      valid = sig.length === 6 && sig === expected;
-      sigShown = sig.toUpperCase() || 'NONE';
+  function summaryLifetime(){
+    const items = loadAll().sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    const total = items.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+    const firmMap = new Map();
+    const accSet = new Set();
+    items.forEach(r => {
+      const fName = (r.firm || '').trim() || 'Prop Firm';
+      const cur = firmMap.get(fName) || { firm: fName, total: 0, count: 0 };
+      cur.total += Number(r.amount) || 0;
+      cur.count += 1;
+      firmMap.set(fName, cur);
+      const aKey = normId(r.login || r.accountId || r.accountLabel);
+      if(aKey) accSet.add(aKey);
+    });
+    const firms = [...firmMap.values()].sort((a, b) => b.total - a.total);
+    return { total, count: items.length, accountCount: accSet.size, firms, items };
+  }
 
-      if(parts[0] === 'C' && parts.length >= 11){
-        const [, lg, tr, fm, stRaw, eqRaw, tg, wr, ct, dt, cur, pAmt, pCnt, pNet, pTx, pTok] = parts;
-        const st = Number(stRaw), eq = Number(eqRaw), prof = eq - st;
-        const pct = st ? (prof / st * 100) : 0;
-        const tgNum = Number(tg) || 10;
-        let po = null, poList = [];
-        if(pAmt && Number(pAmt) > 0){
-          const nm = NET_META[pNet] || NET_META.M;
-          const cleanTx = pTx && pTx !== '-' ? (nm.evm && !/^0x/i.test(pTx) ? '0x' + pTx : pTx) : '';
-          po = {
-            totalNum: Number(pAmt),
-            amount: fmtMoney(Number(pAmt), 'USD'),
-            count: Number(pCnt) || 1,
-            netName: nm.name,
-            host: nm.host,
-            token: pTok && pTok !== '-' ? pTok : nm.token,
-            txHash: cleanTx,
-            explorerUrl: cleanTx && nm.exp ? nm.exp(cleanTx) : ''
-          };
-          poList = [{
-            amountNum: Number(pAmt), amount: po.amount, netName: po.netName, host: po.host,
-            token: po.token, txHash: po.txHash, explorerUrl: po.explorerUrl,
-            date: fmtDate(dt), note: 'Verified On-Chain', firm: fm, login: lg, ts: Date.now()
-          }];
-        }
-        data = {
-          t: 'CERT',
-          id: `GBC-${lg.replace(/[^a-z0-9]/gi, '')}-20${dt}`,
-          tr, fm, lg, cur: cur || 'USD',
-          np: fmtMoney(prof, cur, true),
-          sb: fmtMoney(st, cur),
-          eq: fmtMoney(eq, cur),
-          pct, tgNum,
-          rt: `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`,
-          tg: `${tg}%`,
-          wr: `${wr}%`,
-          ct,
-          dt: fmtDate(dt),
-          gn: prof >= 0 ? 1 : 0,
-          po,
-          poList,
-          cloudSynced: false
-        };
-      } else if(parts[0] === 'L' && parts.length >= 7){
-        // Mode Lifetime All-Time Reward (Khusus Generate dari Tab Wallet)
-        const [, tr, totRaw, cntRaw, firmCntRaw, accCntRaw, dt] = parts;
-        const tot = Number(totRaw) || 0;
-        data = {
-          t: 'LIFE',
-          id: `GBC-LIFE-20${dt}`,
-          tr,
-          fm: `${Number(firmCntRaw) || 1} Prop Firms`,
-          lg: `${Number(accCntRaw) || 1} Accounts`,
-          cur: 'USD',
-          dt: fmtDate(dt),
-          gn: 1,
-          life: {
-            totalNum: tot,
-            amount: fmtMoney(tot, 'USD'),
-            count: Number(cntRaw) || 0,
-            firmCount: Number(firmCntRaw) || 1,
-            accountCount: Number(accCntRaw) || 1,
-            firms: []
-          },
-          poList: [],
-          cloudSynced: false
-        };
-      } else if(parts[0] === 'P' && parts.length >= 14){
-        const [, id, lg, tr, sy, sd, vl, netRaw, en, ex, sl, tp, dt, cur] = parts;
-        const net = Number(netRaw);
-        data = {
-          t: 'PNL', id, lg, tr, fm: 'Golden Break Terminal', cur: cur || 'USD',
-          sy, sd: sd === 'S' ? 'SELL' : 'BUY', vl,
-          np: fmtMoney(net, cur, true),
-          gn: net >= 0 ? 1 : 0,
-          en: en === '-' ? 'Tidak tercatat' : en,
-          ex: ex === '-' ? 'Tidak tercatat' : ex,
-          sl: sl === '-' ? 'Tidak tercatat' : sl,
-          tp: tp === '-' ? 'Tidak tercatat' : tp,
-          dt: fmtDate(dt),
-          poList: []
-        };
+  function buildLifetimeProofUrl(){
+    const life = summaryLifetime();
+    const trader = document.getElementById('mrTraderName')?.value?.trim() || 'Farid Siddiq';
+    const fields = [
+      'L',
+      cleanSeg(trader, 22),
+      cleanNum(life.total, 2),
+      String(life.count || 0),
+      String(Math.max(1, life.firms.length)),
+      String(Math.max(1, life.accountCount)),
+      compactWibDate()
+    ];
+    const sig = proofHash(fields.join('~'));
+    return `${PROOF_BASE}?gbc=${[...fields, sig].map(urlSeg).join('~')}`;
+  }
+
+  /* ---------- On-Chain TX Lookup ---------- */
+  async function rpcCall(rpcUrl, method, params){
+    const res = await fetch(rpcUrl, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+    });
+    if(!res.ok) throw new Error('RPC HTTP ' + res.status);
+    const j = await res.json();
+    if(j.error) throw new Error(j.error.message || 'RPC error');
+    return j.result;
+  }
+  function hexToBigInt(hex){ return (!hex || hex === '0x') ? 0n : BigInt(hex); }
+  function formatUnits(bi, dec){
+    const d = Math.max(0, Math.min(30, Number(dec) || 0));
+    const s = bi.toString().padStart(d + 1, '0');
+    const whole = s.slice(0, s.length - d) || '0';
+    const frac = d ? s.slice(s.length - d).replace(/0+$/, '') : '';
+    return Number(frac ? `${whole}.${frac.slice(0, 6)}` : whole);
+  }
+  function decodeAbiStr(hex){
+    if(!hex || hex === '0x') return '';
+    const clean = hex.slice(2);
+    const toAscii = h => {
+      let out = '';
+      for(let i = 0; i < h.length; i += 2){
+        const c = parseInt(h.slice(i, i + 2), 16);
+        if(c >= 32 && c <= 126) out += String.fromCharCode(c);
       }
-    } catch(e){ valid = false; }
-  } else if(legacyRaw){
-    try {
-      const expected = hashFull(legacyRaw);
-      valid = legacySig.toLowerCase() === expected;
-      sigShown = legacySig.slice(0, 6).toUpperCase() || 'LEGACY';
-      data = JSON.parse(decB64(legacyRaw));
-      if(data && data.gn == null) data.gn = 1;
-      if(data && !data.poList) data.poList = [];
-    } catch(e){ valid = false; }
-  }
-
-  const isCert = data && data.t === 'CERT';
-  const isLife = data && data.t === 'LIFE';
-  const progPct = isCert && data?.tgNum > 0 ? Math.min(100, Math.max(0, (data.pct / data.tgNum) * 100)) : 100;
-
-  async function copyText(str){
-    try { if(navigator.clipboard?.writeText){ await navigator.clipboard.writeText(str); return true; } } catch(e){}
-    try {
-      const ta = document.createElement('textarea');
-      ta.value = str;
-      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
-      document.body.appendChild(ta); ta.select();
-      const ok = document.execCommand('copy');
-      ta.remove();
-      return !!ok;
-    } catch(e){ return false; }
-  }
-
-  /* ===== HD 3:4 PNG EXPORTER (1200 x 1600) · Footer 3 Kolom + QR Code di Tengah ===== */
-  async function exportProofPng34(){
-    try { if(document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){}
-    const W = 1200, H = 1600;
-    const cv = document.createElement('canvas');
-    cv.width = W; cv.height = H;
-    const x = cv.getContext('2d');
-
-    const SERIF = '"Cormorant Garamond",Georgia,serif';
-    const SANS = '"Inter",system-ui,sans-serif';
-    const DISP = '"Chakra Petch","Inter",sans-serif';
-    const MONO = '"JetBrains Mono",monospace';
-    const SIGN = '"Great Vibes","Cormorant Garamond",cursive';
-
-    const rr = (rx, ry, rw, rh, rad) => {
-      const r = Math.min(rad, rw / 2, rh / 2);
-      x.beginPath();
-      x.moveTo(rx + r, ry);
-      x.arcTo(rx + rw, ry, rx + rw, ry + rh, r);
-      x.arcTo(rx + rw, ry + rh, rx, ry + rh, r);
-      x.arcTo(rx, ry + rh, rx, ry, r);
-      x.arcTo(rx, ry, rx + rw, ry, r);
-      x.closePath();
+      return out.trim();
     };
-    const T = (str, tx, ty, o = {}) => {
-      x.save();
-      const size = o.size || 24, weight = o.weight || 600, fam = o.family || SANS;
-      x.font = `${o.italic ? 'italic ' : ''}${weight} ${size}px ${fam}`;
-      let txt = String(str ?? '—');
-      if(o.max && x.measureText(txt).width > o.max){
-        const scale = Math.max(0.6, o.max / x.measureText(txt).width);
-        x.font = `${o.italic ? 'italic ' : ''}${weight} ${Math.round(size * scale)}px ${fam}`;
-        if(x.measureText(txt).width > o.max){
-          while(txt.length > 3 && x.measureText(txt + '...').width > o.max) txt = txt.slice(0, -1);
-          txt += '...';
-        }
+    if(clean.length >= 128){
+      const len = parseInt(clean.slice(64, 128), 16);
+      if(len > 0 && len <= 32) return toAscii(clean.slice(128, 128 + len * 2));
+    }
+    return toAscii(clean);
+  }
+  async function lookupEvm(netCode, rawHash){
+    const cfg = NETS[netCode];
+    const hash = rawHash.startsWith('0x') ? rawHash : ('0x' + rawHash);
+    const receipt = await rpcCall(cfg.rpc, 'eth_getTransactionReceipt', [hash]);
+    if(!receipt) return null;
+    const TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+    const tLogs = (receipt.logs || []).filter(l => l.topics && l.topics[0]?.toLowerCase() === TRANSFER_TOPIC && l.data && l.data !== '0x');
+    let amount = null, token = cfg.token, isStable = false;
+    if(tLogs.length){
+      let bestLog = tLogs[0], bestVal = hexToBigInt(tLogs[0].data);
+      for(let i = 1; i < tLogs.length; i++){
+        const v = hexToBigInt(tLogs[i].data);
+        if(v > bestVal){ bestVal = v; bestLog = tLogs[i]; }
       }
-      x.fillStyle = o.color || '#eef3ff';
-      x.textAlign = o.align || 'left';
-      x.textBaseline = 'alphabetic';
-      x.fillText(txt, tx, ty);
-      x.restore();
-    };
-    const gGold = (x0, y0, x1, y1) => {
-      const g = x.createLinearGradient(x0, y0, x1, y1);
-      g.addColorStop(0, '#fbf0cd');
-      g.addColorStop(0.5, '#d6b05c');
-      g.addColorStop(1, '#946e24');
-      return g;
-    };
-    const drawCenterQr = (url, cx, topY, boxSize) => {
-      x.save();
-      const bx = Math.round(cx - boxSize / 2), by = Math.round(topY);
+      let dec = netCode === 'B' ? 18 : 6;
       try {
-        if(typeof window.qrcode === 'function'){
-          const qr = window.qrcode(0, 'L');
-          qr.addData(String(url));
-          qr.make();
-          const cnt = qr.getModuleCount();
-          const pad = 10;
-          const mod = Math.max(2, Math.floor((boxSize - pad * 2) / cnt));
-          const qrPx = cnt * mod;
-          const actualBox = qrPx + pad * 2;
-          const rx = Math.round(cx - actualBox / 2);
-          const ry = Math.round(topY + (boxSize - actualBox) / 2);
-
-          x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 16; x.shadowOffsetY = 5;
-          rr(rx, ry, actualBox, actualBox, 12);
-          x.fillStyle = '#ffffff'; x.fill();
-          x.shadowColor = 'transparent';
-          x.strokeStyle = 'rgba(214,176,92,.75)'; x.lineWidth = 2; x.stroke();
-
-          x.imageSmoothingEnabled = false;
-          x.fillStyle = '#000000';
-          const ox = rx + pad, oy = ry + pad;
-          for(let r = 0; r < cnt; r++){
-            for(let c = 0; c < cnt; c++){
-              if(qr.isDark(r, c)) x.fillRect(ox + c * mod, oy + r * mod, mod, mod);
-            }
-          }
-          x.restore();
-          return ry + actualBox;
-        }
+        const decHex = await rpcCall(cfg.rpc, 'eth_call', [{ to: bestLog.address, data: '0x313ce567' }, 'latest']);
+        const parsed = parseInt(decHex, 16);
+        if(Number.isFinite(parsed) && parsed >= 0 && parsed <= 24) dec = parsed;
       } catch(e){}
-      rr(bx, by, boxSize, boxSize, 12);
-      x.fillStyle = '#ffffff'; x.fill();
-      T('SCAN QR', cx, by + boxSize / 2 + 6, { size: 18, weight: 700, color: '#000000', align: 'center', family: MONO });
-      x.restore();
-      return by + boxSize;
-    };
-
-    // 1. Background & Bingkai
-    const bg = x.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, '#0f172a');
-    bg.addColorStop(0.52, '#060a14');
-    bg.addColorStop(1, '#0b1323');
-    x.fillStyle = bg; x.fillRect(0, 0, W, H);
-
-    const glow = x.createRadialGradient(W * 0.25, 110, 20, W * 0.25, 110, 620);
-    glow.addColorStop(0, 'rgba(214,176,92,.13)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
-    x.fillStyle = glow; x.fillRect(0, 0, W, 740);
-
-    rr(34, 34, W - 68, H - 68, 28);
-    x.strokeStyle = valid ? gGold(0, 0, W, H) : 'rgba(251,113,133,.7)';
-    x.lineWidth = 3; x.stroke();
-    rr(52, 52, W - 104, H - 104, 18);
-    x.strokeStyle = 'rgba(214,176,92,.24)';
-    x.lineWidth = 1.4; x.stroke();
-
-    const P = 84, CW = W - P * 2;
-
-    // 2. Top Brand & Status
-    rr(P, 86, 56, 56, 13);
-    x.fillStyle = gGold(P, 86, P + 56, 142); x.fill();
-    T('GB', P + 28, 124, { size: 25, weight: 800, color: '#070b15', align: 'center', family: DISP });
-    T('GOLDEN BREAK CAPITAL', P + 72, 110, { size: 22, weight: 700, color: '#f2d996', family: DISP });
-    T('OFFICIAL VERIFICATION REGISTRY', P + 72, 134, { size: 14, weight: 600, color: '#7e8da8', family: MONO });
-
-    const stTxt = valid ? `VERIFIED · 0x${sigShown}` : 'INVALID RECORD';
-    const stW = 280, stX = W - P - stW, stY = 92;
-    rr(stX, stY, stW, 44, 99);
-    x.fillStyle = valid ? 'rgba(52,211,153,.13)' : 'rgba(251,113,133,.15)'; x.fill();
-    x.strokeStyle = valid ? 'rgba(52,211,153,.42)' : 'rgba(251,113,133,.5)'; x.lineWidth = 1.4; x.stroke();
-    x.beginPath(); x.arc(stX + 24, stY + 22, 5.5, 0, Math.PI * 2);
-    x.fillStyle = valid ? '#34d399' : '#fb7185'; x.fill();
-    T(stTxt, stX + stW - 20, stY + 28, { size: 15, weight: 700, color: valid ? '#6ee7b7' : '#fda4af', align: 'right', family: MONO });
-
-    x.strokeStyle = 'rgba(214,176,92,.22)'; x.lineWidth = 1.2;
-    x.beginPath(); x.moveTo(P, 168); x.lineTo(W - P, 168); x.stroke();
-
-    // 3. Hero Title + Seal
-    const h1 = isLife
-      ? 'Certificate of Lifetime Rewards'
-      : (isCert ? (data.po ? 'Certificate of Achievement & Payout' : 'Certificate of Target Achievement') : 'Verified Trade Performance Proof');
-    const eyebrow = isLife
-      ? 'ALL-TIME CUMULATIVE PAYOUT CREDENTIAL'
-      : (isCert ? 'OFFICIAL PERFORMANCE CREDENTIAL' : 'AUDITED EXECUTION RECORD');
-    T(eyebrow, P, 216, { size: 14.5, weight: 700, color: '#d6b05c', family: DISP, max: CW - 168 });
-    T(h1, P, 270, { size: 46, weight: 700, color: '#f3dc9b', family: SERIF, max: CW - 168 });
-    T(isLife ? 'AWARDED TO' : (isCert ? 'PRESENTED TO' : 'RECORDED EXECUTION'), P, 314, { size: 13.5, weight: 700, color: '#7e8da8', family: DISP });
-    T(isCert || isLife ? data.tr : `${data.sy} · ${data.sd}`, P, 366, { size: 44, weight: 700, color: '#ffffff', family: SANS, max: CW - 168 });
-    const subM = isLife
-      ? `${data.life.count} Verified Payouts  ·  ${data.life.accountCount} Accounts  ·  ${data.life.firmCount} Prop Firms`
-      : `${data.fm}  ·  Account #${data.lg}`;
-    T(subM, P, 402, { size: 18, weight: 500, color: '#94a5c2', family: MONO, max: CW - 168 });
-
-    const scx = W - P - 66, scy = 296, sr = 62;
-    x.save();
-    x.beginPath(); x.arc(scx, scy, sr + 8, 0, Math.PI * 2); x.fillStyle = 'rgba(214,176,92,.14)'; x.fill();
-    x.beginPath(); x.arc(scx, scy, sr, 0, Math.PI * 2); x.fillStyle = '#091020'; x.fill();
-    x.strokeStyle = gGold(scx - sr, scy - sr, scx + sr, scy + sr); x.lineWidth = 3.5; x.stroke();
-    x.beginPath(); x.arc(scx, scy, sr - 10, 0, Math.PI * 2); x.setLineDash([4, 4]);
-    x.strokeStyle = 'rgba(230,197,114,.7)'; x.lineWidth = 1.4; x.stroke(); x.setLineDash([]);
-    T('★', scx, scy - 21, { size: 18, weight: 700, color: '#f2d996', align: 'center' });
-    T('GB', scx, scy + 15, { size: 38, weight: 700, color: '#fbf0cd', align: 'center', family: SERIF });
-    T('VERIFIED', scx, scy + 36, { size: 11, weight: 700, color: '#d6b05c', align: 'center', family: MONO });
-    x.restore();
-
-    const sigTop = 1236;
-    let curY = 438;
-
-    if(isLife){
-      // ===== LIFETIME REWARD BODY =====
-      const heroH = 190;
-      rr(P, curY, CW, heroH, 18);
-      const pbg = x.createLinearGradient(P, curY, P + CW, curY + heroH);
-      pbg.addColorStop(0, 'rgba(13,30,42,.95)'); pbg.addColorStop(1, 'rgba(7,12,23,.98)');
-      x.fillStyle = pbg; x.fill();
-      x.strokeStyle = 'rgba(52,211,153,.42)'; x.lineWidth = 1.8; x.stroke();
-      T('LIFETIME ALL-TIME REWARD (ALL PROP FIRMS)', P + 28, curY + 42, { size: 14.5, weight: 700, color: '#34d399', family: DISP });
-      T(data.life.amount, P + 28, curY + 118, { size: 64, weight: 800, color: '#34d399', family: MONO, max: CW - 56 });
-      T(`${data.life.count}× Verified Payouts across ${data.life.firmCount} Prop Firms & ${data.life.accountCount} Trading Accounts`, P + 28, curY + 162, {
-        size: 17, weight: 500, color: '#a8b7d1', family: MONO, max: CW - 56
-      });
-      curY += heroH + 26;
-
-      // Daftar transaksi payout terbaru (maks 5 baris)
-      T('VERIFIED ON-CHAIN PAYOUT LEDGER', P, curY + 10, { size: 14.5, weight: 700, color: '#e6c572', family: DISP });
-      T('Scan QR di bawah untuk daftar penuh & link Explorer', W - P, curY + 10, { size: 13.5, weight: 500, color: '#7e8da8', align: 'right', family: MONO });
-
-      const listY = curY + 26;
-      const showItems = (data.poList || []).slice(0, 5);
-      const moreCnt = Math.max(0, (data.poList || []).length - showItems.length);
-      const boxH = Math.min(490, sigTop - listY - 30);
-      rr(P, listY, CW, boxH, 16);
-      x.fillStyle = 'rgba(8,13,25,.82)'; x.fill();
-      x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
-
-      if(showItems.length){
-        const totalRows = showItems.length + (moreCnt > 0 ? 1 : 0);
-        const rh = boxH / totalRows;
-        showItems.forEach((it, idx) => {
-          const ry0 = listY + idx * rh;
-          if(idx > 0){
-            x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
-            x.beginPath(); x.moveTo(P + 20, ry0); x.lineTo(W - P - 20, ry0); x.stroke();
-          }
-          const title = `${it.firm || 'Prop Firm'} · #${it.login || it.accountId}`;
-          T(title, P + 24, ry0 + rh * 0.42, { size: 18, weight: 700, color: '#eef3ff', max: CW * 0.56 });
-          const txTxt = it.txHash ? `${it.netName} · ${clipTx(it.txHash, 10, 8)}` : `${it.netName} · ${it.date}`;
-          T(txTxt, P + 24, ry0 + rh * 0.76, { size: 15, weight: 500, color: '#6ee7b7', family: MONO, max: CW * 0.62 });
-          T(`+${it.amount}`, W - P - 24, ry0 + rh * 0.44, { size: 22, weight: 700, color: '#34d399', align: 'right', family: MONO });
-          T(`${it.date} · ${it.token}`, W - P - 24, ry0 + rh * 0.76, { size: 13.5, weight: 500, color: '#8393b0', align: 'right', family: MONO });
-        });
-        if(moreCnt > 0){
-          const ry0 = listY + showItems.length * rh;
-          x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
-          x.beginPath(); x.moveTo(P + 20, ry0); x.lineTo(W - P - 20, ry0); x.stroke();
-          T(`+ ${moreCnt} transaksi payout lainnya — Scan QR di bawah untuk melihat seluruh TX Hash`, W / 2, ry0 + rh * 0.58, {
-            size: 15, weight: 600, color: '#f3dc9b', align: 'center', family: MONO
-          });
-        }
-      } else {
-        T('Scan QR di bawah untuk memuat daftar transaksi on-chain terbaru.', W / 2, listY + boxH / 2 + 6, {
-          size: 17, weight: 500, color: '#8494b0', align: 'center'
-        });
-      }
+      try {
+        const symHex = await rpcCall(cfg.rpc, 'eth_call', [{ to: bestLog.address, data: '0x95d89b41' }, 'latest']);
+        const sym = decodeAbiStr(symHex);
+        if(sym) token = sym.toUpperCase();
+      } catch(e){}
+      amount = formatUnits(bestVal, dec);
+      isStable = /USD|DAI|FDUSD|TUSD/i.test(token);
     } else {
-      // ===== ACCOUNT CERT (C) / TRADE PNL (P) BODY =====
-      if(data.po){
-        const hasTx = (data.poList && data.poList.some(it => it.txHash)) || !!data.po.txHash;
-        const poH = hasTx ? 216 : 134;
-        rr(P, curY, CW, poH, 18);
-        const pbg = x.createLinearGradient(P, curY, P + CW, curY + poH);
-        pbg.addColorStop(0, 'rgba(13,30,42,.95)'); pbg.addColorStop(1, 'rgba(7,12,23,.98)');
-        x.fillStyle = pbg; x.fill();
-        x.strokeStyle = 'rgba(52,211,153,.38)'; x.lineWidth = 1.6; x.stroke();
-
-        T('ACCOUNT ALL-TIME REWARD (ON-CHAIN VERIFIED)', P + 26, curY + 38, { size: 13.5, weight: 700, color: '#34d399', family: DISP });
-        T(data.po.amount, P + 26, curY + 96, { size: 48, weight: 700, color: '#34d399', family: MONO, max: CW * 0.52 });
-
-        const pillW = 248, pillX = P + CW - 26 - pillW;
-        rr(pillX, curY + 22, pillW, 38, 99);
-        x.fillStyle = 'rgba(52,211,153,.12)'; x.fill();
-        x.strokeStyle = 'rgba(52,211,153,.38)'; x.lineWidth = 1.2; x.stroke();
-        x.beginPath(); x.arc(pillX + 22, curY + 41, 5, 0, Math.PI * 2); x.fillStyle = '#34d399'; x.fill();
-        T(data.po.explorerUrl ? 'ON-CHAIN SETTLED' : 'PAYOUT RECORDED', pillX + pillW - 18, curY + 47, { size: 13.5, weight: 700, color: '#6ee7b7', align: 'right', family: MONO });
-        T(`${data.po.count}× Payout · ${data.po.netName} (${data.po.token})`, P + CW - 26, curY + 92, { size: 16.5, weight: 600, color: '#b4c3dc', align: 'right', family: MONO, max: CW * 0.48 });
-
-        if(hasTx){
-          const txY = curY + 124;
-          rr(P + 24, txY, CW - 48, 66, 12);
-          x.fillStyle = '#050912'; x.fill();
-          x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
-          const firstTx = (data.poList?.[0]?.txHash) || data.po.txHash || '';
-          const moreTx = Math.max(0, (data.poList?.length || data.po.count || 1) - 1);
-          T('LATEST TX', P + 42, txY + 40, { size: 13, weight: 700, color: '#7485a3', family: DISP });
-          T(clipTx(firstTx, 13, 10), P + 148, txY + 41, { size: 21, weight: 600, color: '#6ee7b7', family: MONO, max: CW - 440 });
-          const rightTx = moreTx > 0 ? `+${moreTx} TX lain · Scan QR` : (data.po.host ? `↗ ${data.po.host}` : 'Verified');
-          T(rightTx, P + CW - 42, txY + 40, { size: 14.5, weight: 600, color: moreTx > 0 ? '#f3dc9b' : '#8c9db8', align: 'right', family: MONO });
-        }
-        curY += poH + 22;
+      const tx = await rpcCall(cfg.rpc, 'eth_getTransactionByHash', [hash]);
+      if(tx && tx.value){
+        amount = formatUnits(hexToBigInt(tx.value), 18);
+        token = netCode === 'B' ? 'BNB' : (netCode === 'P' ? 'POL' : 'ETH');
       }
-
-      // 3 KPI Cards
-      const kpiH = data.po ? 136 : 162, kpiGap = 18, kpiW = (CW - kpiGap * 2) / 3;
-      const kpis = isCert ? [
-        ['NET PROFIT', data.np, `Start ${data.sb}`, data.gn ? '#34d399' : '#fb7185', false],
-        ['ACHIEVED RETURN', data.rt, `Target ${data.tg} passed`, '#f3dc9b', true],
-        ['WIN RATE', data.wr, `${data.ct} closed trades`, '#eef3ff', false]
-      ] : [
-        ['NET P/L', data.np, `${data.sy} · ${data.sd}`, data.gn ? '#34d399' : '#fb7185', false],
-        ['ENTRY → EXIT', `${data.en} → ${data.ex}`, `Volume ${data.vl} lot`, '#f3dc9b', false],
-        ['RISK LEVELS', `SL ${data.sl}`, `TP ${data.tp}`, '#eef3ff', false]
-      ];
-      kpis.forEach(([lbl, val, sub, col, showBar], i) => {
-        const kx = P + i * (kpiW + kpiGap);
-        rr(kx, curY, kpiW, kpiH, 16);
-        x.fillStyle = 'rgba(15,23,42,.82)'; x.fill();
-        x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
-        rr(kx + 22, curY + 1, kpiW - 44, 3.5, 2); x.fillStyle = col; x.fill();
-        T(lbl, kx + 22, curY + 34, { size: 13.5, weight: 700, color: '#8494b0', family: DISP, max: kpiW - 44 });
-        T(val, kx + 22, curY + (data.po ? 82 : 94), { size: 31, weight: 700, color: col, family: MONO, max: kpiW - 44 });
-        if(showBar){
-          const by = curY + (data.po ? 95 : 112);
-          rr(kx + 22, by, kpiW - 44, 5.5, 4); x.fillStyle = 'rgba(255,255,255,.09)'; x.fill();
-          rr(kx + 22, by, Math.max(14, (kpiW - 44) * (progPct / 100)), 5.5, 4); x.fillStyle = '#34d399'; x.fill();
-          T(sub, kx + 22, by + 24, { size: 13.5, weight: 500, color: '#7e8da8', max: kpiW - 44 });
-        } else {
-          T(sub, kx + 22, curY + (data.po ? 114 : 134), { size: 14, weight: 500, color: '#7e8da8', max: kpiW - 44 });
-        }
-      });
-      curY += kpiH + 30;
-
-      // Audited Account Specs (2 Kolom)
-      const rows = isCert ? [
-        ['Account Holder', data.tr],
-        ['Prop Firm / Broker', data.fm],
-        ['Account Login', `#${data.lg}`],
-        ['Starting Balance', data.sb],
-        ['Verified Equity', data.eq],
-        ['Execution', `${data.ct} trades · ${data.wr} WR`]
-      ] : [
-        ['Account Holder', data.tr],
-        ['Account Login', `#${data.lg}`],
-        ['Instrument', `${data.sy} · ${data.sd}`],
-        ['Volume', `${data.vl} lot`],
-        ['Entry / Exit', `${data.en} / ${data.ex}`],
-        ['SL / TP', `${data.sl} / ${data.tp}`]
-      ];
-      T(isCert ? 'AUDITED ACCOUNT SPECIFICATIONS' : 'EXECUTION & AUDIT DETAILS', P, curY, { size: 14, weight: 700, color: '#e6c572', family: DISP });
-      T(`Issued ${data.dt}`, W - P, curY, { size: 14, weight: 500, color: '#7e8da8', align: 'right', family: MONO });
-
-      const ledY = curY + 16;
-      const ledH = Math.min(340, Math.max(230, sigTop - ledY - 30));
-      rr(P, ledY, CW, ledH, 16);
-      x.fillStyle = 'rgba(8,13,25,.82)'; x.fill();
-      x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
-
-      const rowCnt = Math.ceil(rows.length / 2), cellW = CW / 2, cellH = ledH / rowCnt;
-      x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
-      x.beginPath(); x.moveTo(P + cellW, ledY + 14); x.lineTo(P + cellW, ledY + ledH - 14); x.stroke();
-      for(let r = 1; r < rowCnt; r++){
-        x.beginPath(); x.moveTo(P + 16, ledY + r * cellH); x.lineTo(P + CW - 16, ledY + r * cellH); x.stroke();
-      }
-      rows.forEach(([k, v], i) => {
-        const col = i % 2, row = Math.floor(i / 2);
-        const rx0 = P + col * cellW, ry0 = ledY + row * cellH;
-        T(k, rx0 + 22, ry0 + cellH * 0.39, { size: 14, weight: 600, color: '#7e8ea9', max: cellW - 44 });
-        T(v, rx0 + 22, ry0 + cellH * 0.76, { size: 20, weight: 700, color: '#eef3ff', family: MONO, max: cellW - 44 });
-      });
     }
-
-    // ===== FOOTER 3 KOLOM: KIRI (TTD CEO) · TENGAH (QR CODE) · KANAN (DETAIL CERT/AKUN) =====
-    x.strokeStyle = 'rgba(214,176,92,.26)'; x.lineWidth = 1.2;
-    x.beginPath(); x.moveTo(P, sigTop); x.lineTo(W - P, sigTop); x.stroke();
-
-    // Kolom Kiri: Tanda Tangan CEO
-    T('Farid Siddiq', P + 4, sigTop + 102, { size: 58, weight: 400, color: '#f5e1a4', family: SIGN, max: 350 });
-    const sigL = x.createLinearGradient(P, 0, P + 330, 0);
-    sigL.addColorStop(0, '#d6b05c'); sigL.addColorStop(1, 'rgba(214,176,92,0)');
-    x.strokeStyle = sigL; x.lineWidth = 1.5;
-    x.beginPath(); x.moveTo(P, sigTop + 120); x.lineTo(P + 330, sigTop + 120); x.stroke();
-    T('FARID SIDDIQ', P, sigTop + 150, { size: 16.5, weight: 700, color: '#e6c572', family: DISP });
-    T('CEO · Golden Break Capital', P, sigTop + 174, { size: 14.5, weight: 500, color: '#8393b0' });
-
-    // Kolom Tengah: QR Code Tajam (Scan langsung ke halaman Web Proof ini)
-    const qrEnd = drawCenterQr(location.href, W / 2, sigTop + 26, 172);
-    T('SCAN TO VERIFY', W / 2, qrEnd + 22, { size: 12.5, weight: 700, color: '#e6c572', align: 'center', family: MONO });
-
-    // Kolom Kanan: Detail Cert / Akun
-    const regW = 368, regH = 166, regX = W - P - regW, regY = sigTop + 28;
-    rr(regX, regY, regW, regH, 14);
-    x.fillStyle = 'rgba(214,176,92,.06)'; x.fill();
-    x.strokeStyle = 'rgba(214,176,92,.28)'; x.lineWidth = 1.2; x.stroke();
-    [
-      ['STATUS', valid ? 'VERIFIED' : 'INVALID', valid ? '#34d399' : '#fb7185'],
-      [isLife ? 'PROOF ID' : (isCert ? 'CERT ID' : 'TICKET'), isCert || isLife ? data.id : '#' + data.id, '#eef3ff'],
-      [isLife ? 'SCOPE' : 'ACCOUNT', isLife ? `${data.life.firmCount} Firms` : `#${data.lg}`, '#eef3ff'],
-      ['ISSUED', data.dt, '#eef3ff'],
-      ['CHECKSUM', `0x${sigShown}`, '#f2d996']
-    ].forEach(([rk, rv, rc], idx) => {
-      const yy = regY + 32 + idx * 29;
-      T(rk, regX + 18, yy, { size: 13, weight: 600, color: '#8393b0', family: MONO });
-      T(rv, regX + regW - 18, yy, { size: 13.5, weight: 700, color: rc, align: 'right', family: MONO, max: regW - 122 });
-    });
-
-    T('Golden Break Capital · Official Verification Proof · funded-journey-nu.vercel.app', W / 2, 1516, {
-      size: 13, weight: 500, color: '#657592', align: 'center', family: MONO
-    });
-
-    const fname = `GBC-Proof-${String(data.id || 'Record').replace(/[^a-z0-9_-]/gi, '')}-3x4.png`;
-    return new Promise(resolve => {
-      if(cv.toBlob){
-        cv.toBlob(blob => {
-          if(!blob){ resolve(false); return; }
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url; a.download = fname;
-          document.body.appendChild(a); a.click(); a.remove();
-          setTimeout(() => URL.revokeObjectURL(url), 4000);
-          resolve(true);
-        }, 'image/png');
-      } else {
-        const a = document.createElement('a');
-        a.href = cv.toDataURL('image/png'); a.download = fname;
-        document.body.appendChild(a); a.click(); a.remove();
-        resolve(true);
+    let ts = Date.now();
+    try {
+      if(receipt.blockNumber){
+        const blk = await rpcCall(cfg.rpc, 'eth_getBlockByNumber', [receipt.blockNumber, false]);
+        if(blk && blk.timestamp) ts = parseInt(blk.timestamp, 16) * 1000;
       }
-    });
+    } catch(e){}
+    return { ok: true, net: netCode, txHash: hash, amount, token, isStable, ts };
+  }
+  async function lookupTron(rawHash){
+    const hash = rawHash.replace(/^0x/i, '');
+    const res = await fetch(`https://apilist.tronscanapi.com/api/transaction-info?hash=${encodeURIComponent(hash)}`);
+    if(!res.ok) return null;
+    const d = await res.json();
+    if(!d || (!d.hash && !d.contractRet)) return null;
+    let amount = null, token = 'USDT', isStable = false;
+    const t20 = Array.isArray(d.trc20TransferInfo) && d.trc20TransferInfo.length ? d.trc20TransferInfo : null;
+    if(t20){
+      const best = t20.reduce((a, b) => (Number(b.quant || 0) > Number(a.quant || 0) ? b : a), t20[0]);
+      const dec = Number(best.decimals ?? 6);
+      amount = formatUnits(BigInt(String(best.quant || '0').replace(/\D/g, '') || '0'), dec);
+      token = String(best.symbol || 'USDT').toUpperCase();
+      isStable = /USD|DAI/i.test(token);
+    } else if(d.contractData && d.contractData.amount != null){
+      amount = Number(d.contractData.amount) / 1e6; token = 'TRX';
+    }
+    return { ok: true, net: 'T', txHash: d.hash || hash, amount, token, isStable, ts: Number(d.timestamp) || Date.now() };
+  }
+  async function lookupBtc(rawHash){
+    const hash = rawHash.replace(/^0x/i, '');
+    const res = await fetch(`https://mempool.space/api/tx/${encodeURIComponent(hash)}`);
+    if(!res.ok) return null;
+    const d = await res.json();
+    if(!d || !d.txid) return null;
+    const maxSats = (d.vout || []).reduce((m, o) => Math.max(m, Number(o.value || 0)), 0);
+    return { ok: true, net: 'X', txHash: d.txid, amount: Number((maxSats / 1e8).toFixed(6)), token: 'BTC', isStable: false, ts: d.status?.block_time ? d.status.block_time * 1000 : Date.now() };
+  }
+  async function lookupTx(rawInput, chosenNet){
+    const clean = String(rawInput || '').trim();
+    if(!clean) throw new Error('Masukkan TX Hash terlebih dahulu.');
+    const isEvmHash = /^0x[0-9a-fA-F]{64}$/.test(clean);
+    const isHex64 = /^[0-9a-fA-F]{64}$/.test(clean);
+    if(chosenNet === 'M') return { ok: false, manual: true, msg: 'Mode Manual / Bank dipilih — isi nominal payout secara manual.' };
+    if(chosenNet === 'T') return (await lookupTron(clean)) || { ok: false, msg: 'TX tidak ditemukan di TRON (TRC20).' };
+    if(chosenNet === 'X') return (await lookupBtc(clean)) || { ok: false, msg: 'TX tidak ditemukan di jaringan Bitcoin.' };
+    if(NETS[chosenNet]?.evm) return (await lookupEvm(chosenNet, clean)) || { ok: false, msg: `TX tidak ditemukan di ${NETS[chosenNet].name}.` };
+    if(isEvmHash){
+      for(const code of ['A', 'B', 'E', 'P', 'S']){
+        try { const r = await lookupEvm(code, clean); if(r && r.ok) return r; } catch(e){}
+      }
+      return { ok: false, msg: 'TX EVM tidak ditemukan otomatis — pilih jaringan atau isi nominal manual.' };
+    }
+    if(isHex64){
+      try { const r = await lookupTron(clean); if(r && r.ok) return r; } catch(e){}
+      try { const r = await lookupBtc(clean); if(r && r.ok) return r; } catch(e){}
+      return { ok: false, msg: 'TX tidak ditemukan di TRON maupun Bitcoin — isi nominal manual.' };
+    }
+    return { ok: false, msg: 'Format bukan TX hash standar — Anda tetap bisa simpan manual.' };
   }
 
-  /* ===== SHADOW DOM CSS (100% Terisolasi dari Tema Dashboard) ===== */
-  const SHADOW_CSS = `
-    :host {
-      position: fixed; inset: 0; z-index: 2147483640;
-      display: block; overflow-y: auto; overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      background:
-        radial-gradient(640px 360px at 50% -6%, rgba(214,176,92,.14), transparent 68%),
-        radial-gradient(500px 340px at 95% 100%, rgba(52,211,153,.07), transparent 65%),
-        #060911;
-      color: #eef3ff;
-      font-family: "Inter", system-ui, -apple-system, sans-serif;
-      font-size: 13px; line-height: 1.45;
-      -webkit-font-smoothing: antialiased;
-    }
-    *, *::before, *::after { box-sizing: border-box; }
+  /* ---------- UI Tab Wallet (#view-wallet) ---------- */
+  let lastMainSig = '';
+  let editingId = null;
+  let isSaving = false;
 
-    .nav {
-      position: sticky; top: 0; z-index: 10;
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      padding: max(10px, env(safe-area-inset-top)) clamp(14px, 3vw, 28px) 10px;
-      background: rgba(6, 9, 17, .9);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, .07);
+  function readMainAccounts(){
+    const mainSel = document.getElementById('accountSelect');
+    const opts = [];
+    if(mainSel && mainSel.options.length){
+      [...mainSel.options].forEach(o => {
+        if(o.value) opts.push({ id: o.value, label: o.textContent.trim() || o.value });
+      });
     }
-    .nav-l { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .mark {
-      width: 30px; height: 30px; border-radius: 8px; flex: none;
-      background: linear-gradient(145deg, #f5e1a4, #b98b3f);
-      color: #080c16; font: 800 13px/1 "Chakra Petch", sans-serif;
-      display: grid; place-items: center;
+    const curLogin = document.getElementById('accLogin')?.textContent?.trim();
+    if(!opts.length && curLogin && curLogin !== '—'){
+      opts.push({ id: curLogin, label: `MT5 ${curLogin}` });
     }
-    .nav-t { min-width: 0; }
-    .nav-t b { display: block; font: 700 12px/1.2 "Chakra Petch", sans-serif; letter-spacing: .12em; color: #f2d996; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .nav-t small { display: block; font-size: 10.5px; color: #7e8ea8; }
-    .nav-btn {
-      min-height: 34px; padding: 0 12px; border-radius: 8px; cursor: pointer; flex: none;
-      border: 1px solid rgba(255, 255, 255, .13); background: rgba(255, 255, 255, .04);
-      color: #d5e0f5; font: 600 12px/1 inherit;
-    }
-    .nav-btn:hover { border-color: rgba(214, 176, 92, .55); color: #f5e1a4; }
+    return opts;
+  }
 
-    .shell {
-      width: 100%; max-width: 500px; margin: 0 auto;
-      padding: 18px 14px calc(44px + env(safe-area-inset-bottom, 0px));
-      display: flex; flex-direction: column; gap: 12px;
-    }
+  function syncAccountOptions(selEl, force = false){
+    if(!selEl) return;
+    const baseOpts = readMainAccounts();
+    const sig = baseOpts.map(o => `${o.id}::${o.label}`).join('|');
+    if(!force && sig === lastMainSig && selEl.options.length > 0) return;
+    lastMainSig = sig;
 
-    .card {
-      position: relative; width: 100%; border-radius: 16px;
-      border: 1px solid rgba(214, 176, 92, .42);
-      background: linear-gradient(170deg, #0e1628 0%, #070b15 56%, #0b1324 100%);
-      box-shadow: 0 22px 64px rgba(0, 0, 0, .62), inset 0 1px 0 rgba(255, 255, 255, .05);
-      overflow: hidden;
-    }
-    .card.bad { border-color: rgba(251, 113, 133, .58); }
-    .topline { height: 3px; background: linear-gradient(90deg, #8e6924, #f5e1a4 50%, #8e6924); }
-    .card.bad .topline { background: linear-gradient(90deg, #9f1239, #fb7185 50%, #9f1239); }
+    const prevVal = selEl.value;
+    const allOpts = [
+      ...baseOpts,
+      { id: '__ALL__', label: '📊 Semua Akun & Prop Firm (Lihat Semua)' },
+      { id: '__MANUAL__', label: '+ Tambah Akun / Prop Firm Lain (Manual)' }
+    ];
+    selEl.innerHTML = allOpts.map(o => `<option value="${esc(o.id)}">${esc(o.label)}</option>`).join('');
 
-    .inner {
-      margin: 8px; padding: 18px 18px 16px; border-radius: 10px;
-      border: 1px solid rgba(214, 176, 92, .18);
-      display: flex; flex-direction: column; gap: 14px;
+    const mainVal = document.getElementById('accountSelect')?.value || '';
+    if(prevVal && allOpts.some(o => o.id === prevVal)){
+      selEl.value = prevVal;
+    } else if(mainVal && allOpts.some(o => o.id === mainVal)){
+      selEl.value = mainVal;
+    } else if(baseOpts.length){
+      selEl.value = baseOpts[0].id;
+    } else {
+      selEl.value = '__ALL__';
     }
+  }
 
-    .head {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding-bottom: 11px; border-bottom: 1px solid rgba(255, 255, 255, .07);
-    }
-    .issuer { font: 700 10px/1.2 "Chakra Petch", sans-serif; letter-spacing: .16em; color: #d6b05c; text-transform: uppercase; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 6px; flex: none;
-      padding: 3.5px 9px; border-radius: 999px;
-      font: 700 10px/1.2 "JetBrains Mono", monospace; letter-spacing: .05em;
-      background: rgba(52, 211, 153, .12); color: #34d399; border: 1px solid rgba(52, 211, 153, .36);
-    }
-    .badge i { width: 6px; height: 6px; border-radius: 50%; background: #34d399; }
-    .badge.bad { background: rgba(251, 113, 133, .12); color: #fb7185; border-color: rgba(251, 113, 133, .42); }
-    .badge.bad i { background: #fb7185; }
+  function setStatus(kind, msg){
+    const st = document.getElementById('ppStatus');
+    if(!st) return;
+    if(!msg){ st.hidden = true; return; }
+    st.hidden = false;
+    st.className = 'pp-status ' + (kind || '');
+    st.textContent = msg;
+  }
 
-    .hero { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .hero-l { min-width: 0; flex: 1 1 auto; }
-    .h1 { margin: 0; font: 700 22px/1.18 "Cormorant Garamond", Georgia, serif; color: #f3dc9b; }
-    .for { margin: 6px 0 1px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #7b8ba8; }
-    .name { margin: 0; font: 700 20px/1.2 "Inter", system-ui, sans-serif; color: #ffffff; letter-spacing: -.01em; overflow-wrap: anywhere; }
-    .submeta { margin-top: 4px; font: 500 11.5px/1.35 "JetBrains Mono", monospace; color: #93a4c2; overflow-wrap: anywhere; }
-    .seal { width: 58px; height: 58px; flex: none; display: block; }
+  function renderPayoutList(){
+    const sel = document.getElementById('ppAccSelect');
+    const listEl = document.getElementById('ppList');
+    const sumEl = document.getElementById('ppSum');
+    const lifeBox = document.getElementById('ppLifeBox');
+    if(!sel || !listEl || !sumEl) return;
 
-    /* Payout Block + Check Detail > */
-    .payout {
-      display: flex; flex-direction: column; gap: 10px;
-      padding: 13px 14px; border-radius: 11px;
-      border: 1px solid rgba(52, 211, 153, .34);
-      background:
-        radial-gradient(240px 90px at 0% 0%, rgba(52, 211, 153, .11), transparent 72%),
-        linear-gradient(180deg, rgba(13, 25, 39, .94), rgba(7, 12, 22, .98));
-    }
-    .pay-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-    .pay-amt small { display: block; font: 700 9px/1.2 "Chakra Petch", sans-serif; letter-spacing: .14em; color: #34d399; text-transform: uppercase; }
-    .pay-amt strong {
-      display: block; margin-top: 3px;
-      font: 700 26px/1.1 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;
-      color: #34d399; letter-spacing: -.02em;
-    }
-    .pay-meta { text-align: right; }
-    .pay-net {
-      display: inline-block; padding: 3px 8px; border-radius: 6px;
-      font: 700 10px/1.2 "JetBrains Mono", monospace;
-      background: rgba(52, 211, 153, .12); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, .3);
-    }
-    .pay-sub { display: block; margin-top: 4px; font: 500 10.5px/1.2 "JetBrains Mono", monospace; color: #8c9db8; }
-
-    /* Breakdown Prop Firms (khusus Lifetime Proof) */
-    .firms { display: flex; flex-wrap: wrap; gap: 6px; }
-    .fchip {
-      padding: 4px 8px; border-radius: 7px; font: 600 10.5px "JetBrains Mono", monospace;
-      background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .09); color: #d5e0f5;
-    }
-    .fchip b { color: #34d399; }
-
-    /* Baris Trigger Check Detail > */
-    .cd-btn {
-      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding: 9px 11px; border-radius: 8px; cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, .09); background: rgba(5, 9, 18, .8);
-      color: #dce6fa; font: 600 11.5px/1.2 "Inter", system-ui, sans-serif;
-      transition: border-color .15s, background .15s, color .15s;
-    }
-    .cd-btn:hover { border-color: rgba(214, 176, 92, .45); background: rgba(214, 176, 92, .07); color: #f5e1a4; }
-    .cd-btn-l { display: flex; align-items: center; gap: 8px; min-width: 0; }
-    .cd-pill {
-      padding: 2px 7px; border-radius: 999px; font: 700 10px "JetBrains Mono", monospace;
-      background: rgba(52, 211, 153, .14); color: #6ee7b7;
-    }
-    .cd-chev { font: 700 15px/1 "JetBrains Mono", monospace; color: #d6b05c; transition: transform .18s ease; }
-    .cd-btn[aria-expanded="true"] .cd-chev { transform: rotate(90deg); }
-
-    /* Daftar Semua Payout (Dropdown) */
-    .tx-list { display: flex; flex-direction: column; gap: 7px; margin-top: 2px; }
-    .tx-list[hidden] { display: none; }
-    .tx-card {
-      display: flex; flex-direction: column; gap: 6px;
-      padding: 9px 11px; border-radius: 9px;
-      background: #050912; border: 1px solid rgba(255, 255, 255, .08);
-    }
-    .tx-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .tx-meta { font: 600 11px/1.3 "Inter", system-ui, sans-serif; color: #cfd9ee; min-width: 0; overflow-wrap: anywhere; }
-    .tx-meta small { color: #7b8ba8; font-weight: 500; margin-left: 5px; font-family: "JetBrains Mono", monospace; font-size: 10px; }
-    .tx-amt { font: 700 13px/1 "JetBrains Mono", monospace; color: #34d399; flex: none; }
-    .tx-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
-    .tx-l { display: flex; align-items: center; gap: 7px; min-width: 0; flex: 1 1 auto; }
-    .tx-nettag {
-      flex: none; padding: 2px 6px; border-radius: 5px;
-      font: 700 9px/1.1 "JetBrains Mono", monospace;
-      background: rgba(255, 255, 255, .05); color: #95a5c2;
-    }
-    .tx-link {
-      display: inline-flex; align-items: center; gap: 5px; min-width: 0;
-      font: 600 11.5px/1.3 "JetBrains Mono", monospace; color: #6ee7b7; text-decoration: none;
-    }
-    .tx-link span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .tx-link:hover { color: #f5e1a4; text-decoration: underline; }
-    .tx-link svg { width: 11px; height: 11px; flex: none; opacity: .85; }
-    .tx-plain { font: 600 11.5px/1.3 "JetBrains Mono", monospace; color: #aebbd3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .tx-cp {
-      width: 26px; height: 26px; padding: 0; flex: none; border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, .13); background: rgba(255, 255, 255, .04);
-      color: #9fb0cc; display: grid; place-items: center; cursor: pointer;
-    }
-    .tx-cp:hover { border-color: rgba(214, 176, 92, .55); color: #f5e1a4; background: rgba(214, 176, 92, .1); }
-    .tx-cp.ok { border-color: rgba(52, 211, 153, .55); color: #34d399; background: rgba(52, 211, 153, .14); }
-    .tx-cp svg { width: 13px; height: 13px; display: block; }
-
-    /* KPI Strip */
-    .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-    .kpi {
-      position: relative; padding: 10px 10px 9px; border-radius: 10px;
-      background: rgba(255, 255, 255, .028); border: 1px solid rgba(255, 255, 255, .075); min-width: 0;
-    }
-    .kpi::before { content: ""; position: absolute; left: 10px; right: 10px; top: 0; height: 2px; border-radius: 0 0 2px 2px; background: var(--ka, #e6c572); }
-    .kpi small { display: block; font: 700 8.5px/1.2 "Chakra Petch", sans-serif; letter-spacing: .1em; color: #8494b0; text-transform: uppercase; }
-    .kpi strong { display: block; margin-top: 4px; font: 700 15px/1.15 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; color: var(--ka, #ffffff); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .kpi span { display: block; margin-top: 3px; font-size: 9.5px; color: #7e8ea8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .prog { height: 3.5px; border-radius: 99px; background: rgba(255, 255, 255, .09); overflow: hidden; margin-top: 5px; }
-    .prog i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #34d399, #f3dc9b); }
-
-    .specs {
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-      border: 1px solid rgba(255, 255, 255, .075); border-radius: 10px;
-      background: rgba(5, 9, 18, .68); overflow: hidden;
-    }
-    .srow { padding: 8px 11px; border-bottom: 1px solid rgba(255, 255, 255, .055); min-width: 0; }
-    .srow:nth-child(odd) { border-right: 1px solid rgba(255, 255, 255, .055); }
-    .srow:nth-last-child(-n+2) { border-bottom: 0; }
-    .srow small { display: block; font-size: 9.5px; color: #7d8da8; }
-    .srow b { display: block; margin-top: 2px; font: 600 11.5px/1.3 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; color: #eef3ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .auth {
-      display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
-      padding-top: 10px; border-top: 1px solid rgba(214, 176, 92, .2);
-    }
-    .calli { font: 400 30px/1.05 "Great Vibes", "Cormorant Garamond", cursive; color: #f5e1a4; }
-    .sline { width: 150px; height: 1px; margin: 2px 0 5px; background: linear-gradient(90deg, #d6b05c, transparent); }
-    .sign b { display: block; font: 700 10px/1.2 "Chakra Petch", sans-serif; letter-spacing: .16em; color: #e6c572; }
-    .sign span { display: block; font-size: 9.5px; color: #7d8da8; margin-top: 1px; }
-    .reg { text-align: right; font: 500 9.5px/1.55 "JetBrains Mono", monospace; color: #7d8da8; flex: none; }
-    .reg b { color: #dce6fa; font-weight: 600; }
-
-    .actions { display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; }
-    .btn {
-      min-height: 44px; padding: 0 14px; border-radius: 10px; cursor: pointer;
-      border: 1px solid rgba(214, 176, 92, .38); background: rgba(214, 176, 92, .08);
-      color: #f3dc9b; font: 600 12.5px/1 inherit;
-      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-    }
-    .btn:hover { background: rgba(214, 176, 92, .16); }
-    .btn:disabled { opacity: .6; cursor: wait; }
-    .btn.pri { background: linear-gradient(135deg, #f3dc9b, #c5963a); color: #090d18; border: 0; font-weight: 700; }
-    .btn.pri:hover { filter: brightness(1.07); }
-    .btn svg { width: 15px; height: 15px; flex: none; }
-
-    .legal { margin: 0; text-align: center; font-size: 10.5px; color: #677794; line-height: 1.5; }
-
-    @media (max-width: 440px) {
-      .inner { margin: 6px; padding: 14px 13px; gap: 12px; }
-      .h1 { font-size: 19px; }
-      .name { font-size: 18px; }
-      .seal { width: 48px; height: 48px; }
-      .kpi strong { font-size: 13.5px; }
-      .pay-meta { text-align: left; }
-      .specs { grid-template-columns: 1fr; }
-      .srow { border-right: 0 !important; border-bottom: 1px solid rgba(255, 255, 255, .055) !important; }
-      .srow:last-child { border-bottom: 0 !important; }
-      .auth { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .reg { text-align: left; }
-      .actions { grid-template-columns: 1fr; }
-    }
-  `;
-
-  const icClip = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-  const icOk = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-  const icExt = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
-  const icDown = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
-
-  const sealSvg = `<svg class="seal" width="58" height="58" viewBox="0 0 120 120" aria-hidden="true">
-    <defs><linearGradient id="gpSG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbf0cd"/><stop offset="50%" stop-color="#d6b05c"/><stop offset="100%" stop-color="#8c6620"/></linearGradient></defs>
-    <circle cx="60" cy="60" r="54" fill="url(#gpSG)" opacity=".15"/>
-    <circle cx="60" cy="60" r="48" fill="#091020" stroke="url(#gpSG)" stroke-width="3"/>
-    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6c572" stroke-width="1.2" stroke-dasharray="3 3" opacity=".7"/>
-    <polygon points="60,24 63,31 70,31 64.5,35.5 66.5,42 60,38 53.5,42 55.5,35.5 50,31 57,31" fill="#f2d996"/>
-    <text x="60" y="70" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="28" font-weight="700" fill="#fbf0cd">GB</text>
-    <text x="60" y="86" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="700" letter-spacing="2" fill="#d6b05c">VERIFIED</text>
-  </svg>`;
-
-  function buildPayoutRowsHtml(items, showFirm){
-    if(!items || !items.length){
-      return `<div class="tx-card"><div class="tx-meta">Memuat detail riwayat payout on-chain…</div></div>`;
-    }
-    return items.map((it, idx) => {
-      const num = items.length - idx;
-      const headLbl = showFirm
-        ? `#${num} · ${esc(it.firm || 'Prop Firm')} (#${esc(it.login || it.accountId || '—')})`
-        : `Payout #${num}${it.note ? ' · ' + esc(it.note) : ''}`;
-      return `
-        <div class="tx-card">
-          <div class="tx-head">
-            <div class="tx-meta">${headLbl}<small>${esc(it.date)}</small></div>
-            <div class="tx-amt">+${esc(it.amount)}</div>
+    const life = summaryLifetime();
+    if(lifeBox){
+      const firmsHtml = life.firms.length
+        ? `<div class="pp-firms">${life.firms.map(f => `<span class="pp-fchip">${esc(f.firm)} <small>(${f.count}×)</small> <b>$${f.total.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}</b></span>`).join('')}</div>`
+        : '';
+      lifeBox.innerHTML = `
+        <div class="pp-life-top">
+          <div>
+            <span class="pp-life-k">🏆 Lifetime All-Time Reward · All Accounts &amp; Prop Firms</span>
+            <strong class="pp-life-val">$${life.total.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}</strong>
+            <span class="pp-life-sub">${life.count} Verified Payouts · ${life.accountCount} Accounts · ${life.firms.length} Prop Firms</span>
           </div>
-          <div class="tx-row">
-            <div class="tx-l">
-              <span class="tx-nettag">${esc(it.token)} · ${esc(it.netName.split(' ')[0])}</span>
-              ${it.txHash
-                ? (it.explorerUrl
-                  ? `<a class="tx-link" href="${esc(it.explorerUrl)}" target="_blank" rel="noopener noreferrer" title="Cek di ${esc(it.host || 'Explorer')}"><span>${esc(clipTx(it.txHash))}</span>${icExt}</a>`
-                  : `<span class="tx-plain" title="${esc(it.txHash)}">${esc(clipTx(it.txHash))}</span>`)
-                : `<span class="tx-plain">Manual Verified</span>`}
-            </div>
-            ${it.txHash ? `<button type="button" class="tx-cp" data-copytx="${esc(it.txHash)}" title="Salin TX Hash" aria-label="Salin TX Hash">${icClip}</button>` : ''}
+          <div class="pp-life-acts">
+            <button type="button" class="btn primary" id="ppOpenLifeProof" ${life.count ? '' : 'disabled'}>🏆 Buka Lifetime Proof &amp; PNG 3:4</button>
+            <button type="button" class="btn" id="ppCopyLifeLink" ${life.count ? '' : 'disabled'}>🔗 Salin Link Lifetime</button>
           </div>
         </div>
+        ${firmsHtml}
       `;
+      const btnOpen = document.getElementById('ppOpenLifeProof');
+      const btnCopy = document.getElementById('ppCopyLifeLink');
+      if(btnOpen) btnOpen.onclick = () => window.open(buildLifetimeProofUrl(), '_blank', 'noopener');
+      if(btnCopy) btnCopy.onclick = async () => {
+        const url = buildLifetimeProofUrl();
+        try { await navigator.clipboard?.writeText(url); } catch(e){}
+        btnCopy.textContent = '✔ Link Tersalin';
+        setTimeout(() => { btnCopy.textContent = '🔗 Salin Link Lifetime'; }, 2000);
+      };
+    }
+
+    const accId = sel.value;
+    const showAll = !accId || accId === '__ALL__' || accId === '__MANUAL__';
+    const curLogin = document.getElementById('accLogin')?.textContent?.trim();
+    const mainId = document.getElementById('accountSelect')?.value;
+    const lookupIds = accId === mainId ? [accId, curLogin] : [accId];
+    const items = showAll ? life.items : listForAccount(lookupIds);
+    const total = items.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+
+    sumEl.innerHTML = `
+      <div class="pp-sum-i"><small>${showAll ? 'Total Semua Payout' : 'All-Time Reward Akun Ini'}</small><b class="pos">$${total.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}</b></div>
+      <div class="pp-sum-i"><small>Jumlah Payout Tercatat</small><b>${items.length}× transaksi</b></div>
+      <div class="pp-sum-i"><small>Status Sertifikat &amp; Web Proof</small><b style="color:${items.length ? 'var(--gold)' : 'var(--muted)'}">${items.length ? '✔ Otomatis Akumulasi' : 'Belum ada payout'}</b></div>
+    `;
+
+    if(!items.length){
+      listEl.innerHTML = '<div class="pp-empty">Belum ada payout proof untuk pilihan ini. Tambahkan TX Hash &amp; nominal di atas — payout berkali-kali di akun yang sama otomatis dijumlahkan.</div>';
+      return;
+    }
+
+    listEl.innerHTML = items.map((r, idx) => {
+      const net = NETS[r.net] || NETS.M;
+      const url = r.txHash && net.exp ? net.exp(r.txHash) : '';
+      const shortTx = r.txHash && r.txHash.length > 26 ? `${r.txHash.slice(0, 12)}...${r.txHash.slice(-10)}` : (r.txHash || 'Manual Reference');
+      const numLabel = `#${items.length - idx}`;
+      const titleName = r.accountLabel || (r.login ? `Account #${r.login}` : r.accountId) || 'Trading Account';
+      return `<div class="pp-item${editingId === r.id ? ' editing' : ''}">
+        <div class="pp-item-l">
+          <div class="pp-item-top">
+            <b>${numLabel} · ${esc(titleName)}</b>
+            ${r.firm ? `<span class="pp-net firm">${esc(r.firm)}</span>` : ''}
+            <span class="pp-net">${esc(net.name)}</span>
+            ${r.token ? `<span class="pp-net tok">${esc(r.token)}</span>` : ''}
+          </div>
+          ${url ? `<a class="pp-txlink" href="${esc(url)}" target="_blank" rel="noopener noreferrer">↗ ${esc(shortTx)}</a>` : `<div class="pp-sub" style="font-family:var(--fm)">Ref: ${esc(shortTx)}</div>`}
+          <div class="pp-sub">${esc(r.date || '—')}${r.note ? ' · ' + esc(r.note) : ''}${r.auto ? ' · On-Chain Verified' : ' · Manual Entry'}</div>
+        </div>
+        <div class="pp-amt">+$${Number(r.amount || 0).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 })}<small>${esc(r.cur || 'USD')}</small></div>
+        <div class="pp-row-acts">
+          <button type="button" class="pp-edit" data-ppedit="${esc(r.id)}" title="Edit nama / detail payout">✎</button>
+          <button type="button" class="pp-del" data-ppdel="${esc(r.id)}" title="Hapus payout proof">✕</button>
+        </div>
+      </div>`;
     }).join('');
   }
 
-  function buildPayoutSectionHtml(expanded){
-    if(isLife){
-      const lf = data.life;
-      const firmsHtml = lf.firms && lf.firms.length
-        ? `<div class="firms">${lf.firms.map(f => `<span class="fchip">${esc(f.firm)} (${f.count}×) <b>${esc(fmtMoney(f.total, 'USD'))}</b></span>`).join('')}</div>`
-        : '';
-      return `
-        <section class="payout" id="gpPayoutSec">
-          <div class="pay-top">
-            <div class="pay-amt">
-              <small>Lifetime All-Time Reward</small>
-              <strong>${esc(lf.amount)}</strong>
-            </div>
-            <div class="pay-meta">
-              <span class="pay-net">${esc(lf.firmCount)} Prop Firms</span>
-              <span class="pay-sub">${esc(lf.count)}× Payout · ${esc(lf.accountCount)} Accounts</span>
-            </div>
-          </div>
-          ${firmsHtml}
-          <button type="button" class="cd-btn" id="gpCheckDetail" aria-expanded="${expanded ? 'true' : 'false'}">
-            <span class="cd-btn-l"><span>Check Detail</span><span class="cd-pill">${esc(data.poList.length || lf.count)} Payouts · TX Hash</span></span>
-            <span class="cd-chev">›</span>
-          </button>
-          <div class="tx-list" id="gpTxList" ${expanded ? '' : 'hidden'}>
-            ${buildPayoutRowsHtml(data.poList, true)}
-          </div>
-        </section>
-      `;
-    }
+  function mountWalletPanel(){
+    const walletView = document.getElementById('view-wallet');
+    if(!walletView) return;
+    document.querySelectorAll('#gbcPayoutPanel').forEach(n => n.remove());
 
-    if(!data.po) return '';
-    const cnt = data.poList.length || data.po.count || 1;
-    return `
-      <section class="payout" id="gpPayoutSec">
-        <div class="pay-top">
-          <div class="pay-amt">
-            <small>Total Payout · Account All-Time Reward</small>
-            <strong>${esc(data.po.amount)}</strong>
-          </div>
-          <div class="pay-meta">
-            <span class="pay-net">${esc(data.po.netName)}</span>
-            <span class="pay-sub">${esc(cnt)}× Payout · ${esc(data.po.token)}</span>
-          </div>
+    const today = new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
+    const panel = document.createElement('div');
+    panel.id = 'gbcPayoutPanel';
+    panel.className = 'card panel pp-panel';
+    panel.innerHTML = `
+      <div class="pp-head">
+        <div>
+          <h3>🧾 Payout &amp; Lifetime Reward Registry (Firestore Sync)</h3>
+          <p>Payout berkali-kali di akun yang sama otomatis dijumlahkan tanpa duplikasi. Gunakan tombol <b>✎</b> di tiap baris jika ingin memperbaiki nama akun / Prop Firm tanpa menambah data baru.</p>
         </div>
-        <button type="button" class="cd-btn" id="gpCheckDetail" aria-expanded="${expanded ? 'true' : 'false'}">
-          <span class="cd-btn-l"><span>Check Detail</span><span class="cd-pill">${esc(cnt)} Payout · TX Hash</span></span>
-          <span class="cd-chev">›</span>
-        </button>
-        <div class="tx-list" id="gpTxList" ${expanded ? '' : 'hidden'}>
-          ${buildPayoutRowsHtml(data.poList, false)}
-        </div>
-      </section>
-    `;
-  }
-
-  function buildBodyHtml(expanded){
-    if(!data){
-      return `<article class="card bad"><div class="topline"></div><div class="inner"><b>Data verifikasi tidak valid atau tautan QR terpotong.</b></div></article>`;
-    }
-
-    const kpisHtml = isLife ? '' : (isCert ? `
-      <div class="kpis">
-        <div class="kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
-          <small>Net Profit</small>
-          <strong>${esc(data.np)}</strong>
-          <span>Start ${esc(data.sb)}</span>
-        </div>
-        <div class="kpi" style="--ka:#f3dc9b">
-          <small>Return</small>
-          <strong>${esc(data.rt)}</strong>
-          <div class="prog"><i style="width:${progPct.toFixed(0)}%"></i></div>
-          <span>Target ${esc(data.tg)}</span>
-        </div>
-        <div class="kpi" style="--ka:#eef3ff">
-          <small>Win Rate</small>
-          <strong>${esc(data.wr)}</strong>
-          <span>${esc(data.ct)} trades</span>
+        <div class="pp-head-r">
+          <button type="button" class="btn" id="ppSyncCloudBtn">☁ Sync Cloud</button>
+          <span class="pp-badge-ok" id="ppCloudBadge">☁ Menghubungkan…</span>
         </div>
       </div>
-    ` : `
-      <div class="kpis">
-        <div class="kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
-          <small>Net P/L</small>
-          <strong>${esc(data.np)}</strong>
-          <span>${esc(data.sy)} · ${esc(data.sd)}</span>
+
+      <div id="ppLifeBox" class="pp-life"></div>
+
+      <div id="ppEditBar" class="pp-editbar" hidden>
+        <span id="ppEditText">Mode Edit Payout</span>
+        <button type="button" class="btn" id="ppCancelEdit" style="min-height:28px;padding:0 10px;font-size:11px">Batal Edit</button>
+      </div>
+
+      <div class="pp-form">
+        <label class="span2">Pilih Akun Trading
+          <select id="ppAccSelect" class="sel"></select>
+        </label>
+        <label>Nama Prop Firm / Broker
+          <input id="ppFirm" type="text" class="sel" maxlength="32" placeholder="mis. FundingPips / FTMO">
+        </label>
+        <label>Tanggal Payout
+          <input id="ppDate" type="date" class="sel" value="${today}">
+        </label>
+
+        <div id="ppManualRow" class="pp-manual-row" hidden>
+          <label>Nomor Login / ID Akun Manual
+            <input id="ppManualLogin" type="text" class="sel" placeholder="mis. 51209881">
+          </label>
+          <label>Nama / Label Akun
+            <input id="ppManualLabel" type="text" class="sel" placeholder="mis. Funded 25K Phase Live">
+          </label>
         </div>
-        <div class="kpi" style="--ka:#f3dc9b">
-          <small>Entry / Exit</small>
-          <strong>${esc(data.ex)}</strong>
-          <span>In ${esc(data.en)}</span>
-        </div>
-        <div class="kpi" style="--ka:#eef3ff">
-          <small>Volume</small>
-          <strong>${esc(data.vl)} lot</strong>
-          <span>SL ${esc(data.sl)}</span>
+
+        <label class="span4">TX Hash / Transaction ID
+          <div class="pp-txrow">
+            <input id="ppTx" type="text" class="sel" autocomplete="off" placeholder="Tempel TX Hash (mis. 0x... atau 64 karakter TRC20/BTC)">
+            <button type="button" class="btn" id="ppFetchBtn">🔍 Cek On-Chain</button>
+          </div>
+        </label>
+
+        <label>Jaringan Blockchain / Metode
+          <select id="ppNet" class="sel">
+            <option value="AUTO">Auto-Detect (TRC20 / EVM / BTC)</option>
+            <option value="A">Arbitrum One</option>
+            <option value="T">TRC20 (TRON · USDT)</option>
+            <option value="B">BEP20 (BSC · USDT/USDC)</option>
+            <option value="E">ERC20 (Ethereum)</option>
+            <option value="P">Polygon</option>
+            <option value="S">Base</option>
+            <option value="X">Bitcoin (BTC)</option>
+            <option value="M">Bank / Rise / Manual</option>
+          </select>
+        </label>
+        <label>Total Payout (USD)
+          <input id="ppAmount" type="number" step="0.01" min="0" class="sel" placeholder="mis. 297.00">
+        </label>
+        <label>Token / Aset
+          <input id="ppToken" type="text" class="sel" value="USDC" placeholder="USDT / USDC / USD">
+        </label>
+        <label>Catatan (opsional)
+          <input id="ppNote" type="text" class="sel" maxlength="60" placeholder="mis. Payout #1">
+        </label>
+
+        <div class="pp-save-row">
+          <button type="button" class="btn primary" id="ppSaveBtn">+ Simpan Payout Proof &amp; Sync Cloud</button>
         </div>
       </div>
-    `);
 
-    const specs = isLife ? [
-      ['Trader Name', data.tr],
-      ['Total Payouts', `${data.life.count} Verified`],
-      ['Prop Firms', `${data.life.firmCount} Firms`],
-      ['Accounts', `${data.life.accountCount} Accounts`]
-    ] : (isCert ? [
-      ['Prop Firm / Broker', data.fm],
-      ['Account Login', `#${data.lg}`],
-      ['Starting Balance', data.sb],
-      ['Verified Equity', data.eq]
-    ] : [
-      ['Account Holder', data.tr],
-      ['Account Login', `#${data.lg}`],
-      ['Entry / Exit', `${data.en} / ${data.ex}`],
-      ['SL / TP', `${data.sl} / ${data.tp}`]
-    ]);
-
-    return `
-      <article class="card ${valid ? '' : 'bad'}">
-        <div class="topline"></div>
-        <div class="inner">
-          <div class="head">
-            <span class="issuer">${isLife ? 'Lifetime Reward Proof' : (isCert ? (data.po ? 'Achievement &amp; Payout Proof' : 'Target Achievement Proof') : 'Audited Execution Proof')}</span>
-            <span class="badge ${valid ? '' : 'bad'}"><i></i>${valid ? 'VERIFIED' : 'INVALID'}</span>
-          </div>
-
-          <div class="hero">
-            <div class="hero-l">
-              <h1 class="h1">${isLife ? 'Certificate of Lifetime Rewards' : (isCert ? (data.po ? 'Certificate of Achievement &amp; Payout' : 'Certificate of Target Achievement') : 'Verified Trade Performance')}</h1>
-              <div class="for">${isLife ? 'Awarded to' : (isCert ? 'Presented to' : 'Recorded execution')}</div>
-              <div class="name">${esc(isCert || isLife ? data.tr : `${data.sy} · ${data.sd}`)}</div>
-              <div class="submeta">${isLife ? `${esc(data.life.firmCount)} Prop Firms · ${esc(data.life.accountCount)} Accounts` : `${esc(data.fm)} · #${esc(data.lg)}`}</div>
-            </div>
-            ${sealSvg}
-          </div>
-
-          <div id="gpPayoutHost">${buildPayoutSectionHtml(expanded)}</div>
-          ${kpisHtml}
-
-          <div class="specs">
-            ${specs.map(([k, v]) => `<div class="srow"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}
-          </div>
-
-          <div class="auth">
-            <div class="sign">
-              <div class="calli">Farid Siddiq</div>
-              <div class="sline"></div>
-              <b>FARID SIDDIQ</b>
-              <span>CEO · Golden Break Capital</span>
-            </div>
-            <div class="reg">
-              <div>${isLife ? 'PROOF ID' : (isCert ? 'CERT ID' : 'TICKET')} <b>${esc(isCert || isLife ? data.id : '#' + data.id)}</b></div>
-              <div>ISSUED <b>${esc(data.dt)}</b></div>
-              <div>SIG <b>0x${esc(sigShown)}</b></div>
-            </div>
-          </div>
-        </div>
-      </article>
+      <div id="ppStatus" class="pp-status" hidden></div>
+      <div id="ppSum" class="pp-sum"></div>
+      <div id="ppList" class="pp-list"></div>
     `;
-  }
+    walletView.appendChild(panel);
 
-  let detailExpanded = false;
+    const selAcc = document.getElementById('ppAccSelect');
+    const inFirm = document.getElementById('ppFirm');
+    const manRow = document.getElementById('ppManualRow');
+    const inManLogin = document.getElementById('ppManualLogin');
+    const inManLabel = document.getElementById('ppManualLabel');
+    const selNet = document.getElementById('ppNet');
+    const inTx = document.getElementById('ppTx');
+    const inAmt = document.getElementById('ppAmount');
+    const inTok = document.getElementById('ppToken');
+    const inDate = document.getElementById('ppDate');
+    const inNote = document.getElementById('ppNote');
+    const btnFetch = document.getElementById('ppFetchBtn');
+    const btnSave = document.getElementById('ppSaveBtn');
+    const btnSync = document.getElementById('ppSyncCloudBtn');
+    const editBar = document.getElementById('ppEditBar');
+    const editTxt = document.getElementById('ppEditText');
+    const btnCancelEdit = document.getElementById('ppCancelEdit');
+    let lastAutoMeta = null;
 
-  function bindPayoutEvents(sr){
-    const btnDetail = sr.getElementById('gpCheckDetail');
-    const listBox = sr.getElementById('gpTxList');
-    if(btnDetail && listBox){
-      btnDetail.onclick = () => {
-        detailExpanded = !detailExpanded;
-        btnDetail.setAttribute('aria-expanded', detailExpanded ? 'true' : 'false');
-        listBox.hidden = !detailExpanded;
-      };
+    function autofillFirmIfEmpty(){
+      if(inFirm.value.trim()) return;
+      const customFirm = document.getElementById('mrFirmName')?.value?.trim();
+      const broker = document.getElementById('accBroker')?.textContent?.trim();
+      const guess = customFirm || (broker && broker !== '—' ? broker : '');
+      if(guess) inFirm.value = guess;
     }
-    sr.querySelectorAll('[data-copytx]').forEach(btn => {
-      let resetT = 0;
-      btn.onclick = async () => {
-        const tx = btn.getAttribute('data-copytx') || '';
-        const ok = await copyText(tx);
-        if(ok){
-          btn.innerHTML = icOk;
-          btn.classList.add('ok');
-          clearTimeout(resetT);
-          resetT = setTimeout(() => {
-            btn.innerHTML = icClip;
-            btn.classList.remove('ok');
-          }, 1800);
-        }
-      };
-    });
-  }
 
-  async function hydrateFromFirestore(sr){
-    if(!data || (!isCert && !isLife)) return;
-    const rawItems = await fetchCloudPayouts();
-    if(!rawItems.length) return;
-
-    if(isCert){
-      const matched = rawItems
-        .filter(r => matchAccountItem(r, data.lg))
-        .map(normalizePayoutItem)
-        .sort((a, b) => b.ts - a.ts);
-
-      if(matched.length){
-        const total = matched.reduce((s, r) => s + r.amountNum, 0);
-        const latest = matched[0];
-        data.poList = matched;
-        data.po = {
-          totalNum: total,
-          amount: fmtMoney(total, 'USD'),
-          count: matched.length,
-          netName: latest.netName,
-          host: latest.host,
-          token: latest.token,
-          txHash: latest.txHash,
-          explorerUrl: latest.explorerUrl
-        };
-        data.cloudSynced = true;
-        const host = sr.getElementById('gpPayoutHost');
-        if(host){
-          host.innerHTML = buildPayoutSectionHtml(detailExpanded);
-          bindPayoutEvents(sr);
-        }
+    function exitEditMode(clearFields = true){
+      editingId = null;
+      editBar.hidden = true;
+      btnSave.textContent = '+ Simpan Payout Proof & Sync Cloud';
+      if(clearFields){
+        inTx.value = ''; inAmt.value = ''; inNote.value = '';
+        inManLogin.value = ''; inManLabel.value = '';
+        lastAutoMeta = null;
       }
-    } else if(isLife){
-      const all = rawItems.map(normalizePayoutItem).sort((a, b) => b.ts - a.ts);
-      if(all.length){
-        const total = all.reduce((s, r) => s + r.amountNum, 0);
-        const firmMap = new Map();
-        const accSet = new Set();
-        all.forEach(r => {
-          const fn = (r.firm || '').trim() || 'Prop Firm';
-          const cur = firmMap.get(fn) || { firm: fn, total: 0, count: 0 };
-          cur.total += r.amountNum; cur.count += 1;
-          firmMap.set(fn, cur);
-          const ak = normId(r.login || r.accountId || r.accountLabel);
-          if(ak) accSet.add(ak);
-        });
-        const firms = [...firmMap.values()].sort((a, b) => b.total - a.total);
-        data.poList = all;
-        data.life = {
-          totalNum: total,
-          amount: fmtMoney(total, 'USD'),
-          count: all.length,
-          firmCount: Math.max(1, firms.length),
-          accountCount: Math.max(1, accSet.size),
-          firms
-        };
-        data.cloudSynced = true;
-        const cardWrap = sr.getElementById('gpCardWrap');
-        if(cardWrap){
-          cardWrap.innerHTML = buildBodyHtml(detailExpanded);
-          bindPayoutEvents(sr);
-        }
-      }
-    }
-  }
-
-  function mount(){
-    const old = document.getElementById('gbcProofPortal');
-    if(old){
-      if(old.dataset.v === '5') return;
-      old.remove();
-    }
-    const oldCss = document.getElementById('gbc-proof-portal-css');
-    if(oldCss) oldCss.remove();
-
-    if(!document.querySelector('link[href*="Cormorant+Garamond"]')){
-      const fl = document.createElement('link'); fl.rel = 'stylesheet';
-      fl.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap';
-      document.head.appendChild(fl);
+      renderPayoutList();
     }
 
-    const host = document.createElement('div');
-    host.id = 'gbcProofPortal';
-    host.dataset.v = '5';
-    const sr = host.attachShadow({ mode: 'open' });
+    syncAccountOptions(selAcc, true);
+    autofillFirmIfEmpty();
+    renderPayoutList();
 
-    sr.innerHTML = `
-      <style>${SHADOW_CSS}</style>
-      <header class="nav">
-        <div class="nav-l">
-          <div class="mark">GB</div>
-          <div class="nav-t">
-            <b>GOLDEN BREAK CAPITAL</b>
-            <small>Official Verification Registry</small>
-          </div>
-        </div>
-        <button type="button" class="nav-btn" id="gpNavClose">← Terminal</button>
-      </header>
-      <main class="shell">
-        <div id="gpCardWrap">${buildBodyHtml(detailExpanded)}</div>
-        <div class="actions">
-          ${data ? `<button type="button" class="btn pri" id="gpExportPng">${icDown} Unduh Proof 3:4 (PNG)</button>` : ''}
-          <button type="button" class="btn" id="gpCopy">Salin Link</button>
-        </div>
-        <p class="legal">Verifikasi resmi Golden Break Terminal. Klik <b>Check Detail ›</b> untuk melihat seluruh daftar payout &amp; alamat TX Blockchain Explorer.</p>
-      </main>
-    `;
-    document.body.appendChild(host);
-
-    bindPayoutEvents(sr);
-
-    const closePortal = () => {
-      host.remove();
-      document.documentElement.classList.remove('gbc-proof-mode');
-      history.replaceState({}, '', location.pathname);
-    };
-    sr.getElementById('gpNavClose').onclick = closePortal;
-
-    const btnCopy = sr.getElementById('gpCopy');
-    btnCopy.onclick = async () => {
-      const ok = await copyText(location.href);
-      btnCopy.textContent = ok ? '✔ Tersalin' : 'Gagal Salin';
-      setTimeout(() => { btnCopy.textContent = 'Salin Link'; }, 1800);
+    btnCancelEdit.onclick = () => {
+      exitEditMode(true);
+      manRow.hidden = selAcc.value !== '__MANUAL__';
+      setStatus('', '');
     };
 
-    const btnExp = sr.getElementById('gpExportPng');
-    if(btnExp && data){
-      btnExp.onclick = async () => {
-        btnExp.disabled = true;
-        const orig = btnExp.innerHTML;
-        btnExp.textContent = 'Merender PNG 3:4...';
-        try { await exportProofPng34(); } finally {
-          btnExp.disabled = false;
-          btnExp.innerHTML = orig;
-        }
-      };
-    }
-
-    // Otomatis tarik daftar lengkap payout & total terbaru dari Firestore (1x baca publik)
-    hydrateFromFirestore(sr);
-  }
-
-  if(document.body) mount();
-  else document.addEventListener('DOMContentLoaded', mount);
-  window.addEventListener('load', mount);
-})();
-</script>
-
-<script id="gbc-proof-portal-v5">
-(function(){
-  const qs = new URLSearchParams(location.search);
-  const compact = qs.get('gbc') || qs.get('p');
-  const legacyRaw = qs.get('verify');
-  const legacySig = qs.get('sig') || '';
-  if(!compact && !legacyRaw) return;
-
-  document.documentElement.classList.add('gbc-proof-mode');
-
-  if(!document.getElementById('gbc-proof-lock-css')){
-    const st = document.createElement('style');
-    st.id = 'gbc-proof-lock-css';
-    st.textContent = `
-      html.gbc-proof-mode .app,
-      html.gbc-proof-mode .world,
-      html.gbc-proof-mode .toast,
-      html.gbc-proof-mode .modal-overlay { display:none !important; }
-      html.gbc-proof-mode,
-      html.gbc-proof-mode body {
-        margin:0 !important; padding:0 !important;
-        width:100% !important; height:100% !important;
-        overflow:hidden !important; background:#060911 !important;
-      }
-    `;
-    (document.head || document.documentElement).appendChild(st);
-  }
-
-  const FS_REST_URL = 'https://firestore.googleapis.com/v1/projects/funded-journey/databases/(default)/documents/gbcPublic/payoutRegistry';
-
-  const NET_META = {
-    T: { name:'TRC20 (TRON)', host:'tronscan.org', token:'USDT', evm:false, exp:h => `https://tronscan.org/#/transaction/${h}` },
-    B: { name:'BEP20 (BSC)', host:'bscscan.com', token:'USDT', evm:true, exp:h => `https://bscscan.com/tx/${h}` },
-    E: { name:'ERC20 (Ethereum)', host:'etherscan.io', token:'USDT', evm:true, exp:h => `https://etherscan.io/tx/${h}` },
-    A: { name:'Arbitrum One', host:'arbiscan.io', token:'USDC', evm:true, exp:h => `https://arbiscan.io/tx/${h}` },
-    P: { name:'Polygon', host:'polygonscan.com', token:'USDC', evm:true, exp:h => `https://polygonscan.com/tx/${h}` },
-    S: { name:'Base', host:'basescan.org', token:'USDC', evm:true, exp:h => `https://basescan.org/tx/${h}` },
-    X: { name:'Bitcoin (BTC)', host:'mempool.space', token:'BTC', evm:false, exp:h => `https://mempool.space/tx/${h}` },
-    M: { name:'Bank / Manual', host:'', token:'USD', evm:false, exp:() => '' }
-  };
-
-  function hashFull(str){
-    let h = 0x811c9dc5;
-    const s = 'GBC::FARID_SIDDIQ::2026::' + str;
-    for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
-    return (h >>> 0).toString(16).padStart(8, '0');
-  }
-  function decB64(b64){
-    const pad = b64.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((b64.length + 3) % 4);
-    const bin = atob(pad);
-    return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
-  }
-  const esc = v => String(v ?? '—').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
-  const normId = v => String(v ?? '').trim().toLowerCase();
-  const clipTx = (h, a = 10, b = 8) => {
-    const s = String(h || '').trim();
-    return s.length > a + b + 3 ? `${s.slice(0, a)}...${s.slice(-b)}` : s;
-  };
-  const fmtMoney = (val, cur = 'USD', signed = false) => {
-    const num = Number(val);
-    if(!Number.isFinite(num)) return String(val || '—');
-    const sym = cur === 'EUR' ? '€' : cur === 'GBP' ? '£' : cur === 'IDR' ? 'Rp ' : '$';
-    const abs = Math.abs(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return (num < 0 ? '-' : (signed && num > 0 ? '+' : '')) + sym + abs;
-  };
-  const fmtDate = code => {
-    const s = String(code || '');
-    if(s.length === 10) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)} ${s.slice(6,8)}:${s.slice(8,10)} WIB`;
-    if(s.length === 6) return `${s.slice(4,6)}/${s.slice(2,4)}/20${s.slice(0,2)}`;
-    return s || '—';
-  };
-
-  /* ---------- Parser Firestore REST (1x baca publik, tanpa tunggu SDK body) ---------- */
-  function fromFsVal(v){
-    if(!v || typeof v !== 'object') return null;
-    if('stringValue' in v) return v.stringValue;
-    if('integerValue' in v) return Number(v.integerValue);
-    if('doubleValue' in v) return Number(v.doubleValue);
-    if('booleanValue' in v) return !!v.booleanValue;
-    if('nullValue' in v) return null;
-    if('arrayValue' in v) return (v.arrayValue.values || []).map(fromFsVal);
-    if('mapValue' in v){
-      const o = {};
-      const f = v.mapValue.fields || {};
-      Object.keys(f).forEach(k => { o[k] = fromFsVal(f[k]); });
-      return o;
-    }
-    return null;
-  }
-
-  async function fetchCloudPayouts(){
-    // 1. Coba REST API langsung (sangat cepat & tidak bergantung init script body)
-    try {
-      const res = await fetch(FS_REST_URL, { cache: 'no-store' });
-      if(res.ok){
-        const j = await res.json();
-        const items = fromFsVal(j?.fields?.items);
-        if(Array.isArray(items)) return items;
-      }
-    } catch(e){}
-    // 2. Fallback Compat SDK jika tersedia
-    try {
-      const fb = window.firebase;
-      if(fb && Array.isArray(fb.apps) && fb.apps.length > 0 && typeof fb.firestore === 'function'){
-        const snap = await fb.firestore().collection('gbcPublic').doc('payoutRegistry').get();
-        if(snap.exists && Array.isArray(snap.data()?.items)) return snap.data().items;
-      }
-    } catch(e){}
-    // 3. Fallback cache lokal di perangkat yang sama
-    try {
-      const local = JSON.parse(localStorage.getItem('gbc_payouts_v1') || '[]');
-      if(Array.isArray(local)) return local;
-    } catch(e){}
-    return [];
-  }
-
-  function matchAccountItem(rec, accId){
-    const q = normId(accId);
-    if(!q || q === '—' || q === '-') return false;
-    const vals = [normId(rec.accountId), normId(rec.login), normId(rec.accountLabel)].filter(Boolean);
-    if(vals.includes(q)) return true;
-    const digits = s => (String(s).match(/\d{4,}/g) || []);
-    const qDig = new Set(digits(q));
-    if(qDig.size){
-      for(const rv of vals){
-        for(const d of digits(rv)){ if(qDig.has(d)) return true; }
-      }
-    }
-    return false;
-  }
-
-  function normalizePayoutItem(r){
-    const nm = NET_META[r.net] || NET_META.M;
-    const rawTx = String(r.txHash || '').trim();
-    const txHash = rawTx && rawTx !== '-' ? (nm.evm && !/^0x/i.test(rawTx) ? '0x' + rawTx : rawTx) : '';
-    return {
-      id: r.id || '',
-      accountId: r.accountId || '',
-      login: r.login || r.accountId || '',
-      accountLabel: r.accountLabel || r.accountId || '',
-      firm: r.firm || '',
-      amountNum: Number(r.amount) || 0,
-      amount: fmtMoney(Number(r.amount) || 0, 'USD'),
-      netCode: r.net || 'M',
-      netName: nm.name,
-      host: nm.host,
-      token: r.token || nm.token,
-      txHash,
-      explorerUrl: txHash && nm.exp ? nm.exp(txHash) : '',
-      date: r.date || '—',
-      note: r.note || '',
-      ts: Number(r.ts) || 0
+    selAcc.onchange = () => {
+      manRow.hidden = selAcc.value !== '__MANUAL__';
+      autofillFirmIfEmpty();
+      renderPayoutList();
     };
-  }
 
-  /* ---------- Decode Parameter URL ---------- */
-  let data = null, valid = false, sigShown = 'INVALID';
-  if(compact){
-    try {
-      const parts = compact.split('~');
-      const sig = (parts.pop() || '').toLowerCase();
-      const body = parts.join('~');
-      const expected = hashFull(body).slice(0, 6);
-      valid = sig.length === 6 && sig === expected;
-      sigShown = sig.toUpperCase() || 'NONE';
-
-      if(parts[0] === 'C' && parts.length >= 11){
-        const [, lg, tr, fm, stRaw, eqRaw, tg, wr, ct, dt, cur, pAmt, pCnt, pNet, pTx, pTok] = parts;
-        const st = Number(stRaw), eq = Number(eqRaw), prof = eq - st;
-        const pct = st ? (prof / st * 100) : 0;
-        const tgNum = Number(tg) || 10;
-        let po = null, poList = [];
-        if(pAmt && Number(pAmt) > 0){
-          const nm = NET_META[pNet] || NET_META.M;
-          const cleanTx = pTx && pTx !== '-' ? (nm.evm && !/^0x/i.test(pTx) ? '0x' + pTx : pTx) : '';
-          po = {
-            totalNum: Number(pAmt),
-            amount: fmtMoney(Number(pAmt), 'USD'),
-            count: Number(pCnt) || 1,
-            netName: nm.name,
-            host: nm.host,
-            token: pTok && pTok !== '-' ? pTok : nm.token,
-            txHash: cleanTx,
-            explorerUrl: cleanTx && nm.exp ? nm.exp(cleanTx) : ''
-          };
-          poList = [{
-            amountNum: Number(pAmt), amount: po.amount, netName: po.netName, host: po.host,
-            token: po.token, txHash: po.txHash, explorerUrl: po.explorerUrl,
-            date: fmtDate(dt), note: 'Verified On-Chain', firm: fm, login: lg, ts: Date.now()
-          }];
-        }
-        data = {
-          t: 'CERT',
-          id: `GBC-${lg.replace(/[^a-z0-9]/gi, '')}-20${dt}`,
-          tr, fm, lg, cur: cur || 'USD',
-          np: fmtMoney(prof, cur, true),
-          sb: fmtMoney(st, cur),
-          eq: fmtMoney(eq, cur),
-          pct, tgNum,
-          rt: `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`,
-          tg: `${tg}%`,
-          wr: `${wr}%`,
-          ct,
-          dt: fmtDate(dt),
-          gn: prof >= 0 ? 1 : 0,
-          po,
-          poList,
-          cloudSynced: false
-        };
-      } else if(parts[0] === 'L' && parts.length >= 7){
-        // Mode Lifetime All-Time Reward (Khusus Generate dari Tab Wallet)
-        const [, tr, totRaw, cntRaw, firmCntRaw, accCntRaw, dt] = parts;
-        const tot = Number(totRaw) || 0;
-        data = {
-          t: 'LIFE',
-          id: `GBC-LIFE-20${dt}`,
-          tr,
-          fm: `${Number(firmCntRaw) || 1} Prop Firms`,
-          lg: `${Number(accCntRaw) || 1} Accounts`,
-          cur: 'USD',
-          dt: fmtDate(dt),
-          gn: 1,
-          life: {
-            totalNum: tot,
-            amount: fmtMoney(tot, 'USD'),
-            count: Number(cntRaw) || 0,
-            firmCount: Number(firmCntRaw) || 1,
-            accountCount: Number(accCntRaw) || 1,
-            firms: []
-          },
-          poList: [],
-          cloudSynced: false
-        };
-      } else if(parts[0] === 'P' && parts.length >= 14){
-        const [, id, lg, tr, sy, sd, vl, netRaw, en, ex, sl, tp, dt, cur] = parts;
-        const net = Number(netRaw);
-        data = {
-          t: 'PNL', id, lg, tr, fm: 'Golden Break Terminal', cur: cur || 'USD',
-          sy, sd: sd === 'S' ? 'SELL' : 'BUY', vl,
-          np: fmtMoney(net, cur, true),
-          gn: net >= 0 ? 1 : 0,
-          en: en === '-' ? 'Tidak tercatat' : en,
-          ex: ex === '-' ? 'Tidak tercatat' : ex,
-          sl: sl === '-' ? 'Tidak tercatat' : sl,
-          tp: tp === '-' ? 'Tidak tercatat' : tp,
-          dt: fmtDate(dt),
-          poList: []
-        };
-      }
-    } catch(e){ valid = false; }
-  } else if(legacyRaw){
-    try {
-      const expected = hashFull(legacyRaw);
-      valid = legacySig.toLowerCase() === expected;
-      sigShown = legacySig.slice(0, 6).toUpperCase() || 'LEGACY';
-      data = JSON.parse(decB64(legacyRaw));
-      if(data && data.gn == null) data.gn = 1;
-      if(data && !data.poList) data.poList = [];
-    } catch(e){ valid = false; }
-  }
-
-  const isCert = data && data.t === 'CERT';
-  const isLife = data && data.t === 'LIFE';
-  const progPct = isCert && data?.tgNum > 0 ? Math.min(100, Math.max(0, (data.pct / data.tgNum) * 100)) : 100;
-
-  async function copyText(str){
-    try { if(navigator.clipboard?.writeText){ await navigator.clipboard.writeText(str); return true; } } catch(e){}
-    try {
-      const ta = document.createElement('textarea');
-      ta.value = str;
-      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
-      document.body.appendChild(ta); ta.select();
-      const ok = document.execCommand('copy');
-      ta.remove();
-      return !!ok;
-    } catch(e){ return false; }
-  }
-
-  /* ===== HD 3:4 PNG EXPORTER (1200 x 1600) · Footer 3 Kolom + QR Code di Tengah ===== */
-  async function exportProofPng34(){
-    try { if(document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){}
-    const W = 1200, H = 1600;
-    const cv = document.createElement('canvas');
-    cv.width = W; cv.height = H;
-    const x = cv.getContext('2d');
-
-    const SERIF = '"Cormorant Garamond",Georgia,serif';
-    const SANS = '"Inter",system-ui,sans-serif';
-    const DISP = '"Chakra Petch","Inter",sans-serif';
-    const MONO = '"JetBrains Mono",monospace';
-    const SIGN = '"Great Vibes","Cormorant Garamond",cursive';
-
-    const rr = (rx, ry, rw, rh, rad) => {
-      const r = Math.min(rad, rw / 2, rh / 2);
-      x.beginPath();
-      x.moveTo(rx + r, ry);
-      x.arcTo(rx + rw, ry, rx + rw, ry + rh, r);
-      x.arcTo(rx + rw, ry + rh, rx, ry + rh, r);
-      x.arcTo(rx, ry + rh, rx, ry, r);
-      x.arcTo(rx, ry, rx + rw, ry, r);
-      x.closePath();
-    };
-    const T = (str, tx, ty, o = {}) => {
-      x.save();
-      const size = o.size || 24, weight = o.weight || 600, fam = o.family || SANS;
-      x.font = `${o.italic ? 'italic ' : ''}${weight} ${size}px ${fam}`;
-      let txt = String(str ?? '—');
-      if(o.max && x.measureText(txt).width > o.max){
-        const scale = Math.max(0.6, o.max / x.measureText(txt).width);
-        x.font = `${o.italic ? 'italic ' : ''}${weight} ${Math.round(size * scale)}px ${fam}`;
-        if(x.measureText(txt).width > o.max){
-          while(txt.length > 3 && x.measureText(txt + '...').width > o.max) txt = txt.slice(0, -1);
-          txt += '...';
-        }
-      }
-      x.fillStyle = o.color || '#eef3ff';
-      x.textAlign = o.align || 'left';
-      x.textBaseline = 'alphabetic';
-      x.fillText(txt, tx, ty);
-      x.restore();
-    };
-    const gGold = (x0, y0, x1, y1) => {
-      const g = x.createLinearGradient(x0, y0, x1, y1);
-      g.addColorStop(0, '#fbf0cd');
-      g.addColorStop(0.5, '#d6b05c');
-      g.addColorStop(1, '#946e24');
-      return g;
-    };
-    const drawCenterQr = (url, cx, topY, boxSize) => {
-      x.save();
-      const bx = Math.round(cx - boxSize / 2), by = Math.round(topY);
+    btnSync.onclick = async () => {
+      if(isSaving) return;
+      btnSync.disabled = true; btnSync.textContent = '⏳ Sync…';
       try {
-        if(typeof window.qrcode === 'function'){
-          const qr = window.qrcode(0, 'L');
-          qr.addData(String(url));
-          qr.make();
-          const cnt = qr.getModuleCount();
-          const pad = 10;
-          const mod = Math.max(2, Math.floor((boxSize - pad * 2) / cnt));
-          const qrPx = cnt * mod;
-          const actualBox = qrPx + pad * 2;
-          const rx = Math.round(cx - actualBox / 2);
-          const ry = Math.round(topY + (boxSize - actualBox) / 2);
-
-          x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 16; x.shadowOffsetY = 5;
-          rr(rx, ry, actualBox, actualBox, 12);
-          x.fillStyle = '#ffffff'; x.fill();
-          x.shadowColor = 'transparent';
-          x.strokeStyle = 'rgba(214,176,92,.75)'; x.lineWidth = 2; x.stroke();
-
-          x.imageSmoothingEnabled = false;
-          x.fillStyle = '#000000';
-          const ox = rx + pad, oy = ry + pad;
-          for(let r = 0; r < cnt; r++){
-            for(let c = 0; c < cnt; c++){
-              if(qr.isDark(r, c)) x.fillRect(ox + c * mod, oy + r * mod, mod, mod);
-            }
-          }
-          x.restore();
-          return ry + actualBox;
-        }
-      } catch(e){}
-      rr(bx, by, boxSize, boxSize, 12);
-      x.fillStyle = '#ffffff'; x.fill();
-      T('SCAN QR', cx, by + boxSize / 2 + 6, { size: 18, weight: 700, color: '#000000', align: 'center', family: MONO });
-      x.restore();
-      return by + boxSize;
-    };
-
-    // 1. Background & Bingkai
-    const bg = x.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, '#0f172a');
-    bg.addColorStop(0.52, '#060a14');
-    bg.addColorStop(1, '#0b1323');
-    x.fillStyle = bg; x.fillRect(0, 0, W, H);
-
-    const glow = x.createRadialGradient(W * 0.25, 110, 20, W * 0.25, 110, 620);
-    glow.addColorStop(0, 'rgba(214,176,92,.13)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
-    x.fillStyle = glow; x.fillRect(0, 0, W, 740);
-
-    rr(34, 34, W - 68, H - 68, 28);
-    x.strokeStyle = valid ? gGold(0, 0, W, H) : 'rgba(251,113,133,.7)';
-    x.lineWidth = 3; x.stroke();
-    rr(52, 52, W - 104, H - 104, 18);
-    x.strokeStyle = 'rgba(214,176,92,.24)';
-    x.lineWidth = 1.4; x.stroke();
-
-    const P = 84, CW = W - P * 2;
-
-    // 2. Top Brand & Status
-    rr(P, 86, 56, 56, 13);
-    x.fillStyle = gGold(P, 86, P + 56, 142); x.fill();
-    T('GB', P + 28, 124, { size: 25, weight: 800, color: '#070b15', align: 'center', family: DISP });
-    T('GOLDEN BREAK CAPITAL', P + 72, 110, { size: 22, weight: 700, color: '#f2d996', family: DISP });
-    T('OFFICIAL VERIFICATION REGISTRY', P + 72, 134, { size: 14, weight: 600, color: '#7e8da8', family: MONO });
-
-    const stTxt = valid ? `VERIFIED · 0x${sigShown}` : 'INVALID RECORD';
-    const stW = 280, stX = W - P - stW, stY = 92;
-    rr(stX, stY, stW, 44, 99);
-    x.fillStyle = valid ? 'rgba(52,211,153,.13)' : 'rgba(251,113,133,.15)'; x.fill();
-    x.strokeStyle = valid ? 'rgba(52,211,153,.42)' : 'rgba(251,113,133,.5)'; x.lineWidth = 1.4; x.stroke();
-    x.beginPath(); x.arc(stX + 24, stY + 22, 5.5, 0, Math.PI * 2);
-    x.fillStyle = valid ? '#34d399' : '#fb7185'; x.fill();
-    T(stTxt, stX + stW - 20, stY + 28, { size: 15, weight: 700, color: valid ? '#6ee7b7' : '#fda4af', align: 'right', family: MONO });
-
-    x.strokeStyle = 'rgba(214,176,92,.22)'; x.lineWidth = 1.2;
-    x.beginPath(); x.moveTo(P, 168); x.lineTo(W - P, 168); x.stroke();
-
-    // 3. Hero Title + Seal
-    const h1 = isLife
-      ? 'Certificate of Lifetime Rewards'
-      : (isCert ? (data.po ? 'Certificate of Achievement & Payout' : 'Certificate of Target Achievement') : 'Verified Trade Performance Proof');
-    const eyebrow = isLife
-      ? 'ALL-TIME CUMULATIVE PAYOUT CREDENTIAL'
-      : (isCert ? 'OFFICIAL PERFORMANCE CREDENTIAL' : 'AUDITED EXECUTION RECORD');
-    T(eyebrow, P, 216, { size: 14.5, weight: 700, color: '#d6b05c', family: DISP, max: CW - 168 });
-    T(h1, P, 270, { size: 46, weight: 700, color: '#f3dc9b', family: SERIF, max: CW - 168 });
-    T(isLife ? 'AWARDED TO' : (isCert ? 'PRESENTED TO' : 'RECORDED EXECUTION'), P, 314, { size: 13.5, weight: 700, color: '#7e8da8', family: DISP });
-    T(isCert || isLife ? data.tr : `${data.sy} · ${data.sd}`, P, 366, { size: 44, weight: 700, color: '#ffffff', family: SANS, max: CW - 168 });
-    const subM = isLife
-      ? `${data.life.count} Verified Payouts  ·  ${data.life.accountCount} Accounts  ·  ${data.life.firmCount} Prop Firms`
-      : `${data.fm}  ·  Account #${data.lg}`;
-    T(subM, P, 402, { size: 18, weight: 500, color: '#94a5c2', family: MONO, max: CW - 168 });
-
-    const scx = W - P - 66, scy = 296, sr = 62;
-    x.save();
-    x.beginPath(); x.arc(scx, scy, sr + 8, 0, Math.PI * 2); x.fillStyle = 'rgba(214,176,92,.14)'; x.fill();
-    x.beginPath(); x.arc(scx, scy, sr, 0, Math.PI * 2); x.fillStyle = '#091020'; x.fill();
-    x.strokeStyle = gGold(scx - sr, scy - sr, scx + sr, scy + sr); x.lineWidth = 3.5; x.stroke();
-    x.beginPath(); x.arc(scx, scy, sr - 10, 0, Math.PI * 2); x.setLineDash([4, 4]);
-    x.strokeStyle = 'rgba(230,197,114,.7)'; x.lineWidth = 1.4; x.stroke(); x.setLineDash([]);
-    T('★', scx, scy - 21, { size: 18, weight: 700, color: '#f2d996', align: 'center' });
-    T('GB', scx, scy + 15, { size: 38, weight: 700, color: '#fbf0cd', align: 'center', family: SERIF });
-    T('VERIFIED', scx, scy + 36, { size: 11, weight: 700, color: '#d6b05c', align: 'center', family: MONO });
-    x.restore();
-
-    const sigTop = 1236;
-    let curY = 438;
-
-    if(isLife){
-      // ===== LIFETIME REWARD BODY =====
-      const heroH = 190;
-      rr(P, curY, CW, heroH, 18);
-      const pbg = x.createLinearGradient(P, curY, P + CW, curY + heroH);
-      pbg.addColorStop(0, 'rgba(13,30,42,.95)'); pbg.addColorStop(1, 'rgba(7,12,23,.98)');
-      x.fillStyle = pbg; x.fill();
-      x.strokeStyle = 'rgba(52,211,153,.42)'; x.lineWidth = 1.8; x.stroke();
-      T('LIFETIME ALL-TIME REWARD (ALL PROP FIRMS)', P + 28, curY + 42, { size: 14.5, weight: 700, color: '#34d399', family: DISP });
-      T(data.life.amount, P + 28, curY + 118, { size: 64, weight: 800, color: '#34d399', family: MONO, max: CW - 56 });
-      T(`${data.life.count}× Verified Payouts across ${data.life.firmCount} Prop Firms & ${data.life.accountCount} Trading Accounts`, P + 28, curY + 162, {
-        size: 17, weight: 500, color: '#a8b7d1', family: MONO, max: CW - 56
-      });
-      curY += heroH + 26;
-
-      // Daftar transaksi payout terbaru (maks 5 baris)
-      T('VERIFIED ON-CHAIN PAYOUT LEDGER', P, curY + 10, { size: 14.5, weight: 700, color: '#e6c572', family: DISP });
-      T('Scan QR di bawah untuk daftar penuh & link Explorer', W - P, curY + 10, { size: 13.5, weight: 500, color: '#7e8da8', align: 'right', family: MONO });
-
-      const listY = curY + 26;
-      const showItems = (data.poList || []).slice(0, 5);
-      const moreCnt = Math.max(0, (data.poList || []).length - showItems.length);
-      const boxH = Math.min(490, sigTop - listY - 30);
-      rr(P, listY, CW, boxH, 16);
-      x.fillStyle = 'rgba(8,13,25,.82)'; x.fill();
-      x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
-
-      if(showItems.length){
-        const totalRows = showItems.length + (moreCnt > 0 ? 1 : 0);
-        const rh = boxH / totalRows;
-        showItems.forEach((it, idx) => {
-          const ry0 = listY + idx * rh;
-          if(idx > 0){
-            x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
-            x.beginPath(); x.moveTo(P + 20, ry0); x.lineTo(W - P - 20, ry0); x.stroke();
-          }
-          const title = `${it.firm || 'Prop Firm'} · #${it.login || it.accountId}`;
-          T(title, P + 24, ry0 + rh * 0.42, { size: 18, weight: 700, color: '#eef3ff', max: CW * 0.56 });
-          const txTxt = it.txHash ? `${it.netName} · ${clipTx(it.txHash, 10, 8)}` : `${it.netName} · ${it.date}`;
-          T(txTxt, P + 24, ry0 + rh * 0.76, { size: 15, weight: 500, color: '#6ee7b7', family: MONO, max: CW * 0.62 });
-          T(`+${it.amount}`, W - P - 24, ry0 + rh * 0.44, { size: 22, weight: 700, color: '#34d399', align: 'right', family: MONO });
-          T(`${it.date} · ${it.token}`, W - P - 24, ry0 + rh * 0.76, { size: 13.5, weight: 500, color: '#8393b0', align: 'right', family: MONO });
-        });
-        if(moreCnt > 0){
-          const ry0 = listY + showItems.length * rh;
-          x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
-          x.beginPath(); x.moveTo(P + 20, ry0); x.lineTo(W - P - 20, ry0); x.stroke();
-          T(`+ ${moreCnt} transaksi payout lainnya — Scan QR di bawah untuk melihat seluruh TX Hash`, W / 2, ry0 + rh * 0.58, {
-            size: 15, weight: 600, color: '#f3dc9b', align: 'center', family: MONO
-          });
-        }
-      } else {
-        T('Scan QR di bawah untuk memuat daftar transaksi on-chain terbaru.', W / 2, listY + boxH / 2 + 6, {
-          size: 17, weight: 500, color: '#8494b0', align: 'center'
-        });
-      }
-    } else {
-      // ===== ACCOUNT CERT (C) / TRADE PNL (P) BODY =====
-      if(data.po){
-        const hasTx = (data.poList && data.poList.some(it => it.txHash)) || !!data.po.txHash;
-        const poH = hasTx ? 216 : 134;
-        rr(P, curY, CW, poH, 18);
-        const pbg = x.createLinearGradient(P, curY, P + CW, curY + poH);
-        pbg.addColorStop(0, 'rgba(13,30,42,.95)'); pbg.addColorStop(1, 'rgba(7,12,23,.98)');
-        x.fillStyle = pbg; x.fill();
-        x.strokeStyle = 'rgba(52,211,153,.38)'; x.lineWidth = 1.6; x.stroke();
-
-        T('ACCOUNT ALL-TIME REWARD (ON-CHAIN VERIFIED)', P + 26, curY + 38, { size: 13.5, weight: 700, color: '#34d399', family: DISP });
-        T(data.po.amount, P + 26, curY + 96, { size: 48, weight: 700, color: '#34d399', family: MONO, max: CW * 0.52 });
-
-        const pillW = 248, pillX = P + CW - 26 - pillW;
-        rr(pillX, curY + 22, pillW, 38, 99);
-        x.fillStyle = 'rgba(52,211,153,.12)'; x.fill();
-        x.strokeStyle = 'rgba(52,211,153,.38)'; x.lineWidth = 1.2; x.stroke();
-        x.beginPath(); x.arc(pillX + 22, curY + 41, 5, 0, Math.PI * 2); x.fillStyle = '#34d399'; x.fill();
-        T(data.po.explorerUrl ? 'ON-CHAIN SETTLED' : 'PAYOUT RECORDED', pillX + pillW - 18, curY + 47, { size: 13.5, weight: 700, color: '#6ee7b7', align: 'right', family: MONO });
-        T(`${data.po.count}× Payout · ${data.po.netName} (${data.po.token})`, P + CW - 26, curY + 92, { size: 16.5, weight: 600, color: '#b4c3dc', align: 'right', family: MONO, max: CW * 0.48 });
-
-        if(hasTx){
-          const txY = curY + 124;
-          rr(P + 24, txY, CW - 48, 66, 12);
-          x.fillStyle = '#050912'; x.fill();
-          x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
-          const firstTx = (data.poList?.[0]?.txHash) || data.po.txHash || '';
-          const moreTx = Math.max(0, (data.poList?.length || data.po.count || 1) - 1);
-          T('LATEST TX', P + 42, txY + 40, { size: 13, weight: 700, color: '#7485a3', family: DISP });
-          T(clipTx(firstTx, 13, 10), P + 148, txY + 41, { size: 21, weight: 600, color: '#6ee7b7', family: MONO, max: CW - 440 });
-          const rightTx = moreTx > 0 ? `+${moreTx} TX lain · Scan QR` : (data.po.host ? `↗ ${data.po.host}` : 'Verified');
-          T(rightTx, P + CW - 42, txY + 40, { size: 14.5, weight: 600, color: moreTx > 0 ? '#f3dc9b' : '#8c9db8', align: 'right', family: MONO });
-        }
-        curY += poH + 22;
-      }
-
-      // 3 KPI Cards
-      const kpiH = data.po ? 136 : 162, kpiGap = 18, kpiW = (CW - kpiGap * 2) / 3;
-      const kpis = isCert ? [
-        ['NET PROFIT', data.np, `Start ${data.sb}`, data.gn ? '#34d399' : '#fb7185', false],
-        ['ACHIEVED RETURN', data.rt, `Target ${data.tg} passed`, '#f3dc9b', true],
-        ['WIN RATE', data.wr, `${data.ct} closed trades`, '#eef3ff', false]
-      ] : [
-        ['NET P/L', data.np, `${data.sy} · ${data.sd}`, data.gn ? '#34d399' : '#fb7185', false],
-        ['ENTRY → EXIT', `${data.en} → ${data.ex}`, `Volume ${data.vl} lot`, '#f3dc9b', false],
-        ['RISK LEVELS', `SL ${data.sl}`, `TP ${data.tp}`, '#eef3ff', false]
-      ];
-      kpis.forEach(([lbl, val, sub, col, showBar], i) => {
-        const kx = P + i * (kpiW + kpiGap);
-        rr(kx, curY, kpiW, kpiH, 16);
-        x.fillStyle = 'rgba(15,23,42,.82)'; x.fill();
-        x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
-        rr(kx + 22, curY + 1, kpiW - 44, 3.5, 2); x.fillStyle = col; x.fill();
-        T(lbl, kx + 22, curY + 34, { size: 13.5, weight: 700, color: '#8494b0', family: DISP, max: kpiW - 44 });
-        T(val, kx + 22, curY + (data.po ? 82 : 94), { size: 31, weight: 700, color: col, family: MONO, max: kpiW - 44 });
-        if(showBar){
-          const by = curY + (data.po ? 95 : 112);
-          rr(kx + 22, by, kpiW - 44, 5.5, 4); x.fillStyle = 'rgba(255,255,255,.09)'; x.fill();
-          rr(kx + 22, by, Math.max(14, (kpiW - 44) * (progPct / 100)), 5.5, 4); x.fillStyle = '#34d399'; x.fill();
-          T(sub, kx + 22, by + 24, { size: 13.5, weight: 500, color: '#7e8da8', max: kpiW - 44 });
+        const fs = getFsAdapter();
+        if(!fs){ setStatus('warn', 'Koneksi Firestore belum siap. Coba reload halaman.'); return; }
+        const cloud = await fs.read();
+        const local = loadAll();
+        const cloudItems = Array.isArray(cloud?.items) ? cloud.items : [];
+        const merged = dedupeItems([...local, ...cloudItems]);
+        saveLocal(merged);
+        if(merged.length !== cloudItems.length || JSON.stringify(merged) !== JSON.stringify(dedupeItems(cloudItems))){
+          await pushToCloud(merged, false);
         } else {
-          T(sub, kx + 22, curY + (data.po ? 114 : 134), { size: 14, weight: 500, color: '#7e8da8', max: kpiW - 44 });
+          setCloudBadge(`☁ Synced (${merged.length})`, true);
+          setStatus('ok', `✔ Sinkronisasi selesai (${merged.length} payout bersih tanpa duplikasi).`);
         }
-      });
-      curY += kpiH + 30;
-
-      // Audited Account Specs (2 Kolom)
-      const rows = isCert ? [
-        ['Account Holder', data.tr],
-        ['Prop Firm / Broker', data.fm],
-        ['Account Login', `#${data.lg}`],
-        ['Starting Balance', data.sb],
-        ['Verified Equity', data.eq],
-        ['Execution', `${data.ct} trades · ${data.wr} WR`]
-      ] : [
-        ['Account Holder', data.tr],
-        ['Account Login', `#${data.lg}`],
-        ['Instrument', `${data.sy} · ${data.sd}`],
-        ['Volume', `${data.vl} lot`],
-        ['Entry / Exit', `${data.en} / ${data.ex}`],
-        ['SL / TP', `${data.sl} / ${data.tp}`]
-      ];
-      T(isCert ? 'AUDITED ACCOUNT SPECIFICATIONS' : 'EXECUTION & AUDIT DETAILS', P, curY, { size: 14, weight: 700, color: '#e6c572', family: DISP });
-      T(`Issued ${data.dt}`, W - P, curY, { size: 14, weight: 500, color: '#7e8da8', align: 'right', family: MONO });
-
-      const ledY = curY + 16;
-      const ledH = Math.min(340, Math.max(230, sigTop - ledY - 30));
-      rr(P, ledY, CW, ledH, 16);
-      x.fillStyle = 'rgba(8,13,25,.82)'; x.fill();
-      x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 1.2; x.stroke();
-
-      const rowCnt = Math.ceil(rows.length / 2), cellW = CW / 2, cellH = ledH / rowCnt;
-      x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
-      x.beginPath(); x.moveTo(P + cellW, ledY + 14); x.lineTo(P + cellW, ledY + ledH - 14); x.stroke();
-      for(let r = 1; r < rowCnt; r++){
-        x.beginPath(); x.moveTo(P + 16, ledY + r * cellH); x.lineTo(P + CW - 16, ledY + r * cellH); x.stroke();
+      } catch(err){
+        setStatus('warn', `Gagal sinkron Firestore: ${err.message || err.code || 'error'}`);
+      } finally {
+        btnSync.disabled = false; btnSync.textContent = '☁ Sync Cloud';
       }
-      rows.forEach(([k, v], i) => {
-        const col = i % 2, row = Math.floor(i / 2);
-        const rx0 = P + col * cellW, ry0 = ledY + row * cellH;
-        T(k, rx0 + 22, ry0 + cellH * 0.39, { size: 14, weight: 600, color: '#7e8ea9', max: cellW - 44 });
-        T(v, rx0 + 22, ry0 + cellH * 0.76, { size: 20, weight: 700, color: '#eef3ff', family: MONO, max: cellW - 44 });
-      });
+    };
+
+    async function doLookup(){
+      const hash = inTx.value.trim();
+      if(!hash){ setStatus('warn', 'Tempel TX Hash terlebih dahulu untuk pengecekan otomatis.'); return; }
+      btnFetch.disabled = true; btnFetch.textContent = '⏳ Memeriksa…';
+      setStatus('', 'Menghubungi blockchain explorer / RPC publik…');
+      try {
+        const res = await lookupTx(hash, selNet.value);
+        if(res && res.ok){
+          lastAutoMeta = res;
+          selNet.value = res.net;
+          if(res.token) inTok.value = res.token;
+          if(res.ts) inDate.value = new Date(res.ts + 7 * 3600000).toISOString().slice(0, 10);
+          if(res.amount != null && res.isStable){
+            inAmt.value = Number(res.amount).toFixed(2);
+            setStatus('ok', `✔ TX terverifikasi di ${NETS[res.net].name}: ${res.amount.toLocaleString('en-US', { maximumFractionDigits: 4 })} ${res.token}. Nominal USD terisi otomatis.`);
+          } else if(res.amount != null){
+            setStatus('warn', `✔ TX ditemukan di ${NETS[res.net].name}: ${res.amount} ${res.token}. Silakan isi nominal USD secara manual.`);
+          } else {
+            setStatus('warn', `✔ TX ditemukan di ${NETS[res.net].name}, silakan isi nominal USD secara manual.`);
+          }
+        } else {
+          lastAutoMeta = null;
+          setStatus('warn', res?.msg || 'TX tidak ditemukan otomatis — Anda tetap bisa isi nominal manual.');
+        }
+      } catch(err){
+        lastAutoMeta = null;
+        setStatus('warn', `Gagal membaca on-chain (${err.message || 'koneksi dibatasi'}). Silakan isi nominal manual.`);
+      } finally {
+        btnFetch.disabled = false; btnFetch.textContent = '🔍 Cek On-Chain';
+      }
     }
 
-    // ===== FOOTER 3 KOLOM: KIRI (TTD CEO) · TENGAH (QR CODE) · KANAN (DETAIL CERT/AKUN) =====
-    x.strokeStyle = 'rgba(214,176,92,.26)'; x.lineWidth = 1.2;
-    x.beginPath(); x.moveTo(P, sigTop); x.lineTo(W - P, sigTop); x.stroke();
-
-    // Kolom Kiri: Tanda Tangan CEO
-    T('Farid Siddiq', P + 4, sigTop + 102, { size: 58, weight: 400, color: '#f5e1a4', family: SIGN, max: 350 });
-    const sigL = x.createLinearGradient(P, 0, P + 330, 0);
-    sigL.addColorStop(0, '#d6b05c'); sigL.addColorStop(1, 'rgba(214,176,92,0)');
-    x.strokeStyle = sigL; x.lineWidth = 1.5;
-    x.beginPath(); x.moveTo(P, sigTop + 120); x.lineTo(P + 330, sigTop + 120); x.stroke();
-    T('FARID SIDDIQ', P, sigTop + 150, { size: 16.5, weight: 700, color: '#e6c572', family: DISP });
-    T('CEO · Golden Break Capital', P, sigTop + 174, { size: 14.5, weight: 500, color: '#8393b0' });
-
-    // Kolom Tengah: QR Code Tajam (Scan langsung ke halaman Web Proof ini)
-    const qrEnd = drawCenterQr(location.href, W / 2, sigTop + 26, 172);
-    T('SCAN TO VERIFY', W / 2, qrEnd + 22, { size: 12.5, weight: 700, color: '#e6c572', align: 'center', family: MONO });
-
-    // Kolom Kanan: Detail Cert / Akun
-    const regW = 368, regH = 166, regX = W - P - regW, regY = sigTop + 28;
-    rr(regX, regY, regW, regH, 14);
-    x.fillStyle = 'rgba(214,176,92,.06)'; x.fill();
-    x.strokeStyle = 'rgba(214,176,92,.28)'; x.lineWidth = 1.2; x.stroke();
-    [
-      ['STATUS', valid ? 'VERIFIED' : 'INVALID', valid ? '#34d399' : '#fb7185'],
-      [isLife ? 'PROOF ID' : (isCert ? 'CERT ID' : 'TICKET'), isCert || isLife ? data.id : '#' + data.id, '#eef3ff'],
-      [isLife ? 'SCOPE' : 'ACCOUNT', isLife ? `${data.life.firmCount} Firms` : `#${data.lg}`, '#eef3ff'],
-      ['ISSUED', data.dt, '#eef3ff'],
-      ['CHECKSUM', `0x${sigShown}`, '#f2d996']
-    ].forEach(([rk, rv, rc], idx) => {
-      const yy = regY + 32 + idx * 29;
-      T(rk, regX + 18, yy, { size: 13, weight: 600, color: '#8393b0', family: MONO });
-      T(rv, regX + regW - 18, yy, { size: 13.5, weight: 700, color: rc, align: 'right', family: MONO, max: regW - 122 });
+    btnFetch.onclick = doLookup;
+    inTx.addEventListener('paste', () => {
+      setTimeout(() => {
+        const v = inTx.value.trim();
+        if(/^0x[0-9a-fA-F]{64}$/.test(v) || /^[0-9a-fA-F]{64}$/.test(v)) doLookup();
+      }, 60);
     });
 
-    T('Golden Break Capital · Official Verification Proof · funded-journey-nu.vercel.app', W / 2, 1516, {
-      size: 13, weight: 500, color: '#657592', align: 'center', family: MONO
-    });
+    btnSave.onclick = async () => {
+      if(isSaving) return;
 
-    const fname = `GBC-Proof-${String(data.id || 'Record').replace(/[^a-z0-9_-]/gi, '')}-3x4.png`;
-    return new Promise(resolve => {
-      if(cv.toBlob){
-        cv.toBlob(blob => {
-          if(!blob){ resolve(false); return; }
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url; a.download = fname;
-          document.body.appendChild(a); a.click(); a.remove();
-          setTimeout(() => URL.revokeObjectURL(url), 4000);
-          resolve(true);
-        }, 'image/png');
+      let accId = selAcc.value;
+      let curLogin = '', accLabel = '';
+      if(accId === '__ALL__'){
+        setStatus('bad', 'Pilih akun spesifik atau "+ Tambah Akun / Prop Firm Lain (Manual)" sebelum menyimpan.');
+        return;
+      }
+      if(accId === '__MANUAL__'){
+        const ml = inManLogin.value.trim();
+        const lb = inManLabel.value.trim();
+        if(!ml && !lb){ setStatus('bad', 'Isi Nomor Login atau Nama / Label Akun terlebih dahulu.'); return; }
+        accId = ml || lb;
+        curLogin = ml || lb;
+        accLabel = lb ? (ml && !lb.includes(ml) ? `${lb} (${ml})` : lb) : `Account ${ml}`;
       } else {
-        const a = document.createElement('a');
-        a.href = cv.toDataURL('image/png'); a.download = fname;
-        document.body.appendChild(a); a.click(); a.remove();
-        resolve(true);
+        if(!accId){ setStatus('bad', 'Pilih akun trading terlebih dahulu.'); return; }
+        const mainSel = document.getElementById('accountSelect');
+        const activeLogin = mainSel && mainSel.value === accId ? (document.getElementById('accLogin')?.textContent?.trim() || '') : '';
+        curLogin = activeLogin && activeLogin !== '—' ? activeLogin : accId;
+        const optTxt = selAcc.options[selAcc.selectedIndex]?.textContent?.trim() || '';
+        accLabel = optTxt && !optTxt.startsWith('Menunggu') ? optTxt : `MT5 ${curLogin}`;
       }
-    });
-  }
 
-  /* ===== SHADOW DOM CSS (100% Terisolasi dari Tema Dashboard) ===== */
-  const SHADOW_CSS = `
-    :host {
-      position: fixed; inset: 0; z-index: 2147483640;
-      display: block; overflow-y: auto; overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      background:
-        radial-gradient(640px 360px at 50% -6%, rgba(214,176,92,.14), transparent 68%),
-        radial-gradient(500px 340px at 95% 100%, rgba(52,211,153,.07), transparent 65%),
-        #060911;
-      color: #eef3ff;
-      font-family: "Inter", system-ui, -apple-system, sans-serif;
-      font-size: 13px; line-height: 1.45;
-      -webkit-font-smoothing: antialiased;
-    }
-    *, *::before, *::after { box-sizing: border-box; }
+      const amt = parseFloat(inAmt.value);
+      if(!Number.isFinite(amt) || amt <= 0){ setStatus('bad', 'Isi Total Payout ($) yang valid (lebih dari 0).'); return; }
 
-    .nav {
-      position: sticky; top: 0; z-index: 10;
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      padding: max(10px, env(safe-area-inset-top)) clamp(14px, 3vw, 28px) 10px;
-      background: rgba(6, 9, 17, .9);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, .07);
-    }
-    .nav-l { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .mark {
-      width: 30px; height: 30px; border-radius: 8px; flex: none;
-      background: linear-gradient(145deg, #f5e1a4, #b98b3f);
-      color: #080c16; font: 800 13px/1 "Chakra Petch", sans-serif;
-      display: grid; place-items: center;
-    }
-    .nav-t { min-width: 0; }
-    .nav-t b { display: block; font: 700 12px/1.2 "Chakra Petch", sans-serif; letter-spacing: .12em; color: #f2d996; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .nav-t small { display: block; font-size: 10.5px; color: #7e8ea8; }
-    .nav-btn {
-      min-height: 34px; padding: 0 12px; border-radius: 8px; cursor: pointer; flex: none;
-      border: 1px solid rgba(255, 255, 255, .13); background: rgba(255, 255, 255, .04);
-      color: #d5e0f5; font: 600 12px/1 inherit;
-    }
-    .nav-btn:hover { border-color: rgba(214, 176, 92, .55); color: #f5e1a4; }
+      const tx = inTx.value.trim();
+      const txKey = normTx(tx);
+      const all = loadAll();
 
-    .shell {
-      width: 100%; max-width: 500px; margin: 0 auto;
-      padding: 18px 14px calc(44px + env(safe-area-inset-bottom, 0px));
-      display: flex; flex-direction: column; gap: 12px;
-    }
-
-    .card {
-      position: relative; width: 100%; border-radius: 16px;
-      border: 1px solid rgba(214, 176, 92, .42);
-      background: linear-gradient(170deg, #0e1628 0%, #070b15 56%, #0b1324 100%);
-      box-shadow: 0 22px 64px rgba(0, 0, 0, .62), inset 0 1px 0 rgba(255, 255, 255, .05);
-      overflow: hidden;
-    }
-    .card.bad { border-color: rgba(251, 113, 133, .58); }
-    .topline { height: 3px; background: linear-gradient(90deg, #8e6924, #f5e1a4 50%, #8e6924); }
-    .card.bad .topline { background: linear-gradient(90deg, #9f1239, #fb7185 50%, #9f1239); }
-
-    .inner {
-      margin: 8px; padding: 18px 18px 16px; border-radius: 10px;
-      border: 1px solid rgba(214, 176, 92, .18);
-      display: flex; flex-direction: column; gap: 14px;
-    }
-
-    .head {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding-bottom: 11px; border-bottom: 1px solid rgba(255, 255, 255, .07);
-    }
-    .issuer { font: 700 10px/1.2 "Chakra Petch", sans-serif; letter-spacing: .16em; color: #d6b05c; text-transform: uppercase; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 6px; flex: none;
-      padding: 3.5px 9px; border-radius: 999px;
-      font: 700 10px/1.2 "JetBrains Mono", monospace; letter-spacing: .05em;
-      background: rgba(52, 211, 153, .12); color: #34d399; border: 1px solid rgba(52, 211, 153, .36);
-    }
-    .badge i { width: 6px; height: 6px; border-radius: 50%; background: #34d399; }
-    .badge.bad { background: rgba(251, 113, 133, .12); color: #fb7185; border-color: rgba(251, 113, 133, .42); }
-    .badge.bad i { background: #fb7185; }
-
-    .hero { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .hero-l { min-width: 0; flex: 1 1 auto; }
-    .h1 { margin: 0; font: 700 22px/1.18 "Cormorant Garamond", Georgia, serif; color: #f3dc9b; }
-    .for { margin: 6px 0 1px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #7b8ba8; }
-    .name { margin: 0; font: 700 20px/1.2 "Inter", system-ui, sans-serif; color: #ffffff; letter-spacing: -.01em; overflow-wrap: anywhere; }
-    .submeta { margin-top: 4px; font: 500 11.5px/1.35 "JetBrains Mono", monospace; color: #93a4c2; overflow-wrap: anywhere; }
-    .seal { width: 58px; height: 58px; flex: none; display: block; }
-
-    /* Payout Block + Check Detail > */
-    .payout {
-      display: flex; flex-direction: column; gap: 10px;
-      padding: 13px 14px; border-radius: 11px;
-      border: 1px solid rgba(52, 211, 153, .34);
-      background:
-        radial-gradient(240px 90px at 0% 0%, rgba(52, 211, 153, .11), transparent 72%),
-        linear-gradient(180deg, rgba(13, 25, 39, .94), rgba(7, 12, 22, .98));
-    }
-    .pay-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-    .pay-amt small { display: block; font: 700 9px/1.2 "Chakra Petch", sans-serif; letter-spacing: .14em; color: #34d399; text-transform: uppercase; }
-    .pay-amt strong {
-      display: block; margin-top: 3px;
-      font: 700 26px/1.1 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;
-      color: #34d399; letter-spacing: -.02em;
-    }
-    .pay-meta { text-align: right; }
-    .pay-net {
-      display: inline-block; padding: 3px 8px; border-radius: 6px;
-      font: 700 10px/1.2 "JetBrains Mono", monospace;
-      background: rgba(52, 211, 153, .12); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, .3);
-    }
-    .pay-sub { display: block; margin-top: 4px; font: 500 10.5px/1.2 "JetBrains Mono", monospace; color: #8c9db8; }
-
-    /* Breakdown Prop Firms (khusus Lifetime Proof) */
-    .firms { display: flex; flex-wrap: wrap; gap: 6px; }
-    .fchip {
-      padding: 4px 8px; border-radius: 7px; font: 600 10.5px "JetBrains Mono", monospace;
-      background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .09); color: #d5e0f5;
-    }
-    .fchip b { color: #34d399; }
-
-    /* Baris Trigger Check Detail > */
-    .cd-btn {
-      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding: 9px 11px; border-radius: 8px; cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, .09); background: rgba(5, 9, 18, .8);
-      color: #dce6fa; font: 600 11.5px/1.2 "Inter", system-ui, sans-serif;
-      transition: border-color .15s, background .15s, color .15s;
-    }
-    .cd-btn:hover { border-color: rgba(214, 176, 92, .45); background: rgba(214, 176, 92, .07); color: #f5e1a4; }
-    .cd-btn-l { display: flex; align-items: center; gap: 8px; min-width: 0; }
-    .cd-pill {
-      padding: 2px 7px; border-radius: 999px; font: 700 10px "JetBrains Mono", monospace;
-      background: rgba(52, 211, 153, .14); color: #6ee7b7;
-    }
-    .cd-chev { font: 700 15px/1 "JetBrains Mono", monospace; color: #d6b05c; transition: transform .18s ease; }
-    .cd-btn[aria-expanded="true"] .cd-chev { transform: rotate(90deg); }
-
-    /* Daftar Semua Payout (Dropdown) */
-    .tx-list { display: flex; flex-direction: column; gap: 7px; margin-top: 2px; }
-    .tx-list[hidden] { display: none; }
-    .tx-card {
-      display: flex; flex-direction: column; gap: 6px;
-      padding: 9px 11px; border-radius: 9px;
-      background: #050912; border: 1px solid rgba(255, 255, 255, .08);
-    }
-    .tx-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .tx-meta { font: 600 11px/1.3 "Inter", system-ui, sans-serif; color: #cfd9ee; min-width: 0; overflow-wrap: anywhere; }
-    .tx-meta small { color: #7b8ba8; font-weight: 500; margin-left: 5px; font-family: "JetBrains Mono", monospace; font-size: 10px; }
-    .tx-amt { font: 700 13px/1 "JetBrains Mono", monospace; color: #34d399; flex: none; }
-    .tx-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
-    .tx-l { display: flex; align-items: center; gap: 7px; min-width: 0; flex: 1 1 auto; }
-    .tx-nettag {
-      flex: none; padding: 2px 6px; border-radius: 5px;
-      font: 700 9px/1.1 "JetBrains Mono", monospace;
-      background: rgba(255, 255, 255, .05); color: #95a5c2;
-    }
-    .tx-link {
-      display: inline-flex; align-items: center; gap: 5px; min-width: 0;
-      font: 600 11.5px/1.3 "JetBrains Mono", monospace; color: #6ee7b7; text-decoration: none;
-    }
-    .tx-link span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .tx-link:hover { color: #f5e1a4; text-decoration: underline; }
-    .tx-link svg { width: 11px; height: 11px; flex: none; opacity: .85; }
-    .tx-plain { font: 600 11.5px/1.3 "JetBrains Mono", monospace; color: #aebbd3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .tx-cp {
-      width: 26px; height: 26px; padding: 0; flex: none; border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, .13); background: rgba(255, 255, 255, .04);
-      color: #9fb0cc; display: grid; place-items: center; cursor: pointer;
-    }
-    .tx-cp:hover { border-color: rgba(214, 176, 92, .55); color: #f5e1a4; background: rgba(214, 176, 92, .1); }
-    .tx-cp.ok { border-color: rgba(52, 211, 153, .55); color: #34d399; background: rgba(52, 211, 153, .14); }
-    .tx-cp svg { width: 13px; height: 13px; display: block; }
-
-    /* KPI Strip */
-    .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-    .kpi {
-      position: relative; padding: 10px 10px 9px; border-radius: 10px;
-      background: rgba(255, 255, 255, .028); border: 1px solid rgba(255, 255, 255, .075); min-width: 0;
-    }
-    .kpi::before { content: ""; position: absolute; left: 10px; right: 10px; top: 0; height: 2px; border-radius: 0 0 2px 2px; background: var(--ka, #e6c572); }
-    .kpi small { display: block; font: 700 8.5px/1.2 "Chakra Petch", sans-serif; letter-spacing: .1em; color: #8494b0; text-transform: uppercase; }
-    .kpi strong { display: block; margin-top: 4px; font: 700 15px/1.15 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; color: var(--ka, #ffffff); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .kpi span { display: block; margin-top: 3px; font-size: 9.5px; color: #7e8ea8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .prog { height: 3.5px; border-radius: 99px; background: rgba(255, 255, 255, .09); overflow: hidden; margin-top: 5px; }
-    .prog i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #34d399, #f3dc9b); }
-
-    .specs {
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-      border: 1px solid rgba(255, 255, 255, .075); border-radius: 10px;
-      background: rgba(5, 9, 18, .68); overflow: hidden;
-    }
-    .srow { padding: 8px 11px; border-bottom: 1px solid rgba(255, 255, 255, .055); min-width: 0; }
-    .srow:nth-child(odd) { border-right: 1px solid rgba(255, 255, 255, .055); }
-    .srow:nth-last-child(-n+2) { border-bottom: 0; }
-    .srow small { display: block; font-size: 9.5px; color: #7d8da8; }
-    .srow b { display: block; margin-top: 2px; font: 600 11.5px/1.3 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; color: #eef3ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .auth {
-      display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
-      padding-top: 10px; border-top: 1px solid rgba(214, 176, 92, .2);
-    }
-    .calli { font: 400 30px/1.05 "Great Vibes", "Cormorant Garamond", cursive; color: #f5e1a4; }
-    .sline { width: 150px; height: 1px; margin: 2px 0 5px; background: linear-gradient(90deg, #d6b05c, transparent); }
-    .sign b { display: block; font: 700 10px/1.2 "Chakra Petch", sans-serif; letter-spacing: .16em; color: #e6c572; }
-    .sign span { display: block; font-size: 9.5px; color: #7d8da8; margin-top: 1px; }
-    .reg { text-align: right; font: 500 9.5px/1.55 "JetBrains Mono", monospace; color: #7d8da8; flex: none; }
-    .reg b { color: #dce6fa; font-weight: 600; }
-
-    .actions { display: grid; grid-template-columns: 1.5fr 1fr; gap: 8px; }
-    .btn {
-      min-height: 44px; padding: 0 14px; border-radius: 10px; cursor: pointer;
-      border: 1px solid rgba(214, 176, 92, .38); background: rgba(214, 176, 92, .08);
-      color: #f3dc9b; font: 600 12.5px/1 inherit;
-      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-    }
-    .btn:hover { background: rgba(214, 176, 92, .16); }
-    .btn:disabled { opacity: .6; cursor: wait; }
-    .btn.pri { background: linear-gradient(135deg, #f3dc9b, #c5963a); color: #090d18; border: 0; font-weight: 700; }
-    .btn.pri:hover { filter: brightness(1.07); }
-    .btn svg { width: 15px; height: 15px; flex: none; }
-
-    .legal { margin: 0; text-align: center; font-size: 10.5px; color: #677794; line-height: 1.5; }
-
-    @media (max-width: 440px) {
-      .inner { margin: 6px; padding: 14px 13px; gap: 12px; }
-      .h1 { font-size: 19px; }
-      .name { font-size: 18px; }
-      .seal { width: 48px; height: 48px; }
-      .kpi strong { font-size: 13.5px; }
-      .pay-meta { text-align: left; }
-      .specs { grid-template-columns: 1fr; }
-      .srow { border-right: 0 !important; border-bottom: 1px solid rgba(255, 255, 255, .055) !important; }
-      .srow:last-child { border-bottom: 0 !important; }
-      .auth { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .reg { text-align: left; }
-      .actions { grid-template-columns: 1fr; }
-    }
-  `;
-
-  const icClip = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-  const icOk = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-  const icExt = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
-  const icDown = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
-
-  const sealSvg = `<svg class="seal" width="58" height="58" viewBox="0 0 120 120" aria-hidden="true">
-    <defs><linearGradient id="gpSG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbf0cd"/><stop offset="50%" stop-color="#d6b05c"/><stop offset="100%" stop-color="#8c6620"/></linearGradient></defs>
-    <circle cx="60" cy="60" r="54" fill="url(#gpSG)" opacity=".15"/>
-    <circle cx="60" cy="60" r="48" fill="#091020" stroke="url(#gpSG)" stroke-width="3"/>
-    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6c572" stroke-width="1.2" stroke-dasharray="3 3" opacity=".7"/>
-    <polygon points="60,24 63,31 70,31 64.5,35.5 66.5,42 60,38 53.5,42 55.5,35.5 50,31 57,31" fill="#f2d996"/>
-    <text x="60" y="70" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="28" font-weight="700" fill="#fbf0cd">GB</text>
-    <text x="60" y="86" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="700" letter-spacing="2" fill="#d6b05c">VERIFIED</text>
-  </svg>`;
-
-  function buildPayoutRowsHtml(items, showFirm){
-    if(!items || !items.length){
-      return `<div class="tx-card"><div class="tx-meta">Memuat detail riwayat payout on-chain…</div></div>`;
-    }
-    return items.map((it, idx) => {
-      const num = items.length - idx;
-      const headLbl = showFirm
-        ? `#${num} · ${esc(it.firm || 'Prop Firm')} (#${esc(it.login || it.accountId || '—')})`
-        : `Payout #${num}${it.note ? ' · ' + esc(it.note) : ''}`;
-      return `
-        <div class="tx-card">
-          <div class="tx-head">
-            <div class="tx-meta">${headLbl}<small>${esc(it.date)}</small></div>
-            <div class="tx-amt">+${esc(it.amount)}</div>
-          </div>
-          <div class="tx-row">
-            <div class="tx-l">
-              <span class="tx-nettag">${esc(it.token)} · ${esc(it.netName.split(' ')[0])}</span>
-              ${it.txHash
-                ? (it.explorerUrl
-                  ? `<a class="tx-link" href="${esc(it.explorerUrl)}" target="_blank" rel="noopener noreferrer" title="Cek di ${esc(it.host || 'Explorer')}"><span>${esc(clipTx(it.txHash))}</span>${icExt}</a>`
-                  : `<span class="tx-plain" title="${esc(it.txHash)}">${esc(clipTx(it.txHash))}</span>`)
-                : `<span class="tx-plain">Manual Verified</span>`}
-            </div>
-            ${it.txHash ? `<button type="button" class="tx-cp" data-copytx="${esc(it.txHash)}" title="Salin TX Hash" aria-label="Salin TX Hash">${icClip}</button>` : ''}
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function buildPayoutSectionHtml(expanded){
-    if(isLife){
-      const lf = data.life;
-      const firmsHtml = lf.firms && lf.firms.length
-        ? `<div class="firms">${lf.firms.map(f => `<span class="fchip">${esc(f.firm)} (${f.count}×) <b>${esc(fmtMoney(f.total, 'USD'))}</b></span>`).join('')}</div>`
-        : '';
-      return `
-        <section class="payout" id="gpPayoutSec">
-          <div class="pay-top">
-            <div class="pay-amt">
-              <small>Lifetime All-Time Reward</small>
-              <strong>${esc(lf.amount)}</strong>
-            </div>
-            <div class="pay-meta">
-              <span class="pay-net">${esc(lf.firmCount)} Prop Firms</span>
-              <span class="pay-sub">${esc(lf.count)}× Payout · ${esc(lf.accountCount)} Accounts</span>
-            </div>
-          </div>
-          ${firmsHtml}
-          <button type="button" class="cd-btn" id="gpCheckDetail" aria-expanded="${expanded ? 'true' : 'false'}">
-            <span class="cd-btn-l"><span>Check Detail</span><span class="cd-pill">${esc(data.poList.length || lf.count)} Payouts · TX Hash</span></span>
-            <span class="cd-chev">›</span>
-          </button>
-          <div class="tx-list" id="gpTxList" ${expanded ? '' : 'hidden'}>
-            ${buildPayoutRowsHtml(data.poList, true)}
-          </div>
-        </section>
-      `;
-    }
-
-    if(!data.po) return '';
-    const cnt = data.poList.length || data.po.count || 1;
-    return `
-      <section class="payout" id="gpPayoutSec">
-        <div class="pay-top">
-          <div class="pay-amt">
-            <small>Total Payout · Account All-Time Reward</small>
-            <strong>${esc(data.po.amount)}</strong>
-          </div>
-          <div class="pay-meta">
-            <span class="pay-net">${esc(data.po.netName)}</span>
-            <span class="pay-sub">${esc(cnt)}× Payout · ${esc(data.po.token)}</span>
-          </div>
-        </div>
-        <button type="button" class="cd-btn" id="gpCheckDetail" aria-expanded="${expanded ? 'true' : 'false'}">
-          <span class="cd-btn-l"><span>Check Detail</span><span class="cd-pill">${esc(cnt)} Payout · TX Hash</span></span>
-          <span class="cd-chev">›</span>
-        </button>
-        <div class="tx-list" id="gpTxList" ${expanded ? '' : 'hidden'}>
-          ${buildPayoutRowsHtml(data.poList, false)}
-        </div>
-      </section>
-    `;
-  }
-
-  function buildBodyHtml(expanded){
-    if(!data){
-      return `<article class="card bad"><div class="topline"></div><div class="inner"><b>Data verifikasi tidak valid atau tautan QR terpotong.</b></div></article>`;
-    }
-
-    const kpisHtml = isLife ? '' : (isCert ? `
-      <div class="kpis">
-        <div class="kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
-          <small>Net Profit</small>
-          <strong>${esc(data.np)}</strong>
-          <span>Start ${esc(data.sb)}</span>
-        </div>
-        <div class="kpi" style="--ka:#f3dc9b">
-          <small>Return</small>
-          <strong>${esc(data.rt)}</strong>
-          <div class="prog"><i style="width:${progPct.toFixed(0)}%"></i></div>
-          <span>Target ${esc(data.tg)}</span>
-        </div>
-        <div class="kpi" style="--ka:#eef3ff">
-          <small>Win Rate</small>
-          <strong>${esc(data.wr)}</strong>
-          <span>${esc(data.ct)} trades</span>
-        </div>
-      </div>
-    ` : `
-      <div class="kpis">
-        <div class="kpi" style="--ka:${data.gn ? '#34d399' : '#fb7185'}">
-          <small>Net P/L</small>
-          <strong>${esc(data.np)}</strong>
-          <span>${esc(data.sy)} · ${esc(data.sd)}</span>
-        </div>
-        <div class="kpi" style="--ka:#f3dc9b">
-          <small>Entry / Exit</small>
-          <strong>${esc(data.ex)}</strong>
-          <span>In ${esc(data.en)}</span>
-        </div>
-        <div class="kpi" style="--ka:#eef3ff">
-          <small>Volume</small>
-          <strong>${esc(data.vl)} lot</strong>
-          <span>SL ${esc(data.sl)}</span>
-        </div>
-      </div>
-    `);
-
-    const specs = isLife ? [
-      ['Trader Name', data.tr],
-      ['Total Payouts', `${data.life.count} Verified`],
-      ['Prop Firms', `${data.life.firmCount} Firms`],
-      ['Accounts', `${data.life.accountCount} Accounts`]
-    ] : (isCert ? [
-      ['Prop Firm / Broker', data.fm],
-      ['Account Login', `#${data.lg}`],
-      ['Starting Balance', data.sb],
-      ['Verified Equity', data.eq]
-    ] : [
-      ['Account Holder', data.tr],
-      ['Account Login', `#${data.lg}`],
-      ['Entry / Exit', `${data.en} / ${data.ex}`],
-      ['SL / TP', `${data.sl} / ${data.tp}`]
-    ]);
-
-    return `
-      <article class="card ${valid ? '' : 'bad'}">
-        <div class="topline"></div>
-        <div class="inner">
-          <div class="head">
-            <span class="issuer">${isLife ? 'Lifetime Reward Proof' : (isCert ? (data.po ? 'Achievement &amp; Payout Proof' : 'Target Achievement Proof') : 'Audited Execution Proof')}</span>
-            <span class="badge ${valid ? '' : 'bad'}"><i></i>${valid ? 'VERIFIED' : 'INVALID'}</span>
-          </div>
-
-          <div class="hero">
-            <div class="hero-l">
-              <h1 class="h1">${isLife ? 'Certificate of Lifetime Rewards' : (isCert ? (data.po ? 'Certificate of Achievement &amp; Payout' : 'Certificate of Target Achievement') : 'Verified Trade Performance')}</h1>
-              <div class="for">${isLife ? 'Awarded to' : (isCert ? 'Presented to' : 'Recorded execution')}</div>
-              <div class="name">${esc(isCert || isLife ? data.tr : `${data.sy} · ${data.sd}`)}</div>
-              <div class="submeta">${isLife ? `${esc(data.life.firmCount)} Prop Firms · ${esc(data.life.accountCount)} Accounts` : `${esc(data.fm)} · #${esc(data.lg)}`}</div>
-            </div>
-            ${sealSvg}
-          </div>
-
-          <div id="gpPayoutHost">${buildPayoutSectionHtml(expanded)}</div>
-          ${kpisHtml}
-
-          <div class="specs">
-            ${specs.map(([k, v]) => `<div class="srow"><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}
-          </div>
-
-          <div class="auth">
-            <div class="sign">
-              <div class="calli">Farid Siddiq</div>
-              <div class="sline"></div>
-              <b>FARID SIDDIQ</b>
-              <span>CEO · Golden Break Capital</span>
-            </div>
-            <div class="reg">
-              <div>${isLife ? 'PROOF ID' : (isCert ? 'CERT ID' : 'TICKET')} <b>${esc(isCert || isLife ? data.id : '#' + data.id)}</b></div>
-              <div>ISSUED <b>${esc(data.dt)}</b></div>
-              <div>SIG <b>0x${esc(sigShown)}</b></div>
-            </div>
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
-  let detailExpanded = false;
-
-  function bindPayoutEvents(sr){
-    const btnDetail = sr.getElementById('gpCheckDetail');
-    const listBox = sr.getElementById('gpTxList');
-    if(btnDetail && listBox){
-      btnDetail.onclick = () => {
-        detailExpanded = !detailExpanded;
-        btnDetail.setAttribute('aria-expanded', detailExpanded ? 'true' : 'false');
-        listBox.hidden = !detailExpanded;
-      };
-    }
-    sr.querySelectorAll('[data-copytx]').forEach(btn => {
-      let resetT = 0;
-      btn.onclick = async () => {
-        const tx = btn.getAttribute('data-copytx') || '';
-        const ok = await copyText(tx);
-        if(ok){
-          btn.innerHTML = icOk;
-          btn.classList.add('ok');
-          clearTimeout(resetT);
-          resetT = setTimeout(() => {
-            btn.innerHTML = icClip;
-            btn.classList.remove('ok');
-          }, 1800);
-        }
-      };
-    });
-  }
-
-  async function hydrateFromFirestore(sr){
-    if(!data || (!isCert && !isLife)) return;
-    const rawItems = await fetchCloudPayouts();
-    if(!rawItems.length) return;
-
-    if(isCert){
-      const matched = rawItems
-        .filter(r => matchAccountItem(r, data.lg))
-        .map(normalizePayoutItem)
-        .sort((a, b) => b.ts - a.ts);
-
-      if(matched.length){
-        const total = matched.reduce((s, r) => s + r.amountNum, 0);
-        const latest = matched[0];
-        data.poList = matched;
-        data.po = {
-          totalNum: total,
-          amount: fmtMoney(total, 'USD'),
-          count: matched.length,
-          netName: latest.netName,
-          host: latest.host,
-          token: latest.token,
-          txHash: latest.txHash,
-          explorerUrl: latest.explorerUrl
-        };
-        data.cloudSynced = true;
-        const host = sr.getElementById('gpPayoutHost');
-        if(host){
-          host.innerHTML = buildPayoutSectionHtml(detailExpanded);
-          bindPayoutEvents(sr);
+      // Cegah duplikasi TX Hash yang sama (kecuali sedang mengedit item itu sendiri)
+      if(txKey && txKey.length >= 16){
+        const dup = all.find(r => r.id !== editingId && normTx(r.txHash) === txKey);
+        if(dup){
+          setStatus('warn', `TX Hash ini sudah tercatat di "${dup.accountLabel}" ($${dup.amount}). Klik tombol ✎ pada baris tersebut jika ingin mengedit namanya/nominalnya.`);
+          return;
         }
       }
-    } else if(isLife){
-      const all = rawItems.map(normalizePayoutItem).sort((a, b) => b.ts - a.ts);
-      if(all.length){
-        const total = all.reduce((s, r) => s + r.amountNum, 0);
-        const firmMap = new Map();
-        const accSet = new Set();
-        all.forEach(r => {
-          const fn = (r.firm || '').trim() || 'Prop Firm';
-          const cur = firmMap.get(fn) || { firm: fn, total: 0, count: 0 };
-          cur.total += r.amountNum; cur.count += 1;
-          firmMap.set(fn, cur);
-          const ak = normId(r.login || r.accountId || r.accountLabel);
-          if(ak) accSet.add(ak);
+
+      let net = selNet.value;
+      if(net === 'AUTO'){
+        if(/^0x[0-9a-fA-F]{64}$/.test(tx)) net = 'A';
+        else if(/^[0-9a-fA-F]{64}$/.test(tx)) net = 'T';
+        else net = 'M';
+      }
+
+      isSaving = true;
+      btnSave.disabled = true;
+      btnSave.textContent = '⏳ Menyimpan…';
+
+      try {
+        const existing = editingId ? all.find(r => r.id === editingId) : null;
+        const record = sanitizeRecord({
+          id: existing ? existing.id : ('pp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)),
+          accountId: accId,
+          login: curLogin,
+          accountLabel: accLabel,
+          firm: inFirm.value.trim() || existing?.firm || 'Prop Firm',
+          txHash: tx,
+          net,
+          amount: Number(amt.toFixed(2)),
+          token: (inTok.value || NETS[net]?.token || 'USDT').trim().toUpperCase(),
+          cur: 'USD',
+          date: inDate.value || today,
+          note: inNote.value.trim(),
+          auto: existing ? existing.auto : !!(lastAutoMeta && lastAutoMeta.txHash && normTx(lastAutoMeta.txHash) === txKey),
+          ts: existing ? existing.ts : Date.now()
         });
-        const firms = [...firmMap.values()].sort((a, b) => b.total - a.total);
-        data.poList = all;
-        data.life = {
-          totalNum: total,
-          amount: fmtMoney(total, 'USD'),
-          count: all.length,
-          firmCount: Math.max(1, firms.length),
-          accountCount: Math.max(1, accSet.size),
-          firms
-        };
-        data.cloudSynced = true;
-        const cardWrap = sr.getElementById('gpCardWrap');
-        if(cardWrap){
-          cardWrap.innerHTML = buildBodyHtml(detailExpanded);
-          bindPayoutEvents(sr);
-        }
+
+        const next = existing
+          ? all.map(r => (r.id === existing.id ? record : r))
+          : [record, ...all];
+
+        saveLocal(next);
+        exitEditMode(true);
+        manRow.hidden = selAcc.value !== '__MANUAL__';
+        await pushToCloud(next, false);
+      } finally {
+        isSaving = false;
+        btnSave.disabled = false;
+        btnSave.textContent = editingId ? '✔ Simpan Perubahan & Sync Cloud' : '+ Simpan Payout Proof & Sync Cloud';
       }
-    }
-  }
-
-  function mount(){
-    const old = document.getElementById('gbcProofPortal');
-    if(old){
-      if(old.dataset.v === '5') return;
-      old.remove();
-    }
-    const oldCss = document.getElementById('gbc-proof-portal-css');
-    if(oldCss) oldCss.remove();
-
-    if(!document.querySelector('link[href*="Cormorant+Garamond"]')){
-      const fl = document.createElement('link'); fl.rel = 'stylesheet';
-      fl.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap';
-      document.head.appendChild(fl);
-    }
-
-    const host = document.createElement('div');
-    host.id = 'gbcProofPortal';
-    host.dataset.v = '5';
-    const sr = host.attachShadow({ mode: 'open' });
-
-    sr.innerHTML = `
-      <style>${SHADOW_CSS}</style>
-      <header class="nav">
-        <div class="nav-l">
-          <div class="mark">GB</div>
-          <div class="nav-t">
-            <b>GOLDEN BREAK CAPITAL</b>
-            <small>Official Verification Registry</small>
-          </div>
-        </div>
-        <button type="button" class="nav-btn" id="gpNavClose">← Terminal</button>
-      </header>
-      <main class="shell">
-        <div id="gpCardWrap">${buildBodyHtml(detailExpanded)}</div>
-        <div class="actions">
-          ${data ? `<button type="button" class="btn pri" id="gpExportPng">${icDown} Unduh Proof 3:4 (PNG)</button>` : ''}
-          <button type="button" class="btn" id="gpCopy">Salin Link</button>
-        </div>
-        <p class="legal">Verifikasi resmi Golden Break Terminal. Klik <b>Check Detail ›</b> untuk melihat seluruh daftar payout &amp; alamat TX Blockchain Explorer.</p>
-      </main>
-    `;
-    document.body.appendChild(host);
-
-    bindPayoutEvents(sr);
-
-    const closePortal = () => {
-      host.remove();
-      document.documentElement.classList.remove('gbc-proof-mode');
-      history.replaceState({}, '', location.pathname);
-    };
-    sr.getElementById('gpNavClose').onclick = closePortal;
-
-    const btnCopy = sr.getElementById('gpCopy');
-    btnCopy.onclick = async () => {
-      const ok = await copyText(location.href);
-      btnCopy.textContent = ok ? '✔ Tersalin' : 'Gagal Salin';
-      setTimeout(() => { btnCopy.textContent = 'Salin Link'; }, 1800);
     };
 
-    const btnExp = sr.getElementById('gpExportPng');
-    if(btnExp && data){
-      btnExp.onclick = async () => {
-        btnExp.disabled = true;
-        const orig = btnExp.innerHTML;
-        btnExp.textContent = 'Merender PNG 3:4...';
-        try { await exportProofPng34(); } finally {
-          btnExp.disabled = false;
-          btnExp.innerHTML = orig;
+    panel.addEventListener('click', async e => {
+      const editBtn = e.target.closest('[data-ppedit]');
+      if(editBtn){
+        const id = editBtn.getAttribute('data-ppedit');
+        const rec = loadAll().find(r => r.id === id);
+        if(!rec) return;
+        editingId = rec.id;
+        // Pilih akun di dropdown; jika tidak ada (akun manual/lama), otomatis pindah ke mode Manual
+        const hasOpt = [...selAcc.options].some(o => o.value === rec.accountId);
+        if(hasOpt){
+          selAcc.value = rec.accountId;
+          manRow.hidden = true;
+        } else {
+          selAcc.value = '__MANUAL__';
+          manRow.hidden = false;
+          inManLogin.value = rec.login || rec.accountId || '';
+          inManLabel.value = rec.accountLabel || '';
         }
-      };
-    }
+        inFirm.value = rec.firm || '';
+        inDate.value = rec.date || today;
+        inTx.value = rec.txHash || '';
+        selNet.value = NETS[rec.net] ? rec.net : 'M';
+        inAmt.value = Number(rec.amount || 0).toFixed(2);
+        inTok.value = rec.token || 'USDC';
+        inNote.value = rec.note || '';
+        editBar.hidden = false;
+        editTxt.textContent = `✎ Mengedit: ${rec.accountLabel} ($${Number(rec.amount).toFixed(2)})`;
+        btnSave.textContent = '✔ Simpan Perubahan & Sync Cloud';
+        renderPayoutList();
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
 
-    // Otomatis tarik daftar lengkap payout & total terbaru dari Firestore (1x baca publik)
-    hydrateFromFirestore(sr);
+      const delBtn = e.target.closest('[data-ppdel]');
+      if(delBtn){
+        if(isSaving) return;
+        const id = delBtn.getAttribute('data-ppdel');
+        if(editingId === id) exitEditMode(true);
+        const next = loadAll().filter(r => r.id !== id);
+        saveLocal(next);
+        await pushToCloud(next, false);
+      }
+    });
+
+    document.addEventListener('change', e => {
+      if(e.target && e.target.id === 'accountSelect'){
+        syncAccountOptions(selAcc, true);
+        renderPayoutList();
+      }
+    });
+    document.addEventListener('click', e => {
+      if(e.target.closest('.tab[data-view="wallet"]')){
+        setTimeout(() => { syncAccountOptions(selAcc); autofillFirmIfEmpty(); renderPayoutList(); }, 80);
+      }
+    });
+    setInterval(() => {
+      syncAccountOptions(selAcc, false);
+    }, 2500);
   }
 
-  if(document.body) mount();
-  else document.addEventListener('DOMContentLoaded', mount);
-  window.addEventListener('load', mount);
+  function bootstrapCloud(){
+    let tries = 0;
+    const poll = setInterval(() => {
+      tries++;
+      if(getFsAdapter()){ clearInterval(poll); pullFromCloud(true); }
+      else if(tries >= 40){ clearInterval(poll); setCloudBadge('Local Only', false); }
+    }, 300);
+  }
+
+  window.__GBC_PAYOUT = { loadAll, listForAccount, summaryForAccount, summaryLifetime, buildLifetimeProofUrl, pullFromCloud, pushToCloud, NETS };
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', () => { mountWalletPanel(); bootstrapCloud(); });
+  } else {
+    mountWalletPanel();
+    bootstrapCloud();
+  }
 })();
 </script>
 
