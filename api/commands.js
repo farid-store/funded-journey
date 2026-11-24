@@ -1,12 +1,9 @@
-// api/commands.js  (v4)
-// Antrian perintah Dashboard -> EA MT5.  accounts/{id}/commands/{commandId}
-//   { action, params[], status: pending | sent | done | error | expired, message, createdAt, sentAt, executedAt }
-//
-// PERBAIKAN v4 (Fix HTTP 401 RemoteControl polling):
-//  - Trim otomatis pada env EA_WEBHOOK_SECRET & DASHBOARD_PIN (cegah spasi/newline saat copy-paste di Vercel).
-//  - Terima token dari query (?token= / ?secret=), Header (X-EA-Token / Authorization: Bearer),
-//    serta pulihkan tanda '+' yang berubah jadi spasi bila EA tidak meng-URL-encode query string.
-//  - Header diagnosa X-Auth-Reason (missing_env | empty_token | token_mismatch) agar debugging instan.
+// api/commands.js  (v5 — Hemat Kuota Firestore + Anti-Timeout + Fix HTTP 401)
+// Optimasi kuota Read (Spark limit 50.000 Read/hari):
+//  1. Hapus read ganda resolveAccountId() pada GET: langsung query accounts/{login}/commands (hemat 50% Read).
+//  2. Throttle minimum polling di server (COMMANDS_MIN_POLL_SEC, default 15 dtk): polling berlebih dari EA
+//     langsung dijawab 200 kosong tanpa menyentuh Firestore (hemat 66–80% Read). Bypass otomatis jika baru ada POST.
+//  3. Circuit breaker & timeout 8 dtk: saat kuota Firestore habis, balas 503 cepat agar MT5 tidak hang (HTTP 1003).
 
 const admin = require('firebase-admin');
 const crypto = require('crypto');
@@ -14,6 +11,9 @@ const crypto = require('crypto');
 const TOKEN = String(process.env.EA_WEBHOOK_SECRET || '').trim();
 const PIN = String(process.env.DASHBOARD_PIN || '').trim();
 const COMMAND_TTL_SEC = Number(process.env.COMMAND_TTL_SEC || 90);
+const MIN_POLL_MS = Number(process.env.COMMANDS_MIN_POLL_SEC || 15) * 1000;
+const CMD_TIMEOUT_MS = Number(process.env.COMMANDS_TIMEOUT_MS || 8000);
+const CMD_BREAKER_MS = Number(process.env.COMMANDS_BREAKER_MS || 120000);
 
 if (!admin.apps.length) {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
@@ -28,13 +28,16 @@ const ALLOWED_ACTIONS = [
 ];
 const WALLET_NETWORKS = ['usdt-trc20', 'usdt-erc20', 'usdt-bep20', 'btc'];
 
+const lastPollAt = new Map();
+const pendingHintAt = new Map();
+let breakerUntil = 0;
+
 const safeEq = (a, b) => {
   const x = Buffer.from(String(a ?? ''));
   const y = Buffer.from(String(b ?? ''));
   return x.length > 0 && x.length === y.length && crypto.timingSafeEqual(x, y);
 };
 
-// Cek token EA secara toleran terhadap karakter '+' pada query string tanpa menurunkan keamanan.
 function verifyEaToken(req, bodyToken) {
   if (!TOKEN) return { ok: false, reason: 'missing_env_EA_WEBHOOK_SECRET' };
 
@@ -44,19 +47,13 @@ function verifyEaToken(req, bodyToken) {
     if (s) candidates.push(s);
   };
 
-  // 1. Dari body POST
   if (bodyToken !== undefined) push(bodyToken);
 
-  // 2. Dari query string
   const q = req.query || {};
   push(q.token);
   push(q.secret);
-  if (typeof q.token === 'string' && q.token.includes(' ')) {
-    // Query parser mengubah '+' yang tidak di-encode menjadi spasi
-    push(q.token.replace(/ /g, '+'));
-  }
+  if (typeof q.token === 'string' && q.token.includes(' ')) push(q.token.replace(/ /g, '+'));
 
-  // 3. Dari raw URL (pulihkan kasus token mengandung '+' atau '&' sebelum '&login=')
   const rawUrl = String(req.url || '');
   const mRaw = rawUrl.match(/[?&](?:token|secret)=([^#]*?)(?:&login=|$)/i);
   if (mRaw && mRaw[1]) {
@@ -64,7 +61,6 @@ function verifyEaToken(req, bodyToken) {
     try { push(decodeURIComponent(mRaw[1])); } catch (e) {}
   }
 
-  // 4. Dari HTTP headers
   const h = req.headers || {};
   push(h['x-ea-token']);
   push(h['x-webhook-token']);
@@ -77,14 +73,6 @@ function verifyEaToken(req, bodyToken) {
     if (safeEq(c, TOKEN)) return { ok: true, reason: 'ok' };
   }
   return { ok: false, reason: 'token_mismatch' };
-}
-
-async function resolveAccountId(login) {
-  if (!login) return null;
-  const direct = await db.collection('accounts').doc(String(login)).get();
-  if (direct.exists) return direct.id;
-  const q = await db.collection('accounts').where('login', '==', String(login)).limit(1).get();
-  return q.empty ? null : q.docs[0].id;
 }
 
 function parsePrice(raw, label) {
@@ -125,14 +113,30 @@ function cleanWallets(list) {
   });
 }
 
+function withTimeout(promise, ms) {
+  let tm;
+  const timeout = new Promise((_, rej) => {
+    tm = setTimeout(() => rej(Object.assign(new Error('firestore_timeout'), { code: 'TIMEOUT' })), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(tm));
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-EA-Token, X-Webhook-Token');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
+  const now = Date.now();
+  if (now < breakerUntil) {
+    const wait = Math.ceil((breakerUntil - now) / 1000);
+    res.setHeader('Retry-After', String(wait));
+    if (req.method === 'GET') return res.status(503).send('');
+    return res.status(503).json({ ok: false, error: 'firestore_unavailable', retryAfterSec: wait });
+  }
+
   try {
-    // ============ GET: EA mengambil perintah pending ============
+    // ============ GET: EA mengambil perintah pending (maks 1 Read per 15 dtk) ============
     if (req.method === 'GET') {
       const authRes = verifyEaToken(req);
       if (!authRes.ok) {
@@ -141,15 +145,26 @@ module.exports = async (req, res) => {
       }
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 
-      const login = (req.query && (req.query.login || req.query.accountId)) || '';
-      const accountId = await resolveAccountId(login);
+      const accountId = String((req.query && (req.query.login || req.query.accountId)) || '').trim();
       if (!accountId) return res.status(200).send('');
 
-      const snap = await db.collection('accounts').doc(accountId).collection('commands')
-        .where('status', '==', 'pending').limit(50).get();
+      // Hemat Read: jika baru dicek < MIN_POLL_MS dan belum ada POST baru di instance ini, balas kosong (0 Read)
+      const prevPoll = lastPollAt.get(accountId) || 0;
+      const hintAt = pendingHintAt.get(accountId) || 0;
+      if (MIN_POLL_MS > 0 && hintAt <= prevPoll && (now - prevPoll) < MIN_POLL_MS) {
+        res.setHeader('X-Commands-Throttle', '1');
+        return res.status(200).send('');
+      }
+      lastPollAt.set(accountId, now);
+
+      // Langsung query subkoleksi commands (1 Read, bukan 2 Read!)
+      const snap = await withTimeout(
+        db.collection('accounts').doc(accountId).collection('commands')
+          .where('status', '==', 'pending').limit(20).get(),
+        CMD_TIMEOUT_MS
+      );
       if (snap.empty) return res.status(200).send('');
 
-      const now = Date.now();
       const rows = snap.docs
         .map((d) => ({ ref: d.ref, id: d.id, c: d.data() }))
         .map((r) => ({ ...r, t: r.c.createdAt?.toMillis ? r.c.createdAt.toMillis() : now }))
@@ -170,7 +185,7 @@ module.exports = async (req, res) => {
         const params = Array.isArray(r.c.params) ? r.c.params.join(';') : String(r.c.params || '');
         lines.push(`${r.id}|${r.c.action}|${params.replace(/[|\n\r]/g, ' ')}`);
       }
-      await batch.commit();
+      await withTimeout(batch.commit(), CMD_TIMEOUT_MS);
       return res.status(200).send(lines.join('\n'));
     }
 
@@ -185,15 +200,18 @@ module.exports = async (req, res) => {
         res.setHeader('X-Auth-Reason', authRes.reason);
         return res.status(401).json({ ok: false, error: authRes.reason });
       }
-      const accountId = (await resolveAccountId(body.login)) || body.accountId;
+      const accountId = String(body.login || body.accountId || '').trim();
       if (!accountId) return res.status(200).json({ ok: true });
-      await db.collection('accounts').doc(accountId).collection('commands').doc(String(body.commandId)).set(
-        {
-          status: body.status === 'error' ? 'error' : 'done',
-          message: String(body.message || '').slice(0, 300),
-          executedAt: FieldValue.serverTimestamp(),
-        },
-        { merge: true }
+      await withTimeout(
+        db.collection('accounts').doc(accountId).collection('commands').doc(String(body.commandId)).set(
+          {
+            status: body.status === 'error' ? 'error' : 'done',
+            message: String(body.message || '').slice(0, 300),
+            executedAt: FieldValue.serverTimestamp(),
+          },
+          { merge: true }
+        ),
+        CMD_TIMEOUT_MS
       );
       return res.status(200).json({ ok: true });
     }
@@ -209,7 +227,10 @@ module.exports = async (req, res) => {
 
     if (body.action === 'save_wallets') {
       const wallets = cleanWallets(body.wallets);
-      await db.collection('payoutWallets').doc('config').set({ wallets, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
+      await withTimeout(
+        db.collection('payoutWallets').doc('config').set({ wallets, updatedAt: FieldValue.serverTimestamp() }, { merge: true }),
+        CMD_TIMEOUT_MS
+      );
       return res.status(200).json({ ok: true });
     }
 
@@ -221,8 +242,9 @@ module.exports = async (req, res) => {
     try { params = buildParams(action, body.params); }
     catch (e) { return res.status(400).json({ ok: false, error: e.message }); }
 
-    const accRef = db.collection('accounts').doc(String(accountId));
-    const accSnap = await accRef.get();
+    const accIdStr = String(accountId).trim();
+    const accRef = db.collection('accounts').doc(accIdStr);
+    const accSnap = await withTimeout(accRef.get(), CMD_TIMEOUT_MS);
     if (!accSnap.exists) return res.status(404).json({ ok: false, error: 'akun tidak ditemukan' });
 
     if (action === 'open_order') {
@@ -233,12 +255,22 @@ module.exports = async (req, res) => {
       }
     }
 
-    const ref = await accRef.collection('commands').add({
-      action, params, status: 'pending', source: pinOk ? 'dashboard' : 'api', createdAt: FieldValue.serverTimestamp(),
-    });
+    const ref = await withTimeout(
+      accRef.collection('commands').add({
+        action, params, status: 'pending', source: pinOk ? 'dashboard' : 'api', createdAt: FieldValue.serverTimestamp(),
+      }),
+      CMD_TIMEOUT_MS
+    );
+    pendingHintAt.set(accIdStr, Date.now());
     return res.status(200).json({ ok: true, commandId: ref.id });
   } catch (e) {
     console.error(e);
+    if (e && (e.code === 8 || e.code === 'TIMEOUT' || /RESOURCE_EXHAUSTED|quota/i.test(String(e)))) {
+      breakerUntil = Date.now() + CMD_BREAKER_MS;
+      return req.method === 'GET'
+        ? res.status(503).send('')
+        : res.status(503).json({ ok: false, error: 'firestore_unavailable', retryAfterSec: Math.ceil(CMD_BREAKER_MS / 1000) });
+    }
     return res.status(500).json({ ok: false, error: String(e) });
   }
 };
