@@ -5,7 +5,7 @@
  * Cukup edit file ini jika ingin mengganti:
  * - Logo/Piala (pakai file PNG di folder theme/ atau Piala Akrilik kode)
  * - Warna latar, bingkai, aksen emas, teks, dan font
- * - Pengaturan khusus per jenis sertifikat (CERT, LIFE, PNL, STUDIO)
+ * - Pengaturan khusus per jenis sertifikat (CERT, LIFE, PNL, STUDIO, STUDIO_CARD)
  *
  * TIDAK PERLU mengedit index.html lagi setelah engine tersambung.
  */
@@ -94,7 +94,6 @@ window.GBC_CERT_CONFIG = {
   // B. Sertifikat Lifetime Rewards (Akumulasi All-Time Payout)
   LIFE: {
     emblemMode: 'auto',
-    // Jika file trophy-lifetime.png belum ada, otomatis jatuh ke theme/achievement.png -> Akrilik
     emblemImage: 'theme/trophy-lifetime.png',
     plateText: 'LIFETIME',
     palette: {
@@ -104,17 +103,24 @@ window.GBC_CERT_CONFIG = {
     }
   },
 
-  // C. Bukti Eksekusi Trade (Verified Trade Performance Proof)
+  // C. Bukti Eksekusi Trade di Web Proof Portal
   PNL: {
     emblemMode: 'auto',
     emblemImage: 'theme/trophy-pnl.png',
     plateText: 'AUDITED'
   },
 
-  // D. Sertifikat & Kartu di Tab Market Replay / Trade Studio
+  // D. Sertifikat Achievement di Tab Command Intel · Trade Studio (5 format)
   STUDIO: {
     emblemMode: 'auto',
     emblemImage: 'theme/achievement.png',
-    plateText: 'FUNDED'
+    plateText: 'ACHIEVEMENT'
+  },
+
+  // E. Kartu P/L Per Trade di Tab Command Intel · Trade Studio (1080x1744)
+  STUDIO_CARD: {
+    emblemMode: 'auto',
+    emblemImage: 'theme/trophy-pnl.png',
+    plateText: 'AUDITED'
   }
 };
