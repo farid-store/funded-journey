@@ -1,36 +1,18 @@
-// api/commands.js  (v3)
+// api/commands.js  (v4)
 // Antrian perintah Dashboard -> EA MT5.  accounts/{id}/commands/{commandId}
 //   { action, params[], status: pending | sent | done | error | expired, message, createdAt, sentAt, executedAt }
 //
-// ALUR
-//   Dashboard --POST {pin, accountId, action, params}--> endpoint ini --> Firestore (pending)
-//   EA --GET ?token&login (tiap ~5 dtk)--> baris "id|action|p1;p2;p3;p4"  (status jadi "sent")
-//   EA --POST {token, login, commandId, status, message}--> status akhir (done/error)
-//
-// YANG DIPERBAIKI
-//  1. GET tidak lagi memakai where()+orderBy() -> TIDAK butuh composite index Firestore.
-//  2. Daftar action disamakan dengan EA: ea_on, ea_off, sync_on, sync_off.
-//  3. Perintah yang tidak diambil EA dalam COMMAND_TTL_SEC (default 90 dtk) otomatis "expired".
-//  4. At-most-once: begitu dikirim ke EA statusnya "sent", tidak terkirim dua kali.
-//  5. Dashboard membuat perintah lewat endpoint ini dengan PIN (DASHBOARD_PIN).
-//  6. Validasi parameter open_order / close_ticket. Pesan error jelas utk dashboard.
-//  7. Aksi admin "save_wallets" (kelola wallet payout) juga lewat PIN.
-//
-// BARU DI v3
-//  8. open_order kini MENERUSKAN Stop Loss & Take Profit: params = [dir, lot, sl, tp].
-//     (v2 hanya meneruskan [dir, lot] sehingga SL/TP dari dashboard dibuang dan EA yang
-//     memakai Max Floating Loss menolak semua order web karena "SL wajib".)
-//  9. Bila akun melaporkan maxFloatingLossEnabled=true, order tanpa SL ditolak di sini
-//     (pesan jelas ke dashboard) sebelum antre ke EA. Validasi risiko final tetap di EA.
-//
-// ENV VERCEL: FIREBASE_SERVICE_ACCOUNT, EA_WEBHOOK_SECRET, DASHBOARD_PIN (WAJIB, buat sendiri),
-//             COMMAND_TTL_SEC (opsional)
+// PERBAIKAN v4 (Fix HTTP 401 RemoteControl polling):
+//  - Trim otomatis pada env EA_WEBHOOK_SECRET & DASHBOARD_PIN (cegah spasi/newline saat copy-paste di Vercel).
+//  - Terima token dari query (?token= / ?secret=), Header (X-EA-Token / Authorization: Bearer),
+//    serta pulihkan tanda '+' yang berubah jadi spasi bila EA tidak meng-URL-encode query string.
+//  - Header diagnosa X-Auth-Reason (missing_env | empty_token | token_mismatch) agar debugging instan.
 
 const admin = require('firebase-admin');
 const crypto = require('crypto');
 
-const TOKEN = process.env.EA_WEBHOOK_SECRET;
-const PIN = process.env.DASHBOARD_PIN;
+const TOKEN = String(process.env.EA_WEBHOOK_SECRET || '').trim();
+const PIN = String(process.env.DASHBOARD_PIN || '').trim();
 const COMMAND_TTL_SEC = Number(process.env.COMMAND_TTL_SEC || 90);
 
 if (!admin.apps.length) {
@@ -52,6 +34,51 @@ const safeEq = (a, b) => {
   return x.length > 0 && x.length === y.length && crypto.timingSafeEqual(x, y);
 };
 
+// Cek token EA secara toleran terhadap karakter '+' pada query string tanpa menurunkan keamanan.
+function verifyEaToken(req, bodyToken) {
+  if (!TOKEN) return { ok: false, reason: 'missing_env_EA_WEBHOOK_SECRET' };
+
+  const candidates = [];
+  const push = (v) => {
+    const s = String(v ?? '').trim();
+    if (s) candidates.push(s);
+  };
+
+  // 1. Dari body POST
+  if (bodyToken !== undefined) push(bodyToken);
+
+  // 2. Dari query string
+  const q = req.query || {};
+  push(q.token);
+  push(q.secret);
+  if (typeof q.token === 'string' && q.token.includes(' ')) {
+    // Query parser mengubah '+' yang tidak di-encode menjadi spasi
+    push(q.token.replace(/ /g, '+'));
+  }
+
+  // 3. Dari raw URL (pulihkan kasus token mengandung '+' atau '&' sebelum '&login=')
+  const rawUrl = String(req.url || '');
+  const mRaw = rawUrl.match(/[?&](?:token|secret)=([^#]*?)(?:&login=|$)/i);
+  if (mRaw && mRaw[1]) {
+    push(mRaw[1]);
+    try { push(decodeURIComponent(mRaw[1])); } catch (e) {}
+  }
+
+  // 4. Dari HTTP headers
+  const h = req.headers || {};
+  push(h['x-ea-token']);
+  push(h['x-webhook-token']);
+  push(h['x-token']);
+  const auth = String(h.authorization || '');
+  if (/^bearer\s+/i.test(auth)) push(auth.replace(/^bearer\s+/i, ''));
+
+  if (!candidates.length) return { ok: false, reason: 'empty_token' };
+  for (const c of candidates) {
+    if (safeEq(c, TOKEN)) return { ok: true, reason: 'ok' };
+  }
+  return { ok: false, reason: 'token_mismatch' };
+}
+
 async function resolveAccountId(login) {
   if (!login) return null;
   const direct = await db.collection('accounts').doc(String(login)).get();
@@ -60,9 +87,8 @@ async function resolveAccountId(login) {
   return q.empty ? null : q.docs[0].id;
 }
 
-// angka harga (SL/TP): kosong -> 0 (tidak dipasang). Negatif / bukan angka -> error.
 function parsePrice(raw, label) {
-  const t = String(raw ?? '').trim();
+  const t = String(raw ?? '').trim().replace(',', '.');
   if (t === '') return 0;
   const v = Number(t);
   if (!Number.isFinite(v) || v < 0) throw new Error(`${label} tidak valid`);
@@ -73,12 +99,11 @@ function buildParams(action, params) {
   const p = Array.isArray(params) ? params.map((x) => String(x ?? '').trim()) : [];
   if (action === 'open_order') {
     const dir = (p[0] || '').toLowerCase();
-    const lot = Number(p[1]);
+    const lot = Number((p[1] || '').replace(',', '.'));
     if (dir !== 'buy' && dir !== 'sell') throw new Error("arah harus 'buy' atau 'sell'");
     if (!(lot > 0 && lot <= 100)) throw new Error('lot tidak valid (0 - 100)');
     const sl = parsePrice(p[2], 'Stop Loss');
     const tp = parsePrice(p[3], 'Take Profit');
-    // format ke EA: "dir;lot;sl;tp"  (0 = tidak dipasang)
     return [dir, String(lot), String(sl), String(tp)];
   }
   if (action === 'close_ticket') {
@@ -103,20 +128,23 @@ function cleanWallets(list) {
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-EA-Token, X-Webhook-Token');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
     // ============ GET: EA mengambil perintah pending ============
     if (req.method === 'GET') {
-      const { token, login } = req.query;
-      if (!TOKEN || !safeEq(token, TOKEN)) return res.status(401).send('');
+      const authRes = verifyEaToken(req);
+      if (!authRes.ok) {
+        res.setHeader('X-Auth-Reason', authRes.reason);
+        return res.status(401).send(authRes.reason);
+      }
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 
+      const login = (req.query && (req.query.login || req.query.accountId)) || '';
       const accountId = await resolveAccountId(login);
       if (!accountId) return res.status(200).send('');
 
-      // hanya filter 1 field -> pakai index otomatis Firestore, urutkan di memori
       const snap = await db.collection('accounts').doc(accountId).collection('commands')
         .where('status', '==', 'pending').limit(50).get();
       if (snap.empty) return res.status(200).send('');
@@ -152,7 +180,11 @@ module.exports = async (req, res) => {
 
     // ============ POST (a): EA melapor hasil eksekusi ============
     if (body.commandId) {
-      if (!TOKEN || !safeEq(body.token, TOKEN)) return res.status(401).json({ ok: false, error: 'invalid token' });
+      const authRes = verifyEaToken(req, body.token);
+      if (!authRes.ok) {
+        res.setHeader('X-Auth-Reason', authRes.reason);
+        return res.status(401).json({ ok: false, error: authRes.reason });
+      }
       const accountId = (await resolveAccountId(body.login)) || body.accountId;
       if (!accountId) return res.status(200).json({ ok: true });
       await db.collection('accounts').doc(accountId).collection('commands').doc(String(body.commandId)).set(
@@ -167,8 +199,8 @@ module.exports = async (req, res) => {
     }
 
     // ============ POST (b): dashboard / admin ============
-    const tokenOk = TOKEN && safeEq(body.token, TOKEN);
-    const pinOk = PIN && safeEq(body.pin, PIN);
+    const tokenOk = verifyEaToken(req, body.token).ok;
+    const pinOk = PIN && safeEq(String(body.pin ?? '').trim(), PIN);
     if (!tokenOk && !pinOk) {
       return PIN
         ? res.status(401).json({ ok: false, error: 'PIN salah' })
@@ -193,7 +225,6 @@ module.exports = async (req, res) => {
     const accSnap = await accRef.get();
     if (!accSnap.exists) return res.status(404).json({ ok: false, error: 'akun tidak ditemukan' });
 
-    // Max Floating Loss aktif di EA -> order wajib membawa Stop Loss (validasi risiko final dilakukan EA)
     if (action === 'open_order') {
       const acc = accSnap.data() || {};
       const maxFlOn = acc.maxFloatingLossEnabled === true && Number(acc.maxFloatingLossPct || 0) > 0;
