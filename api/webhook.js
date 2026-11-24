@@ -1010,6 +1010,9 @@ function peekBody(req) {
   return b && typeof b === 'object' ? b : null;
 }
 
+const SIG_BYPASS_MIN_MS = Number(process.env.SIG_BYPASS_MIN_SEC || 10) * 1000;
+const lastSignalSig = new Map();
+
 function tradeSigOf(b) {
   if (!b) return '';
   const pos = Array.isArray(b.positions) ? b.positions.map((p) => String(p?.ticket || '')).sort().join(',') : '';
@@ -1024,10 +1027,24 @@ function tradeSigOf(b) {
   return `${pos}|${histLen}|${maxClose}`;
 }
 
+function signalSigOf(b) {
+  if (!b) return '';
+  const sigPart = Array.isArray(b.sig)
+    ? b.sig.map((s) => `${s?.tf || ''}:${s?.stage || s?.state || ''}:${s?.dir || s?.side || ''}`).join(',')
+    : '';
+  const evPart = Array.isArray(b.sigEv)
+    ? b.sigEv.slice(-10).map((e) => `${e?.id || ''}:${e?.stage || ''}`).join(',')
+    : '';
+  const outPart = Array.isArray(b.sigOut)
+    ? b.sigOut.slice(-10).map((o) => `${o?.id || ''}:${o?.res || ''}`).join(',')
+    : '';
+  return `${sigPart}#${evPart}#${outPart}`;
+}
+
 function isThrottleableReason(b) {
   if (!b) return false;
   const r = String(b.reason || 'periodic').toLowerCase();
-  if (/(trade|order|deal|open|close|modify|init|start|manual|command|cmd|sync_now|breach)/.test(r)) return false;
+  if (/(trade|order|deal|open|close|modify|init|start|manual|command|cmd|sync_now|breach|sig|signal)/.test(r)) return false;
   return r === 'periodic' || r === 'timer' || r === 'heartbeat' || r === 'tick' || r === 'unknown';
 }
 
@@ -1045,6 +1062,7 @@ module.exports = async (req, res) => {
       lastFailMsg,
       marketBarsMode: MARKET_BARS_MODE,
       periodicMinSec: PERIODIC_MIN_MS / 1000,
+      sigBypassMinSec: SIG_BYPASS_MIN_MS / 1000,
       timeoutMs: HANDLER_TIMEOUT_MS,
     });
   }
@@ -1053,8 +1071,11 @@ module.exports = async (req, res) => {
   const b = peekBody(req);
   const accKey = b && b.account ? String(b.account.login || '').trim() : '';
   const tSig = tradeSigOf(b);
-  const tradeChanged = !!(accKey && lastTradeSig.has(accKey) && lastTradeSig.get(accKey) !== tSig);
+  const sSig = signalSigOf(b);
   const t0 = Date.now();
+  const sinceLast = t0 - (lastWrite.get(accKey) || 0);
+  const tradeChanged = !!(accKey && lastTradeSig.has(accKey) && lastTradeSig.get(accKey) !== tSig);
+  const sigChanged = !!(accKey && lastSignalSig.has(accKey) && lastSignalSig.get(accKey) !== sSig && sinceLast >= SIG_BYPASS_MIN_MS);
 
   if (t0 < breakerUntil) {
     const wait = Math.ceil((breakerUntil - t0) / 1000);
@@ -1062,8 +1083,8 @@ module.exports = async (req, res) => {
     return res.status(503).json({ ok: false, error: 'firestore_unavailable', retryAfterSec: wait });
   }
 
-  // Jangan pernah throttle bila posisi/history berubah (trade baru masuk atau selesai ditutup)
-  if (!tradeChanged && PERIODIC_MIN_MS > 0 && accKey && isThrottleableReason(b) && t0 - (lastWrite.get(accKey) || 0) < PERIODIC_MIN_MS) {
+  // Bypass otomatis saat trade masuk/tutup atau sinyal M1/M3/dll berubah status
+  if (!tradeChanged && !sigChanged && PERIODIC_MIN_MS > 0 && accKey && isThrottleableReason(b) && sinceLast < PERIODIC_MIN_MS) {
     lastOkAt = t0;
     return res.status(200).json({ ok: true, throttled: true, newTrades: 0, marketBarsWritten: 0 });
   }
@@ -1090,6 +1111,7 @@ module.exports = async (req, res) => {
       if (accKey) {
         lastWrite.set(accKey, Date.now());
         lastTradeSig.set(accKey, tSig);
+        lastSignalSig.set(accKey, sSig);
       }
       await notifyRecovery();
     }
