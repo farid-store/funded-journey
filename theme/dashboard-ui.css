@@ -7,7 +7,8 @@
      Black #101214 · Graphite #1C2024 · Ivory #F2EFE8 · Gold #C5A46D · Grey #A5A7A8
    - Memadatkan header & menyulap #eaStrip / #accountStrip dari daftar vertikal
      panjang menjadi strip metrik horizontal yang langsung terbaca
-   - Menyamakan sidebar desktop pro (220px ikon + label) di semua tema Pro
+   - Menyamakan & merapikan presisi sidebar (desktop & mobile) di semua tema Pro
+     (Graphite, Soft, Emerald), sementara Citadel tetap memakai gaya aslinya
    ============================================================================ */
 
 /* ---------- 1. Palet & Tipografi Locked untuk Tema Default (Graphite) ---------- */
@@ -137,8 +138,7 @@ html[data-pro][data-theme] .top-actions {
   gap: 8px;
 }
 
-/* ---------- 4. Perbaikan Besar: #eaStrip & #accountStrip Jadi Horizontal Ringkas ---------- */
-/* Mengatasi masalah daftar vertikal 1 kolom yang sebelumnya memakan setengah layar */
+/* ---------- 4. #eaStrip & #accountStrip Jadi Horizontal Ringkas ---------- */
 html[data-pro] #eaStrip,
 html[data-pro] #accountStrip {
   display: flex;
@@ -208,62 +208,113 @@ html[data-pro] #accountStrip > span b {
   font-size: 11.5px;
 }
 
-/* ---------- 5. Sidebar Desktop Seragam (220px Ikon + Teks) untuk Semua Tema Pro ---------- */
+/* ---------- 5. Sidebar Desktop Presisi & Rata (Semua Tema Pro; Citadel tetap asli) ---------- */
 @media (min-width: 901px) {
-  html[data-pro] .layout {
-    grid-template-columns: 220px minmax(0, 1fr);
+  html[data-pro][data-theme]:not(.z0):not(.z9) .layout {
+    grid-template-columns: 224px minmax(0, 1fr);
     gap: 16px;
   }
 
-  html[data-pro] .nav {
-    padding: 12px 9px;
-    gap: 3px;
+  html[data-pro][data-theme]:not(.z0):not(.z9) .nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 8px;
+    gap: 2px;
     border-radius: 14px;
     border: 1px solid var(--line);
     background: var(--surface);
   }
 
-  html[data-pro] .navsep {
+  html[data-pro][data-theme]:not(.z0):not(.z9) .navsep {
+    display: block;
+    flex: 0 0 auto;
+    height: 1px;
     margin: 7px 6px;
     background: var(--line);
     opacity: 1;
   }
 
   html[data-pro][data-theme]:not(.z0):not(.z9) .tab {
+    display: flex;
     flex-direction: row;
-    justify-content: flex-start;
     align-items: center;
+    justify-content: flex-start;
     gap: 11px;
+    flex: 0 0 auto;
     width: 100%;
-    padding: 9px 11px;
+    min-height: 38px;
+    margin: 0;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--fb);
     font-size: 12.5px;
     font-weight: 600;
-    text-align: left;
-    border-radius: 9px;
-    color: var(--muted);
-    border: 1px solid transparent;
+    line-height: 1.25;
     letter-spacing: 0;
     text-transform: none;
+    text-align: left;
   }
 
-  html[data-pro][data-theme]:not(.z0):not(.z9) .tab .tico {
+  /* Kunci kotak ikon 22x22 dan matikan lompatan 3D hover dari CSS dasar */
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab .tico,
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab:hover .tico,
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab:active .tico,
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active .tico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 22px;
+    min-width: 22px;
     height: 22px;
-    flex: none;
+    flex: 0 0 22px;
+    margin: 0;
+    padding: 0;
+    border: 0;
     border-radius: 6px;
+    background: transparent;
+    box-shadow: none;
+    transform: none;
+    font-size: 16px;
+    line-height: 1;
   }
 
+  /* Hilangkan vertical-align:-.2em & drop-shadow lama agar SVG tepat di titik tengah */
   html[data-pro][data-theme]:not(.z0):not(.z9) .tab .tico .ic {
+    display: block;
     width: 18px;
     height: 18px;
+    margin: 0;
+    vertical-align: 0;
+    color: var(--muted);
+    filter: none;
+    stroke-width: 1.9;
   }
 
-  html[data-pro][data-theme]:not(.z0):not(.z9) .tab > span:last-child {
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab .tico > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    filter: none;
+  }
+
+  /* Label teks: berlaku juga pada tab yang punya titik notifikasi (.pip) */
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab > span:not(.tico):not(.pip) {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: block;
+    margin: 0;
+    padding: 0;
     text-align: left;
     line-height: 1.25;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   html[data-pro][data-theme]:not(.z0):not(.z9) .tab:hover {
@@ -271,28 +322,48 @@ html[data-pro] #accountStrip > span b {
     color: var(--text);
   }
 
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab:hover .tico .ic {
+    color: var(--text);
+  }
+
   html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active {
     background: var(--gold-soft);
     border-color: color-mix(in srgb, var(--gold) 34%, transparent);
     color: var(--gold);
+    box-shadow: none;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active .tico .ic {
+    color: var(--gold);
   }
 
   html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active::before {
+    content: "";
+    display: block;
+    position: absolute;
     left: 0;
-    top: 8px;
-    bottom: 8px;
+    top: 7px;
+    bottom: 7px;
     width: 3px;
+    height: auto;
     border-radius: 0 3px 3px 0;
     background: var(--gold);
+    box-shadow: none;
   }
 
-  html[data-pro] .tab .pip {
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active::after {
+    display: none;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab .pip {
+    position: absolute;
     top: 50%;
     right: 10px;
     transform: translateY(-50%);
     width: 8px;
     height: 8px;
     border-width: 1.5px;
+    margin: 0;
   }
 }
 
@@ -388,24 +459,100 @@ html[data-pro] .modal-head h3 {
   color: var(--text);
 }
 
-/* ---------- 7. Ergonomi Mobile (<= 900px & <= 760px) ---------- */
+/* ---------- 7. Ergonomi Mobile & Bottom Dock Rapi (<= 900px & <= 760px) ---------- */
 @media (max-width: 900px) {
-  html[data-pro] .nav {
+  html[data-pro][data-theme]:not(.z0):not(.z9) .nav {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 4px;
+    padding: 6px 8px;
     border: 1px solid var(--line2);
-    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    background: color-mix(in srgb, var(--surface) 95%, transparent);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
   }
 
-  html[data-pro] .tab.active {
-    background: var(--gold-soft);
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 68px;
+    min-height: 54px;
+    padding: 6px 8px 9px;
+    margin: 0;
     border-radius: 10px;
+    font-family: var(--fb);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab .tico,
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab:hover .tico,
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab:active .tico,
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active .tico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    transform: none;
+    line-height: 1;
+    font-size: 16px;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab .tico .ic {
+    display: block;
+    width: 19px;
+    height: 19px;
+    margin: 0;
+    vertical-align: 0;
+    color: var(--muted);
+    filter: none;
+    stroke-width: 1.9;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab > span:not(.tico):not(.pip) {
+    display: block;
+    max-width: 78px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active {
+    background: var(--gold-soft);
+    color: var(--gold);
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active .tico .ic {
+    color: var(--gold);
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab .pip {
+    top: 4px;
+    right: 12px;
+    transform: none;
   }
 }
 
 @media (max-width: 760px) {
-  /* Strip EA & Akun di HP: ringkas horizontal scroll 1 baris agar konten utama langsung terlihat */
   html[data-pro] #eaStrip,
   html[data-pro] #accountStrip {
     flex-wrap: nowrap;
