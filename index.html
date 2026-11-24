@@ -4527,7 +4527,7 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="theme/dashboard-ui.css?v=1">
 
 <script src="theme/cert-config.js?v=1"></script>
 <script src="theme/cert-engine.js?v=1"></script>
@@ -14672,30 +14672,81 @@ function exportCsv(){
   const rows=S.closed.map(t=>[t.id,t.side,t.lots,new Date(t.openT*1000).toISOString(),t.entry,new Date(t.closeT*1000).toISOString(),t.exit,t.sl,t.tp,t.reason,t.R!=null?t.R.toFixed(3):'',t.comm.toFixed(2),t.pnl.toFixed(2)].join(','));
   download(`backtest_${(S.name||'data').replace(/\W+/g,'_')}.csv`,new Blob([[hd,...rows].join('\n')],{type:'text/csv'}));
 }
-function exportPng(){
+async function exportPng(){
   if(!S.B)return msg('Muat data dulu.','err');
-  const W=1200,H=675,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d'),C=pal(),st=stats();
-  const UI='Inter,"Segoe UI",system-ui,sans-serif',MN='"JetBrains Mono",ui-monospace,Menlo,monospace';
-  g.fillStyle='#0b0d12';g.fillRect(0,0,W,H);
-  let gr=g.createRadialGradient(W*.9,-40,0,W*.9,-40,W*.7);gr.addColorStop(0,'rgba(217,176,104,.16)');gr.addColorStop(1,'rgba(217,176,104,0)');g.fillStyle=gr;g.fillRect(0,0,W,H);
+  try{if(document.fonts&&document.fonts.ready)await document.fonts.ready;}catch(e){}
+  const eng=window.GBC_CERT_ENGINE;
+  const theme=eng&&typeof eng.getTheme==='function'?eng.getTheme('BACKTEST'):{
+    brand:{monogram:'GB',name:'GOLDEN BREAK CAPITAL'},
+    palette:{bgTop:'#161A1E',bgMid:'#101214',bgBottom:'#0C0E10',surface:'#1C2024',surfaceAlt:'#14171B',border:'rgba(197,164,109,0.28)',borderSoft:'rgba(242,239,232,0.10)',goldLight:'#EFE2BC',goldMid:'#C5A46D',goldDark:'#8C6B32',textMain:'#F2EFE8',textMuted:'#A5A7A8',textFaint:'#74787D',positive:'#34D399',negative:'#EF6270',glowColor:'rgba(197,164,109,0.10)'},
+    fonts:{headline:'"Playfair Display",Georgia,serif',body:'"DM Sans","Inter",system-ui,sans-serif',display:'"DM Sans","Inter",sans-serif',mono:'"JetBrains Mono",ui-monospace,monospace'}
+  };
+  const PAL=theme.palette,FNT=theme.fonts,BRD=theme.brand||{monogram:'GB',name:'GOLDEN BREAK CAPITAL'};
+  const W=1200,H=675,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d'),st=stats();
+  const UI=FNT.body,HD=FNT.headline,MN=FNT.mono;
+
+  if(eng&&typeof eng.drawCanvasFrame==='function'){
+    await eng.drawCanvasFrame(g,W,H,{type:'BACKTEST',valid:!S.breach});
+  }else{
+    g.fillStyle=PAL.bgMid;g.fillRect(0,0,W,H);
+  }
+
   const txt=(t,x,y,sz,col,wt,al,fam)=>{g.font=`${wt||500} ${sz}px ${fam||UI}`;g.fillStyle=col;g.textAlign=al||'left';g.textBaseline='alphabetic';g.fillText(t,x,y);};
-  g.fillStyle='#d9b068';g.beginPath();g.roundRect(48,40,48,48,12);g.fill();txt('GB',72,72,19,'#1a1306',800,'center');
-  txt('Backtest Result',112,66,32,'#eef1f6',700);txt(`${S.name} · ${tfName(S.baseSec)} · ${fdt(S.B.t[S.start],true)} → ${fdt(S.B.t[S.i],true)} UTC`,112,90,15,'#a3adbf',500);
-  const up=S.balance>=S.initial,col=up?'#3dcf94':'#ef6270';
-  txt('Net profit',48,150,16,'#a3adbf',600);txt(fm(st.net,true),48,214,64,col,800);txt(`${pc(st.ret,true)} dari ${fm(S.initial)}`,48,244,17,'#6f7a8e',500);
-  const items=[['Trade',String(st.n)],['Win rate',st.n?f2(st.wr)+'%':'—'],['Profit factor',st.n?(st.pf===Infinity?'∞':f2(st.pf)):'—'],['Expectancy',st.n?fm(st.exp,true):'—'],['Max drawdown',f2(S.maxDDpct)+'%'],['Avg R',st.avgR!=null?f2(st.avgR)+'R':'—']];
-  items.forEach((m,i)=>{const x=48+(i%3)*196,y=282+Math.floor(i/3)*86;g.fillStyle='rgba(255,255,255,.045)';g.beginPath();g.roundRect(x,y,184,74,12);g.fill();g.strokeStyle='rgba(255,255,255,.09)';g.stroke();txt(m[0],x+16,y+28,13.5,'#a3adbf',600);txt(m[1],x+16,y+58,24,'#eef1f6',700,'left',MN);});
-  // kurva equity
-  const ex=670,ey=130,ew=482,eh=300;g.fillStyle='rgba(255,255,255,.04)';g.beginPath();g.roundRect(ex-16,ey-30,ew+32,eh+60,14);g.fill();g.strokeStyle='rgba(255,255,255,.09)';g.stroke();
-  txt('Kurva equity',ex,ey-6,15,'#a3adbf',600);
-  const d=S.eq;if(d.length>1){let lo=S.initial,hi=S.initial;d.forEach(r=>{lo=Math.min(lo,r[1]);hi=Math.max(hi,r[1]);});if(hi-lo<1){hi+=1;lo-=1;}const pd=(hi-lo)*.1;lo-=pd;hi+=pd;
+
+  const mgG=eng&&eng.makeGoldGradient?eng.makeGoldGradient(g,72,62,118,108,PAL):PAL.goldMid;
+  g.fillStyle=mgG;g.beginPath();g.roundRect(72,64,46,46,11);g.fill();
+  txt(BRD.monogram||'GB',95,95,20,PAL.bgMid,800,'center',HD);
+  txt('Backtest Performance Report',132,87,28,PAL.textMain,700,'left',HD);
+  txt(`${S.name}  ·  ${tfName(S.baseSec)}  ·  ${fdt(S.B.t[S.start],true)} → ${fdt(S.B.t[S.i],true)} UTC`,132,109,13.5,PAL.textMuted,500,'left',MN);
+
+  if(eng&&typeof eng.drawEmblem==='function'){
+    await eng.drawEmblem(g,{cx:W-116,cy:108,w:72,h:90,type:'BACKTEST',plateText:S.targetHit?'PASSED':(S.breach?'BREACH':(theme.plateText||'BACKTEST'))});
+  }
+
+  g.strokeStyle=PAL.border;g.lineWidth=1;g.beginPath();g.moveTo(72,132);g.lineTo(W-176,132);g.stroke();
+
+  const up=S.balance>=S.initial,col=up?PAL.positive:PAL.negative;
+  txt('NET PROFIT',72,168,12.5,PAL.goldMid,700,'left',MN);
+  txt(fm(st.net,true),72,228,56,col,700,'left',MN);
+  txt(`${pc(st.ret,true)}  dari modal awal ${fm(S.initial)}`,72,256,14.5,PAL.textMuted,500,'left',UI);
+
+  const items=[
+    ['TRADES',String(st.n),PAL.textMain],
+    ['WIN RATE',st.n?f2(st.wr)+'%':'—',PAL.textMain],
+    ['PROFIT FACTOR',st.n?(st.pf===Infinity?'∞':f2(st.pf)):'—',PAL.goldLight],
+    ['EXPECTANCY',st.n?fm(st.exp,true):'—',st.exp>=0?PAL.positive:PAL.negative],
+    ['MAX DRAWDOWN',f2(S.maxDDpct)+'%',PAL.negative],
+    ['AVG R-MULT',st.avgR!=null?f2(st.avgR)+'R':'—',PAL.textMain]
+  ];
+  items.forEach((m,i)=>{
+    const x=72+(i%3)*186,y=288+Math.floor(i/3)*84;
+    g.fillStyle=PAL.surface;g.beginPath();g.roundRect(x,y,174,72,11);g.fill();
+    g.strokeStyle=PAL.borderSoft;g.lineWidth=1;g.stroke();
+    txt(m[0],x+14,y+25,11,PAL.textMuted,700,'left',MN);
+    txt(m[1],x+14,y+54,22,m[2],700,'left',MN);
+  });
+
+  const ex=668,ey=184,ew=460,eh=260;
+  g.fillStyle=PAL.surfaceAlt;g.beginPath();g.roundRect(ex-18,ey-32,ew+36,eh+64,14);g.fill();
+  g.strokeStyle=PAL.border;g.lineWidth=1.1;g.stroke();
+  txt('EQUITY CURVE',ex,ey-10,12,PAL.goldMid,700,'left',MN);
+  txt(`${fm(S.initial)} → ${fm(S.balance)}`,ex+ew,ey-10,12,col,700,'right',MN);
+  const d=S.eq;
+  if(d.length>1){
+    let lo=S.initial,hi=S.initial;d.forEach(r=>{lo=Math.min(lo,r[1]);hi=Math.max(hi,r[1]);});
+    if(hi-lo<1){hi+=1;lo-=1;}const pd=(hi-lo)*.1;lo-=pd;hi+=pd;
     const X=i=>ex+i/(d.length-1)*ew,Y=v=>ey+10+(hi-v)/(hi-lo)*(eh-20);
-    g.strokeStyle='rgba(255,255,255,.25)';g.setLineDash([5,5]);g.beginPath();g.moveTo(ex,Y(S.initial));g.lineTo(ex+ew,Y(S.initial));g.stroke();g.setLineDash([]);
-    gr=g.createLinearGradient(0,ey,0,ey+eh);gr.addColorStop(0,col+'66');gr.addColorStop(1,col+'00');g.beginPath();d.forEach((r,i)=>{i?g.lineTo(X(i),Y(r[1])):g.moveTo(X(i),Y(r[1]));});g.lineTo(X(d.length-1),ey+eh);g.lineTo(X(0),ey+eh);g.closePath();g.fillStyle=gr;g.fill();
-    g.beginPath();d.forEach((r,i)=>{i?g.lineTo(X(i),Y(r[1])):g.moveTo(X(i),Y(r[1]));});g.strokeStyle=col;g.lineWidth=2.5;g.stroke();}
-  g.strokeStyle='rgba(217,176,104,.35)';g.lineWidth=1;g.beginPath();g.moveTo(48,H-64);g.lineTo(W-48,H-64);g.stroke();
-  txt(`Spread ${fp(sp())} · komisi ${fm(cfg.comm)}/lot · leverage 1:${cfg.leverage}${cfg.prop?` · margin rule ${f2(cfg.marginPct)}%`:''}`,48,H-34,14,'#6f7a8e',500);
-  txt('Simulasi berbasis candle, bukan jaminan hasil nyata',W-48,H-34,14,'#6f7a8e',500,'right');
+    g.strokeStyle=PAL.borderSoft;g.lineWidth=1;
+    for(let k=0;k<=3;k++){const yy=ey+10+(eh-20)*k/3;g.beginPath();g.moveTo(ex,yy);g.lineTo(ex+ew,yy);g.stroke();}
+    g.strokeStyle=PAL.border;g.setLineDash([5,5]);g.beginPath();g.moveTo(ex,Y(S.initial));g.lineTo(ex+ew,Y(S.initial));g.stroke();g.setLineDash([]);
+    const gr=g.createLinearGradient(0,ey,0,ey+eh);gr.addColorStop(0,col+'44');gr.addColorStop(1,col+'00');
+    g.beginPath();d.forEach((r,i)=>{i?g.lineTo(X(i),Y(r[1])):g.moveTo(X(i),Y(r[1]));});g.lineTo(X(d.length-1),ey+eh);g.lineTo(X(0),ey+eh);g.closePath();g.fillStyle=gr;g.fill();
+    g.beginPath();d.forEach((r,i)=>{i?g.lineTo(X(i),Y(r[1])):g.moveTo(X(i),Y(r[1]));});g.strokeStyle=col;g.lineWidth=2.4;g.stroke();
+  }
+
+  g.strokeStyle=PAL.border;g.lineWidth=1;g.beginPath();g.moveTo(72,H-102);g.lineTo(W-72,H-102);g.stroke();
+  txt(`${BRD.name||'GOLDEN BREAK CAPITAL'}  ·  Spread ${fp(sp())}  ·  Komisi ${fm(cfg.comm)}/lot  ·  Leverage 1:${cfg.leverage}${cfg.prop?`  ·  Margin ${f2(cfg.marginPct)}%`:''}`,72,H-74,12,PAL.textMuted,500,'left',MN);
+  txt('Simulasi historis · bukan jaminan hasil nyata',W-72,H-74,12,PAL.textFaint,500,'right',UI);
   cv.toBlob(b=>b&&download(`backtest_${(S.name||'data').replace(/\W+/g,'_')}.png`,b),'image/png');
 }
 const idb={open(){return new Promise((res,rej)=>{if(!window.indexedDB)return rej(new Error('no idb'));const r=indexedDB.open('ffx_bt',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});},
@@ -17483,7 +17534,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  // ===== KONFIGURASI AUTO-SCAN FOLDER /theme =====
+  // ===== KONFIGURASI AUTO-SCAN FOLDER /theme (theme1.png, theme2.jpg, dst.) =====
   const THEME_CFG = {
     folder: './theme',
     prefix: 'theme',
@@ -17507,8 +17558,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   let currentThemeIdx = -1;
   let activeModalDay = null;
   let activeResMode = 'tp';
+  let renderSeq = 0;
 
-  // Store transaksi manual per bulan: { 'YYYY-MM': { '18': [ {id, pair, side, lot, entry, sl, tp, exit, pips, usd, result} ] } }
   function loadManualStore(){
     try { return JSON.parse(localStorage.getItem(LS_MANUAL_KEY) || '{}') || {}; }
     catch (e) { return {}; }
@@ -17524,12 +17575,73 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     title: $('trpTitle')?.value || 'MONTHLY PNL RECAP'
   };
 
-  const THEMES = {
-    graphite: { bg1:'#161922', bg2:'#090b10', glass:'rgba(18,22,32,.76)', cell:'rgba(22,27,39,.74)', line:'rgba(217,176,104,.26)', lineSoft:'rgba(255,255,255,.10)', text:'#f2f4f8', muted:'#a3adc2', gold:'#e2bc72', gold2:'#b68a3c', green:'#38d996', greenBg:'rgba(56,217,150,.18)', red:'#f25c6e', redBg:'rgba(242,92,110,.18)', qrBg:'rgba(10,13,20,.92)', qrFg:'#e2bc72' },
-    citadel:  { bg1:'#121d3d', bg2:'#050916', glass:'rgba(13,22,48,.78)', cell:'rgba(18,29,61,.75)', line:'rgba(255,201,74,.28)',  lineSoft:'rgba(130,165,255,.16)', text:'#eef3ff', muted:'#9eb0dc', gold:'#ffc94a', gold2:'#d9971e', green:'#2df5a3', greenBg:'rgba(45,245,163,.16)', red:'#ff4b6e', redBg:'rgba(255,75,110,.18)', qrBg:'rgba(6,10,24,.92)',  qrFg:'#ffc94a' },
-    emerald:  { bg1:'#0d2426', bg2:'#040c0d', glass:'rgba(10,27,29,.78)', cell:'rgba(15,37,40,.75)', line:'rgba(46,230,196,.28)',  lineSoft:'rgba(140,255,235,.14)', text:'#eef8f7', muted:'#8eb2af', gold:'#2ee6c4', gold2:'#149e8a', green:'#34d399', greenBg:'rgba(52,211,153,.18)', red:'#fb5a6e', redBg:'rgba(251,90,110,.18)', qrBg:'rgba(4,12,13,.92)',  qrFg:'#2ee6c4' },
-    soft:     { bg1:'#f5f7fb', bg2:'#e5ebf5', glass:'rgba(255,255,255,.86)', cell:'rgba(255,255,255,.80)', line:'rgba(47,100,232,.25)', lineSoft:'rgba(24,33,58,.12)', text:'#18213a', muted:'#5c6985', gold:'#2f64e8', gold2:'#1d48b8', green:'#12905c', greenBg:'rgba(18,144,92,.14)', red:'#d02f4b', redBg:'rgba(208,47,75,.14)', qrBg:'#ffffff', qrFg:'#18213a' }
+  function getEngineRecapTheme(){
+    if (window.GBC_CERT_ENGINE && typeof window.GBC_CERT_ENGINE.getTheme === 'function') {
+      return window.GBC_CERT_ENGINE.getTheme('RECAP');
+    }
+    return {
+      brand: { monogram: 'GB', name: 'GOLDEN BREAK CAPITAL' },
+      plateText: 'RECAP',
+      palette: {
+        bgTop: '#161A1E', bgMid: '#101214', bgBottom: '#0C0E10',
+        surface: '#1C2024', surfaceAlt: '#14171B',
+        border: 'rgba(197,164,109,0.26)', borderSoft: 'rgba(242,239,232,0.10)',
+        goldLight: '#EFE2BC', goldMid: '#C5A46D', goldDark: '#8C6B32',
+        textMain: '#F2EFE8', textMuted: '#A5A7A8', textFaint: '#74787D',
+        positive: '#34D399', negative: '#EF6270', glowColor: 'rgba(197,164,109,0.10)'
+      },
+      fonts: {
+        headline: '"Playfair Display", Georgia, serif',
+        body: '"DM Sans", "Inter", system-ui, sans-serif',
+        display: '"DM Sans", "Inter", sans-serif',
+        mono: '"JetBrains Mono", ui-monospace, monospace',
+        signature: '"Great Vibes", "Playfair Display", cursive'
+      }
+    };
+  }
+
+  function buildEditorialRecapPalette(){
+    const cfg = getEngineRecapTheme();
+    const P = cfg.palette;
+    return {
+      bg1: P.bgTop, bg2: P.bgBottom,
+      glass: 'rgba(20, 23, 27, 0.80)',
+      cell: 'rgba(28, 32, 36, 0.78)',
+      line: P.border,
+      lineSoft: P.borderSoft,
+      text: P.textMain,
+      muted: P.textMuted,
+      gold: P.goldMid,
+      goldLight: P.goldLight,
+      gold2: P.goldDark,
+      green: P.positive,
+      greenBg: 'rgba(52, 211, 153, 0.16)',
+      red: P.negative,
+      redBg: 'rgba(239, 98, 112, 0.16)',
+      qrBg: 'rgba(16, 18, 20, 0.94)',
+      qrFg: P.goldLight,
+      fonts: cfg.fonts,
+      brand: cfg.brand,
+      plateText: cfg.plateText || 'RECAP'
+    };
+  }
+
+  const PRESET_THEMES = {
+    citadel:  { bg1:'#121d3d', bg2:'#050916', glass:'rgba(13,22,48,.78)', cell:'rgba(18,29,61,.75)', line:'rgba(255,201,74,.28)',  lineSoft:'rgba(130,165,255,.16)', text:'#eef3ff', muted:'#9eb0dc', gold:'#ffc94a', goldLight:'#fff2bd', gold2:'#d9971e', green:'#2df5a3', greenBg:'rgba(45,245,163,.16)', red:'#ff4b6e', redBg:'rgba(255,75,110,.18)', qrBg:'rgba(6,10,24,.92)',  qrFg:'#ffc94a' },
+    emerald:  { bg1:'#0d2426', bg2:'#040c0d', glass:'rgba(10,27,29,.78)', cell:'rgba(15,37,40,.75)', line:'rgba(46,230,196,.28)',  lineSoft:'rgba(140,255,235,.14)', text:'#eef8f7', muted:'#8eb2af', gold:'#2ee6c4', goldLight:'#b9fff1', gold2:'#149e8a', green:'#34d399', greenBg:'rgba(52,211,153,.18)', red:'#fb5a6e', redBg:'rgba(251,90,110,.18)', qrBg:'rgba(4,12,13,.92)',  qrFg:'#2ee6c4' },
+    soft:     { bg1:'#f5f7fb', bg2:'#e5ebf5', glass:'rgba(255,255,255,.86)', cell:'rgba(255,255,255,.80)', line:'rgba(47,100,232,.25)', lineSoft:'rgba(24,33,58,.12)', text:'#18213a', muted:'#5c6985', gold:'#2f64e8', goldLight:'#6c94ff', gold2:'#1d48b8', green:'#12905c', greenBg:'rgba(18,144,92,.14)', red:'#d02f4b', redBg:'rgba(208,47,75,.14)', qrBg:'#ffffff', qrFg:'#18213a' }
   };
+
+  function getActiveTheme(){
+    const base = buildEditorialRecapPalette();
+    const pick = $('trpTheme')?.value || 'auto';
+    const docTheme = document.documentElement.dataset.theme || 'graphite';
+    const target = pick === 'auto' ? docTheme : pick;
+    if (target !== 'graphite' && PRESET_THEMES[target]) {
+      return Object.assign({}, base, PRESET_THEMES[target]);
+    }
+    return base;
+  }
 
   function parseNum(v){
     if (typeof v === 'number') return isFinite(v) ? v : 0;
@@ -17608,7 +17720,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     return { year: y || now.getFullYear(), month: (m || (now.getMonth()+1)) - 1, key: v };
   }
 
-  // ===== FULL POPUP MANUAL STUDIO (KIRI: FORM · KANAN: KALENDER PORTRAIT) =====
+  // ===== FULL POPUP MANUAL STUDIO =====
   function getMonthManualObj(ymKey){
     if (!manualStore[ymKey] || typeof manualStore[ymKey] !== 'object') manualStore[ymKey] = {};
     return manualStore[ymKey];
@@ -18198,7 +18310,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const isManual = !!$('trpManualToggle')?.checked;
     if ($('trpImportBox')) $('trpImportBox').hidden = (src !== 'import' || isManual);
 
-    // 1. MODE FULL MANUAL VISUAL (POPUP)
     if (isManual) {
       const res = buildManualVisualMap();
       dayMap = res.map;
@@ -18216,7 +18327,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
     renderManualCalendarUI();
 
-    // 2. MODE IMPORT REPORT MT5
     if (src === 'import') {
       const res = buildImportedMap();
       dayMap = res.map;
@@ -18237,7 +18347,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       return;
     }
 
-    // 3. MODE HASIL BACKTEST
     if (src === 'backtest') {
       const res = buildBacktestMap(!!isSourceSwitch);
       dayMap = res.map;
@@ -18257,7 +18366,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       return;
     }
 
-    // 4. MODE LIVE EA
     const eaRes = buildEaMap();
     if (eaRes.count > 0) {
       dayMap = eaRes.map;
@@ -18282,12 +18390,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     render();
   }
 
-  function getActiveTheme(){
-    const pick = $('trpTheme')?.value || 'auto';
-    if (pick !== 'auto' && THEMES[pick]) return THEMES[pick];
-    return THEMES[document.documentElement.dataset.theme] || THEMES.graphite;
-  }
-
   function drawCoverImage(img, W, H, posPct){
     const ir = img.width / img.height;
     const cr = W / H;
@@ -18301,6 +18403,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   }
 
   function drawBrandTopRight(T, rightX, topY, compact){
+    const F = T.fonts || {};
+    const B = T.brand || { monogram: 'GB', name: 'GOLDEN BREAK CAPITAL' };
     const badgeSize = compact ? 46 : 54;
     const bx = rightX - badgeSize;
     const by = topY;
@@ -18309,7 +18413,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const r = badgeSize / 2;
 
     const g = ctx.createLinearGradient(bx, by, bx + badgeSize, by + badgeSize);
-    g.addColorStop(0, '#fff2bd');
+    g.addColorStop(0, T.goldLight || '#EFE2BC');
     g.addColorStop(0.5, T.gold);
     g.addColorStop(1, T.gold2);
 
@@ -18331,44 +18435,45 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
     ctx.closePath();
-    ctx.fillStyle = 'rgba(10,13,20,.90)';
+    ctx.fillStyle = 'rgba(16,18,20,.92)';
     ctx.fill();
 
-    ctx.fillStyle = T.gold;
-    ctx.font = `800 ${compact ? 17 : 20}px Inter, system-ui, sans-serif`;
+    ctx.fillStyle = T.goldLight || T.gold;
+    ctx.font = `700 ${compact ? 17 : 20}px ${F.headline || '"Playfair Display", Georgia, serif'}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('GB', cx, cy + 1);
+    ctx.fillText(B.monogram || 'GB', cx, cy + 1);
 
     ctx.textAlign = 'right';
     ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = T.text;
-    ctx.font = `800 ${compact ? 18 : 21}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${compact ? 18 : 21}px ${F.body || '"DM Sans", Inter, sans-serif'}`;
     ctx.fillText('GOLDEN BREAK', bx - 12, by + (compact ? 21 : 25));
 
     ctx.fillStyle = T.gold;
-    ctx.font = `700 ${compact ? 11.5 : 13}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${compact ? 11 : 12.5}px ${F.mono || '"JetBrains Mono", monospace'}`;
     ctx.fillText('C A P I T A L', bx - 12, by + (compact ? 38 : 45));
     ctx.restore();
   }
 
   function drawCeoSignature(T, cx, bottomY, compact){
+    const F = T.fonts || {};
     ctx.save();
     ctx.textAlign = 'center';
 
     ctx.save();
     ctx.translate(cx, bottomY - (compact ? 42 : 52));
     ctx.rotate(-0.04);
-    ctx.fillStyle = T.gold;
+    ctx.fillStyle = T.goldLight || T.gold;
     ctx.shadowColor = 'rgba(0,0,0,.45)';
     ctx.shadowBlur = 8;
-    ctx.font = `400 ${compact ? 44 : 54}px "Great Vibes", "Brush Script MT", cursive`;
+    ctx.font = `400 ${compact ? 44 : 54}px ${F.signature || '"Great Vibes", cursive'}`;
     ctx.fillText('Farid Siddiq', 0, 0);
 
     ctx.shadowBlur = 0;
     ctx.strokeStyle = T.gold;
     ctx.globalAlpha = 0.7;
-    ctx.lineWidth = 1.6;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(compact ? -76 : -92, 8);
     ctx.quadraticCurveTo(0, 1, compact ? 80 : 96, 6);
@@ -18383,17 +18488,18 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.stroke();
 
     ctx.fillStyle = T.text;
-    ctx.font = `700 ${compact ? 12.5 : 14}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${compact ? 12.5 : 14}px ${F.body || '"DM Sans", Inter, sans-serif'}`;
     ctx.fillText('FARID SIDDIQ', cx, bottomY - (compact ? 8 : 10));
 
     ctx.fillStyle = T.muted;
-    ctx.font = `600 ${compact ? 10 : 11}px "JetBrains Mono", monospace`;
+    ctx.font = `600 ${compact ? 9.5 : 10.5}px ${F.mono || '"JetBrains Mono", monospace'}`;
     ctx.fillText('CHIEF EXECUTIVE OFFICER  •  GOLDEN BREAK CAPITAL', cx, bottomY + (compact ? 7 : 8));
     ctx.restore();
   }
 
   function drawThemedQR(T, x, y, boxSize, url, label){
     if (!url || typeof window.qrcode !== 'function') return;
+    const F = T.fonts || {};
     try {
       const qr = window.qrcode(0, 'M');
       qr.addData(url);
@@ -18426,7 +18532,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
       if (label) {
         ctx.fillStyle = T.gold;
-        ctx.font = '700 10px "JetBrains Mono", monospace';
+        ctx.font = `700 10px ${F.mono || '"JetBrains Mono", monospace'}`;
         ctx.textAlign = 'center';
         ctx.fillText(label.toUpperCase(), x + boxSize / 2, y + boxSize + 12);
       }
@@ -18434,7 +18540,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     } catch (e) {}
   }
 
-  function render(){
+  async function render(){
+    const seq = ++renderSeq;
     const ratio = $('trpRatio')?.value || 'story';
     const isSquare = ratio === 'square';
     const isWide = ratio === 'wide';
@@ -18445,6 +18552,11 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     if ($('trpMeta')) $('trpMeta').textContent = `${W} × ${H} px · PNG siap bagikan`;
 
     const T = getActiveTheme();
+    const F = T.fonts || {};
+    const F_HEAD = F.headline || '"Playfair Display", Georgia, serif';
+    const F_BODY = F.body || '"DM Sans", "Inter", system-ui, sans-serif';
+    const F_MONO = F.mono || '"JetBrains Mono", monospace';
+
     const isLight = $('trpTheme')?.value === 'soft' || ($('trpTheme')?.value === 'auto' && document.documentElement.dataset.theme === 'soft');
     const dimPct = parseNum($('trpBgDim')?.value ?? 68);
     const posPct = parseNum($('trpBgPos')?.value ?? 30);
@@ -18455,7 +18567,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     if (customBgImg) {
       drawCoverImage(customBgImg, W, H, posPct);
       const ov = ctx.createLinearGradient(0, 0, 0, H);
-      const baseRgb = isLight ? '245,247,251' : '6,9,16';
+      const baseRgb = isLight ? '245,247,251' : '16,18,20';
       const a = dimPct / 100;
       ov.addColorStop(0, `rgba(${baseRgb},${Math.min(0.95, a + 0.08)})`);
       ov.addColorStop(0.5, `rgba(${baseRgb},${Math.max(0.15, a - 0.08)})`);
@@ -18470,7 +18582,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.fillRect(0, 0, W, H);
 
       const glow = ctx.createRadialGradient(W * 0.5, H * 0.15, 20, W * 0.5, H * 0.15, W * 0.7);
-      glow.addColorStop(0, 'rgba(226,188,114,.14)');
+      glow.addColorStop(0, 'rgba(197,164,109,.12)');
       glow.addColorStop(1, 'transparent');
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, W, H);
@@ -18502,11 +18614,11 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     // 2. Header
     ctx.textAlign = 'left';
     ctx.fillStyle = T.gold;
-    ctx.font = `700 ${isSquare ? 13 : 14}px "JetBrains Mono", monospace`;
+    ctx.font = `700 ${isSquare ? 12.5 : 13.5}px ${F_MONO}`;
     ctx.fillText(`${monthName}  •  ${pair}`, pad, pad + 16);
 
     ctx.fillStyle = T.text;
-    ctx.font = `800 ${isSquare ? 28 : 34}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${isSquare ? 28 : 34}px ${F_HEAD}`;
     ctx.fillText(title, pad, pad + (isSquare ? 48 : 54));
 
     drawBrandTopRight(T, W - pad, pad + 2, isSquare);
@@ -18550,28 +18662,28 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.fill();
 
       ctx.fillStyle = T.muted;
-      ctx.font = '700 13px Inter, system-ui, sans-serif';
+      ctx.font = `700 12.5px ${F_BODY}`;
       ctx.fillText(isUsd ? 'NET PROFIT PERFORMANCE' : 'NET PIPS PERFORMANCE', pad + 26, contentTop + 42);
 
       ctx.fillStyle = heroColor;
-      ctx.font = '800 46px "JetBrains Mono", monospace';
+      ctx.font = `700 46px ${F_MONO}`;
       if (isUsd) {
         const usdMain = `${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:2})}`;
         ctx.fillText(usdMain, pad + 26, contentTop + 98);
-        ctx.font = '700 18px "JetBrains Mono", monospace';
+        ctx.font = `700 18px ${F_MONO}`;
         ctx.fillText('USD', pad + 26, contentTop + 124);
 
-        ctx.font = '700 15px "JetBrains Mono", monospace';
+        ctx.font = `700 15px ${F_MONO}`;
         ctx.fillStyle = T.green;
         ctx.fillText(`▲ WIN  +$${grossWin.toLocaleString('en-US', {maximumFractionDigits:0})}`, pad + 26, contentTop + 168);
         ctx.fillStyle = T.red;
         ctx.fillText(`▼ LOSS -$${grossLoss.toLocaleString('en-US', {maximumFractionDigits:0})}`, pad + 26, contentTop + 194);
       } else {
         ctx.fillText(`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)}`, pad + 26, contentTop + 98);
-        ctx.font = '700 18px "JetBrains Mono", monospace';
+        ctx.font = `700 18px ${F_MONO}`;
         ctx.fillText('PIPS', pad + 26, contentTop + 124);
 
-        ctx.font = '700 15px "JetBrains Mono", monospace';
+        ctx.font = `700 15px ${F_MONO}`;
         ctx.fillStyle = T.green;
         ctx.fillText(`▲ WIN  +${winPips.toFixed(1)}p`, pad + 26, contentTop + 168);
         ctx.fillStyle = T.red;
@@ -18592,7 +18704,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         { k:'RETURN', v:`${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`, c: pct >= 0 ? T.green : T.red },
         secondMetric,
         { k:'WIN RATE', v:`${winRate.toFixed(1)}%`, c: T.text },
-        { k:'PROFIT FACTOR', v:`${pf.toFixed(2)}`, c: T.gold }
+        { k:'PROFIT FACTOR', v:`${pf.toFixed(2)}`, c: T.goldLight || T.gold }
       ];
       const mW = (leftW - 60) / 2;
       mItems.forEach((m, i) => {
@@ -18605,15 +18717,15 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         ctx.stroke();
 
         ctx.fillStyle = T.muted;
-        ctx.font = '700 11px Inter, system-ui, sans-serif';
+        ctx.font = `700 10.5px ${F_MONO}`;
         ctx.fillText(m.k, mx + 14, my + 24);
         ctx.fillStyle = m.c;
-        ctx.font = '800 22px "JetBrains Mono", monospace';
+        ctx.font = `700 22px ${F_MONO}`;
         ctx.fillText(m.v, mx + 14, my + 56);
       });
 
       ctx.fillStyle = T.muted;
-      ctx.font = '600 13px "JetBrains Mono", monospace';
+      ctx.font = `600 13px ${F_MONO}`;
       ctx.fillText(`${totalTrades} Total Trades  •  ${winDays}W / ${lossDays}L Days`, pad + 26, contentTop + 432);
 
       if (qrLink) {
@@ -18628,6 +18740,18 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         drawDailyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd, showSub, isUsd);
       } else {
         drawWeeklyCalendar(T, calX, contentTop, calW, contentH, year, month, hideUsd, isUsd);
+      }
+
+      if (window.GBC_CERT_ENGINE && typeof window.GBC_CERT_ENGINE.drawEmblem === 'function') {
+        await window.GBC_CERT_ENGINE.drawEmblem(ctx, {
+          cx: pad + 44,
+          cy: H - 78,
+          w: 58,
+          h: 74,
+          type: 'RECAP',
+          plateText: T.plateText || 'RECAP'
+        });
+        if (seq !== renderSeq) return;
       }
 
       drawCeoSignature(T, W / 2, H - 56, true);
@@ -18648,16 +18772,16 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.fill();
 
     ctx.fillStyle = T.muted;
-    ctx.font = `700 ${isSquare ? 11.5 : 13}px Inter, system-ui, sans-serif`;
+    ctx.font = `700 ${isSquare ? 11.5 : 13}px ${F_BODY}`;
     ctx.fillText(isUsd ? 'NET PROFIT PERFORMANCE' : 'NET PIPS PERFORMANCE', pad + 24, heroY + (isSquare ? 26 : 34));
 
     ctx.fillStyle = heroColor;
-    ctx.font = `800 ${isSquare ? 40 : 54}px "JetBrains Mono", monospace`;
+    ctx.font = `700 ${isSquare ? 40 : 54}px ${F_MONO}`;
     if (isUsd) {
       const usdMain = `${netUsd >= 0 ? '+' : '-'}$${Math.abs(netUsd).toLocaleString('en-US', {maximumFractionDigits:2})}`;
       ctx.fillText(usdMain, pad + 24, heroY + (isSquare ? 72 : 98));
 
-      ctx.font = `700 ${isSquare ? 13.5 : 16}px "JetBrains Mono", monospace`;
+      ctx.font = `700 ${isSquare ? 13.5 : 16}px ${F_MONO}`;
       ctx.fillStyle = T.green;
       ctx.fillText(`▲ WIN +$${grossWin.toLocaleString('en-US', {maximumFractionDigits:0})}`, pad + 24, heroY + heroH - (isSquare ? 16 : 22));
       ctx.fillStyle = T.red;
@@ -18665,7 +18789,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     } else {
       ctx.fillText(`${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)} PIPS`, pad + 24, heroY + (isSquare ? 72 : 98));
 
-      ctx.font = `700 ${isSquare ? 13.5 : 16}px "JetBrains Mono", monospace`;
+      ctx.font = `700 ${isSquare ? 13.5 : 16}px ${F_MONO}`;
       ctx.fillStyle = T.green;
       ctx.fillText(`▲ WIN +${winPips.toFixed(1)}p`, pad + 24, heroY + heroH - (isSquare ? 16 : 22));
       ctx.fillStyle = T.red;
@@ -18674,11 +18798,11 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
     ctx.textAlign = 'right';
     ctx.fillStyle = pct >= 0 ? T.green : T.red;
-    ctx.font = `800 ${isSquare ? 30 : 38}px "JetBrains Mono", monospace`;
+    ctx.font = `700 ${isSquare ? 30 : 38}px ${F_MONO}`;
     ctx.fillText(`${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`, W - pad - 24, heroY + (isSquare ? 44 : 56));
 
     ctx.fillStyle = T.text;
-    ctx.font = `700 ${isSquare ? 14 : 16}px "JetBrains Mono", monospace`;
+    ctx.font = `700 ${isSquare ? 14 : 16}px ${F_MONO}`;
     const subRightLabel = isUsd
       ? `NET ${netPips >= 0 ? '+' : ''}${netPips.toFixed(1)} PIPS`
       : (hideUsd
@@ -18687,7 +18811,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     ctx.fillText(subRightLabel, W - pad - 24, heroY + (isSquare ? 70 : 88));
 
     ctx.fillStyle = T.muted;
-    ctx.font = `600 ${isSquare ? 12 : 14}px "JetBrains Mono", monospace`;
+    ctx.font = `600 ${isSquare ? 12 : 14}px ${F_MONO}`;
     ctx.fillText(`${totalTrades} Trades • WR ${winRate.toFixed(0)}% • PF ${pf.toFixed(2)}`, W - pad - 24, heroY + heroH - (isSquare ? 16 : 22));
     ctx.textAlign = 'left';
 
@@ -18702,6 +18826,19 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       drawWeeklyCalendar(T, pad, calTop, calW, calH, year, month, hideUsd, isUsd);
     }
 
+    // Piala Akrilik / PNG di kiri bawah (menyeimbangkan TTD di tengah & QR di kanan)
+    if (window.GBC_CERT_ENGINE && typeof window.GBC_CERT_ENGINE.drawEmblem === 'function') {
+      await window.GBC_CERT_ENGINE.drawEmblem(ctx, {
+        cx: pad + (isSquare ? 46 : 56),
+        cy: H - (isSquare ? 88 : 104),
+        w: isSquare ? 62 : 76,
+        h: isSquare ? 78 : 96,
+        type: 'RECAP',
+        plateText: T.plateText || 'RECAP'
+      });
+      if (seq !== renderSeq) return;
+    }
+
     drawCeoSignature(T, W / 2, H - (isSquare ? 54 : 62), isSquare);
 
     if (qrLink) {
@@ -18714,6 +18851,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   }
 
   function drawDailyCalendar(T, x, y, w, h, year, month, hideUsd, showSub, isUsd){
+    const F_MONO = (T.fonts && T.fonts.mono) || '"JetBrains Mono", monospace';
     rrect(ctx, x, y, w, h, 18);
     ctx.fillStyle = T.glass;
     ctx.fill();
@@ -18734,7 +18872,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     const cellH = (h - innerPad * 2 - headH - gap * (rows - 1)) / rows;
 
     ctx.textAlign = 'center';
-    ctx.font = '700 12.5px "JetBrains Mono", monospace';
+    ctx.font = `700 12.5px ${F_MONO}`;
     days.forEach((d, i) => {
       ctx.fillStyle = i >= 5 ? T.gold : T.muted;
       ctx.fillText(d, x + innerPad + i * (cellW + gap) + cellW / 2, y + innerPad + 14);
@@ -18777,14 +18915,14 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
       ctx.textAlign = 'left';
       ctx.fillStyle = data ? T.text : T.muted;
-      ctx.font = '700 12px "JetBrains Mono", monospace';
+      ctx.font = `700 12px ${F_MONO}`;
       ctx.fillText(String(dayNum), cx + 8, cy + 18);
 
       if (data) {
         const win = isUsd ? (data.usd >= 0) : (data.pips !== 0 ? data.pips >= 0 : data.usd >= 0);
         ctx.textAlign = 'center';
         ctx.fillStyle = win ? T.green : T.red;
-        ctx.font = `800 ${pipsFont}px "JetBrains Mono", monospace`;
+        ctx.font = `700 ${pipsFont}px ${F_MONO}`;
         const mainVal = isUsd
           ? fmtUsdShort(data.usd)
           : `${data.pips >= 0 ? '+' : ''}${data.pips.toFixed(1)}p`;
@@ -18793,7 +18931,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         if (showSub && cellH >= 74) {
           ctx.fillStyle = T.text;
           ctx.globalAlpha = 0.82;
-          ctx.font = `600 ${subFont}px "JetBrains Mono", monospace`;
+          ctx.font = `600 ${subFont}px ${F_MONO}`;
           const sub = isUsd
             ? `${data.pips >= 0 ? '+' : ''}${data.pips.toFixed(0)}p · ${data.trades}T`
             : (hideUsd ? `${data.trades}T` : `${fmtUsdShort(data.usd)} · ${data.trades}T`);
@@ -18806,6 +18944,8 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   }
 
   function drawWeeklyCalendar(T, x, y, w, h, year, month, hideUsd, isUsd){
+    const F_BODY = (T.fonts && T.fonts.body) || '"DM Sans", Inter, sans-serif';
+    const F_MONO = (T.fonts && T.fonts.mono) || '"JetBrains Mono", monospace';
     rrect(ctx, x, y, w, h, 18);
     ctx.fillStyle = T.glass;
     ctx.fill();
@@ -18854,11 +18994,11 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
       ctx.textAlign = 'left';
       ctx.fillStyle = T.gold;
-      ctx.font = '800 17px Inter, system-ui, sans-serif';
+      ctx.font = `700 17px ${F_BODY}`;
       ctx.fillText(wk.label, rx + 20, ry + rowH * 0.42);
 
       ctx.fillStyle = T.muted;
-      ctx.font = '600 13px "JetBrains Mono", monospace';
+      ctx.font = `600 13px ${F_MONO}`;
       ctx.fillText(wk.range, rx + 20, ry + rowH * 0.72);
 
       const barX = rx + 185;
@@ -18877,7 +19017,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
         }
 
         ctx.fillStyle = T.text;
-        ctx.font = '600 12.5px "JetBrains Mono", monospace';
+        ctx.font = `600 12.5px ${F_MONO}`;
         const info = hasData
           ? (isUsd
               ? `${wk.trades} Trades • +$${wk.grossWin.toLocaleString('en-US', {maximumFractionDigits:0})} / -$${wk.grossLoss.toLocaleString('en-US', {maximumFractionDigits:0})}`
@@ -18889,21 +19029,21 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
       ctx.textAlign = 'right';
       if (hasData) {
         ctx.fillStyle = win ? T.green : T.red;
-        ctx.font = '800 25px "JetBrains Mono", monospace';
+        ctx.font = `700 25px ${F_MONO}`;
         const mainTxt = isUsd
           ? `${wk.usd >= 0 ? '+' : '-'}$${Math.abs(wk.usd).toLocaleString('en-US', {maximumFractionDigits:0})}`
           : `${wk.pips >= 0 ? '+' : ''}${wk.pips.toFixed(1)} PIPS`;
         ctx.fillText(mainTxt, rx + rw - 20, ry + rowH * 0.48);
 
         ctx.fillStyle = T.text;
-        ctx.font = '600 13px "JetBrains Mono", monospace';
+        ctx.font = `600 13px ${F_MONO}`;
         const sub = isUsd
           ? `${wk.pips >= 0 ? '+' : ''}${wk.pips.toFixed(1)}p • ${wk.days}d`
           : (hideUsd ? `${wk.days} Active Days` : `${wk.usd >= 0 ? '+' : '-'}$${Math.abs(wk.usd).toLocaleString('en-US', {maximumFractionDigits:0})} • ${wk.days}d`);
         ctx.fillText(sub, rx + rw - 20, ry + rowH * 0.78);
       } else {
         ctx.fillStyle = T.muted;
-        ctx.font = '700 18px "JetBrains Mono", monospace';
+        ctx.font = `700 18px ${F_MONO}`;
         ctx.fillText('—', rx + rw - 20, ry + rowH * 0.58);
       }
     });
@@ -19013,24 +19153,20 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   $('trpReportFile')?.addEventListener('change', e => handleReportFile(e.target.files?.[0]));
 
-  // Toggle Mode Manual -> langsung buka Full Popup (halaman utama tetap diam rapi)
   $('trpManualToggle')?.addEventListener('change', e => {
     syncFromSource(true);
     if (e.target.checked) openDayModal();
     else closeDayModal();
   });
 
-  // Tombol buka ulang pop-up kapan saja saat mode manual aktif
   $('trpOpenManualBtn')?.addEventListener('click', () => openDayModal());
 
-  // Klik kotak tanggal di kalender kanan pop-up -> langsung pilih tanggal untuk diisi di kiri
   mQ('#trpCalGrid')?.addEventListener('click', e => {
     const btn = e.target.closest('.trp-calday[data-day]');
     if (!btn) return;
     selectManualDay(parseInt(btn.dataset.day, 10));
   });
 
-  // Ganti bulan & tahun langsung dari dalam pop-up
   mQ('#trpCalPrevM')?.addEventListener('click', () => shiftModalMonth(-1));
   mQ('#trpCalNextM')?.addEventListener('click', () => shiftModalMonth(1));
   mQ('#trpModalMonth')?.addEventListener('change', e => {
@@ -19049,7 +19185,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     syncFromSource(false);
   });
 
-  // Pop-up Modal Events
   $('trpModalClose')?.addEventListener('click', closeDayModal);
   $('trpDayModal')?.addEventListener('click', e => {
     if (e.target === $('trpDayModal')) closeDayModal();
@@ -19133,7 +19268,6 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
     syncFromSource(false);
   });
 
-  // Simpan perubahan user khusus saat mode manual aktif
   ['trpPct','trpPair','trpTitle'].forEach(id => {
     $(id)?.addEventListener('input', () => {
       if ($('trpManualToggle')?.checked) {
@@ -19161,7 +19295,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   $('trpSyncBtn')?.addEventListener('click', () => syncFromSource(true));
   $('trpDownloadBtn')?.addEventListener('click', async () => {
     await document.fonts.ready;
-    render();
+    await render();
     const a = document.createElement('a');
     const mode = $('trpViewMode')?.value || 'day';
     const unit = $('trpUnit')?.value || 'pips';
@@ -19172,7 +19306,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
   });
   $('trpCopyBtn')?.addEventListener('click', async () => {
     await document.fonts.ready;
-    render();
+    await render();
     try {
       const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
@@ -19192,7 +19326,7 @@ setInterval(() => { if (VIEW.classList.contains('active') && !document.hidden) s
 
   syncFromSource(false);
   scanThemeFolder();
-  document.fonts.ready.then(render);
+  document.fonts.ready.then(() => render());
 })();
 </script>
    
