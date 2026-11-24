@@ -1,0 +1,431 @@
+/* ============================================================================
+   GOLDEN BREAK TERMINAL — EDITORIAL UI/UX UPGRADE (theme/dashboard-ui.css)
+   ============================================================================
+   Estetika: Clean · Quiet Luxury · Intellectual · Financial Editorial
+   - Tanpa mengubah logika JS, ID elemen, atau struktur DOM
+   - Mengoptimalkan tema default (Graphite) ke palet locked:
+     Black #101214 · Graphite #1C2024 · Ivory #F2EFE8 · Gold #C5A46D · Grey #A5A7A8
+   - Memadatkan header & menyulap #eaStrip / #accountStrip dari daftar vertikal
+     panjang menjadi strip metrik horizontal yang langsung terbaca
+   - Menyamakan sidebar desktop pro (220px ikon + label) di semua tema Pro
+   ============================================================================ */
+
+/* ---------- 1. Palet & Tipografi Locked untuk Tema Default (Graphite) ---------- */
+html[data-theme="graphite"] {
+  --bg0: #101214;
+  --bg1: #14171B;
+  --text: #F2EFE8;
+  --muted: #A5A7A8;
+  --faint: #75797E;
+  --surface: #16191D;
+  --surface2: #1C2024;
+  --surface3: #24292F;
+  --line: rgba(242, 239, 232, 0.08);
+  --line2: rgba(242, 239, 232, 0.14);
+  --gold: #C5A46D;
+  --gold2: #A8874E;
+  --gold-soft: rgba(197, 164, 109, 0.13);
+  --cyan: #76B9C9;
+  --cyan-soft: rgba(118, 185, 201, 0.12);
+  --green: #38C98F;
+  --green-soft: rgba(56, 201, 143, 0.12);
+  --red: #E56472;
+  --red-soft: rgba(229, 100, 114, 0.12);
+  --amber: #D9A44E;
+  --amber-soft: rgba(217, 164, 78, 0.13);
+  --blue: #78A4E8;
+  --blue-soft: rgba(120, 164, 232, 0.12);
+  --purple: #A794E0;
+  --purple-soft: rgba(167, 148, 224, 0.12);
+  --brd: #282D34;
+  --edge: #0B0D0F;
+  --on-gold: #101214;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.36), 0 14px 36px rgba(0, 0, 0, 0.28);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.28), 0 4px 14px rgba(0, 0, 0, 0.18);
+  --fh: "Playfair Display", Georgia, serif;
+  --fb: "DM Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --fm: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html[data-pro] body {
+  font-family: var(--fb);
+  letter-spacing: -0.005em;
+}
+
+/* ---------- 2. Tipografi Editorial (Semua Tema Pro) ---------- */
+html[data-pro][data-theme]:not(.z0):not(.z9) .brand h1 {
+  font-family: var(--fh);
+  font-weight: 700;
+  font-size: clamp(17px, 1.45vw, 21px);
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .section-head h2 {
+  font-family: var(--fh);
+  font-weight: 700;
+  font-size: clamp(18px, 1.5vw, 22px);
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .hero-info b {
+  font-family: var(--fh);
+  font-weight: 700;
+  font-size: clamp(20px, 1.8vw, 26px);
+  letter-spacing: -0.01em;
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .panel-title h3 {
+  font-family: var(--fb);
+  font-weight: 700;
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+/* ---------- 3. HUD Lebih Presisi & Tidak Makan Ruang ---------- */
+html[data-pro][data-theme] .app {
+  max-width: 1720px;
+  padding: clamp(10px, 1.3vw, 18px) clamp(12px, 1.5vw, 22px) calc(56px + env(safe-area-inset-bottom, 0px));
+}
+
+html[data-pro][data-theme] .hud {
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+html[data-pro][data-theme] .brand,
+html[data-pro][data-theme] .ticker {
+  padding: 12px 16px;
+}
+
+html[data-pro][data-theme] .logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--gold) 88%, #fff), var(--gold2));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+html[data-pro][data-theme] .logo::after {
+  font-family: var(--fh);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+html[data-pro][data-theme] .res {
+  padding: 10px;
+  gap: 8px;
+}
+
+html[data-pro][data-theme] .rchip {
+  padding: 9px 11px;
+  min-height: 68px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--line);
+}
+
+html[data-pro][data-theme] .rchip:hover {
+  border-color: var(--line2);
+}
+
+html[data-pro][data-theme] .top-actions {
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+/* ---------- 4. Perbaikan Besar: #eaStrip & #accountStrip Jadi Horizontal Ringkas ---------- */
+/* Mengatasi masalah daftar vertikal 1 kolom yang sebelumnya memakan setengah layar */
+html[data-pro] #eaStrip,
+html[data-pro] #accountStrip {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-pro] #eaStrip {
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+html[data-pro] #eaStrip:not(:empty) + #accountStrip {
+  border-top: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+html[data-pro] #accountStrip {
+  margin-bottom: 10px;
+}
+
+html[data-pro] #eaStrip .pill2,
+html[data-pro] #accountStrip > span {
+  width: auto;
+  flex: 0 1 auto;
+  min-height: 28px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface2);
+  gap: 7px;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+html[data-pro] #eaStrip .pill2:last-child,
+html[data-pro] #accountStrip > span:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+html[data-pro] #eaStrip .pill2 .k {
+  order: 2;
+  margin-right: 0;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+html[data-pro] #eaStrip .pill2 .dotmini {
+  order: 1;
+}
+
+html[data-pro] #eaStrip .pill2 .v {
+  order: 3;
+  font-size: 11.5px;
+}
+
+html[data-pro] #accountStrip > span b {
+  margin-left: 3px;
+  font-size: 11.5px;
+}
+
+/* ---------- 5. Sidebar Desktop Seragam (220px Ikon + Teks) untuk Semua Tema Pro ---------- */
+@media (min-width: 901px) {
+  html[data-pro] .layout {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  html[data-pro] .nav {
+    padding: 12px 9px;
+    gap: 3px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  html[data-pro] .navsep {
+    margin: 7px 6px;
+    background: var(--line);
+    opacity: 1;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    padding: 9px 11px;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-align: left;
+    border-radius: 9px;
+    color: var(--muted);
+    border: 1px solid transparent;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab .tico {
+    width: 22px;
+    height: 22px;
+    flex: none;
+    border-radius: 6px;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab .tico .ic {
+    width: 18px;
+    height: 18px;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab > span:last-child {
+    text-align: left;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab:hover {
+    background: color-mix(in srgb, var(--text) 5%, transparent);
+    color: var(--text);
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active {
+    background: var(--gold-soft);
+    border-color: color-mix(in srgb, var(--gold) 34%, transparent);
+    color: var(--gold);
+  }
+
+  html[data-pro][data-theme]:not(.z0):not(.z9) .tab.active::before {
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--gold);
+  }
+
+  html[data-pro] .tab .pip {
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-width: 1.5px;
+  }
+}
+
+/* ---------- 6. Permukaan Kartu, KPI, Tabel, & Kontrol Lebih Tenang ---------- */
+html[data-pro] .card,
+html[data-pro] .gpanel {
+  border-color: var(--line);
+  transition: border-color 0.18s ease;
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .kpi {
+  padding: 15px 17px;
+  min-height: 92px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .kpi:hover {
+  border-color: color-mix(in srgb, var(--gold) 42%, var(--line));
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .kpi .label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .kpi .value {
+  font-family: var(--fm);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+html[data-pro] .table-card {
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+html[data-pro] th {
+  font-family: var(--fm);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  background: var(--surface2);
+}
+
+html[data-pro] td {
+  border-bottom: 1px solid var(--line);
+}
+
+html[data-pro] tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--text) 1.5%, transparent);
+}
+
+html[data-pro] tbody tr:hover {
+  background: color-mix(in srgb, var(--gold) 6%, transparent);
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .btn {
+  border-radius: 9px;
+  font-family: var(--fb);
+  font-weight: 600;
+  border-color: var(--line2);
+  background: var(--surface2);
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .btn:hover {
+  border-color: color-mix(in srgb, var(--gold) 55%, var(--line2));
+  background: var(--surface3);
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .btn.primary {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--gold) 88%, #fff), var(--gold)) !important;
+  color: var(--on-gold) !important;
+  border-color: transparent !important;
+}
+
+html[data-pro][data-theme]:not(.z0):not(.z9) .btn.primary:hover {
+  filter: brightness(1.06);
+}
+
+html[data-pro] .modal {
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, var(--line2));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.6);
+}
+
+html[data-pro] .modal-head h3 {
+  font-family: var(--fh);
+  font-size: 17px;
+  color: var(--text);
+}
+
+/* ---------- 7. Ergonomi Mobile (<= 900px & <= 760px) ---------- */
+@media (max-width: 900px) {
+  html[data-pro] .nav {
+    border: 1px solid var(--line2);
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+  }
+
+  html[data-pro] .tab.active {
+    background: var(--gold-soft);
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Strip EA & Akun di HP: ringkas horizontal scroll 1 baris agar konten utama langsung terlihat */
+  html[data-pro] #eaStrip,
+  html[data-pro] #accountStrip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 7px 10px;
+    gap: 6px;
+  }
+
+  html[data-pro] #eaStrip::-webkit-scrollbar,
+  html[data-pro] #accountStrip::-webkit-scrollbar {
+    display: none;
+  }
+
+  html[data-pro] #eaStrip .pill2,
+  html[data-pro] #accountStrip > span {
+    flex: 0 0 auto;
+    padding: 4px 9px;
+    font-size: 11px;
+  }
+}
