@@ -5900,6 +5900,391 @@ html[data-theme="soft"] .qd-dualwrap canvas,html[data-theme="soft"] .qd-fo canva
 })();
 </script>
 
+
+<script id="gbc-cert-emblem-engine">
+(function(){
+  // =========================================================================
+  // KONFIGURASI TERPUSAT SEMUA SERTIFIKAT (Cukup edit di sini untuk update global)
+  // mode: 'auto' (pakai PNG jika ada, fallback ke akrilik)
+  //     | 'image' (paksa PNG)
+  //     | 'acrylic' (paksa Piala Akrilik Canvas 2D)
+  //     | 'medal' (medali bulat lama)
+  // =========================================================================
+  window.GBC_CERT_THEME = {
+    mode: 'auto',
+    assetVersion: '1', // Naikkan jadi '2', '3', dst. tiap ganti file PNG agar tidak kena cache browser
+    images: {
+      default: 'theme/achievement.png',
+      CERT:    'theme/achievement.png',          // Sertifikat target / funded
+      LIFE:    'theme/achievement-lifetime.png', // Opsional: jika tidak ada, otomatis jatuh ke default -> akrilik
+      PNL:     'theme/achievement-pnl.png'       // Opsional: jika tidak ada, otomatis jatuh ke default -> akrilik
+    },
+    brand: {
+      monogram: 'GB',
+      subtext:  'CAPITAL',
+      plate: {
+        CERT: 'ACHIEVEMENT',
+        LIFE: 'LIFETIME',
+        PNL:  'VERIFIED'
+      }
+    },
+    palette: {
+      obsidianTop: '#1C2024',
+      obsidianBot: '#101214',
+      ivory:       '#F2EFE8',
+      goldLight:   '#EFE2BC',
+      goldMid:     '#C5A46D',
+      goldDark:    '#8C6B32',
+      grey:        '#A5A7A8'
+    }
+  };
+
+  const _imgCache = new Map();
+
+  function loadImageSafe(src, timeoutMs = 2500){
+    if(!src) return Promise.resolve(null);
+    const v = window.GBC_CERT_THEME.assetVersion || '1';
+    const url = src + (src.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(v);
+    if(_imgCache.has(url)) return _imgCache.get(url);
+
+    const p = new Promise(resolve => {
+      let done = false;
+      const finish = val => { if(!done){ done = true; resolve(val); } };
+      const timer = setTimeout(() => finish(null), timeoutMs);
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        clearTimeout(timer);
+        finish(img.naturalWidth > 0 ? img : null);
+      };
+      img.onerror = () => { clearTimeout(timer); finish(null); };
+      img.src = url;
+    });
+    _imgCache.set(url, p);
+    return p;
+  }
+
+  async function resolveEmblemImage(type, customSrc){
+    const cfg = window.GBC_CERT_THEME.images || {};
+    const candidates = [customSrc, cfg[type], cfg.default].filter(Boolean);
+    const tried = new Set();
+    for(const src of candidates){
+      if(tried.has(src)) continue;
+      tried.add(src);
+      const img = await loadImageSafe(src);
+      if(img) return img;
+    }
+    return null;
+  }
+
+  // ===== RENDERER 1: PIALA AKRILIK 3D (Canvas 2D — Smoked Crystal & Brushed Gold) =====
+  function drawAcrylicTrophy(x, opts = {}){
+    const {
+      cx = 0, cy = 0, w = 150, h = 190,
+      type = 'CERT',
+      monogram = window.GBC_CERT_THEME.brand.monogram,
+      subtext  = window.GBC_CERT_THEME.brand.subtext,
+      plateTxt = (window.GBC_CERT_THEME.brand.plate[type] || 'VERIFIED')
+    } = opts;
+    const P = window.GBC_CERT_THEME.palette;
+    const scale = Math.min(w / 150, h / 190);
+
+    const goldGrad = (x0, y0, x1, y1) => {
+      const g = x.createLinearGradient(x0, y0, x1, y1);
+      g.addColorStop(0,   P.goldLight);
+      g.addColorStop(0.5, P.goldMid);
+      g.addColorStop(1,   P.goldDark);
+      return g;
+    };
+
+    const tracePlaque = (ox = 0, oy = 0) => {
+      x.beginPath();
+      x.moveTo(-24 + ox, -84 + oy);
+      x.lineTo( 24 + ox, -84 + oy);
+      x.lineTo( 48 + ox, -58 + oy);
+      x.lineTo( 38 + ox,  56 + oy);
+      x.lineTo(-38 + ox,  56 + oy);
+      x.lineTo(-48 + ox, -58 + oy);
+      x.closePath();
+    };
+
+    x.save();
+    x.translate(cx, cy);
+    x.scale(scale, scale);
+
+    // 1. Bayangan dasar lembut (contact shadow)
+    const sh = x.createRadialGradient(0, 84, 6, 0, 84, 58);
+    sh.addColorStop(0, 'rgba(0,0,0,.62)');
+    sh.addColorStop(0.65, 'rgba(0,0,0,.22)');
+    sh.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = sh;
+    x.beginPath();
+    x.ellipse(0, 84, 58, 11, 0, 0, Math.PI * 2);
+    x.fill();
+
+    // 2. Ketebalan sisi belakang & chamfer akrilik (efek potongan kristal 15mm)
+    const dx = 6, dy = -4;
+    tracePlaque(dx, dy);
+    x.fillStyle = 'rgba(242,239,232,.07)';
+    x.fill();
+    x.strokeStyle = 'rgba(242,239,232,.24)';
+    x.lineWidth = 1.1;
+    x.stroke();
+
+    // Sisi atas akrilik (bevel)
+    x.beginPath();
+    x.moveTo(-24, -84); x.lineTo(-24 + dx, -84 + dy);
+    x.lineTo( 24 + dx, -84 + dy); x.lineTo( 24, -84);
+    x.closePath();
+    x.fillStyle = 'rgba(242,239,232,.30)';
+    x.fill();
+
+    // Sisi chamfer kanan atas
+    x.beginPath();
+    x.moveTo(24, -84); x.lineTo(24 + dx, -84 + dy);
+    x.lineTo(48 + dx, -58 + dy); x.lineTo(48, -58);
+    x.closePath();
+    x.fillStyle = 'rgba(239,226,188,.34)';
+    x.fill();
+
+    // Sisi kanan akrilik
+    x.beginPath();
+    x.moveTo(48, -58); x.lineTo(48 + dx, -58 + dy);
+    x.lineTo(38 + dx, 56 + dy); x.lineTo(38, 56);
+    x.closePath();
+    const sideG = x.createLinearGradient(44, -58, 44, 56);
+    sideG.addColorStop(0, 'rgba(242,239,232,.28)');
+    sideG.addColorStop(0.55, 'rgba(197,164,109,.22)');
+    sideG.addColorStop(1, 'rgba(197,164,109,.45)');
+    x.fillStyle = sideG;
+    x.fill();
+
+    // 3. Badan utama akrilik (smoked glass)
+    x.save();
+    tracePlaque(0, 0);
+    const bodyG = x.createLinearGradient(-48, -84, 46, 58);
+    bodyG.addColorStop(0,   'rgba(38,44,54,.84)');
+    bodyG.addColorStop(0.45,'rgba(20,24,30,.90)');
+    bodyG.addColorStop(1,   'rgba(13,15,18,.95)');
+    x.fillStyle = bodyG;
+    x.fill();
+
+    // Clip ke dalam kaca untuk pantulan cahaya & bias emas dari pedestal
+    x.clip();
+
+    // Pantulan emas halus dari dudukan bawah ke bagian bawah akrilik
+    const upGlow = x.createLinearGradient(0, 58, 0, 8);
+    upGlow.addColorStop(0, 'rgba(197,164,109,.30)');
+    upGlow.addColorStop(0.5, 'rgba(197,164,109,.08)');
+    upGlow.addColorStop(1, 'rgba(197,164,109,0)');
+    x.fillStyle = upGlow;
+    x.fillRect(-52, 6, 104, 54);
+
+    // Kilau kaca diagonal 1 (lebar halus)
+    x.beginPath();
+    x.moveTo(-64, -22); x.lineTo(14, -96);
+    x.lineTo(38, -96);  x.lineTo(-52, 8);
+    x.closePath();
+    const sheen1 = x.createLinearGradient(-50, -60, 20, -10);
+    sheen1.addColorStop(0, 'rgba(242,239,232,.17)');
+    sheen1.addColorStop(1, 'rgba(242,239,232,.01)');
+    x.fillStyle = sheen1;
+    x.fill();
+
+    // Kilau kaca diagonal 2 (garis tipis tajam)
+    x.beginPath();
+    x.moveTo(-54, 24); x.lineTo(48, -74);
+    x.lineTo(54, -68); x.lineTo(-48, 30);
+    x.closePath();
+    x.fillStyle = 'rgba(242,239,232,.07)';
+    x.fill();
+
+    // Garis frame laser-etched bagian dalam
+    x.save();
+    x.scale(0.84, 0.87);
+    tracePlaque(0, -1);
+    x.strokeStyle = 'rgba(197,164,109,.34)';
+    x.lineWidth = 1.2;
+    x.stroke();
+    x.restore();
+
+    // 4. Grafir Emas di dalam Akrilik (Laser Etched)
+    // Ornamen berlian kecil di atas
+    x.fillStyle = P.goldLight;
+    x.beginPath();
+    x.moveTo(0, -64); x.lineTo(4.5, -58.5);
+    x.lineTo(0, -53); x.lineTo(-4.5, -58.5);
+    x.closePath();
+    x.fill();
+
+    // Garis tipis pengapit atas
+    x.strokeStyle = 'rgba(197,164,109,.45)';
+    x.lineWidth = 1;
+    x.beginPath();
+    x.moveTo(-20, -45); x.lineTo(20, -45);
+    x.stroke();
+
+    // Monogram GB
+    x.save();
+    x.shadowColor = 'rgba(0,0,0,.65)';
+    x.shadowBlur = 6;
+    x.shadowOffsetY = 2;
+    x.font = '700 40px "Playfair Display","Cormorant Garamond",Georgia,serif';
+    x.textAlign = 'center';
+    x.textBaseline = 'middle';
+    x.fillStyle = goldGrad(-22, -26, 22, 16);
+    x.fillText(monogram, 0, -12);
+    x.restore();
+
+    // Subtext CAPITAL
+    x.font = '700 8.5px "JetBrains Mono",monospace';
+    x.textAlign = 'center';
+    x.textBaseline = 'middle';
+    x.fillStyle = P.ivory;
+    x.fillText(subtext.split('').join(' '), 0, 15);
+
+    // Garis tipis bawah
+    x.strokeStyle = 'rgba(197,164,109,.45)';
+    x.lineWidth = 1;
+    x.beginPath();
+    x.moveTo(-16, 27); x.lineTo(16, 27);
+    x.stroke();
+
+    // Label kecil di dasar kaca
+    x.font = '600 7.5px "JetBrains Mono",monospace';
+    x.fillStyle = P.goldMid;
+    x.fillText('OFFICIAL AWARD', 0, 40);
+
+    x.restore(); // selesai clip front face
+
+    // 5. Rim specular tajam mengelilingi potongan akrilik
+    tracePlaque(0, 0);
+    const rimG = x.createLinearGradient(-48, -84, 48, 56);
+    rimG.addColorStop(0,    'rgba(242,239,232,.78)');
+    rimG.addColorStop(0.35, 'rgba(197,164,109,.55)');
+    rimG.addColorStop(0.75, 'rgba(242,239,232,.22)');
+    rimG.addColorStop(1,    'rgba(197,164,109,.65)');
+    x.strokeStyle = rimG;
+    x.lineWidth = 1.6;
+    x.stroke();
+
+    // 6. Dudukan Pedestal (Collar Emas + Base Matte Obsidian)
+    // Collar emas tempat kaca tertanam
+    x.beginPath();
+    x.moveTo(-42, 56); x.lineTo(42, 56);
+    x.lineTo(45, 64);  x.lineTo(-45, 64);
+    x.closePath();
+    x.fillStyle = goldGrad(-45, 56, 45, 64);
+    x.fill();
+
+    // Garis highlight tajam di tepi atas collar emas
+    x.strokeStyle = 'rgba(255,250,235,.65)';
+    x.lineWidth = 1;
+    x.beginPath();
+    x.moveTo(-42, 56.5); x.lineTo(42, 56.5);
+    x.stroke();
+
+    // Blok pedestal obsidian bawah
+    x.beginPath();
+    x.moveTo(-46, 64); x.lineTo(46, 64);
+    x.lineTo(52, 83);  x.lineTo(-52, 83);
+    x.closePath();
+    const baseG = x.createLinearGradient(0, 64, 0, 83);
+    baseG.addColorStop(0, P.obsidianTop);
+    baseG.addColorStop(1, P.obsidianBot);
+    x.fillStyle = baseG;
+    x.fill();
+    x.strokeStyle = 'rgba(197,164,109,.38)';
+    x.lineWidth = 1.2;
+    x.stroke();
+
+    // Plat nama logam tipis di pedestal
+    x.fillStyle = 'rgba(197,164,109,.15)';
+    x.fillRect(-32, 69, 64, 10);
+    x.strokeStyle = 'rgba(197,164,109,.55)';
+    x.lineWidth = 0.8;
+    x.strokeRect(-32, 69, 64, 10);
+
+    x.font = '700 7.5px "JetBrains Mono",monospace';
+    x.textAlign = 'center';
+    x.textBaseline = 'middle';
+    x.fillStyle = P.goldLight;
+    x.fillText(String(plateTxt).toUpperCase(), 0, 74.3);
+
+    x.restore();
+  }
+
+  // ===== RENDERER 2: MEDALI BULAT (Opsi legacy jika sewaktu-waktu dibutuhkan) =====
+  function drawMedalSeal(x, opts = {}){
+    const { cx = 0, cy = 0, w = 130, h = 130, monogram = 'GB' } = opts;
+    const P = window.GBC_CERT_THEME.palette;
+    const r = Math.min(w, h) * 0.44;
+    const g = x.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+    g.addColorStop(0, P.goldLight); g.addColorStop(0.5, P.goldMid); g.addColorStop(1, P.goldDark);
+    x.save();
+    x.beginPath(); x.arc(cx, cy, r + 7, 0, Math.PI * 2); x.fillStyle = 'rgba(197,164,109,.14)'; x.fill();
+    x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fillStyle = P.obsidianBot; x.fill();
+    x.strokeStyle = g; x.lineWidth = 3.2; x.stroke();
+    x.beginPath(); x.arc(cx, cy, r - 9, 0, Math.PI * 2); x.setLineDash([4, 4]);
+    x.strokeStyle = 'rgba(197,164,109,.65)'; x.lineWidth = 1.3; x.stroke(); x.setLineDash([]);
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = '700 34px "Playfair Display","Cormorant Garamond",Georgia,serif';
+    x.fillStyle = P.goldLight; x.fillText(monogram, cx, cy + 2);
+    x.font = '700 10px "JetBrains Mono",monospace';
+    x.fillStyle = P.goldMid; x.fillText('VERIFIED', cx, cy + r * 0.56);
+    x.restore();
+  }
+
+  // ===== API UTAMA: Dipanggil oleh Web Proof PNG, Market Replay, dan Preview HTML =====
+  window.GBC_CERT_EMBLEM = {
+    async draw(ctx, opts = {}){
+      const cfg = window.GBC_CERT_THEME;
+      const mode = opts.mode || cfg.mode || 'auto';
+      const { cx = 0, cy = 0, w = 150, h = 190, type = 'CERT', customSrc = '' } = opts;
+
+      if(mode === 'auto' || mode === 'image'){
+        const img = await resolveEmblemImage(type, customSrc);
+        if(img){
+          const ratio = Math.min(w / img.naturalWidth, h / img.naturalHeight);
+          const dw = img.naturalWidth * ratio;
+          const dh = img.naturalHeight * ratio;
+          ctx.save();
+          ctx.shadowColor = 'rgba(0,0,0,.45)';
+          ctx.shadowBlur = 18;
+          ctx.shadowOffsetY = 8;
+          ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
+          ctx.restore();
+          return { source: 'image', src: img.src };
+        }
+      }
+
+      if(mode === 'medal'){
+        drawMedalSeal(ctx, opts);
+        return { source: 'medal' };
+      }
+
+      drawAcrylicTrophy(ctx, opts);
+      return { source: 'acrylic' };
+    },
+
+    // Helper untuk merender piala yang SAMA persis ke elemen <img> di halaman HTML Web Proof
+    async toDataURL(opts = {}){
+      const w = opts.w || 300, h = opts.h || 380;
+      const cv = document.createElement('canvas');
+      cv.width = w; cv.height = h;
+      const c = cv.getContext('2d');
+      await this.draw(c, { ...opts, cx: w / 2, cy: h / 2, w: w * 0.92, h: h * 0.92 });
+      return cv.toDataURL('image/png');
+    },
+
+    clearCache(){ _imgCache.clear(); }
+  };
+})();
+
+   
+</script>
+   
+   
 </head>
 <body>
 <div class="world" aria-hidden="true">
