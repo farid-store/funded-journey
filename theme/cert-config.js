@@ -5,21 +5,23 @@
  * Cukup edit file ini jika ingin mengganti:
  * - Logo/Piala (pakai file PNG di folder theme/ atau Piala Akrilik kode)
  * - Warna latar, bingkai, aksen emas, teks, dan font
- * - Pengaturan khusus per jenis sertifikat:
+ * - Pengaturan khusus per jenis sertifikat / kartu PNG:
  *   1. CERT        -> Web Proof: Certificate of Achievement / Payout (3:4)
  *   2. LIFE        -> Web Proof: Certificate of Lifetime Rewards (3:4)
  *   3. PNL         -> Web Proof: Verified Trade Execution Proof (3:4)
  *   4. STUDIO      -> Command Intel: Achievement Certificate (16:9, 4:3, A4, 3:4, 1:1)
  *   5. STUDIO_CARD -> Command Intel: Trade Performance Card P/L (1080x1744)
  *   6. BACKTEST    -> Backtest Lab: Kartu Hasil Backtest (1200x675)
+ *   7. RECAP       -> Kalender / Share: Monthly PnL Recap PNG (Story, Square, Wide)
+ *   8. ROI         -> Command Intel: Kartu PNG Trading Cost & ROI
  *
  * TIDAK PERLU mengedit index.html lagi setelah engine tersambung.
  */
 
 window.GBC_CERT_CONFIG = {
-  // Naikkan angka ini ('1' -> '2' -> '3') tiap kali menimpa file PNG di folder theme/
+  // Naikkan angka ini ('2' -> '3' -> '4') tiap kali menimpa file PNG di folder theme/
   // agar browser/HP langsung memuat gambar baru (anti-cache).
-  assetVersion: '2',
+  assetVersion: '3',
 
   // ==========================================================================
   // 1. PENGATURAN BAWAAN (Dipakai semua sertifikat jika tidak ditimpa di bawah)
@@ -86,7 +88,7 @@ window.GBC_CERT_CONFIG = {
   },
 
   // ==========================================================================
-  // 2. PENGATURAN KHUSUS PER JENIS SERTIFIKAT
+  // 2. PENGATURAN KHUSUS PER JENIS SERTIFIKAT / KARTU PNG
   //    Cukup tulis properti yang ingin dibedakan dari "default".
   // ==========================================================================
 
@@ -136,5 +138,19 @@ window.GBC_CERT_CONFIG = {
     emblemMode: 'auto',
     emblemImage: 'theme/achievement.png',
     plateText: 'BACKTEST'
+  },
+
+  // G. Monthly PnL Recap Calendar PNG (Story 4:5, Square 1:1, Wide 4:3)
+  RECAP: {
+    emblemMode: 'auto',
+    emblemImage: 'theme/achievement.png',
+    plateText: 'RECAP'
+  },
+
+  // H. Kartu PNG Trading Cost & ROI Tracker (persiapan tahap berikutnya)
+  ROI: {
+    emblemMode: 'auto',
+    emblemImage: 'theme/achievement.png',
+    plateText: 'ROI AUDIT'
   }
 };
