@@ -5,7 +5,13 @@
  * Cukup edit file ini jika ingin mengganti:
  * - Logo/Piala (pakai file PNG di folder theme/ atau Piala Akrilik kode)
  * - Warna latar, bingkai, aksen emas, teks, dan font
- * - Pengaturan khusus per jenis sertifikat (CERT, LIFE, PNL, STUDIO, STUDIO_CARD)
+ * - Pengaturan khusus per jenis sertifikat:
+ *   1. CERT        -> Web Proof: Certificate of Achievement / Payout (3:4)
+ *   2. LIFE        -> Web Proof: Certificate of Lifetime Rewards (3:4)
+ *   3. PNL         -> Web Proof: Verified Trade Execution Proof (3:4)
+ *   4. STUDIO      -> Command Intel: Achievement Certificate (16:9, 4:3, A4, 3:4, 1:1)
+ *   5. STUDIO_CARD -> Command Intel: Trade Performance Card P/L (1080x1744)
+ *   6. BACKTEST    -> Backtest Lab: Kartu Hasil Backtest (1200x675)
  *
  * TIDAK PERLU mengedit index.html lagi setelah engine tersambung.
  */
@@ -13,7 +19,7 @@
 window.GBC_CERT_CONFIG = {
   // Naikkan angka ini ('1' -> '2' -> '3') tiap kali menimpa file PNG di folder theme/
   // agar browser/HP langsung memuat gambar baru (anti-cache).
-  assetVersion: '1',
+  assetVersion: '2',
 
   // ==========================================================================
   // 1. PENGATURAN BAWAAN (Dipakai semua sertifikat jika tidak ditimpa di bawah)
@@ -94,6 +100,7 @@ window.GBC_CERT_CONFIG = {
   // B. Sertifikat Lifetime Rewards (Akumulasi All-Time Payout)
   LIFE: {
     emblemMode: 'auto',
+    // Jika file trophy-lifetime.png belum ada, otomatis jatuh ke theme/achievement.png -> Akrilik
     emblemImage: 'theme/trophy-lifetime.png',
     plateText: 'LIFETIME',
     palette: {
@@ -103,24 +110,31 @@ window.GBC_CERT_CONFIG = {
     }
   },
 
-  // C. Bukti Eksekusi Trade di Web Proof Portal
+  // C. Bukti Eksekusi Trade (Web Proof 3:4)
   PNL: {
     emblemMode: 'auto',
     emblemImage: 'theme/trophy-pnl.png',
     plateText: 'AUDITED'
   },
 
-  // D. Sertifikat Achievement di Tab Command Intel · Trade Studio (5 format)
+  // D. Sertifikat Target di Tab Command Intel · Trade Studio (5 Format)
   STUDIO: {
     emblemMode: 'auto',
     emblemImage: 'theme/achievement.png',
-    plateText: 'ACHIEVEMENT'
+    plateText: 'FUNDED'
   },
 
   // E. Kartu P/L Per Trade di Tab Command Intel · Trade Studio (1080x1744)
   STUDIO_CARD: {
     emblemMode: 'auto',
     emblemImage: 'theme/trophy-pnl.png',
-    plateText: 'AUDITED'
+    plateText: 'VERIFIED'
+  },
+
+  // F. Kartu Hasil Backtest di Tab Backtest Lab (1200x675)
+  BACKTEST: {
+    emblemMode: 'auto',
+    emblemImage: 'theme/achievement.png',
+    plateText: 'BACKTEST'
   }
 };
