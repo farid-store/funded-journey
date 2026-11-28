@@ -239,7 +239,8 @@ function host(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){re
 const WM='not.fariddd';
 
 /* ================= konfigurasi & state ================= */
-const CFG=Object.assign({key:'',model:'groq/compound',endpoint:'',country:'',include:'',exclude:'',scale:1},LS.get('nf_cfg',{}));
+const CFG=Object.assign({key:'',model:'openai/gpt-oss-120b',endpoint:'',include:'',exclude:'',scale:1},LS.get('nf_cfg',{}));
+if(/compound/.test(CFG.model)){CFG.model='openai/gpt-oss-120b';LS.set('nf_cfg',CFG)}
 const PILLARS={
   news:{name:'News / Information',desc:'Ivory & Charcoal',sw:['#E9E1D2','#171717','#C9A66B']},
   journey:{name:'Journey Trading',desc:'Charcoal & Gold',sw:['#171717','#E9E1D2','#C9A66B']},
@@ -523,19 +524,30 @@ function buildStyle(){
 
 /* ================= tab Setelan ================= */
 function buildCfg(){
-  const p=$('#p-cfg');p.innerHTML='';
-  const sv=()=>saveCfg();
+  const p=$('#p-cfg');p.innerHTML='';const sv=()=>saveCfg();
+  const mi=h('input',{type:'text',list:'mdl'});mi.value=CFG.model;mi.addEventListener('input',()=>{CFG.model=mi.value.trim();sv()});
+  const dl=h('datalist',{id:'mdl'},h('option',{value:'openai/gpt-oss-120b'}),h('option',{value:'openai/gpt-oss-20b'}));
+  const out=h('div',{class:'hint',style:'margin-top:8px'});
+  const check=async()=>{out.textContent='Memeriksa...';
+    try{if(!CFG.key)throw new Error('Isi API key dulu (pengecekan model langsung ke Groq).');
+      const r=await fetch('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+CFG.key}});const j=await r.json();
+      if(!r.ok)throw new Error((j.error&&j.error.message)||('HTTP '+r.status));
+      const ids=(j.data||[]).map(m=>m.id).filter(id=>/gpt-oss/.test(id)&&!/safeguard/.test(id));
+      out.innerHTML='';out.append(ids.length?'Model dengan browser search di akun ini (klik untuk pakai): ':'Tidak ada model gpt-oss di akun ini. Cek Model Permissions di console.groq.com.');
+      ids.forEach(id=>out.append(h('button',{class:'btn sm',style:'margin:6px 6px 0 0',onclick:()=>{CFG.model=id;mi.value=id;sv();toast('Model: '+id)}},id)))
+    }catch(e){out.textContent='Gagal: '+e.message}};
   p.append(h('div',{class:'box'},h('h4',{},'Groq API'),
     fld('API key Groq',CFG,'key',{type:'password',ph:'gsk_...',on:sv}),
-    h('div',{class:'hint'},'Key disimpan hanya di browser ini (localStorage) dan dikirim langsung ke Groq. Aman untuk pemakaian pribadi. Kalau web ini dipublikasikan ke orang lain, pakai proxy (lihat Endpoint di bawah) supaya key tidak terbuka.'),
+    h('div',{class:'hint'},'Key disimpan hanya di browser ini (localStorage) dan dikirim langsung ke Groq. Aman untuk pemakaian pribadi. Kalau web ini bisa dibuka orang lain, pakai proxy (isi Endpoint di bawah) supaya key tidak terbuka.'),
     h('div',{style:'height:10px'}),
-    fld('Model (harus yang punya web search)',CFG,'model',{type:'select',options:[['groq/compound','groq/compound (multi pencarian, lebih lengkap)'],['groq/compound-mini','groq/compound-mini (satu pencarian, lebih cepat)']],on:sv}),
+    h('div',{class:'fld'},h('label',{},'Model (harus mendukung browser search: gpt-oss)'),mi,dl),
+    h('button',{class:'btn sm',onclick:check},'Cek model akun'),out,
+    h('div',{style:'height:12px'}),
     fld('Endpoint (kosongkan = langsung ke Groq)',CFG,'endpoint',{ph:'/api/groq jika pakai proxy Vercel',on:sv})));
-  p.append(h('div',{class:'box'},h('h4',{},'Pengaturan pencarian'),
-    fld('Prioritaskan sumber dari negara',CFG,'country',{type:'select',options:[['','Tidak ada (global)'],['indonesia','Indonesia'],['united states','United States'],['singapore','Singapore'],['united kingdom','United Kingdom']],on:sv}),
-    fld('Hanya cari di domain (pisahkan koma)',CFG,'include',{ph:'reuters.com, bloomberg.com, cnbcindonesia.com',on:sv}),
-    fld('Jangan pakai domain (pisahkan koma)',CFG,'exclude',{ph:'reddit.com, x.com',on:sv}),
-    h('div',{class:'hint'},'Domain include/exclude membantu menjaga kualitas sumber. Untuk berita market, sumber seperti Reuters, Bloomberg, CNBC, dan situs bank sentral biasanya paling aman.')))}
+  p.append(h('div',{class:'box'},h('h4',{},'Preferensi sumber'),
+    fld('Prioritaskan sumber dari',CFG,'include',{ph:'reuters.com, bloomberg.com, cnbcindonesia.com',on:sv}),
+    fld('Hindari sumber',CFG,'exclude',{ph:'reddit.com, x.com',on:sv}),
+    h('div',{class:'hint'},'Browser search Groq tidak punya filter domain. Dua isian ini dikirim sebagai permintaan ke AI, bukan filter keras, jadi tetap periksa daftar sumber setelah hasil keluar.')))}
 
 /* ================= tab AI ================= */
 const AI={mode:'news',topic:'',range:'3 hari terakhir',n:5,notes:''};
@@ -565,7 +577,7 @@ function sysPrompt(){
   return `Kamu adalah editor riset untuk NOT.FARIDD, brand edukasi trading Indonesia dengan suara editorial finansial yang premium dan tenang. Hari ini ${d} (WIB).
 
 ATURAN INTEGRITAS (WAJIB):
-1. Pakai web search untuk mencari informasi yang benar-benar terbaru. Hanya tulis fakta, harga, persentase, tanggal, dan aktivitas institusi yang ADA di sumber yang kamu temukan. Jangan pernah mengarang atau memperkirakan angka. Kalau angkanya tidak ketemu, jangan ditulis.
+1. Pakai browser search untuk mencari informasi yang benar-benar terbaru. Telusuri beberapa sumber dan buka artikelnya, jangan hanya membaca judul. Hanya tulis fakta, harga, persentase, tanggal, dan aktivitas institusi yang ADA di sumber yang kamu temukan. Jangan pernah mengarang atau memperkirakan angka. Kalau angkanya tidak ketemu, jangan ditulis.
 2. Setiap metrik harus punya sumber (nama media/institusi) dan periode (mis. harian, mingguan, per jam).
 3. Bedakan jelas: kind "fact" = sudah dikonfirmasi sumber (isi field src dengan nama media), kind "analysis" = tafsiranmu (jangan ditulis seolah pasti), kind "risk" = hal yang perlu dipantau/diwaspadai.
 4. Transfer on-chain tidak otomatis berarti pembelian; sebut sebagai transfer atau aktivitas on-chain kecuali pembelian dikonfirmasi independen.
@@ -573,6 +585,8 @@ ATURAN INTEGRITAS (WAJIB):
 6. Bahasa: Indonesia sehari-hari yang natural dan enak dibaca, seperti teman yang paham market lagi menjelaskan. Bukan bahasa kaku atau seperti terjemahan. Kalimat pendek. Istilah trading umum (bullish, support, resistance, rate cut, yield) boleh tetap dipakai. Tanpa emoji.
 7. Headline 4 sampai 10 kata. Tiap blok teks maksimal 2 sampai 3 baris pendek (sekitar 20 sampai 28 kata).
 8. Jangan beri ajakan beli/jual. Ini edukasi dan informasi.
+9. Field url pada sumber hanya boleh berisi URL yang benar-benar muncul di hasil pencarian. Kalau tidak yakin dengan URL-nya, kosongkan.
+10. Jawaban akhir harus berupa JSON saja, dimulai dengan {"caption".
 
 KELUARAN: hanya satu objek JSON valid, tanpa markdown, tanpa teks lain, dengan bentuk:
 {"caption":"caption Instagram 3-5 baris pendek, natural, akhiri dengan 'Bukan saran investasi.'","hashtags":["#..."],"slides":[ ... ]}
@@ -591,21 +605,22 @@ function userPrompt(){
   if(AI.mode==='education')plan=`Buat carousel EDUKASI TRADING tentang topik itu dengan ${n} slide isi, urutan: (1) cover berisi hook yang bikin penasaran; (2) points "Konteks pasar" kind info; (3) points "Konsepnya" kind step (maksimal 3 langkah: konsep dan target); (4) points "Konfirmasi dan eksekusi" kind step. Pakai aturan dari catatan pengguna. Kalau pengguna tidak menulis aturan, tulis placeholder "[isi aturan konfirmasimu di sini]" dan jangan mengarang aturan milik pengguna; (5) points "Intinya" kind takeaway (1-2 item).${n>=6?' Tambahkan satu slide points "Kesalahan yang sering terjadi" kind risk.':''} Hanya pakai web search jika perlu menyegarkan konteks pasar aktual. Tanpa slide sources kecuali kamu memakai data aktual.`;
   if(AI.mode==='motivation')plan=`Buat 1 sampai 2 slide bertipe quote bernuansa filosofi klasik Yunani/Romawi untuk trader. Kutipan hanya boleh dari tokoh klasik (Marcus Aurelius, Seneca, Epictetus, Heraclitus, Aristoteles, dll) jika kamu yakin redaksinya akurat. Kalau tidak yakin redaksi persisnya, tulis pernyataan orisinal dengan author "not.fariddd". Isi sub dengan karya asalnya jika dikenal. Tanpa slide cover/data.`;
   return `Topik: ${AI.topic||'(pilih topik market yang paling relevan hari ini)'}
-${AI.mode==='news'||AI.mode==='analysis'?'Rentang berita: '+AI.range+'\n':''}${AI.notes?'Catatan pengguna: '+AI.notes+'\n':''}
+${AI.mode==='news'||AI.mode==='analysis'?'Rentang berita: '+AI.range+'\n':''}${AI.notes?'Catatan pengguna: '+AI.notes+'\n':''}${CFG.include?'Prioritaskan sumber dari: '+CFG.include+'\n':''}${CFG.exclude?'Hindari sumber: '+CFG.exclude+'\n':''}
 ${plan}`}
 
 async function groq(){
   const url=CFG.endpoint||'https://api.groq.com/openai/v1/chat/completions';
   if(!CFG.endpoint&&!CFG.key)throw new Error('API key Groq belum diisi. Buka tab Setelan.');
-  const body={model:CFG.model,temperature:.2,max_tokens:7000,stream:false,messages:[{role:'system',content:sysPrompt()},{role:'user',content:userPrompt()}]};
-  if(/compound/.test(CFG.model)){const ss={};const inc=CFG.include.split(',').map(x=>x.trim()).filter(Boolean),exc=CFG.exclude.split(',').map(x=>x.trim()).filter(Boolean);if(inc.length)ss.include_domains=inc;if(exc.length)ss.exclude_domains=exc;if(CFG.country)ss.country=CFG.country;if(Object.keys(ss).length)body.search_settings=ss}
+  const body={model:CFG.model,temperature:.4,max_completion_tokens:8000,stream:false,reasoning_effort:'low',messages:[{role:'system',content:sysPrompt()},{role:'user',content:userPrompt()}]};
+  if(/gpt-oss/.test(CFG.model)){body.tools=[{type:'browser_search'}];body.tool_choice=AI.mode==='motivation'?'auto':'required'}
   const headers={'Content-Type':'application/json'};if(CFG.key)headers.Authorization='Bearer '+CFG.key;
   const ac=new AbortController();const to=setTimeout(()=>ac.abort(),150000);
-  let r;try{r=await fetch(url,{method:'POST',headers,body:JSON.stringify(body),signal:ac.signal})}catch(e){clearTimeout(to);throw new Error(e.name==='AbortError'?'Waktu habis (150 detik). Coba model compound-mini atau topik yang lebih sempit.':'Tidak bisa terhubung ke Groq ('+e.message+'). Kalau browser memblokir (CORS), pakai endpoint proxy di tab Setelan.')}
+  let r;try{r=await fetch(url,{method:'POST',headers,body:JSON.stringify(body),signal:ac.signal})}catch(e){clearTimeout(to);throw new Error(e.name==='AbortError'?'Waktu habis (150 detik). Coba model gpt-oss-20b atau topik yang lebih sempit.':'Tidak bisa terhubung ke Groq ('+e.message+'). Kalau browser memblokir (CORS), pakai endpoint proxy di tab Setelan.')}
   clearTimeout(to);const txt=await r.text();let j;try{j=JSON.parse(txt)}catch(e){throw new Error('Respons bukan JSON: '+txt.slice(0,200))}
-  if(!r.ok){const m=(j.error&&j.error.message)||txt.slice(0,200);throw new Error(r.status===401?'API key ditolak (401). Cek key di tab Setelan.':r.status===429?'Terkena rate limit Groq (429). Tunggu sebentar lalu coba lagi. '+m:'Groq error '+r.status+': '+m)}
+  if(!r.ok){const m=(j.error&&j.error.message)||txt.slice(0,200);throw new Error(r.status===401?'API key ditolak (401). Cek key di tab Setelan.':r.status===429?'Terkena rate limit Groq (429). Tunggu sebentar lalu coba lagi. '+m:r.status===404?'Model "'+CFG.model+'" tidak tersedia di akun ini. Buka tab Setelan, klik "Cek model akun", lalu pilih model gpt-oss. '+m:'Groq error '+r.status+': '+m)}
   return j}
 
+function splitAnswer(t){t=String(t||'');let m,idx=-1;const re=/\{\s*"caption"/g;while((m=re.exec(t)))idx=m.index;if(idx<0){const r2=/\{\s*"slides"/g;while((m=r2.exec(t)))idx=m.index}if(idx<0)idx=t.indexOf('{');return{pre:idx>0?t.slice(0,idx):'',json:idx>=0?t.slice(idx):t}}
 function extractJSON(t){if(!t)throw new Error('Respons kosong.');t=String(t).replace(/```json|```/g,'');const a=t.indexOf('{'),b=t.lastIndexOf('}');if(a<0||b<0)throw new Error('Tidak ada JSON di respons AI.');let s=t.slice(a,b+1);try{return JSON.parse(s)}catch(e){s=s.replace(/,\s*([}\]])/g,'$1');return JSON.parse(s)}}
 const str=v=>v==null?'':String(v).trim();
 function normalize(o){
@@ -619,18 +634,21 @@ function normalize(o){
   if(!out.length)throw new Error('AI tidak mengembalikan slide yang bisa dipakai.');
   return out}
 
-function collectSearch(msg){
-  const res=[];let blob='';
-  (msg.executed_tools||[]).forEach(t=>{const sr=(t.search_results&&t.search_results.results)||[];sr.forEach(r=>{res.push({title:str(r.title),url:str(r.url),content:str(r.content)});blob+=' '+str(r.title)+' '+str(r.content)});if(t.output)blob+=' '+str(t.output)});
-  const seen=new Set();return{results:res.filter(r=>r.url&&!seen.has(r.url)&&seen.add(r.url)),blob}}
+function walk(o,out,d=0){if(!o||d>7)return;if(Array.isArray(o)){o.forEach(x=>walk(x,out,d+1));return}if(typeof o==='object'){if(typeof o.url==='string'&&/^https?:/.test(o.url))out.push({title:str(o.title),url:o.url,content:str(o.content||o.snippet||o.text)});Object.values(o).forEach(v=>walk(v,out,d+1))}}
+function collectSearch(msg,pre){
+  const out=[];walk(msg.executed_tools,out);let blob=msg.executed_tools?JSON.stringify(msg.executed_tools):'';
+  (String(pre).match(/https?:\/\/[^\s)\]>"'<]+/g)||[]).forEach(u=>out.push({title:'',url:u.replace(/[.,;]+$/,''),content:''}));
+  blob+=' '+pre;const seen=new Set();
+  return{results:out.filter(r=>r.url&&!seen.has(r.url)&&seen.add(r.url)),blob}}
 
 async function generate(){
   const b=$('#bGen');b.disabled=true;LAST={results:[],blob:'',fromAI:false,mode:AI.mode};
   try{
-    log('Menghubungi Groq ('+CFG.model+')...\nAI mencari sumber terbaru, ini bisa 15 sampai 60 detik.');
-    const j=await groq();const msg=(j.choices&&j.choices[0]&&j.choices[0].message)||{};
+    log('Menghubungi Groq ('+CFG.model+')...\nAI menelusuri web, ini bisa 15 sampai 90 detik.');
+    const j=await groq();const ch=(j.choices&&j.choices[0])||{};const msg=ch.message||{};
     log('Menyusun slide dari hasil pencarian...');
-    const o=extractJSON(msg.content);const slides=normalize(o);const sr=collectSearch(msg);
+    const sp=splitAnswer(msg.content);let o;try{o=extractJSON(sp.json)}catch(e){throw new Error(e.message+(ch.finish_reason==='length'?' Jawaban terpotong karena kepanjangan. Coba 4 slide.':''))}
+    const slides=normalize(o);const sr=collectSearch(msg,sp.pre);
     LAST={results:sr.results,blob:sr.blob,fromAI:true,mode:AI.mode};
     S.slides=slides;S.caption=str(o.caption);S.hashtags=(o.hashtags||[]).map(str).filter(Boolean).join(' ');
     S.pillar={news:'news',analysis:'portfolio',education:'journey',motivation:'motivation'}[AI.mode];S.date=todayStr();SEL=0;
@@ -649,7 +667,8 @@ function verify(){
   S.slides.forEach((s,i)=>{const w='Slide '+(i+1);
     if(s.type==='data')(s.metrics||[]).forEach(m=>chk(m.value,w+' ('+(m.label||'angka')+')'));
     if(s.type==='points')(s.items||[]).forEach(it=>{if(it.kind!=='info'&&it.kind!=='step'&&it.kind!=='takeaway')chk(it.text,w+' ('+KINDS[it.kind]+')')});
-    if(s.type==='cover')chk(s.headline+' '+s.sub,w+' (cover)')});
+    if(s.type==='cover')chk(s.headline+' '+s.sub,w+' (cover)');
+    if(s.type==='sources')(s.items||[]).forEach(it=>{if(it.url&&!blob.includes(normText(it.url.replace(/^https?:\/\//,'')).slice(0,40)))issues.push({where:w+' (URL sumber)',tok:'tidak ada di hasil pencarian: '+it.url.slice(0,55)})})});
   return issues}
 function renderVerify(){
   const e=$('#aiVerify');if(!e)return;e.innerHTML='';if(!LAST.fromAI)return;
