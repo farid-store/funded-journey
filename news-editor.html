@@ -239,7 +239,7 @@ function host(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){re
 const WM='not.fariddd';
 
 /* ================= konfigurasi & state ================= */
-const CFG=Object.assign({key:'',model:'openai/gpt-oss-120b',endpoint:'',include:'',exclude:'',scale:1},LS.get('nf_cfg',{}));
+const CFG=Object.assign({key:'',model:'openai/gpt-oss-120b',endpoint:'',include:'',exclude:'',scale:1,searchMode:'groq',tavilyKey:'',tavilyEndpoint:''},LS.get('nf_cfg',{}));
 if(/compound/.test(CFG.model)){CFG.model='openai/gpt-oss-120b';LS.set('nf_cfg',CFG)}
 const PILLARS={
   news:{name:'News / Information',desc:'Ivory & Charcoal',sw:['#E9E1D2','#171717','#C9A66B']},
@@ -544,10 +544,16 @@ function buildCfg(){
     h('button',{class:'btn sm',onclick:check},'Cek model akun'),out,
     h('div',{style:'height:12px'}),
     fld('Endpoint (kosongkan = langsung ke Groq)',CFG,'endpoint',{ph:'/api/groq jika pakai proxy Vercel',on:sv})));
+  const tm=fld('Sumber pencarian berita',CFG,'searchMode',{type:'select',options:[['tavily','Tavily (tanggal terbit pasti, disarankan)'],['groq','Groq browser search (kurang akurat soal tanggal)']],on:sv});
+  const useTav=()=>{if(CFG.tavilyKey||CFG.tavilyEndpoint){CFG.searchMode='tavily';$('select',tm).value='tavily'}sv()};
+  p.append(h('div',{class:'box'},h('h4',{},'Pencarian berita'),tm,
+    fld('API key Tavily',CFG,'tavilyKey',{type:'password',ph:'tvly-...',on:useTav}),
+    fld('Endpoint Tavily (kosongkan = langsung ke Tavily)',CFG,'tavilyEndpoint',{ph:'/api/tavily jika pakai proxy Vercel',on:useTav}),
+    h('div',{class:'hint'},'Tavily menyaring berita berdasarkan tanggal terbit, jadi AI hanya merangkum artikel yang benar-benar baru. Daftar artikel (judul, media, tanggal, URL) juga dipakai untuk memeriksa angka dan sumber di slide. Satu kali generate menjalankan 3 pencarian. Buat API key di tavily.com.')));
   p.append(h('div',{class:'box'},h('h4',{},'Preferensi sumber'),
     fld('Prioritaskan sumber dari',CFG,'include',{ph:'reuters.com, bloomberg.com, cnbcindonesia.com',on:sv}),
     fld('Hindari sumber',CFG,'exclude',{ph:'reddit.com, x.com',on:sv}),
-    h('div',{class:'hint'},'Browser search Groq tidak punya filter domain. Dua isian ini dikirim sebagai permintaan ke AI, bukan filter keras, jadi tetap periksa daftar sumber setelah hasil keluar.')))}
+    h('div',{class:'hint'},'Di mode Tavily, dua isian ini jadi filter domain sungguhan. Di mode Groq browser search, keduanya hanya dikirim sebagai permintaan ke AI (bukan filter keras).')))}
 
 /* ================= tab AI ================= */
 const AI={mode:'news',topic:'',range:'3 hari terakhir',n:5,notes:''};
@@ -562,6 +568,7 @@ function buildAI(){
   const tf=fld('Topik',AI,'topic',{ph:'mis. harga emas hari ini dan penyebabnya',on:()=>{}});p.append(tf);
   const ch=h('div',{class:'chips'});TOPICS.forEach(t=>ch.append(h('button',{onclick:()=>{AI.topic=t;$('input',tf).value=t}},t)));p.append(ch);
   if(AI.mode==='news'||AI.mode==='analysis')p.append(fld('Rentang berita',AI,'range',{type:'select',options:[['24 jam terakhir','24 jam terakhir'],['3 hari terakhir','3 hari terakhir'],['7 hari terakhir','7 hari terakhir'],['30 hari terakhir','30 hari terakhir']],on:()=>{}}));
+  if(AI.mode==='news'||AI.mode==='analysis')p.append(fld('Sumber pencarian',CFG,'searchMode',{type:'select',options:[['tavily','Tavily (tanggal terbit pasti, disarankan)'],['groq','Groq browser search (kurang akurat soal tanggal)']],on:saveCfg}));
   if(AI.mode!=='motivation')p.append(fld('Jumlah slide isi (belum termasuk CTA)',AI,'n',{type:'select',num:true,options:[[4,'4 slide'],[5,'5 slide'],[6,'6 slide']],on:()=>{}}));
   p.append(fld('Catatan untuk AI (opsional)',AI,'notes',{type:'area',rows:3,ph:AI.mode==='education'?'Tulis aturan konfirmasi & eksekusi kamu di sini':'mis. fokus ke dampaknya ke XAU/USD, atau sudut pandang trader ritel',on:()=>{}}));
   const b=h('button',{class:'btn gold',style:'width:100%;padding:12px',id:'bGen',onclick:generate},'Cari & buat konten');
@@ -572,12 +579,14 @@ function buildAI(){
   p.append(h('div',{id:'aiSrc'}));renderVerify();renderSearchSrc()}
 const log=t=>{const e=$('#aiLog');if(e)e.textContent=t};
 
-function sysPrompt(){
+function sysPrompt(arts){
   const d=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Jakarta'});
   return `Kamu adalah editor riset untuk NOT.FARIDD, brand edukasi trading Indonesia dengan suara editorial finansial yang premium dan tenang. Hari ini ${d} (WIB).
 
+${freshRules(arts)}
+
 ATURAN INTEGRITAS (WAJIB):
-1. Pakai browser search untuk mencari informasi yang benar-benar terbaru. Telusuri beberapa sumber dan buka artikelnya, jangan hanya membaca judul. Hanya tulis fakta, harga, persentase, tanggal, dan aktivitas institusi yang ADA di sumber yang kamu temukan. Jangan pernah mengarang atau memperkirakan angka. Kalau angkanya tidak ketemu, jangan ditulis.
+1. ${arts?'Gunakan HANYA artikel yang diberikan pengguna sebagai sumber fakta; jangan memakai ingatanmu.':'Pakai browser search untuk mencari informasi yang benar-benar terbaru. Telusuri beberapa sumber dan buka artikelnya, jangan hanya membaca judul.'} Hanya tulis fakta, harga, persentase, tanggal, dan aktivitas institusi yang ADA di sumber yang kamu temukan. Jangan pernah mengarang atau memperkirakan angka. Kalau angkanya tidak ketemu, jangan ditulis.
 2. Setiap metrik harus punya sumber (nama media/institusi) dan periode (mis. harian, mingguan, per jam).
 3. Bedakan jelas: kind "fact" = sudah dikonfirmasi sumber (isi field src dengan nama media), kind "analysis" = tafsiranmu (jangan ditulis seolah pasti), kind "risk" = hal yang perlu dipantau/diwaspadai.
 4. Transfer on-chain tidak otomatis berarti pembelian; sebut sebagai transfer atau aktivitas on-chain kecuali pembelian dikonfirmasi independen.
@@ -598,7 +607,7 @@ Bentuk tiap slide:
 {"type":"sources","title":"Sumber","items":[{"title":"judul artikel","publisher":"nama media","date":"tanggal terbit","url":"https://..."}],"asof":"tanggal/jam data terbaru","note":"..."}
 {"type":"quote","text":"...","author":"...","sub":"karya, opsional"}`}
 
-function userPrompt(){
+function userPrompt(arts){
   const n=AI.n;let plan='';
   if(AI.mode==='news')plan=`Buat carousel BERITA MARKET dengan ${n} slide isi (tanpa slide CTA, itu otomatis), urutan: (1) cover; (2) data dengan 2-4 metrik; (3) points "Yang terjadi": 2-3 item fact + 1 item analysis; (4) points "Yang perlu dipantau": 2-3 item risk/analysis${n>=6?'; (4b) satu slide points tambahan "Dampaknya ke trader" berisi analysis':''}; (${n>=5?'5':'4'}) sources berisi sumber yang benar-benar dipakai.${n===4?' Karena hanya 4 slide, gabungkan fakta dan risiko dalam satu slide points.':''}`;
   if(AI.mode==='analysis')plan=`Buat carousel ANALISA TEKNIKAL/MARKET berdasarkan analisa yang sudah DIPUBLIKASIKAN sumber terpercaya (bank, riset broker, media finansial) dengan ${n} slide isi, urutan: (1) cover; (2) data berisi level/harga/indikator yang disebut sumber (jangan buat level sendiri); (3) points "Skenario menurut analis": kind fact untuk pandangan yang dikutip (isi src) plus kind analysis untuk penjelasanmu; (4) points "Risiko dan invalidasi" kind risk; ${n>=6?'(4b) points "Cara membacanya" kind info; ':''}(${n>=5?'5':'4'}) sources. Di note sources tulis "Bukan saran investasi."`;
@@ -606,13 +615,13 @@ function userPrompt(){
   if(AI.mode==='motivation')plan=`Buat 1 sampai 2 slide bertipe quote bernuansa filosofi klasik Yunani/Romawi untuk trader. Kutipan hanya boleh dari tokoh klasik (Marcus Aurelius, Seneca, Epictetus, Heraclitus, Aristoteles, dll) jika kamu yakin redaksinya akurat. Kalau tidak yakin redaksi persisnya, tulis pernyataan orisinal dengan author "not.fariddd". Isi sub dengan karya asalnya jika dikenal. Tanpa slide cover/data.`;
   return `Topik: ${AI.topic||'(pilih topik market yang paling relevan hari ini)'}
 ${AI.mode==='news'||AI.mode==='analysis'?'Rentang berita: '+AI.range+'\n':''}${AI.notes?'Catatan pengguna: '+AI.notes+'\n':''}${CFG.include?'Prioritaskan sumber dari: '+CFG.include+'\n':''}${CFG.exclude?'Hindari sumber: '+CFG.exclude+'\n':''}
-${plan}`}
+${plan}${arts?artBlock(arts):''}`}
 
-async function groq(){
+async function groq(arts){
   const url=CFG.endpoint||'https://api.groq.com/openai/v1/chat/completions';
   if(!CFG.endpoint&&!CFG.key)throw new Error('API key Groq belum diisi. Buka tab Setelan.');
-  const body={model:CFG.model,temperature:.4,max_completion_tokens:8000,stream:false,reasoning_effort:'low',messages:[{role:'system',content:sysPrompt()},{role:'user',content:userPrompt()}]};
-  if(/gpt-oss/.test(CFG.model)){body.tools=[{type:'browser_search'}];body.tool_choice=AI.mode==='motivation'?'auto':'required'}
+  const body={model:CFG.model,temperature:.4,max_completion_tokens:8000,stream:false,reasoning_effort:'low',messages:[{role:'system',content:sysPrompt(arts)},{role:'user',content:userPrompt(arts)}]};
+  if(!arts&&/gpt-oss/.test(CFG.model)){body.tools=[{type:'browser_search'}];body.tool_choice=(AI.mode==='news'||AI.mode==='analysis')?'required':'auto'}
   const headers={'Content-Type':'application/json'};if(CFG.key)headers.Authorization='Bearer '+CFG.key;
   const ac=new AbortController();const to=setTimeout(()=>ac.abort(),150000);
   let r;try{r=await fetch(url,{method:'POST',headers,body:JSON.stringify(body),signal:ac.signal})}catch(e){clearTimeout(to);throw new Error(e.name==='AbortError'?'Waktu habis (150 detik). Coba model gpt-oss-20b atau topik yang lebih sempit.':'Tidak bisa terhubung ke Groq ('+e.message+'). Kalau browser memblokir (CORS), pakai endpoint proxy di tab Setelan.')}
@@ -641,19 +650,82 @@ function collectSearch(msg,pre){
   blob+=' '+pre;const seen=new Set();
   return{results:out.filter(r=>r.url&&!seen.has(r.url)&&seen.add(r.url)),blob}}
 
+/* ---- tanggal & berita terbaru ---- */
+const MON={jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,ags:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11};
+function parseDate(t){if(!t)return null;if(t instanceof Date)return t;t=String(t).trim();
+  if(/^\d{4}-\d{2}-\d{2}/.test(t)){const d=new Date(t);return isNaN(d)?null:d}
+  const m=t.toLowerCase().match(/(\d{1,2})\s+([a-z]+)\.?\s+(\d{4})/);if(m){const k=m[2].slice(0,3);if(k in MON)return new Date(+m[3],MON[k],+m[1],12)}
+  const d=new Date(t);return isNaN(d)?null:d}
+const fmtDate=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Jakarta'});
+const rangeDays=()=>({'24 jam terakhir':1,'3 hari terakhir':3,'7 hari terakhir':7,'30 hari terakhir':30}[AI.range]||3);
+const isoWIB=d=>d.toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});
+const splitList=v=>String(v||'').split(',').map(x=>x.trim()).filter(Boolean);
+function ago(d){const hh=(Date.now()-d)/36e5;return hh<1?'kurang dari 1 jam lalu':hh<48?Math.round(hh)+' jam lalu':Math.round(hh/24)+' hari lalu'}
+function freshRules(arts){
+  const now=new Date();
+  if(arts)return 'Sekarang '+isoWIB(now)+'. Artikel yang diberikan sudah disaring berdasarkan tanggal terbit. Tanggal terbit tiap artikel tertulis di sebelahnya; pakai tanggal itu apa adanya.';
+  const from=new Date(now-rangeDays()*864e5);
+  return 'KESEGARAN DATA (PENTING): Pengetahuan internalmu berhenti di sekitar 2024 dan SUDAH USANG. Sekarang '+isoWIB(now)+'. Jangan pernah memakai ingatanmu untuk harga, level, atau peristiwa. Setiap query pencarian wajib memuat bulan dan tahun sekarang ("'+now.toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'Asia/Jakarta'})+'") atau tanggal spesifik. Hanya pakai artikel yang terbit antara '+isoWIB(from)+' dan '+isoWIB(now)+'; abaikan yang lebih lama. Setiap sumber wajib mencantumkan tanggal terbit format YYYY-MM-DD. Kalau tidak menemukan sumber dalam rentang itu, tulis "Tidak menemukan sumber terbaru" di note dan jangan mengisi angka dari ingatan.'}
+function artBlock(arts){return '\n\nARTIKEL (satu-satunya sumber fakta, sudah disaring: '+AI.range+'):\n'+arts.map((a,i)=>'['+(i+1)+'] '+a.title+'\nMedia: '+a.publisher+' | Terbit: '+isoWIB(a.date)+' | URL: '+a.url+'\n'+a.content).join('\n\n')+'\n\nAturan: semua fakta dan angka harus berasal dari artikel di atas. Di field src dan publisher pakai nama media artikel. Di slide sumber, pakai url persis seperti tertulis di atas dan tanggal terbit (YYYY-MM-DD) dari artikel.'}
+
+async function searchNews(){
+  if(!CFG.tavilyEndpoint&&!CFG.tavilyKey)throw new Error('Pencarian Tavily belum diatur. Isi API key Tavily (atau endpoint proxy) di tab Setelan, atau ganti Sumber pencarian ke Groq.');
+  const days=rangeDays(),tr=days<=1?'day':days<=7?'week':'month',t=AI.topic||'market news';
+  const qs=[t,t+' berita terbaru',t+' latest news'+(AI.mode==='analysis'?' analysis outlook':'')];
+  const inc=splitList(CFG.include),exc=splitList(CFG.exclude);
+  const url=CFG.tavilyEndpoint||'https://api.tavily.com/search';
+  const headers={'Content-Type':'application/json'};if(!CFG.tavilyEndpoint)headers.Authorization='Bearer '+CFG.tavilyKey;
+  const one=async q=>{
+    const base={query:q,topic:'news',search_depth:'advanced',max_results:8,include_published_date:true};if(inc.length)base.include_domains=inc;if(exc.length)base.exclude_domains=exc;
+    for(const variant of [{time_range:tr},{days}]){
+      let r;try{r=await fetch(url,{method:'POST',headers,body:JSON.stringify(Object.assign({},base,variant))})}catch(e){throw new Error('Tidak bisa terhubung ke Tavily ('+e.message+'). Kalau diblokir browser (CORS), pakai endpoint proxy /api/tavily.')}
+      const j=await r.json().catch(()=>({}));
+      if(r.ok)return j.results||[];
+      if(r.status===400&&variant.time_range)continue;
+      const m=(j.detail&&(j.detail.error||j.detail))||(j.error&&(j.error.message||j.error))||j.message||('HTTP '+r.status);
+      throw new Error(r.status===401?'API key Tavily ditolak (401). Cek key di tab Setelan.':(r.status===429||r.status===432||r.status===433)?'Kuota atau limit Tavily tercapai ('+r.status+'). '+m:'Tavily error '+r.status+': '+(typeof m==='string'?m:JSON.stringify(m)))}
+    return []};
+  const res=await Promise.allSettled(qs.map(one));
+  const ok=res.filter(x=>x.status==='fulfilled');if(!ok.length)throw res[0].reason;
+  const lim=Date.now()-days*864e5-432e5,seen=new Set();let undated=0,old=0;const out=[];
+  ok.forEach(x=>x.value.forEach(r=>{if(!r.url||seen.has(r.url))return;seen.add(r.url);const d=parseDate(r.published_date);
+    if(!d){undated++;return}if(d<lim||d>Date.now()+864e5){old++;return}
+    out.push({title:str(r.title),url:r.url,publisher:host(r.url),date:d,content:str(r.content).slice(0,1000)})}));
+  out.sort((a,b)=>b.date-a.date);
+  return{arts:out.slice(0,10),undated,old}}
+
+function fixSources(slides,arts){
+  let dropped=0;const norm=u=>String(u||'').replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,'');
+  const from=a=>({title:a.title,publisher:a.publisher,date:fmtDate(a.date),url:a.url});
+  slides.forEach(s=>{if(s.type!=='sources')return;const items=[];
+    (s.items||[]).forEach(it=>{const a=arts.find(x=>norm(x.url)===norm(it.url));if(a)items.push(from(a));else dropped++});
+    if(!items.length)arts.slice(0,3).forEach(a=>items.push(from(a)));
+    s.items=items.slice(0,6);s.asof=fmtDate(arts[0].date)});
+  return dropped}
+
 async function generate(){
-  const b=$('#bGen');b.disabled=true;LAST={results:[],blob:'',fromAI:false,mode:AI.mode};
+  const b=$('#bGen');b.disabled=true;LAST={results:[],blob:'',fromAI:false,mode:AI.mode,arts:null};
   try{
-    log('Menghubungi Groq ('+CFG.model+')...\nAI menelusuri web, ini bisa 15 sampai 90 detik.');
-    const j=await groq();const ch=(j.choices&&j.choices[0])||{};const msg=ch.message||{};
-    log('Menyusun slide dari hasil pencarian...');
+    let arts=null;const newsMode=AI.mode==='news'||AI.mode==='analysis';
+    if(newsMode&&CFG.searchMode==='tavily'){
+      log('Mencari artikel yang terbit '+AI.range+' lewat Tavily...');
+      const r=await searchNews();arts=r.arts;
+      if(!arts.length)throw new Error('Tidak ada artikel yang terbit dalam '+AI.range+' untuk topik itu'+((r.old||r.undated)?' ('+r.old+' terlalu lama, '+r.undated+' tanpa tanggal terbit dibuang)':'')+'. Coba perluas rentang waktu atau ubah topiknya.');
+      log(arts.length+' artikel, terbaru '+fmtDate(arts[0].date)+' ('+ago(arts[0].date)+').\nMenyusun slide dengan Groq ('+CFG.model+')...')
+    }else log('Menghubungi Groq ('+CFG.model+')...\nAI menelusuri web, ini bisa 15 sampai 90 detik.');
+    const j=await groq(arts);const ch=(j.choices&&j.choices[0])||{};const msg=ch.message||{};
     const sp=splitAnswer(msg.content);let o;try{o=extractJSON(sp.json)}catch(e){throw new Error(e.message+(ch.finish_reason==='length'?' Jawaban terpotong karena kepanjangan. Coba 4 slide.':''))}
-    const slides=normalize(o);const sr=collectSearch(msg,sp.pre);
-    LAST={results:sr.results,blob:sr.blob,fromAI:true,mode:AI.mode};
+    const slides=normalize(o);let sr,dropped=0;
+    if(arts){
+      sr={results:arts.map(a=>({title:a.title,url:a.url,content:a.content,date:a.date})),blob:arts.map(a=>a.title+' '+a.content+' '+a.url).join(' ')};
+      dropped=fixSources(slides,arts);
+      if(!slides.some(x=>x.type==='sources'))slides.push(mk.sources({asof:fmtDate(arts[0].date),items:arts.slice(0,4).map(a=>({title:a.title,publisher:a.publisher,date:fmtDate(a.date),url:a.url}))}));
+    }else sr=collectSearch(msg,sp.pre);
+    LAST={results:sr.results,blob:sr.blob,fromAI:true,mode:AI.mode,arts};
     S.slides=slides;S.caption=str(o.caption);S.hashtags=(o.hashtags||[]).map(str).filter(Boolean).join(' ');
     S.pillar={news:'news',analysis:'portfolio',education:'journey',motivation:'motivation'}[AI.mode];S.date=todayStr();SEL=0;
     hist(AI.topic,AI.mode);buildForm();buildStyle();refresh(true);
-    log('Selesai: '+slides.length+' slide, '+sr.results.length+' sumber dari hasil pencarian.\nCek bagian verifikasi di bawah sebelum mengunggah.');
+    log('Selesai: '+slides.length+' slide, '+sr.results.length+(arts?' artikel terbaru dipakai.':' sumber dari hasil pencarian.')+(dropped?'\n'+dropped+' sumber yang ditulis AI tapi tidak ada di hasil pencarian dibuang dan diganti artikel asli.':'')+'\nCek bagian verifikasi di bawah sebelum mengunggah.');
     $('#aiLog').scrollIntoView({block:'nearest'});renderVerify();renderSearchSrc();
     const cap=$('#p-ai textarea[rows="6"]');if(cap)cap.value=S.caption;const hi=[...document.querySelectorAll('#p-ai .box input')].pop();if(hi)hi.value=S.hashtags;
   }catch(e){log('Gagal: '+e.message)}
@@ -670,10 +742,22 @@ function verify(){
     if(s.type==='cover')chk(s.headline+' '+s.sub,w+' (cover)');
     if(s.type==='sources')(s.items||[]).forEach(it=>{if(it.url&&!blob.includes(normText(it.url.replace(/^https?:\/\//,'')).slice(0,40)))issues.push({where:w+' (URL sumber)',tok:'tidak ada di hasil pencarian: '+it.url.slice(0,55)})})});
   return issues}
+function renderFresh(e){
+  if(LAST.mode!=='news'&&LAST.mode!=='analysis')return;
+  const days=rangeDays(),now=Date.now();let dates=[],src;
+  if(LAST.arts){dates=LAST.arts.map(a=>a.date);src='artikel hasil pencarian'}
+  else{S.slides.forEach(s=>{if(s.type==='sources')(s.items||[]).forEach(i=>{const d=parseDate(i.date);if(d)dates.push(d)})});src='tanggal di slide Sumber'}
+  e.append(h('div',{class:'lbl'},'Kesegaran berita'));
+  if(!dates.length)e.append(h('div',{class:'warn'},'Tidak ada tanggal terbit yang bisa dibaca dari sumber, jadi kesegaran tidak bisa dipastikan. Isi tanggal terbit di slide Sumber, atau pakai pencarian Tavily.'));
+  else{const nw=new Date(Math.max(...dates));const lim=days*864e5+432e5;const stale=dates.filter(d=>now-d>lim).length;const allOld=now-nw>lim;
+    e.append(h('div',{class:(stale||allOld)?'warn':'okc'},'Sumber terbaru: '+fmtDate(nw)+' ('+ago(nw)+'), dari '+dates.length+' '+src+'.'+(stale?' '+stale+' sumber lebih tua dari rentang '+AI.range+'.':'')+(allOld?' Semua sumber di luar rentang, datanya kemungkinan usang.':'')))}
+  const yrs=new Set(),y=new Date().getFullYear();const scan=t=>(String(t).match(/\b20\d\d\b/g)||[]).forEach(v=>{if(+v<y)yrs.add(v)});
+  S.slides.forEach(s=>{if(s.type==='cover')scan(s.headline+' '+s.sub);if(s.type==='data')(s.metrics||[]).forEach(m=>scan(m.label+' '+m.period));if(s.type==='points')(s.items||[]).forEach(i=>scan(i.text))});
+  if(yrs.size)e.append(h('div',{class:'warn'},'Teks slide menyebut tahun lama ('+[...yrs].join(', ')+'). Pastikan itu memang konteks historis, bukan data usang.'))}
 function renderVerify(){
   const e=$('#aiVerify');if(!e)return;e.innerHTML='';if(!LAST.fromAI)return;
-  e.append(h('div',{class:'lbl'},'Verifikasi angka'));
-  if(!LAST.blob){e.append(h('div',{class:'warn'},'Respons tidak menyertakan hasil pencarian, jadi angka tidak bisa diperiksa otomatis. Cek semua angka ke sumber sebelum memposting.'));return}
+  renderFresh(e);e.append(h('div',{class:'lbl'},'Verifikasi angka'));
+  if(!LAST.blob.trim()){e.append(h('div',{class:'warn'},'Respons tidak menyertakan hasil pencarian, jadi angka tidak bisa diperiksa otomatis. Cek semua angka ke sumber sebelum memposting.'));return}
   const iss=verify();
   if(!iss.length)e.append(h('div',{class:'okc'},'Semua angka (3 digit ke atas) ditemukan di teks hasil pencarian. Tetap cocokkan sekilas dengan sumbernya.'));
   else{e.append(h('div',{class:'warn'},'Angka berikut tidak ditemukan di hasil pencarian. Mungkin salah tulis, hasil hitungan AI, atau format beda. Cek manual atau hapus:'));
@@ -682,12 +766,12 @@ function renderVerify(){
 function renderSearchSrc(){
   const e=$('#aiSrc');if(!e)return;e.innerHTML='';if(!LAST.results.length)return;
   const box=h('div',{class:'box'},h('h4',{},'Hasil pencarian ('+LAST.results.length+')'));
-  LAST.results.slice(0,12).forEach(r=>box.append(h('div',{class:'src'},h('div',{},h('b',{},r.title||host(r.url)),h('small',{},r.url)),h('button',{class:'btn sm',onclick:()=>addSource(r)},'Pakai sebagai sumber'))));
+  LAST.results.slice(0,12).forEach(r=>box.append(h('div',{class:'src'},h('div',{},h('b',{},r.title||host(r.url)),h('small',{},(r.date?fmtDate(r.date)+' | ':'')+r.url)),h('button',{class:'btn sm',onclick:()=>addSource(r)},'Pakai sebagai sumber'))));
   e.append(box)}
 function addSource(r){
   let s=S.slides.find(x=>x.type==='sources');if(!s){s=mk.sources({items:[]});S.slides.push(s)}
   if(s.items.some(i=>i.url===r.url))return toast('Sumber sudah ada.');
-  s.items.push({title:r.title,publisher:host(r.url),date:'',url:r.url});buildForm();refresh(true);toast('Ditambahkan ke slide Sumber. Isi tanggal terbitnya.')}
+  s.items.push({title:r.title,publisher:host(r.url),date:r.date?fmtDate(r.date):'',url:r.url});buildForm();refresh(true);toast(r.date?'Ditambahkan ke slide Sumber.':'Ditambahkan ke slide Sumber. Isi tanggal terbitnya.')}
 
 /* ---- riwayat ---- */
 function hist(topic,mode){const a=LS.get('nf_hist',[]);const c=clone(S);c.slides.forEach(s=>{if(s.img)s.img=''});a.unshift({id:uid(),ts:Date.now(),topic:topic||'(tanpa topik)',mode,state:c});LS.set('nf_hist',a.slice(0,20))}
